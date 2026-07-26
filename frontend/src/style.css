@@ -1,0 +1,126 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(34, 230, 214, 0.14), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 100% 10%, rgba(255, 61, 138, 0.12), transparent 60%),
+    var(--bg);
+  /* html/body are pinned to 100% height above (one viewport), so on any
+     page taller than that (e.g. the methodology page) the background
+     would otherwise tile down the scrollable canvas — no-repeat plus
+     fixed keeps it a single, truly static glow instead. */
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--text-primary);
+}
+
+/* "Dark glass" design system (maquette E). This is the one committed
+   theme — no light-mode variant — per CLAUDE.md's visual direction.
+   The --cyan/--magenta/--amber trio is for IDENTITY/branding use only
+   (wordmark, badges, focus rings, active-state pills); it deliberately
+   is NOT used as-is for data encoding — see App.vue's DATA_RAMP comment
+   for why (it fails the colorblind-safe ordinal-ramp check) and what's
+   used instead. */
+:root {
+  --bg: #080a0f;
+  --panel: rgba(255, 255, 255, 0.045);
+  --panel-b: rgba(255, 255, 255, 0.09);
+  --ink: #eaf0f5;
+  --ink-dim: #8b96a6;
+  --cyan: #22e6d6;
+  --magenta: #ff3d8a;
+  --amber: #ffb020;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --surface-1: var(--panel);
+  --surface-2: #12151ce6;
+  --surface-3: #0d0f15;
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-dim);
+  --text-muted: #6b7686;
+  --border-color: var(--panel-b);
+  --gridline: rgba(255, 255, 255, 0.08);
+  --accent: var(--cyan);
+  --accent-strong: var(--magenta);
+  --panel-shadow: rgba(0, 0, 0, 0.55);
+}
+
+/* "Glass panel" surface — the one recurring container look across every
+   view (map/side panel, modals, methodology sections): translucent
+   panel + soft border + backdrop blur. Global so new views/pages don't
+   have to redeclare it per component. */
+.glass {
+  background: var(--panel);
+  border: 1px solid var(--panel-b);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Screen-reader-only content: visually hidden but present for assistive
+   tech — used for the choropleth's text alternative (see App.vue) since
+   a canvas map has no text for a screen reader to read otherwise. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Visible keyboard focus ring app-wide (buttons, links, pills, toggles) —
+   global rather than per-component so every view/page gets it, not just
+   the one that happened to define it first. */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* Printing the press kit one-pager: the app shell's topbar/footer live
+   in App.vue, outside PressKitView's own scoped styles, so this has to
+   be global to hide them for a clean single-page printout. */
+@media print {
+  /* #footer-sources (not a bare "footer" selector) so this doesn't also
+     catch PressKitView's own content <footer> (source/data-credit line),
+     which is part of the printed page, not app chrome. */
+  .topbar,
+  #footer-sources {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+}
+
+/* Global reduced-motion safety net: every transition/animation in the
+   app collapses to instant. Component-level transitions (fade/slide)
+   are already duration-based, so zeroing the duration here is enough
+   without needing a static-vs-animated fork per component. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,777 @@
+# Cumulative environmental exposure score — methodology
+
+Computed by `scripts/11_compute_vulnerability_score.py`, run after scripts
+01-10, 12, 15, 17, 21 and 22. Output: `data/processed/vulnerability_score_iris.geojson`.
+
+**Phase 5 scope note**: this file originally documented Paris intra-muros
+(992 IRIS). It now covers the full Métropole du Grand Paris "Petite
+Couronne" — Paris (75) plus Hauts-de-Seine (92), Seine-Saint-Denis (93)
+and Val-de-Marne (94) — **2,752 IRIS total**. See "Expanding beyond
+Paris" below for what changed and why.
+
+## What this score doesn't measure
+
+This is deliberately called a **cumulative environmental exposure
+score**, not a "vulnerability score" — an earlier, less precise name
+this project used until it was renamed. In climate science, vulnerability
+is conventionally decomposed into three distinct components (the IPCC's
+own framing, echoed throughout French and international climate-adaptation
+literature):
+
+- **Exposure** — is a place physically subject to a hazard (heat,
+  pollution, poor access to services, energy-inefficient housing)?
+- **Sensitivity** — how much does that exposure actually harm the
+  people there (age, health status, pre-existing conditions)?
+- **Adaptive capacity** — can people and institutions there reduce the
+  harm (afford air conditioning, take time off work during a heatwave,
+  relocate, pressure the city for infrastructure investment)?
+
+**This pipeline only measures the first one.** Every sub-score here —
+thermal, pollution, access, housing — is a measure of physical exposure
+to a hazard or a deficit in provision. None of it captures sensitivity
+(no health, age, or pre-existing-condition data is used anywhere in this
+pipeline) or adaptive capacity (income, the closest available proxy, is
+explicitly excluded from the score — see "The 4 sub-scores" below).
+Calling the result "vulnerability" would silently smuggle in a claim
+this data was never built to support: that the same score also reflects
+who's *least able to cope*, not just who's *most exposed*.
+
+**Why this distinction isn't just semantic.** The income/exposure
+scatter (`/` — "Income vs. exposure") is the clearest illustration:
+exposure, as measured here, doesn't reliably track income across this
+data — every score band spans nearly the whole income range (see
+README's step 4 and "Expanding beyond Paris" below for concrete
+examples, including several of the metro area's wealthiest addresses
+landing in the worst-exposure band). If this were labeled a
+"vulnerability score," that finding would read as "wealthy neighborhoods
+are just as vulnerable as poor ones" — which isn't a defensible claim,
+because a wealthy household facing the exact same physical exposure
+(heat, noise, an energy-inefficient apartment) typically has more ways
+to cope with it: air conditioning, remote work during a heatwave,
+private healthcare, the option to renovate or move. **Two neighborhoods
+can have an identical exposure score and a very different real-world
+vulnerability**, because adaptive capacity — not measured here — is
+what actually separates them. "Exposure score" makes only the claim
+this data can back up; "vulnerability score" would make a bigger one it
+can't.
+
+**What this means in practice on `/ranking`:** the page's own "Group A"
+/ "Group B" split (see "A note on Group A vs. Group B" further down)
+exists specifically so this distinction isn't lost in a single ranked
+list — Group A (generally lower-income, genuinely under-served) and
+Group B (generally higher-income, dense/older housing stock) can land
+at the identical cumulative score while facing very different odds of
+actually coping with it.
+
+## Why a "count of worst quartiles" instead of a weighted average
+
+A single weighted-average score would smooth out exactly the phenomenon
+this project exists to show: the same neighborhoods stacking up several
+*distinct* exposures at once. A high average can hide a zone with
+one severe problem and three mediocre scores just as easily as a zone
+with four moderately-bad ones — the two situations are not equivalent,
+but a mean treats them the same. Counting how many sub-scores land in
+their own worst quartile keeps that distinction visible.
+
+## The 4 sub-scores
+
+Every indicator below is transformed so that **higher = more exposed**
+(protective indicators — cool spots, canopy, social position — are sign-
+flipped). Each is standardized to a z-score (`(x - mean) / std`) before
+being combined, so indicators on different units/scales weigh in
+equally.
+
+| Sub-score | Indicators (equal weight, simple mean of z-scores) | Source |
+|---|---|---|
+| **Thermal** | `hvi` (heat vulnerability index, Sat4BDNB) · `-count(cool spots within 400m of IRIS centroid) per 1,000 residents` · `-% of IRIS area covered by "cool" green space` · `% of IRIS area that's artificialized/sealed (MOS land use)` | scripts 02, 03, 04, 21, 22 |
+| **Pollution** | area-weighted mean air-noise co-exposure class (1-9 scale) | script 05 |
+| **Access to services** | mean of (minutes to nearest health / education / transport equipment) · `-mean(IPS of nearby primary + middle schools)` · `-% of documented ERPs with a wheelchair-accessible entrance` · `-footway length per km² (OpenStreetMap)` | scripts 07, 09, 12, 15 |
+| **Housing** | % of sampled DPE certificates rated F or G ("passoire thermique") · residential electrical thermosensitivity (`part_thermosensible`, Enedis) | scripts 10, 17 |
+
+Each sub-score is the **unweighted mean** of its (standardized) indicator
+z-scores, skipping indicators missing for a given IRIS. Weights are equal
+by design — there's no principled basis yet to weigh one indicator over
+another; revisit this once the tool has real user feedback.
+
+Median income (`08_income_filosofi.py`) is **not** part of the score. It
+is carried through to the output for step 4 (correlation between income
+and cumulative exposure), on purpose — folding it into the score would
+make that correlation circular. It's also the closest available proxy
+for adaptive capacity, the component this score deliberately excludes —
+see "What this score doesn't measure" below.
+
+## From sub-score to quartile
+
+Each sub-score's z-score mean is converted to a quartile (1 = best 25%,
+4 = worst 25%) via **percentile rank**, not `pandas.qcut` directly:
+several indicators (notably access time — most of dense inner-Paris
+sits at "1 minute to the nearest equipment") have enough tied values to
+make qcut's bin edges collide. Percentile rank handles ties by averaging
+their rank instead of erroring out.
+
+## Minimum-indicator threshold ("insufficient_data")
+
+**A sub-score is only computed if a strict majority of its indicators
+have data for that IRIS.** Concretely: `floor(n_indicators / 2) + 1` —
+**3 of 4 for thermal** (raised from 2/3 in Phase 5 when artificialization
+became its 4th indicator), 3 of 4 for access, 1 of 1 for pollution (a
+single-indicator sub-score — can't require more than what exists), 2 of
+2 for housing (both DPE and Enedis are required, not just one — see
+"Electrical thermosensitivity" below). Below threshold, the sub-score,
+and its quartile, are both null and its status is set to
+`"insufficient_data"` — explicitly excluded from the cumulative score,
+not silently treated as "not exposed" (quartile 1-3) or averaged over
+whatever scraps of data happened to be there.
+
+**Why this exists — a real bias, measured, not assumed.** Investigating
+why Porte Dauphine 11 and Madeleine 2 (Paris-intra-muros-era examples)
+scored 4/4, their "access" sub-score turned out to be built from only
+1-2 of its 4 indicators (no school, no documented PMR entry nearby —
+both are small, non-residential IRIS), while their raw access *times*
+were actually excellent (1.0-1.35 minutes). Checked systematically
+across all 992 Paris IRIS at the time, before this fix:
+
+> Among the 89 IRIS whose access sub-score relied on a single indicator,
+> **47% landed in the worst quartile — nearly double the 25% you'd
+> expect from chance.** Sparse-data IRIS were being penalized for
+> *lacking data*, not for having worse access.
+
+After adding the threshold (Paris-only numbers, at the time): **125 of
+992 IRIS lost their access sub-score to `insufficient_data`** (867
+remained "ok"); **26 lost their housing sub-score** (966 "ok"); thermal
+and pollution were unaffected. Quartile splits among the remaining "ok"
+IRIS moved to a clean 25/25/25/25 on all four sub-scores — the skew was
+gone, not just relabeled.
+
+**Re-verified at MGP scale (Phase 5).** Expanding to 2,752 IRIS —
+2.8x the population, and far more heterogeneous (dense Paris core plus
+inner-suburb communes of every density and land use) — is exactly the
+kind of change that could quietly reintroduce a similar bias, so the
+same check was rerun rather than assumed to still hold. Current
+sub-score completeness:
+
+| Sub-score | OK | insufficient_data | Min. indicators required |
+|---|---|---|---|
+| Thermal | 2,750 / 2,752 | 2 | 3 / 4 |
+| Pollution | 2,752 / 2,752 | 0 | 1 / 1 |
+| Access | 2,188 / 2,752 | 564 | 3 / 4 |
+| Housing | 2,676 / 2,752 | 76 | 2 / 2 |
+
+(Thermal's count reflects the `cool_facility_deficit` fix further below
+— 1 additional IRIS below `MIN_POPULATION_FOR_RATE` lost its 4th
+thermal indicator, still comfortably above the 3/4 threshold.)
+
+And the quartile balance among each sub-score's "ok" IRIS, at the full
+MGP scale:
+
+| Sub-score | Q1 | Q2 | Q3 | Q4 |
+|---|---|---|---|---|
+| Thermal | 25.0% | 25.0% | 25.0% | 25.0% |
+| Pollution | 25.0% | 25.0% | 25.0% | 25.0% |
+| Access | 25.0% | 25.0% | 25.0% | 25.0% |
+| Housing | 25.0% | 25.0% | 25.0% | 25.0% |
+
+A clean 25/25/25/25 split on all four, same as the Paris-only
+re-verification. The threshold rule generalizes; it wasn't tuned to one
+city's particular data gaps.
+
+## Access time's compressed distribution — found, and corrected
+
+The minimum-indicator threshold above protects against a sub-score being
+computed from too *few* indicators. It does **not** protect against a
+different failure mode: one *available* indicator's z-score being
+unreliable because its underlying distribution isn't roughly normal.
+`access_time` turned out to be exactly this case — audited manually
+(same rigor as Porte Dauphine/Madeleine and Drancy) after two IRIS in
+the score-3 ranking, **Val de Grâce 6** (Paris 5e) and
+**Champs-Élysées 2** (Paris 8e), turned out to have their access
+sub-score landing in the worst quartile mainly *because of*
+`access_time`, despite raw times of 1.6 and 1.2 minutes respectively —
+fast by any human reading. Widening the audit to **Sorbonne 3, Sorbonne
+4, and École Militaire 5** (also fast-looking, raised as candidates for
+the same bias) found the opposite, useful result: all three genuinely
+have `subscore_access_quartile` outside the worst quartile (2, 1 and 1)
+— they were never miscategorized, which helped confirm the bias is real
+and specific rather than something a suspicious eye sees everywhere.
+
+**Why this happens.** Most of the metro area is tied at or near the
+"1 minute" floor (25th percentile = 1.00, median = 1.00, 75th
+percentile = 1.08), so `access_time`'s raw standard deviation is tiny
+(0.15). A value like 1.57 minutes — objectively fast — sits at the
+95.8th percentile of this compressed distribution, giving a raw z-score
+of **+3.38**: an extreme outlier in relative terms despite being a
+trivial absolute difference (a few tens of seconds). `access_time`'s
+worst raw z-score anywhere in the dataset was **+15.30** — by a wide
+margin the single most extreme standardized value produced by *any*
+indicator in this pipeline (the next-worst, `housing_energy_poverty`,
+peaks at 7.87; most stay under 5). Val de Grâce 6's other two available
+access indicators (`school_segregation` is missing — no school in this
+small IRIS; `pedestrian_path_deficit` is strongly *favorable*,
+z = -1.82) weren't enough to pull the mean of the 3 available z-scores
+back out of the worst quartile.
+
+**Checked every other indicator for the same profile before fixing
+just this one.** A biased fix that only patches the example already
+found isn't good enough — the same floor/ceiling-clustering pathology
+could exist elsewhere, unnoticed. Computed, for all 11 raw indicators
+across the 4 sub-scores: share of values tied at the single most common
+value, and the most extreme raw z-score produced anywhere in the
+dataset.
+
+| Indicator | Share at mode | Worst raw \|z\| |
+|---|---|---|
+| `access_time` | 49.9% | **15.30** |
+| `mobility_accessibility_deficit` | 77.5% | 4.79 |
+| `cool_facility_deficit` | 50.4% | 47.90 |
+| `canopy_deficit` | 40.8% | 8.37 |
+| `pedestrian_path_deficit` | 0.4% | 5.87 |
+| `housing_energy_poverty` | 2.9% | 7.87 |
+| `artificialization_deficit` | 8.1% | 4.05 |
+| `electric_thermosensitivity` | 0.2% | 3.76 |
+| `air_noise_class` | 0.5% | 3.65 |
+| `school_segregation` | 0.3% | 2.18 |
+| `heat_icu` | 5.4% | 2.77 |
+
+`access_time` is the clear, severe outlier: both the mechanism (a hard
+physical floor — you cannot travel for less than ~1 minute — with over
+half the metro area pinned to it) and the resulting magnitude (a raw
+z-score five times more extreme than the runner-up) are qualitatively
+different from the rest. `mobility_accessibility_deficit` also has a
+large share at its mode (77.5% of documented ERPs report exactly 0%
+PMR-accessible), but its worst z stays under 5 — the point-mass sits
+close to the mean rather than far out on a long tail, so it dilutes
+this indicator's discriminating power without producing false extreme
+classifications. `cool_facility_deficit` and `canopy_deficit` do
+produce some large |z| values, but from a **different mechanism** — a
+long right tail on a rate (a handful of IRIS with a tiny population
+denominator or unusually high raw count), not a hard floor — and
+correcting that would need a different technique (winsorizing or
+capping, not a rank transform) plus its own manual audit, not a fix
+piggybacked on this one. **Flagged here as a follow-up, not silently
+left undocumented, but not fixed in this pass.**
+
+**The fix applied**: `access_time` is now standardized by percentile
+rank rather than raw z-score, rescaled by √12 (the reciprocal of a
+uniform(0,1) distribution's standard deviation) so it sits on a
+comparable spread to the genuinely normal-ish indicators it's averaged
+against — otherwise a rank-transformed indicator would be systematically
+diluted relative to its peers. This is the exact same reasoning already
+applied one step downstream, when `quartile_from_rank()` converts a
+sub-score's z-score mean into a quartile via percentile rank instead of
+`pandas.qcut`, for the identical underlying reason (too many tied
+values for a normal-distribution assumption to hold) — this fix just
+applies that logic one level earlier, to the raw indicator itself,
+rather than only at the final quartile-conversion step.
+
+**Verified after the fix**:
+- Quartile balance across all 4 sub-scores stayed a clean 25/25/25/25
+  among "ok" IRIS — the fix didn't introduce a new imbalance.
+- **Val de Grâce 6 moved out of the worst access quartile** (Q4 → Q3),
+  and its cumulative score dropped from 3 to 2 as a direct result —
+  correctly, since access was the only genuinely questionable factor in
+  its profile.
+- **Champs-Élysées 2 stayed in the worst access quartile** (subscore
+  moved from 0.424 to 0.575) — its own `pedestrian_path_deficit` is
+  close to neutral (unlike Val de Grâce 6's strongly favorable one), so
+  even a correctly-scaled `access_time` isn't offset by anything else
+  available. This is a legitimate outcome of the corrected formula, not
+  a sign the fix didn't work.
+- Re-running the full-ranking audit (all IRIS at score ≥ 3): the count
+  of access-worst-quartile IRIS with a raw `access_time` ≤ 2 minutes
+  went from 22 of 22 (100%, pre-fix) to **23 of 23 (still 100%,
+  post-fix)** — expected, not a failure of the fix. The rank transform
+  removes *extreme, disproportionate* distortion (the 15.3 case), it
+  doesn't and can't manufacture variance that isn't there: at this
+  density, access genuinely is fast almost everywhere, so *some*
+  IRIS will always rank in the bottom quartile on this one indicator
+  by construction, however correctly it's standardized. That residual
+  is exactly what the `/ranking` page's driver-specific wording (below)
+  exists to communicate honestly, rather than something a formula
+  change alone can eliminate.
+- Two IRIS dropped out of the score-3 ranking entirely (Val de Grâce 6;
+  **Iris 2**, Bagnolet — a ripple effect of re-ranking the whole
+  dataset, not itself driven by `access_time`) and three newly entered
+  (**Montfort**, Aubervilliers, income €16,430, driven by
+  `pedestrian_path_deficit`; **Charles Laffitte 2**, Neuilly-sur-Seine,
+  and **Notre-Dame des Champs 8**, Paris 6e — both wealthy, both driven
+  by `access_time`, both plausible continuations of the Group B pattern
+  already documented above). All five were checked by hand; none looks
+  like a new artifact.
+
+**Distribution after the fix** (superseding the numbers quoted
+elsewhere in this document before this section): 0 → 908 (33.0%),
+1 → 1,146 (41.6%), 2 → 649 (23.6%), 3 → 48 (1.7%), 4 → 1 (0.04%,
+Drancy's Économie 1, unaffected by this fix and still the only 4/4).
+**This snapshot was itself superseded shortly after** by the
+`cool_facility_deficit` fix below — see "Current distribution" at the
+end of this document for the authoritative, current numbers (score ≥ 3
+is 62 IRIS as of that fix, not 49).
+
+**The `/ranking` page's sentence generator was also corrected**,
+independently of the numeric fix, because the numeric fix alone doesn't
+remove the residual "genuinely borderline" cases described above.
+`access_primary_driver` (which of the 4 access indicators has the
+highest z-score for a given "ok" IRIS, kept in the output GeoJSON as a
+transparency layer) now drives which phrase the ranking sentence uses —
+naming school segregation, sparse pedestrian infrastructure, or travel
+time specifically, rather than a single generic "nearby services"
+phrase that a full audit found was actively misleading for most rows
+(only 2 of the 22 access-flagged IRIS were actually about school-adjacent
+segregation being irrelevant; the rest split across three different real
+causes). Whenever `access_time` is still the dominant driver and its raw
+value is ≤ 2.0 minutes (the cutoff covering 94% of `access_time`-driven
+cases in the audit), an explicit caveat is appended: "access itself is
+fast here in absolute terms (X min) — this sub-score reflects being
+slower than most of the rest of the metro area, not an actual lack of
+nearby services."
+
+## cool_facility_deficit's small-population inflation — found, and corrected
+
+The systematic check that caught `access_time` also flagged
+`cool_facility_deficit` as having the single most extreme raw z-score
+of any indicator in the pipeline (**-47.90**, nearly 3x worse than
+`access_time`'s own pre-fix worst case of +15.30). Audited before
+touching anything, per this project's standing practice of confirming a
+bias by hand rather than patching from a summary statistic alone.
+
+**What the audit found.** The two most extreme rows: **Buttes Chaumont**
+(Paris 19e), population 3.3, with 2 cool facilities within 400m, giving
+a rate of ~603 facilities per 1,000 residents; and **Jardin des
+Plantes** (Paris 5e), population 4.0, 1 facility, ~250 per 1,000. Both
+are exactly what their names suggest — a park and a botanical garden —
+confirmed by checking every IRIS with a nonzero-but-tiny population: all
+15 of them (population between 1.6 and 47) are named parks, a cemetery,
+a wholesale market, a forest, or an industrial zone (`Père Lachaise 17`,
+`Bois de Notre-Dame`, `Marché d'Intérêt National`, `Silic`, etc.) — not
+an undercounted residential population.
+
+**Why this is a different mechanism from `access_time`, and why that
+matters for the fix.** `access_time` is floor-clustered: half the
+metro area is physically unable to score better than "~1 minute", a
+hard lower bound. `cool_facility_deficit` has no such floor — instead,
+dividing a small integer count (0-6 facilities) by a population that
+can be arbitrarily close to zero produces an unbounded rate, a
+classic small-denominator inflation. The existing `population == 0`
+guard (already in place to avoid a division by zero) caught the most
+degenerate case but not this one — a population of 3 or 4 isn't zero,
+so it slipped through, while being just as meaningless a denominator
+for a "per 1,000 residents" rate.
+
+**Why a population floor alone doesn't fully fix it.** Raising the
+population threshold and recomputing the z-scores shows the standard
+deviation is dominated by whichever few points remain most extreme —
+excluding the worst 15 shrinks the column's std enough that the
+*next*-most-extreme points immediately become new outliers by the same
+measure (empirically: nulling everything under 200 population still
+left a worst raw z of 25.35, barely better than the unfixed 47.90).
+Chasing the tail this way doesn't converge. This is exactly the
+scenario the project's own choice of *winsorizing or capping* (rather
+than a rank transform, which suits `access_time`'s floor-clustering but
+not this heavy right tail) was meant for.
+
+**The fix applied, in two parts**:
+1. `MIN_POPULATION_FOR_RATE = 50` — below this many residents, a
+   "per-1,000-inhabitants" rate is treated as **not a real neighborhood
+   population** and the indicator is left null (`insufficient_data`
+   territory for that IRIS, same principle as `population == 0` already
+   used, just with a defensible floor instead of an exact-zero check).
+   This removes the 15 confirmed park/cemetery/market/industrial IRIS
+   from the computation entirely, rather than letting them contribute a
+   fabricated rate.
+2. **Winsorizing** (capping, not deleting) the resulting rate at its
+   own 3rd percentile — chosen empirically as the point where the
+   worst remaining raw z-score drops under 3, matching the rest of this
+   pipeline's well-behaved indicators. Values more favorable than the
+   3rd-percentile cutoff are clipped to that cutoff rather than left
+   able to blow out the z-score for everyone else.
+
+**Verified after the fix**:
+- Worst raw z-score for this indicator: **-47.90 → -2.78** (below the
+  |z| > 3 threshold every other indicator in this pipeline already
+  clears, except the still-flagged-as-follow-up `canopy_deficit` and
+  `housing_energy_poverty`, see "Known caveats").
+- Quartile balance across all 4 sub-scores stayed a clean 25/25/25/25
+  among "ok" IRIS.
+- **This fix moved the distribution more than `access_time`'s did** —
+  expected, since it wasn't just correcting a couple of outlier rows'
+  own quartile, it was restoring `cool_facility_deficit`'s actual
+  discriminating power for *everyone else*: a few wild outliers had
+  been inflating the whole column's standard deviation, which
+  compressed every other IRIS's z-score toward zero and made the
+  (very real) difference between "0 facilities nearby" and "1-2
+  facilities nearby" nearly invisible to the composite thermal score.
+  With the outliers capped, that real difference matters again.
+- **Score 4/4 grew from 1 IRIS to 4**: Économie 1 (Drancy, unchanged)
+  plus three newly-qualifying IRIS — **Les Parclairs** (Le
+  Perreux-sur-Marne), **Président Wilson** (Villeneuve-Saint-Georges),
+  and **Nonneville 3** (Aulnay-sous-Bois). All four were checked by
+  hand: normally-sized residential populations (2,000-2,600, not tiny),
+  0-1 cool facilities within 400m, nearly 0% green cover, 77-100%
+  artificialized surface, HVI 15.0-17.0 — a fully coherent, unambiguous
+  profile, not an artifact of the fix (their own `cool_spots_within_400m`
+  values are 0 or 1, an entirely ordinary, non-extreme input; what
+  changed is that the composite thermal score can now register that
+  input's real signal instead of it being drowned out by outliers
+  elsewhere in the same column).
+- Score ≥ 3 total grew from 49 to **62 IRIS**. Spot-checked a sample of
+  the newly-qualifying rows, including the two smallest populations in
+  the list (`Gare 32`, Paris 13e, population 185, 96.3% artificialized,
+  0% green, adjacent to a rail yard; `Parcexpo`, Le Bourget, population
+  116, 87.0% artificialized, an exhibition-park site) — both plausible,
+  genuinely low-facility/high-artificialization zones rather than a new
+  sparse-data artifact.
+
+**Distribution after this fix** (superseding the `access_time`-only
+numbers quoted earlier in this document): 0 → 874 (31.8%), 1 → 1,230
+(44.7%), 2 → 586 (21.3%), 3 → 58 (2.1%), 4 → 4 (0.1%).
+
+**A note on the public ranking's score-4 cap.** The `/ranking` page
+caps its public list at score 3, reasoning that n=1 (or n=2, in the
+Paris-only era) was too fragile a sample. n=4 changes that calculus
+somewhat, but the cap-at-3 policy itself hasn't been revisited as part
+of this fix — it's a separate editorial decision, not a direct
+consequence of correcting this indicator's standardization, and is
+noted here rather than changed silently.
+
+**A note on Group A vs. Group B.** The manual audit of the access
+sub-score (see "Access time's compressed distribution" above) split
+the `/ranking` page's list into two groups by whether access itself is
+the worst-quartile factor: Group A (generally lower-income, a genuine
+shortfall in local conditions) and Group B (generally higher-income,
+dense/older housing stock with decent-to-excellent access). This split
+matters for exactly the reason explained in "What this score doesn't
+measure" above: an identical cumulative *exposure* score doesn't imply
+identical real-world *vulnerability*, because Group A and Group B
+differ sharply in adaptive capacity, and the page's wording says so
+explicitly — Group A's copy names a genuine service shortfall
+consistent with limited means to compensate for it, Group B's copy
+states plainly that access isn't the issue and several of its
+neighborhoods are among the metro area's wealthiest, so their being
+exposed shouldn't be read as evidence they lack the means to cope with
+it. Neither group's phrasing implies the two are equally vulnerable —
+only that they're comparably *exposed*, which is a narrower and more
+defensible claim.
+
+## Cumulative score
+
+```
+cumulative_vulnerability_score = count of sub-scores where quartile == 4
+```
+
+Range 0-4. An IRIS missing data for every sub-score gets a null
+cumulative score rather than being silently treated as "not exposed".
+`n_subscores_evaluated` records how many of the 4 sub-scores had data for
+that IRIS, for transparency.
+
+## Electrical thermosensitivity (housing's second indicator, Phase 3)
+
+`pct_thermosensitive` (script 17) is Enedis' `part_thermosensible`: the
+share of a zone's *residential* electricity consumption that swings with
+outdoor temperature (winter heating load, specifically — Enedis doesn't
+publish a summer-cooling equivalent). A zone with high thermosensitivity
+has electricity use that responds sharply to cold, which points at
+poorly-insulated, electric-heating-dependent housing — the same building
+envelope that's also expensive to keep cool in summer, just measured
+from the winter side because that's the data that exists. Paired with
+DPE F/G share, it answers a sharper question than DPE alone: not just
+"is this housing stock poorly insulated" but "is it also stuck on
+electric heating with no cheap way to compensate for heat either."
+
+Both indicators are **required** (see "Minimum-indicator threshold"
+above) — a deliberate tightening, not a bug. Enedis itself already
+enforces a ≥10-active-site privacy floor per zone, so no additional
+sample-size masking was layered on top of what the source does.
+
+## Population-normalized cool-facility count (Phase 5)
+
+`cool_facility_deficit` used to be a raw count of cool facilities
+(pools, museums, libraries) within 400m of an IRIS's centroid. At MGP
+scale, with communes of very different densities sitting side by side,
+a raw count would make a bigger or denser IRIS look better-served purely
+by having more people nearby — not because it actually has more cool
+facilities *per resident*. It's now **a rate per 1,000 residents**,
+using `population_iris.geojson` (script 21, INSEE Recensement de la
+population 2021 — same vintage as Filosofi's income data, for
+consistency). IRIS with zero population (non-residential — a park, a
+transport interchange) get a null rate rather than a division-by-zero
+or a misleading 0, the same `insufficient_data`-not-fabricated principle
+used everywhere else in this pipeline.
+
+This is a genuine, repeated pattern in this project: population data
+also normalized the raw BPE facility counts used as inputs upstream, and
+retroactively normalized the RNA associational-density context layer
+(script 20) from "per km²" to "per 1,000 inhabitants" — each change
+moves the distribution again, on purpose, because a raw count was
+quietly measuring density of *people* as much as density of *service*.
+
+## Artificialization / sealed surface (thermal's 4th indicator, Phase 5)
+
+`pct_artificialized` (script 22) is the share of an IRIS's surface
+classified as built or paved ground, from IDF's MOS (Mode d'Occupation
+du Sol) land-use survey — **54 of its 79 categories** count as
+artificialized: housing (28-35), economic/industrial/utility (36-54),
+covered sports facilities (55-59), institutional equipment (60-72),
+transport infrastructure (73-79), plus tennis courts (18) and paved
+esplanades/squares (24). Forests, natural/agricultural land, parks and
+green space, water and vegetated leisure areas, cemeteries and vacant
+land are **not** counted as artificialized.
+
+**Why MOS, not IGN's official OCS GE.** IGN's "Occupation du Sol à
+Grande Échelle" (OCS GE) is the closest thing to a national, legally-
+grounded artificialization dataset — but its public-facing product is
+WMTS/WMS tile imagery only (fine for a map background, useless for
+computing an area statistic per IRIS), and the genuine vector data
+requires bulk per-department downloads through a JS-rendered portal with
+no discoverable direct URL or WFS/Features API. IDF's own MOS dataset,
+by contrast, is a real queryable vector layer covering the whole region
+uniformly. The artificialized-category list above is modeled closely on
+France's official artificialisation definition, but isn't a certified
+reproduction of it — there's no single published crosswalk from MOS's
+79-category regional legend to the legal nomenclature. Treat
+`pct_artificialized` as a close, defensible proxy, not an official
+figure.
+
+**Why it belongs in the thermal sub-score, not a duplicate of `hvi`.**
+Built and paved ground holds and re-radiates heat rather than absorbing
+or evaporating it away — that's a *structural cause* of local heat
+retention, distinct from `hvi` (a modeled temperature/vulnerability
+index) and from the cool-facility/canopy indicators (proximity to
+relief, not exposure to the underlying cause). It enriches the
+sub-score rather than measuring the same thing twice.
+
+**Coverage confirmed before integrating**: all 2,752 IRIS across the 4
+departments have a value (min 2.1%, median 82.5%, mean 79.7%, max
+100.0% after clipping a floating-point overshoot from the area-weighted
+overlay). The dataset's stated millésime is uniform across Paris and
+the three inner-suburb departments — no per-department vintage mismatch
+to document.
+
+**Urban-biodiversity reading, not separately scored.** Artificialized
+ground is also lost habitat — this layer doubles as a rough proxy for
+urban biodiversity loss, worth noting even though it isn't scored
+separately for wildlife: no animal mortality or stress data comparable
+to what's available for humans exists at this grain.
+
+## Known caveats (read before trusting the numbers)
+
+- **564 IRIS have `insufficient_data` for access, 76 for housing, 2 for
+  thermal** (fewer than a strict majority of indicators available —
+  typically very small or non-residential IRIS; the 2nd thermal case
+  came from the `MIN_POPULATION_FOR_RATE` floor below). Their
+  `n_subscores_evaluated` is reduced accordingly, and they're excluded
+  from that sub-score's quartile ranking entirely (see "Minimum-
+  indicator threshold" above).
+- **`access_time` is now rank-standardized rather than raw-z-scored**
+  (see "Access time's compressed distribution" above) after audit found
+  it producing a raw z-score of +15.3 — from a floor-clustered
+  distribution where half the metro area ties at "1 minute". Fixed at
+  the scoring level, not just in the `/ranking` page's wording, though
+  some IRIS with an objectively fast access time will still land in the
+  worst access quartile by construction (there genuinely isn't much
+  variance to work with at this density) — the `/ranking` page's
+  `access_primary_driver`-based phrasing exists precisely for that
+  residual case.
+- **`cool_facility_deficit` is now population-floored and winsorized**
+  (see "cool_facility_deficit's small-population inflation" above)
+  after audit found it producing a raw z-score of -47.9 — nearly 3x
+  `access_time`'s own pre-fix worst case — from a handful of park,
+  cemetery, market, and industrial IRIS with a near-zero population
+  denominator. Fixed at the scoring level: `MIN_POPULATION_FOR_RATE`
+  excludes IRIS with under 50 residents from this indicator, and the
+  resulting rate is capped at its own 3rd percentile. Worst raw z-score
+  dropped to -2.78. The score-4 count grew from 1 to 4 IRIS as a direct,
+  verified consequence (see above) — a genuine correction to a
+  previously-distorted indicator, not a new artifact.
+- **Two other indicators show a milder version of the same z-score
+  extremity, from the same "long right tail on a rate" mechanism**
+  (`canopy_deficit`, worst raw |z| 8.4; `housing_energy_poverty`, worst
+  raw |z| 7.9 — small-sample noise for the latter, since its
+  denominator is the DPE sample size, not population). Flagged as a
+  follow-up, not fixed in this pass — each needs its own manual audit
+  before changing, per this project's own practice of auditing before
+  correcting rather than patching from a summary statistic alone.
+- **Enedis thermosensitivity is a winter-heating signal, not a direct
+  summer-cooling measurement** — Enedis doesn't publish one. Using it as
+  a proxy for "can't compensate for heat" rests on the assumption that a
+  poorly-insulated, electric-heating-dependent home is also hard to keep
+  cool, which is physically reasonable (same building envelope) but not
+  independently verified against actual summer electricity data here.
+- **Thermal ICU coverage is 2,618/2,752 IRIS** (script 02): the
+  Sat4BDNB source uses a coarser "grouped IRIS" geography that doesn't
+  cover 100% of the metro area; the other three thermal indicators
+  (cool facilities, canopy, artificialization) do cover all 2,752, so
+  the thermal sub-score itself is missing only 1 IRIS overall (see
+  completeness table above) — only `hvi` specifically is sometimes
+  unavailable and gets skipped for that IRIS's average.
+- **400m cool-spot buffer is centroid-based**, not a true walking
+  distance — a straight-line buffer from the IRIS centroid, which will
+  under/over-count for oddly-shaped or elongated IRIS.
+- **PMR accessibility (`pct_pmr_accessible`, script 12) is crowdsourced
+  and sparsely documented**: only ~19% of Acceslibre entries nationally
+  have their wheelchair-accessible-entrance field filled in at all; the
+  percentage is computed only over documented entries, not all ERPs, and
+  1,064 of 2,752 IRIS (39%) have no documented entry at all — a
+  notably higher share than Paris intra-muros alone had (115/992,
+  11.6%), since crowdsourced coverage thins out further from the
+  center.
+- **Footway density (`footway_density_m_per_km2`, script 15) comes from
+  OpenStreetMap** (`highway=footway` ways via Overpass), not an official
+  accessibility audit — it measures how much dedicated pedestrian
+  infrastructure is *mapped*, not its physical condition (width, curb
+  cuts, obstacles). Full 2,752/2,752 IRIS coverage, no missing data.
+- **The artificialized-surface classification is a close proxy for
+  France's official artificialisation definition, not a certified
+  reproduction of it** — see "Artificialization / sealed surface"
+  above for the full reasoning and the OCS GE substitution decision.
+- **Access times measure distance to the nearest facility, never its
+  capacity or how busy it is** — a deliberate, known blind spot of this
+  version, not an oversight. A nearby school or health clinic that's
+  overcrowded looks identical here to one with room to spare; nothing
+  in this pipeline currently measures equipment load or waiting times.
+
+## Expanding beyond Paris (Phase 5)
+
+Underlaid originally covered Paris intra-muros only (992 IRIS,
+department 75). It now covers the full Métropole du Grand Paris
+"Petite Couronne" — Paris plus Hauts-de-Seine, Seine-Saint-Denis and
+Val-de-Marne — **2,752 IRIS**. Most source datasets (BPE, Filosofi, IPS,
+DPE, Acceslibre, Airparif/Bruitparif, Sat4BDNB ICU, Enedis, OSM, IRIS
+contours themselves, QPV, RNA) were already national or Île-de-France-
+region datasets, filtered down to Paris in-script — extending them was
+a filter change, not a new source.
+
+Two thermal indicators were Paris-only by construction and had no
+region-wide equivalent under their old sourcing:
+
+- **Cool facilities** used to come from `opendata.paris.fr`. It's now
+  built from the BPE (Base Permanente des Équipements, already used
+  elsewhere in this pipeline) filtered to swimming pools (F101),
+  museums (F305) and libraries (F307) — a genuinely region-wide,
+  uniform source, re-sourced for Paris too, not just extended to the
+  new departments.
+- **Cool green space** used to come from `opendata.paris.fr`'s parks
+  layer. It's now built from IDF's region-wide open/publicly-accessible
+  green and wooded space dataset, same re-sourcing logic.
+
+Re-sourcing both, uniformly, was a deliberate choice: it means Paris's
+own already-shipped thermal indicators changed composition again, but
+the alternative — one methodology for Paris and a different one for the
+new departments — would make the sub-score not genuinely comparable
+across the whole metro area, defeating the point of expanding at all.
+
+Street lighting, tree-age proxy and the hand-compiled school-AC context
+(scripts 13/19, 18, 16) have **no region-wide equivalent and stay
+Paris-only** — shown as context layers in the frontend, explicitly
+labeled as such, not silently omitted or forced onto a dataset that
+doesn't exist.
+
+**A new example at 4/4.** For the first time, one IRIS reaches the
+maximum score: **Économie 1, in Drancy (Seine-Saint-Denis)** — median
+income €18,020, 99.6% artificialized surface, population ~2,642.
+Unlike the earlier Porte Dauphine/Madeleine examples, this isn't a
+tiny-IRIS data-sparsity artifact: it's a normally-sized residential
+zone (~0.58 km²), with genuinely high artificialization, low documented
+accessibility, and low income — a pattern consistent with real,
+well-documented disadvantage in that department.
+
+**Verified against real-world imagery** (IGN Géoportail aerial
+orthophotography, centered on the IRIS centroid at 48.9329°N,
+2.4505°E) — the one first-wave example that had only ever been checked
+against raw data, never imagery, unlike Porte Dauphine/Madeleine which
+were at least checked that way. The image confirms every one of the 4
+unfavorable sub-scores has a visible physical cause, not just a
+statistical one:
+
+- **Thermal / artificialization**: the IRIS sits immediately alongside
+  the **Gare de triage du Bourget** (a large freight rail marshalling
+  yard administratively named for Le Bourget but physically located in
+  Drancy — one of only 4 remaining gravity-sorting rail yards in France
+  and the last one in Île-de-France), a multi-track ballast corridor
+  running the width of the area. Dense small-house residential streets
+  border it directly, with almost no tree canopy visible anywhere in
+  the frame — consistent with 99.6% artificialization and 0.36% cool
+  green area.
+- **Pollution**: the rail yard (freight/shunting operations) and a
+  road overpass crossing it directly border the residential streets —
+  a plausible, visible source of the ambient noise/air co-exposure the
+  pollution sub-score measures (Airparif/Bruitparif data), not
+  something that has to be taken on faith from the number alone. Worth
+  keeping distinct from a separate, more serious fact found while
+  checking this: the yard has an official Plan Particulier
+  d'Intervention (PPI) for hazardous-material accidents — ~220,000
+  wagons sorted annually, over 5% carrying dangerous goods, a
+  2,600m emergency perimeter covering Drancy and 5 other communes, and
+  a resident phone-alert system. That's a real, well-documented,
+  separately-sourced risk (major-accident hazard, not ambient
+  pollution) — cited here as additional context on what this facility
+  is, not as evidence for the pollution sub-score specifically, which
+  measures something narrower and already independently sourced.
+- **Access**: the rail corridor is wide enough to function as a
+  physical barrier between this residential pocket and whatever lies
+  on its far side, consistent with reduced nearby service density.
+- **Housing**: the visible building stock is small, older row/terrace
+  housing — consistent with (though not proof of) the DPE F/G share and
+  electrical thermosensitivity driving the housing sub-score.
+
+This is now the strongest-verified single-IRIS example in the project:
+checked against both raw indicators (above) and real-world imagery,
+the same standard applied retroactively to Porte Dauphine/Madeleine
+(data only, no imagery) and now met more fully here. Still treat it as
+provisional rather than a permanent flagship, per this project's
+standing rule that any single-IRIS example is provisional until
+re-checked against whatever the data looks like at the time — but it
+isn't dismissable as an artifact the way the first two were, and now
+isn't resting on data alone either.
+
+## Current distribution (MGP — Paris + Petite Couronne, 2,752 IRIS)
+
+After both the `access_time` and `cool_facility_deficit` standardization
+fixes described above (see "Access time's compressed distribution" and
+"cool_facility_deficit's small-population inflation" — the latter is
+the most recent correction and moved this table more than the former):
+
+| Cumulative score | IRIS count | Share |
+|---|---|---|
+| 0 | 874 | 31.8% |
+| 1 | 1,230 | 44.7% |
+| 2 | 586 | 21.3% |
+| 3 | 58 | 2.1% |
+| 4 | 4 | 0.1% |
+
+The public ranking page caps its list at score 3 (~58 IRIS), not score
+4 — n=4 is still a small sample for a public palmarès, the same
+editorial reasoning applied when Paris-only had n=2 and MGP briefly had
+n=1 at score 4 (see "A note on the public ranking's score-4 cap" above
+for why this cap wasn't automatically revisited alongside the fix that
+grew n from 1 to 4).
+
+This is a live demonstration of the score's core caveat, repeatedly now:
+it's an **estimate that shifts with every methodological correction and
+every extension of scope**, not a fixed ground truth. Treat any single-
+IRIS "flagship example" as provisional until cross-checked against the
+raw indicators, the way every one of them has been so far, each time.
+
+## Automated re-runs and why a large shift doesn't auto-publish
+
+`.github/workflows/update-pipeline.yml` re-runs the full pipeline
+quarterly (see README's "Keeping the data current" for the schedule and
+mechanics) and re-derives this same table from scratch each time, since
+upstream sources move: a new BPE/DPE/Acceslibre edition, an INSEE
+Filosofi refresh, etc. `scripts/23_diff_report.py` compares the fresh
+distribution against whatever is currently published (entries/exits on
+score >= 3, and the shift in each category's share) before anything
+goes live, and stops to open a pull request for manual review instead of
+publishing if either moves more than a documented threshold (15%
+turnover on score >= 3, or a 5 percentage-point shift in any single
+category's share — both adjustable via the script's CLI flags, not
+hardcoded assumptions about what "normal" looks like forever).
+
+This isn't a hypothetical safeguard: it's the automated form of an audit
+this project already had to do by hand twice, for exactly the reason a
+large shift needs a person to look at it. `access_time`'s compressed
+distribution produced a z-score of +15.3 and `cool_facility_deficit`'s
+small-population inflation produced one of -47.9 — both real bugs, not
+real changes in the world, and both were only caught because someone
+looked directly at the numbers rather than trusting an automated run
+(see the two sections above). A quarterly unattended re-run has no one
+in the loop to do that unless the pipeline itself stops and asks.

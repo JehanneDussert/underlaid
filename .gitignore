@@ -1,0 +1,17 @@
+data/raw/**
+!data/raw/**/.gitkeep
+data/interim/**
+!data/interim/.gitkeep
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+frontend/node_modules
+frontend/dist
+
+# Local project-context/planning file and tool settings, not part of
+# the public project
+CLAUDE.md
+.claude/

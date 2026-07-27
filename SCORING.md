@@ -1,7 +1,7 @@
 # Cumulative environmental exposure score — methodology
 
 Computed by `scripts/11_compute_vulnerability_score.py`, run after scripts
-01-10, 12, 15, 17, 21 and 22. Output: `data/processed/vulnerability_score_iris.geojson`.
+01-10, 12, 15, 17, 21, 22 and 24. Output: `data/processed/vulnerability_score_iris.geojson`.
 
 **Phase 5 scope note**: this file originally documented Paris intra-muros
 (992 IRIS). It now covers the full Métropole du Grand Paris "Petite
@@ -55,13 +55,50 @@ what actually separates them. "Exposure score" makes only the claim
 this data can back up; "vulnerability score" would make a bigger one it
 can't.
 
-**What this means in practice on `/ranking`:** the page's own "Group A"
-/ "Group B" split (see "A note on Group A vs. Group B" further down)
-exists specifically so this distinction isn't lost in a single ranked
-list — Group A (generally lower-income, genuinely under-served) and
-Group B (generally higher-income, dense/older housing stock) can land
-at the identical cumulative score while facing very different odds of
-actually coping with it.
+**A related, more specific blind spot: this pipeline only ever counts
+*public* facilities and provision, never private substitutes for them.**
+The thermal sub-score's "cool facilities" indicator counts public pools,
+libraries and similar BPE-listed public equipment; the housing
+sub-score's thermosensitivity indicator is built from Enedis winter
+*heating* consumption, not cooling. Neither one, nor anything else in
+this pipeline, counts residential air conditioning, membership in a
+private club or pool, or the ability to have groceries and services
+delivered rather than walk to them — all private ways to substitute for
+exactly the public provision this pipeline measures. This is why a
+dense, wealthy neighborhood can cumulate a high exposure score while its
+residents are, in practice, considerably better protected than the score
+alone suggests: **Notre-Dame des Champs 8** (6th arrondissement, Group C
+on `/ranking`) is a direct illustration — its worst-quartile thermal and
+housing sub-scores come entirely from public-provision and building-stock
+measures, and nothing in this pipeline can see whether its households
+have private air conditioning or the means to leave for a second home
+during a heatwave.
+
+That last possibility is now partly measurable: `pct_secondary_residences`
+(INSEE, 2021, `scripts/24_secondary_residences.py`) is the share of each
+IRIS's housing stock that's a secondary residence or occasional
+dwelling — a direct proxy for the capacity to physically leave during a
+heatwave, unlike median income, which only captures that possibility
+indirectly. Shown in the map's IRIS detail panel next to median income,
+**it is context, exactly like income, and is never merged into any
+sub-score or the cumulative score** — adding it as a scored indicator
+would just relabel the same "vulnerability, not exposure" conflation
+this whole section exists to avoid. `P21_RSECOCC` (the INSEE source
+variable) counts secondary residences and occasional/seasonal dwellings
+together; IRIS-level data doesn't separate the two, so treat the figure
+as a proxy for both combined, not secondary residences alone. Rates are
+suppressed (shown as no data) below 20 total housing units, the same
+sparse-denominator guard already applied to `cool_facility_deficit`.
+
+**What this means in practice on `/ranking`:** the page's own Group A /
+Group B / Group C split (see "A note on Group A vs. Group B vs. Group
+C" further down) exists specifically so this distinction isn't lost in
+a single ranked list — Group A (genuinely under-served), Group C (a
+dense-fabric neighborhood whose access sub-score is nominally
+worst-quartile too, but only because a fast time still ranks last
+metro-wide), and Group B (dense/older housing stock, access genuinely
+not an issue) can land at the identical cumulative score while facing
+very different odds of actually coping with it.
 
 ## Why a "count of worst quartiles" instead of a weighted average
 
@@ -433,24 +470,46 @@ of this fix — it's a separate editorial decision, not a direct
 consequence of correcting this indicator's standardization, and is
 noted here rather than changed silently.
 
-**A note on Group A vs. Group B.** The manual audit of the access
-sub-score (see "Access time's compressed distribution" above) split
-the `/ranking` page's list into two groups by whether access itself is
-the worst-quartile factor: Group A (generally lower-income, a genuine
-shortfall in local conditions) and Group B (generally higher-income,
-dense/older housing stock with decent-to-excellent access). This split
-matters for exactly the reason explained in "What this score doesn't
-measure" above: an identical cumulative *exposure* score doesn't imply
-identical real-world *vulnerability*, because Group A and Group B
-differ sharply in adaptive capacity, and the page's wording says so
-explicitly — Group A's copy names a genuine service shortfall
-consistent with limited means to compensate for it, Group B's copy
-states plainly that access isn't the issue and several of its
-neighborhoods are among the metro area's wealthiest, so their being
-exposed shouldn't be read as evidence they lack the means to cope with
-it. Neither group's phrasing implies the two are equally vulnerable —
-only that they're comparably *exposed*, which is a narrower and more
-defensible claim.
+**A note on Group A vs. Group B vs. Group C.** The manual audit of the
+access sub-score (see "Access time's compressed distribution" above)
+first split the `/ranking` page's list into two groups by whether
+access itself is the worst-quartile factor: Group A (a genuine
+shortfall in local conditions) and Group B (dense/older housing stock
+with decent-to-excellent access). This split matters for exactly the
+reason explained in "What this score doesn't measure" above: an
+identical cumulative *exposure* score doesn't imply identical
+real-world *vulnerability*.
+
+A second, full pass over all 31 access-worst-quartile IRIS — prompted
+by re-reading the group rather than a single flagged example — found
+that the two-group split still mischaracterized most of Group A: 17 of
+the 31 have `access_time` as their access sub-score's sole driver *and*
+a fast-in-absolute-terms time (<=2.0 min, the same threshold documented
+above), meaning their "under-served" label was a purely relative,
+metro-wide artifact, not a real local shortfall. Only 14 of the
+original 31 have a genuine driver — school segregation, sparse
+pedestrian infrastructure, or an access_time that's actually slow. The
+17 fast-artifact rows (e.g. Notre-Dame des Champs 8, 6th arrondissement)
+were moved into a new **Group C**: their real story is the same
+dense/older-fabric pattern as Group B, just with access nominally
+flagged as worst-quartile too. Splitting the group, rather than only
+softening each affected row's sentence within a single Group A, is what
+keeps the *group-level* framing ("the city hasn't brought services
+here") honest — a per-row caveat buried after a group-level claim had
+already been tried once (see "Access time's compressed distribution")
+and still let a reader who stops at the group heading walk away with
+the wrong impression.
+
+The three groups' wording says so explicitly — Group A's copy names a
+genuine service shortfall consistent with limited means to compensate
+for it; Group C's copy states plainly that access is fast in absolute
+terms and the real driver is the same dense-fabric pattern as Group B;
+Group B's copy states plainly that access isn't the issue at all and
+several of its neighborhoods are among the metro area's wealthiest, so
+their being exposed shouldn't be read as evidence they lack the means
+to cope with it. None of the three groups' phrasing implies they're
+equally vulnerable — only that they're comparably *exposed*, which is a
+narrower and more defensible claim.
 
 ## Cumulative score
 

@@ -28,13 +28,12 @@ import geopandas as gpd
 SCORE_COL = "cumulative_vulnerability_score"
 SCORE_CATEGORIES = [0, 1, 2, 3, 4]
 # Score >= 3 is the metric already tracked by hand throughout this
-# project's docs (SCORING.md's "Current distribution", CLAUDE.md's audit
-# history) — note this is NOT the same count as the public /ranking page,
-# which lists only score == 3 (58 IRIS) and excludes the 4 already at
-# 4/4 by design (see CLAUDE.md, "score 4 stays too small/recent a sample
-# for a public ranking"). This script tracks >=3 (62 IRIS) because a
-# score-4 IRIS's existence is itself part of what a large shift would
-# reveal.
+# project's docs (SCORING.md's "Current distribution") — note this is
+# NOT the same count as the public /ranking page, which lists only
+# score == 3 (58 IRIS) and excludes the 4 already at 4/4 by design (that
+# sample is still too small and recent for a public ranking — see
+# SCORING.md). This script tracks >=3 (62 IRIS) because a score-4 IRIS's
+# existence is itself part of what a large shift would reveal.
 PUBLIC_THRESHOLD_SCORE = 3
 
 # The turnover threshold the user picked as a starting point ("par

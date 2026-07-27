@@ -21,7 +21,7 @@ function goToLocale(target) {
 
 // So anyone citing a specific IRIS by example (Drancy, etc.) knows which
 // snapshot of the score they're referencing — the score is explicitly
-// not a fixed, final number (see CLAUDE.md/SCORING.md), it moves with
+// not a fixed, final number (see SCORING.md), it moves with
 // every pipeline re-run. Written by scripts/run_all.py at the end of a
 // full pipeline run. Shown in the footer (present on every page) rather
 // than only on /methodology, and loaded via the same SSR-safe helper as

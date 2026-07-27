@@ -7,15 +7,19 @@ joins against its output (data/processed/iris_mgp.geojson, Phase 5's
 Metropole du Grand Paris extent).
 
 Note the order isn't strictly numeric: 11_compute_vulnerability_score.py
-reads the outputs of 12, 15, 17, 21 and 22 (added after it, but wired
-into the "thermal"/"access"/"housing" sub-scores), so those must run
-first despite the lower number. 16/18_*_context.py are context-only
-layers with no scoring dependency and can run anywhere;
+reads the outputs of 12, 15, 17, 21, 22 and 24 (added after it, but
+merged in as either a scored sub-score input or unscored context), so
+those must run first despite the lower number. 16/18_*_context.py are
+context-only layers with no scoring dependency and can run anywhere;
 19_street_lighting_context.py depends on 13's output specifically, so
 it's listed right after it. 21_population_iris.py must run before both
 11 (population-normalized thermal indicator) and 20 (per-1,000-resident
 RNA rate), and 22_artificialization_mos.py must run before 11 (3rd
 thermal indicator) — both listed early, right after the IRIS reference.
+24_secondary_residences.py has no dependency on any other script's
+output (just the IRIS reference), so it can run anywhere before 11;
+listed alongside 21/22 since all three are the same
+"context/normalization layer needed by 11" category.
 """
 import json
 import subprocess
@@ -31,6 +35,7 @@ SCRIPT_ORDER = [
     "01_iris_contours.py",
     "21_population_iris.py",
     "22_artificialization_mos.py",
+    "24_secondary_residences.py",
     "02_icu_sat4bdnb.py",
     "03_cool_spots_facilities.py",
     "04_cool_spots_green_areas.py",
@@ -57,9 +62,9 @@ def write_run_metadata():
     """Records when this run finished — the only way anyone citing a
     specific IRIS by example (Drancy, etc.) can know which snapshot of
     the score they're looking at, since the score itself is explicitly
-    not a fixed, final number (see CLAUDE.md/SCORING.md). Written here
-    rather than inside 11_compute_vulnerability_score.py because it
-    describes the whole run, not just the scoring step.
+    not a fixed, final number (see SCORING.md). Written here rather
+    than inside 11_compute_vulnerability_score.py because it describes
+    the whole run, not just the scoring step.
     """
     metadata = {"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
     path = config.DATA_PROCESSED / "last_updated.json"

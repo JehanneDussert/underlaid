@@ -17,8 +17,8 @@ useSeoMeta({
     fr: `Là où le cumul est le plus fort — les ${__RANKING_COUNT__} quartiers les plus exposés`,
   },
   description: {
-    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where heat, pollution, poor access to services, and inefficient housing cumulate most — split into two groups by whether a lack of services is actually the cause, each explained neighborhood by neighborhood.`,
-    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où la chaleur, la pollution, le manque d'accès aux services et le logement énergivore se cumulent le plus — répartis en deux groupes selon qu'un déficit de services en est réellement la cause, expliqué quartier par quartier.`,
+    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where heat, pollution, poor access to services, and inefficient housing cumulate most — split into three groups by whether a lack of services is actually the cause, each explained neighborhood by neighborhood.`,
+    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où la chaleur, la pollution, le manque d'accès aux services et le logement énergivore se cumulent le plus — répartis en trois groupes selon qu'un déficit de services en est réellement la cause, expliqué quartier par quartier.`,
   },
 })
 
@@ -31,8 +31,11 @@ const loading = ref(true)
 // That framing only holds where a service genuinely falls short, though:
 // applying it to a neighborhood with decent-to-excellent access (several
 // among the metro area's wealthiest) would assert a public shortfall that
-// doesn't exist there. Split into two groups by whether the access
-// sub-score itself is the worst-quartile factor, each with its own wording.
+// doesn't exist there. Split into groups by whether the access sub-score
+// itself is the worst-quartile factor, and — within that — whether the
+// reason is a real deficiency or a fast-in-absolute-terms access_time that
+// only reads as "worst quartile" in relative, metro-wide terms (see Group C
+// below). Each group gets its own wording.
 const GAP_KEYS_UNDERSERVED = {
   thermal: 'ranking.gapThermal',
   pollution: 'ranking.gapPollution',
@@ -86,17 +89,6 @@ async function loadRows() {
 onServerPrefetch(loadRows)
 onMounted(loadRows)
 
-function isUnderserved(p) {
-  return p.subscore_access_quartile === 4
-}
-
-const groupA = computed(() => rows.value.filter(isUnderserved))
-const groupB = computed(() => rows.value.filter((p) => !isUnderserved(p)))
-
-function affectedCategories(p) {
-  return ['thermal', 'pollution', 'access', 'housing'].filter((key) => p[`subscore_${key}_quartile`] === 4)
-}
-
 function accessTimeMinutes(p) {
   const vals = [p.access_minutes_domain_C, p.access_minutes_domain_D, p.access_minutes_domain_E].filter(
     (v) => v !== null && v !== undefined
@@ -114,47 +106,64 @@ function accessTimeMinutes(p) {
 // IRIS where access_time is the dominant driver of a worst-quartile
 // access score, 94% sit at or under 2.0 min (median 1.33, 90th
 // percentile 1.7) — only a genuine 6% tail is slower than that. 2.0 min
-// is chosen to cover that 94%, so the caveat fires for the cases the
-// audit actually found (Val de Grâce 6 at 1.57 min included), while
-// still letting the small genuinely-slow tail read as an unqualified
-// service shortfall.
+// is chosen to cover that 94%.
 const ACCESS_TIME_FAST_THRESHOLD_MIN = 2.0
 
 function formatMinutes(value) {
   return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-US', { maximumFractionDigits: 1 }).format(value)
 }
 
-// Found via manual audit (see SCORING.md's "Access time's compressed
-// distribution"): the previous version of this function asserted "the
-// city hasn't brought nearby health, education, and transport services"
-// in the main sentence whenever access_time was the dominant driver,
-// then — only when that time was actually fast — appended a caveat
-// contradicting its own opening clause ("access itself is fast here in
-// absolute terms..."). A reader who stops at the first sentence walks
-// away with exactly the false impression the caveat existed to prevent.
-// Fixed at the structure, not just the wording: a fast access_time is
-// now never described as a service shortfall in the first place — it's
-// excluded from the "hasn't brought X" list entirely and described
-// honestly, from its very first mention, in a separate sentence that
-// never asserts the opposite of what it goes on to say.
-function isFastAccessTimeCase(p) {
-  if (!isUnderserved(p) || p.access_primary_driver !== 'access_time') return false
+// A second full pass over all 31 access-worst-quartile IRIS (prompted by
+// re-reading the group, not by a single flagged example) found that this
+// wasn't just a wording problem for a handful of rows: 17 of the 31 have
+// access_time as their sole access driver AND a fast-in-absolute-terms
+// time (<=2.0 min) — meaning their presence in an "under-served" group
+// is a purely relative, metro-wide artifact, not a real local shortfall,
+// unlike the other 14 (school segregation, sparse footways, or a
+// genuinely slow access_time). Lumping all 31 into one "Group A" made
+// "the city hasn't brought services here" read as true for cases like
+// Notre-Dame des Champs 8, where it isn't. Fixed by splitting the
+// access-worst-quartile population itself into two groups rather than
+// just softening the sentence for the fast-time rows within a single
+// group.
+function isFastAccessArtifact(p) {
+  if (p.subscore_access_quartile !== 4 || p.access_primary_driver !== 'access_time') return false
   const minutes = accessTimeMinutes(p)
   return minutes !== null && minutes <= ACCESS_TIME_FAST_THRESHOLD_MIN
 }
 
+// 'A' — real access deficiency (school segregation, sparse footways, or a
+//       genuinely slow access_time) on top of heat/pollution/housing.
+// 'C' — access is nominally this area's worst-quartile factor too, but
+//       only a fast-in-absolute-terms access_time driving it — the real
+//       story is the same dense/older-fabric pattern as Group B.
+// 'B' — access isn't a worst-quartile factor at all.
+function groupOf(p) {
+  if (p.subscore_access_quartile !== 4) return 'B'
+  return isFastAccessArtifact(p) ? 'C' : 'A'
+}
+
+const groupA = computed(() => rows.value.filter((p) => groupOf(p) === 'A'))
+const groupB = computed(() => rows.value.filter((p) => groupOf(p) === 'B'))
+const groupC = computed(() => rows.value.filter((p) => groupOf(p) === 'C'))
+
+function affectedCategories(p) {
+  return ['thermal', 'pollution', 'access', 'housing'].filter((key) => p[`subscore_${key}_quartile`] === 4)
+}
+
 function gapSentence(p) {
-  const keys = isUnderserved(p) ? GAP_KEYS_UNDERSERVED : GAP_KEYS_DENSE
-  const fastAccessTime = isFastAccessTimeCase(p)
-  const categories = affectedCategories(p).filter((key) => !(key === 'access' && fastAccessTime))
+  const group = groupOf(p)
+  const keys = group === 'A' ? GAP_KEYS_UNDERSERVED : GAP_KEYS_DENSE
+  const fastAccessArtifact = group === 'C'
+  const categories = affectedCategories(p).filter((key) => !(key === 'access' && fastAccessArtifact))
   const clauses = categories.map((key) => (key === 'access' ? t(accessGapKey(p)) : t(keys[key])))
   const listFormat = new Intl.ListFormat(locale.value === 'fr' ? 'fr-FR' : 'en-US', { style: 'long', type: 'conjunction' })
-  const sentenceKey = isUnderserved(p) ? 'ranking.gapSentence' : 'ranking.denseSentence'
+  const sentenceKey = group === 'A' ? 'ranking.gapSentence' : 'ranking.denseSentence'
   let sentence = t(sentenceKey, { list: listFormat.format(clauses) })
 
-  if (fastAccessTime) {
+  if (fastAccessArtifact) {
     const minutes = accessTimeMinutes(p)
-    sentence += ' ' + t('ranking.accessTimeRelativeOnly', { min: formatMinutes(minutes) })
+    sentence += ' ' + t('ranking.accessArtifactNote', { min: formatMinutes(minutes) })
   }
 
   return sentence
@@ -167,6 +176,7 @@ function gapSentence(p) {
 
     <h1>{{ t('ranking.title') }}</h1>
     <p class="intro">{{ t('ranking.intro') }}</p>
+    <p class="tie-notice">{{ t('ranking.tieNotice') }}</p>
     <p class="intro-split">{{ t('ranking.introSplit') }}</p>
 
     <p v-if="loading" class="loading">{{ t('scatter.loading') }}</p>
@@ -176,6 +186,20 @@ function gapSentence(p) {
         <p class="group-desc">{{ t('ranking.groupADesc') }}</p>
         <ol class="ranking-list">
           <li v-for="p in groupA" :key="p.code_iris" class="ranking-row glass">
+            <div class="row-head">
+              <span class="name">{{ p.nom_iris }}</span>
+              <span class="commune">{{ p.nom_com }}</span>
+            </div>
+            <p class="gap-sentence">{{ gapSentence(p) }}</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="ranking-group">
+        <h2 class="group-title">{{ t('ranking.groupCTitle', { n: groupC.length }) }}</h2>
+        <p class="group-desc">{{ t('ranking.groupCDesc') }}</p>
+        <ol class="ranking-list">
+          <li v-for="p in groupC" :key="p.code_iris" class="ranking-row glass">
             <div class="row-head">
               <span class="name">{{ p.nom_iris }}</span>
               <span class="commune">{{ p.nom_com }}</span>
@@ -240,6 +264,14 @@ h1 {
   line-height: 1.65;
   color: var(--text-secondary);
   margin: 0 0 14px;
+}
+
+.tie-notice {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0 0 16px;
 }
 
 .intro-split {

@@ -8,7 +8,7 @@ import vue from '@vitejs/plugin-vue'
 // with the sitemap generator in the sitemapPlugin below, so there's
 // never a second copy to fall out of sync.
 // TODO: replace once the real production domain exists (deployment is
-// still pending — see README/CLAUDE.md).
+// still pending — see README).
 const SITE_URL = 'https://underlaid.example'
 
 // Read at config-eval time (Node, not the browser) so the /ranking page's

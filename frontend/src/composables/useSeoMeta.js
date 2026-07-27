@@ -6,7 +6,7 @@ import { baseRouteName } from '../router'
 
 // Defined once in vite.config.js (shared with the sitemap generator so
 // the two can't disagree) — still a placeholder until deployment
-// happens for real (see README/CLAUDE.md); canonical/OG/hreflang URLs
+// happens for real (see README); canonical/OG/hreflang URLs
 // are meaningless against a placeholder domain, so this must be updated
 // before relying on any of this for actual search-engine indexing.
 const SITE_URL = __SITE_URL__

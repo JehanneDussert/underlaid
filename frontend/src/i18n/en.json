@@ -22,7 +22,8 @@
   "jargon": {
     "iris": "IRIS: a small statistical neighborhood unit used by INSEE, typically ~2,000 residents — finer-grained than an arrondissement or commune.",
     "quartile": "Quartile: splits all 2,752 IRIS into 4 equal-sized groups from best (Q1) to worst (Q4) on that indicator.",
-    "cumulativeScore": "How many of the 4 sub-scores (thermal, pollution, access, housing) are simultaneously in their worst quartile for this IRIS — 0 to 4."
+    "cumulativeScore": "How many of the 4 sub-scores (thermal, pollution, access, housing) are simultaneously in their worst quartile for this IRIS — 0 to 4.",
+    "secondaryResidences": "Share of housing units that are secondary residences or occasional dwellings (INSEE, 2021) — shown as context, never part of the score. A rough proxy for the ability to physically leave during a heatwave, which median income alone only captures indirectly."
   },
   "sidePanel": {
     "sectionLabel": "Selected neighborhood",
@@ -76,7 +77,8 @@
     "cityMedian": "MGP median: {value}",
     "morevulnerable": "More exposed than {n}% of MGP neighborhoods",
     "artificialization": "Artificialized/sealed surface (MOS land use)",
-    "population": "Population (2021 census)"
+    "population": "Population (2021 census)",
+    "secondaryResidences": "Secondary residences / occasional dwellings"
   },
   "search": {
     "placeholder": "Search an address in Paris or the inner suburbs…",
@@ -94,9 +96,12 @@
   "ranking": {
     "title": "Where the most stacks up",
     "intro": "These are the Paris/Metropole du Grand Paris neighborhoods where 3 of the 4 categories Underlaid tracks are simultaneously in their region-wide worst quartile — capped there by design even though 4 neighborhoods now reach 4 out of 4 (see the methodology page for why that's still too small and recent a sample for a public ranking, and why a fixed top-N ranking isn't the point anyway).",
-    "introSplit": "These 58 split into two genuinely different stories, not one scale of disadvantage — worth naming rather than hiding under a single \"most disadvantaged\" list. About half (Group A) combine a real shortfall in local conditions — segregated nearby schools, sparse pedestrian infrastructure, or (less often than it first appears) genuinely longer travel times — with heat, pollution and housing exposure, generally with fewer resources to compensate for any of it: the pattern most people expect. The other half (Group B) already have decent-to-excellent access to services — several are among the wealthiest addresses in the metro area — but still cumulate heat, traffic pollution and an energy-inefficient older building stock, purely from dense, historic urban fabric. Both groups can land on the exact same score, but that's not the same as being equally vulnerable — this is an exposure score, not a vulnerability one; see \"What this score doesn't measure\" on the methodology page for why that distinction matters. Each group below is worded differently on purpose: \"the city hasn't brought X\" only applies where something genuinely falls short, and names the specific thing rather than a generic \"distance to services\" that a manual audit found was often misleading.",
+    "introSplit": "These 58 split into three genuinely different stories, not one scale of disadvantage — worth naming rather than hiding under a single \"most disadvantaged\" list. Group A combine a real shortfall in local conditions — segregated nearby schools, sparse pedestrian infrastructure, or genuinely longer travel times — with heat, pollution and housing exposure, generally with fewer resources to compensate for any of it: the pattern most people expect. Group C's access sub-score is also nominally this area's worst-quartile factor, but only because a fast, near-floor travel time (often just over 1 minute) still ranks last relative to the rest of the metro area — a second full audit of every access-worst-quartile row found this was true for 17 of the original 31, not just the one or two examples first noticed, so it's treated as its own group rather than a footnote inside Group A. Group B already have decent-to-excellent access to services — several are among the wealthiest addresses in the metro area — but still cumulate heat, traffic pollution and an energy-inefficient older building stock, purely from dense, historic urban fabric; Group C's real story is the same pattern as Group B, just with access nominally flagged too. All three groups can land on the exact same score, but that's not the same as being equally vulnerable — this is an exposure score, not a vulnerability one; see \"What this score doesn't measure\" on the methodology page for why that distinction matters. Each group below is worded differently on purpose: \"the city hasn't brought X\" only applies where something genuinely falls short, and names the specific thing rather than a generic \"distance to services\" that a manual audit found was often misleading.",
+    "tieNotice": "Every neighborhood on this page has the exact same score — the order below follows borough, then neighborhood name, not severity. Position in the list doesn't imply anything about how bad one neighborhood's situation is relative to another's.",
     "groupATitle": "Group A — under-served ({n})",
     "groupADesc": "A real shortfall in local conditions — school segregation, sparse pedestrian infrastructure, or genuinely longer travel times, depending on the neighborhood — on top of heat, pollution and housing exposure, generally with fewer resources available to compensate for it: the classic pattern of an area the city has under-invested in.",
+    "groupCTitle": "Group C — dense area, access is actually fast ({n})",
+    "groupCDesc": "Access to services here is fast in absolute terms — usually just over a minute's walk to the nearest facility — and not a real shortfall; it only ranks in the metro area's worst quartile in relative, metro-wide terms. What actually lands these neighborhoods on this list is the same pattern as Group B: dense, older building stock driving heat exposure, traffic pollution, and energy-inefficient housing, not a service gap.",
     "groupBTitle": "Group B — dense or older building stock, access isn't the issue ({n})",
     "groupBDesc": "Access to nearby services here is decent to excellent, not a worst-quartile factor — several of these are among the wealthiest addresses in the metro area. What lands them on this list is dense, older building stock: heat exposure, traffic-heavy air and noise, and housing that's expensive to keep comfortable, none of which a service shortfall explains. These neighborhoods are exposed, but — unlike Group A — that's generally not paired with a shortage of means to cope with it.",
     "gapThermal": "adequate cooling infrastructure",
@@ -107,7 +112,7 @@
     "gapAccessFootway": "adequate pedestrian infrastructure",
     "gapHousing": "energy-efficient, comfortable housing",
     "gapSentence": "The city hasn't brought {list} to this neighborhood.",
-    "accessTimeRelativeOnly": "Its access sub-score also lands in the worst quartile, but for a narrower reason than the categories above: travel times here ({min} min) are longer than most of the metro area, even though they're fast in absolute terms.",
+    "accessArtifactNote": "Access to services here is fast in absolute terms ({min} min) — it lands in the metro area's worst quartile only by relative comparison, not because of an actual shortfall.",
     "denseGapThermal": "heat exposure with little green cover",
     "denseGapPollution": "heavy traffic-related air and noise exposure",
     "denseGapHousing": "an older, energy-inefficient housing stock that's expensive to keep comfortable",

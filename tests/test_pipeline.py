@@ -52,6 +52,7 @@ PER_IRIS_LAYERS = [
     "enedis_thermosensitivity_iris.geojson",
     "artificialization_iris.geojson",
     "population_iris.geojson",
+    "secondary_residences_iris.geojson",
     "vulnerability_score_iris.geojson",
 ]
 
@@ -144,6 +145,18 @@ def test_income_related_columns_are_masked_together():
     masked = gdf[gdf["median_income"].isna()]
     assert masked["poverty_rate"].isna().all(), "poverty_rate present without median_income — masking logic changed?"
     assert masked["gini_index"].isna().all(), "gini_index present without median_income — masking logic changed?"
+
+
+def test_secondary_residences_rate_is_a_0_to_1_fraction():
+    gdf = load("secondary_residences_iris.geojson")
+    # Stored as a 0-1 fraction like every other pct_* field in this
+    # pipeline (see 11_compute_vulnerability_score.py's output_cols
+    # comment) — a value > 1 would mean it was accidentally left on the
+    # 0-100 scale the frontend's formatPercent()/cityMedianNote() don't
+    # expect.
+    values = gdf["pct_secondary_residences"].dropna()
+    assert len(values) > 0, "pct_secondary_residences is entirely null — join likely broke"
+    assert values.between(0, 1).all(), "pct_secondary_residences should be a 0-1 fraction, found a value outside that range"
 
 
 # --- Scoring output sanity ---

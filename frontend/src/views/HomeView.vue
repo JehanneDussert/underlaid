@@ -447,6 +447,7 @@ const medians = computed(() => ({
   pct_thermosensitive: median('pct_thermosensitive'),
   pct_pmr_accessible: median('pct_pmr_accessible'),
   footway_density_m_per_km2: median('footway_density_m_per_km2'),
+  pct_secondary_residences: median('pct_secondary_residences'),
 }))
 
 // Text alternative to the map for screen-reader users, worst-first.
@@ -899,6 +900,11 @@ function quartileColor(quartile) {
           <div class="stat-row">
             <span>{{ t('panel.population') }}</span>
             <span class="v">{{ formatNumber(selectedFeature.properties.population, 0) }}</span>
+          </div>
+          <div class="stat-row">
+            <span>{{ t('panel.secondaryResidences') }} <InfoTip :text="t('jargon.secondaryResidences')" /></span>
+            <span class="v">{{ formatPercent(selectedFeature.properties.pct_secondary_residences) }}
+              <small class="cmp">{{ cityMedianNote('pct_secondary_residences', (v) => `${formatDecimal(v * 100, 0)}%`) }}</small></span>
           </div>
           <div class="stat-row">
             <span>{{ t('panel.timeToEducation') }}</span>

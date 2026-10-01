@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-10-01T12:24:19Z",
+  "context_failures": [
+    {
+      "script": "20_associational_density_context.py",
+      "exit_code": 1,
+      "layers_kept": {
+        "associational_density_context_commune.geojson": "2026-07-26T20:15:50Z"
+      },
+      "log_tail": "Traceback (most recent call last):\n  File \"/app/scripts/20_associational_density_context.py\", line 113, in <module>\n    main()\n  File \"/app/scripts/20_associational_density_context.py\", line 91, in main\n    counts = fetch_association_counts()\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/app/scripts/20_associational_density_context.py\", line 71, in fetch_association_counts\n    raise RuntimeError(f\"RNA extract has no active association in department(s) {missing}: source incomplete\")\nRuntimeError: RNA extract has no active association in department(s) ['75']: source incomplete\n"
+    }
+  ]
+}

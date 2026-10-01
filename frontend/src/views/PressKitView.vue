@@ -19,9 +19,9 @@ useSeoMeta({
 
 // Same static facts as MethodologyView.vue — see SCORING.md.
 const DISTRIBUTION = [
-  { score: 0, count: 1119, share: 1119 / 2752 },
-  { score: 1, count: 1223, share: 1223 / 2752 },
-  { score: 2, count: 378, share: 378 / 2752 },
+  { score: 0, count: 1122, share: 1122 / 2752 },
+  { score: 1, count: 1216, share: 1216 / 2752 },
+  { score: 2, count: 382, share: 382 / 2752 },
   { score: 3, count: 32, share: 32 / 2752 },
 ]
 

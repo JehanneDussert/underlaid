@@ -175,30 +175,30 @@ muddy in Paris, where many well-off households rent.
 
 | | means: lowest third | middle third | highest third |
 |---|---|---|---|
-| **exposure 0** | 423 | 405 | 216 |
-| **exposure 1** | 373 | 344 | 393 |
-| **exposure 2+** | 47 | 94 | 234 |
+| **exposure 0** | 426 | 405 | 214 |
+| **exposure 1** | 368 | 343 | 393 |
+| **exposure 2+** | 49 | 95 | 236 |
 
 "2+" means 2 or 3 of the 3 sub-scores in their worst quartile.
 
 **1. Two profiles, not one scale.** Correlation of the capacity index
 with each sub-score: housing +0.66, thermal +0.37, pollution −0.30.
-Highly exposed IRIS (2+) with the highest means are mostly in Paris (191
-of 234) and stack heat + housing (worst quartile in 92% / 94% of them) —
-dense, older building stock. Those with the lowest means (47, about
-126,000 residents) are mostly in Seine-Saint-Denis (27) and Val-de-Marne
-(13) and stack heat + air/noise pollution (87% / 89%).
+Highly exposed IRIS (2+) with the highest means are mostly in Paris (193
+of 236) and stack heat + housing (worst quartile in 92% / 94% of them) —
+dense, older building stock. Those with the lowest means (49, about
+131,000 residents) are mostly in Seine-Saint-Denis (26) and Val-de-Marne
+(14) and stack heat + air/noise pollution (88% / 86%).
 
 **2. The link between exposure and means is weak.** Spearman(capacity
 index, exposure score) = **+0.28** — slightly positive only because of
 dense, older central Paris (+0.39 within Paris); within the inner-suburb
-departments it's near zero (92: +0.06, 93: −0.08, 94: +0.09). Always
+departments it's near zero (92: +0.06, 93: −0.08, 94: +0.10). Always
 state it with that explanation in public copy — never as "the well-off
 are more exposed", which the data doesn't show outside Paris.
 
 **3. Where high exposure and low means meet, it's concentrated.** In
-Seine-Saint-Denis, 79% of the highly exposed IRIS are in the metro
-area's lowest third of means; in Paris, 2% (92: 2%, 94: 25%).
+Seine-Saint-Denis, 76% of the highly exposed IRIS are in the metro
+area's lowest third of means; in Paris, 2% (92: 6%, 94: 29%).
 
 **How this crossing changed the exposure score itself.** The first
 version of this grid was computed with the former 4-sub-score exposure
@@ -1011,12 +1011,12 @@ score"), quartile thresholds on inhabited IRIS (see above):
 
 | Cumulative score | IRIS count | Share |
 |---|---|---|
-| 0 | 1,119 | 40.7% |
-| 1 | 1,223 | 44.4% |
-| 2 | 378 | 13.7% |
+| 0 | 1,122 | 40.8% |
+| 1 | 1,216 | 44.2% |
+| 2 | 382 | 13.9% |
 | 3 | 32 | 1.2% |
 
-Inhabited IRIS only (≥ 50 residents, 2,690): 1,110 / 1,178 / 371 / 31.
+Inhabited IRIS only (≥ 50 residents, 2,690): 1,113 / 1,171 / 375 / 31.
 Before the inhabited-thresholds rule: 1,144 / 1,202 / 375 / 31. Before
 access left the count (4 sub-scores): 874 / 1,230 / 586 / 58 / 4.
 

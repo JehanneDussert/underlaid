@@ -22,27 +22,27 @@ data; every formula documented.
 - ❌ Not sensitivity (age, health), not what households actually do (air conditioning, time off), not flood, soil or industrial risk (yet). Access to services is shown for information only — no indicator measures it reliably yet ([why](SCORING.md#why-access-to-services-left-the-score)).
 - ❌ Not an accusation: it shows where exposures stack up, not why, and names no one as the cause.
 
-**Key figures** (2,752 IRIS, data snapshot of July 26, 2026 — the score
+**Key figures** (2,752 IRIS, data snapshot of October 1, 2026 — the score
 moves with every pipeline run):
 
 | Score | 0 | 1 | 2 | 3 |
 |---|---|---|---|---|
-| IRIS | 1,119 (40.7%) | 1,223 (44.4%) | 378 (13.7%) | 32 (1.2%) |
+| IRIS | 1,122 (40.8%) | 1,216 (44.2%) | 382 (13.9%) | 32 (1.2%) |
 
 **What crossing exposure with means shows** (2,529 IRIS with published
 income):
 - **Not the same exposures.** Highly exposed neighborhoods (2 or 3 of 3)
-  with the *highest* means are mostly in Paris (191 of 234) and stack
+  with the *highest* means are mostly in Paris (193 of 236) and stack
   **heat and old, inefficient housing** (worst quartile in 92% and 94% of
   them). Those with the *lowest* means are mostly in Seine-Saint-Denis
-  and Val-de-Marne and stack **heat and air/noise pollution** (87% and
-  89%).
+  and Val-de-Marne and stack **heat and air/noise pollution** (88% and
+  86%).
 - **Overall, the link between exposure and means is weak** (Spearman
   +0.28), and slightly positive only because of dense, older central
   Paris (+0.39 within Paris); in the three inner-suburb departments
   there's almost no link.
 - **Where high exposure and low means meet, it's concentrated**: in
-  Seine-Saint-Denis, 79% of the highly exposed neighborhoods are in the
+  Seine-Saint-Denis, 76% of the highly exposed neighborhoods are in the
   metro area's lowest third of means; in Paris, 2%.
 
 ---

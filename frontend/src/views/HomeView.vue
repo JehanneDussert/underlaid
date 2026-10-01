@@ -204,6 +204,14 @@ function buildChoroplethLayer() {
   return new GeoJsonLayer({
     id: 'iris-choropleth',
     data: DATA_URL,
+    // Marks the map as drawn-with-data for the smoke test
+    // (frontend/scripts/smoke-test.mjs), which waits for it before leaving
+    // the page — leaving mid-download logs a "Failed to fetch" error.
+    // Known inefficiency, left as is for now: deck.gl fetches DATA_URL
+    // itself, so the GeoJSON is downloaded twice (here and in loadData()).
+    // Passing loadData()'s features instead left the whole map blank under
+    // hardware WebGL in testing (cause not identified) — revisit with care.
+    onDataLoad: () => document.getElementById('map')?.setAttribute('data-choropleth-loaded', 'true'),
     pickable: true,
     stroked: true,
     filled: true,
@@ -241,8 +249,21 @@ function buildLayers() {
   return layers
 }
 
+// deck.gl needs the map's projection, which MapLibre only has once the
+// map has loaded. loadData() (which refreshes the layer once the
+// means-to-cope data arrives) can resolve before that on a fast machine —
+// the refresh then threw "Cannot read properties of null (getProjection)"
+// (seen in production, about 1 load in 3 under hardware WebGL). Defer until
+// 'load', and never refresh a map that has been removed.
+let mapReady = false
+let refreshPending = false
+
 function refreshLayer() {
   if (!overlay) return
+  if (!mapReady) {
+    refreshPending = true
+    return
+  }
   try {
     overlay.setProps({ layers: buildLayers() })
   } catch (err) {
@@ -472,11 +493,21 @@ onMounted(async () => {
 
   overlay = new MapboxOverlay({ layers: buildLayers() })
   map.addControl(overlay)
+  map.once('load', () => {
+    mapReady = true
+    if (refreshPending) {
+      refreshPending = false
+      refreshLayer()
+    }
+  })
 
   await loadData()
 })
 
 onBeforeUnmount(() => {
+  // A loadData() still in flight must not refresh a removed map.
+  overlay = null
+  mapReady = false
   map?.remove()
 })
 

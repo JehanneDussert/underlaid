@@ -1,0 +1,171 @@
+// End-to-end smoke test of the production build — the checks run by hand
+// before every release, now versioned so they can't drift or be skipped.
+//
+//   cd frontend && npm run build && npm run test:smoke
+//   SMOKE_BASE_URL=https://underlaid.vercel.app npm run test:smoke   # live site
+//   SMOKE_SOFTWARE_GL=1 npm run test:smoke   # force software WebGL, as on a GPU-less CI runner
+//
+// Exits non-zero on any FAIL or browser console error. Checks that depend
+// on the external address API (BAN) are reported as SKIP — visibly, never
+// as a silent pass — if that API doesn't answer.
+//
+// Rendering: Chromium is launched with its default flags, so it uses the
+// GPU when there is one (share card in ~0.3 s). On a machine without a GPU
+// (CI runners) it falls back to software WebGL, where generating the share
+// card while the map keeps repainting takes 15-20 s — hence the generous
+// SHARE_CARD_TIMEOUT_MS rather than a test that fails "normally" and ends
+// up being ignored.
+import { readFileSync } from 'fs'
+import { fileURLToPath } from 'url'
+import { preview } from 'vite'
+import { chromium } from 'playwright'
+
+const SHARE_CARD_TIMEOUT_MS = 60_000
+const EXPORT_TIMEOUT_MS = 30_000
+const ROOT = fileURLToPath(new URL('..', import.meta.url))
+
+// Expected /ranking length, derived from the published data with the same
+// rule as RankingView.vue (top score, >= 50 residents) — never hardcoded.
+const published = JSON.parse(readFileSync(`${ROOT}/public/data/vulnerability_score_iris.geojson`, 'utf-8'))
+const EXPECTED_RANKING_ROWS = published.features.filter(
+  (f) => f.properties.cumulative_vulnerability_score === 3 && (f.properties.population ?? 0) >= 50
+).length
+
+const MAP_TIMEOUT_MS = 60_000
+// Same 0-3 ramp as HomeView.vue's CUMULATIVE_RAMP.
+const CUMULATIVE_RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#99003b']
+
+// Share of map pixels whose colour is close to one of the ramp colours,
+// read back from both canvases (MapLibre keeps its drawing buffer; the
+// deck.gl overlay is read right after a fresh frame, as the PNG export does).
+async function choroplethPixelShare(page) {
+  return page.evaluate(async (ramp) => {
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+    const canvases = [...document.querySelectorAll('#map canvas')]
+    const w = 200
+    const h = 150
+    const out = document.createElement('canvas')
+    out.width = w
+    out.height = h
+    const ctx = out.getContext('2d', { willReadFrequently: true })
+    for (const c of canvases) ctx.drawImage(c, 0, 0, w, h)
+    const data = ctx.getImageData(0, 0, w, h).data
+    const rgb = ramp.map((hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)))
+    let hits = 0
+    for (let i = 0; i < data.length; i += 4) {
+      // The overlay is drawn at alpha 225/255 over the basemap: allow some blending.
+      if (rgb.some(([r, g, b]) => Math.abs(data[i] - r) + Math.abs(data[i + 1] - g) + Math.abs(data[i + 2] - b) < 60)) hits++
+    }
+    return hits / (w * h)
+  }, CUMULATIVE_RAMP)
+}
+
+const results = []
+const errors = []
+const record = (status, name, detail = '') => results.push({ status, name, detail })
+const check = (name, condition, detail = '') => record(condition ? 'PASS' : 'FAIL', name, detail)
+
+let server = null
+let base = process.env.SMOKE_BASE_URL
+if (!base) {
+  server = await preview({ root: ROOT, preview: { port: 4321, strictPort: false }, logLevel: 'error' })
+  base = server.resolvedUrls.local[0].replace(/\/$/, '')
+}
+
+const browser = await chromium.launch({
+  args: process.env.SMOKE_SOFTWARE_GL ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [],
+})
+try {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true })
+  const page = await context.newPage()
+  page.on('pageerror', (e) => errors.push(`${page.url()}: ${e.message}`))
+  page.on('console', (m) => m.type() === 'error' && errors.push(`${page.url()}: ${m.text()}`))
+
+  // Map, both languages
+  for (const [path, lang] of [['/', 'en'], ['/fr', 'fr']]) {
+    await page.goto(base + path, { waitUntil: 'networkidle' })
+    // Wait for the choropleth's data, then check it is actually drawn — a
+    // canvas that merely exists passed this test once while the map was
+    // blank under hardware WebGL.
+    const loaded = await page.waitForSelector('#map[data-choropleth-loaded="true"]', { timeout: MAP_TIMEOUT_MS }).then(() => true, () => false)
+    check(`${path} choropleth data loaded`, loaded)
+    const painted = await choroplethPixelShare(page)
+    check(`${path} choropleth drawn`, painted > 0.05, `${(painted * 100).toFixed(1)}% of map pixels in the score ramp`)
+    check(`${path} 4 metric pills`, (await page.locator('.toolbar .pill').count()) === 4)
+    check(`${path} html lang=${lang}`, (await page.getAttribute('html', 'lang')) === lang)
+    check(`${path} data date in footer`, (await page.locator('.footer-updated').count()) === 1)
+  }
+
+  // Address search -> detail panel -> share card (needs the BAN API)
+  await page.fill('.search-input', '1 rue Marie Louise Drancy')
+  const suggestion = page.locator('.search-suggestions button', { hasText: '93700 Drancy' }).first()
+  const banAnswered = await suggestion.waitFor({ timeout: 10_000 }).then(() => true, () => false)
+  if (!banAnswered) {
+    record('SKIP', 'address search + panel + share card', 'address API (BAN) did not answer within 10 s')
+  } else {
+    await suggestion.click()
+    await page.waitForSelector('.cumul-box .n', { timeout: 10_000 })
+    check('search opens the detail panel, score out of 3', (await page.locator('.cumul-box .n').innerText()).endsWith('/3'))
+    check('panel: access context + means block', (await page.locator('.access-context').count()) === 1 && (await page.locator('.capacity-box').count()) === 1)
+    const started = Date.now()
+    const card = page.waitForEvent('download', { timeout: SHARE_CARD_TIMEOUT_MS }).catch(() => null)
+    // Click via the DOM: under software WebGL the main thread is busy
+    // repainting the map, and Playwright's actionability wait would itself
+    // time out before the click is even dispatched.
+    await page.evaluate(() => document.querySelector('.share-btn').click())
+    const download = await card
+    check('share card generated', !!download, download ? `${Date.now() - started} ms` : `none within ${SHARE_CARD_TIMEOUT_MS} ms`)
+  }
+
+  // PNG export, both map views
+  for (const view of ['exposure', 'bivariate']) {
+    if (view === 'bivariate') {
+      await page.locator('.view-switch button').nth(1).click()
+      await page.waitForSelector('.bv-cell')
+      check('bivariate view: 3x3 legend, pills hidden', (await page.locator('.bv-cell').count()) === 9 && (await page.locator('.toolbar .pill').count()) === 0)
+    }
+    const exported = page.waitForEvent('download', { timeout: EXPORT_TIMEOUT_MS }).catch(() => null)
+    await page.evaluate(() => [...document.querySelectorAll('.ghost-link')][0].click())
+    check(`PNG export (${view})`, !!(await exported))
+  }
+
+  // Language switch, both directions (the FR->EN bounce was a real bug)
+  await page.goto(base + '/', { waitUntil: 'networkidle' })
+  await page.locator('.lang-toggle button', { hasText: 'FR' }).click()
+  await page.waitForURL(/\/fr$/)
+  check('EN -> FR', new URL(page.url()).pathname === '/fr')
+  await page.locator('.lang-toggle button', { hasText: 'EN' }).click()
+  await page.waitForURL((url) => url.pathname === '/')
+  check('FR -> EN', new URL(page.url()).pathname === '/')
+
+  // Every route by direct access
+  for (const path of ['/methodology', '/fr/methodology', '/ranking', '/fr/ranking', '/press', '/fr/press']) {
+    const response = await page.goto(base + path, { waitUntil: 'networkidle' })
+    check(`direct ${path}`, response.status() === 200 && (await page.locator('h1').count()) === 1)
+    if (path.endsWith('ranking')) {
+      const rows = await page.locator('.ranking-row').count()
+      check(`${path} lists ${EXPECTED_RANKING_ROWS} neighborhoods`, rows === EXPECTED_RANKING_ROWS, `${rows} rows`)
+    }
+    if (path.endsWith('methodology')) {
+      check(`${path} access + licences sections`, (await page.locator('#access').count()) === 1 && (await page.locator('#data-licences').count()) === 1)
+    }
+  }
+
+  // Phone width: no sideways scroll
+  const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()
+  phone.on('pageerror', (e) => errors.push(`phone ${phone.url()}: ${e.message}`))
+  for (const path of ['/fr', '/fr/ranking', '/fr/methodology']) {
+    await phone.goto(base + path, { waitUntil: 'networkidle' })
+    const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
+    check(`phone ${path}: no horizontal scroll`, overflow <= 0, overflow > 0 ? `${overflow}px` : '')
+  }
+} finally {
+  await browser.close()
+  server?.httpServer.close()
+}
+
+for (const r of results) console.log(`${r.status.padEnd(4)}  ${r.name}${r.detail ? ` — ${r.detail}` : ''}`)
+console.log(errors.length ? `console errors:\n  ${errors.join('\n  ')}` : 'console errors: none')
+const failed = results.filter((r) => r.status === 'FAIL').length + errors.length
+console.log(`\n${results.filter((r) => r.status === 'PASS').length} passed, ${results.filter((r) => r.status === 'SKIP').length} skipped, ${failed} failed`)
+process.exit(failed ? 1 : 0)

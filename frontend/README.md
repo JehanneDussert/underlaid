@@ -50,6 +50,27 @@ npm install
 npm run dev
 ```
 
+## Smoke test
+
+`scripts/smoke-test.mjs` checks the production build end to end in a real
+browser (Playwright): map data loaded **and drawn** (pixel check against
+the score ramp, not just "a canvas exists"), address search → detail
+panel → share card, PNG export of both map views, the FR↔EN switch in
+both directions, every route by direct access (with the `/ranking`
+length derived from the published data), no horizontal scroll at phone
+width, and zero browser console errors.
+
+```bash
+npm run build && npm run test:smoke                  # local build
+SMOKE_BASE_URL=https://underlaid.vercel.app npm run test:smoke   # live site
+SMOKE_SOFTWARE_GL=1 npm run test:smoke               # force software WebGL (GPU-less CI)
+```
+
+Exits non-zero on any failure. Checks that need the external address API
+(BAN) are reported as `SKIP` if it doesn't answer — visibly, never as a
+silent pass. Without a GPU, generating the share card takes 5-20 s (the
+budget is 60 s); with one, under a second.
+
 ## Routing
 
 Four routes, all rendered inside `App.vue`'s shared shell:

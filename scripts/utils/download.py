@@ -2,12 +2,39 @@
 from pathlib import Path
 from urllib.parse import quote
 import re
+import time
 import zipfile
 
 import requests
 
 DEFAULT_TIMEOUT = 60
 DEFAULT_RETRIES = 3
+# Waits before retries 2, 3...: a transient DNS or gateway failure on a CI
+# runner (seen 2026-10-01: "Temporary failure in name resolution" for
+# data.education.gouv.fr) doesn't clear in milliseconds.
+RETRY_BACKOFF_SECONDS = (5, 20, 60)
+RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+
+
+def get_with_retry(url: str, **kwargs) -> requests.Response:
+    """requests.get with retries on network errors, timeouts and transient
+    HTTP statuses (429, 5xx). Other 4xx are real errors and raise at once."""
+    kwargs.setdefault("timeout", DEFAULT_TIMEOUT)
+    last_error = None
+    for attempt in range(DEFAULT_RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF_SECONDS[min(attempt - 1, len(RETRY_BACKOFF_SECONDS) - 1)])
+        try:
+            response = requests.get(url, **kwargs)
+        except (requests.ConnectionError, requests.Timeout) as exc:
+            last_error = exc
+            continue
+        if response.status_code in RETRYABLE_STATUS:
+            last_error = requests.HTTPError(f"{response.status_code} for {response.url}", response=response)
+            continue
+        response.raise_for_status()
+        return response
+    raise RuntimeError(f"GET {url} failed after {DEFAULT_RETRIES} attempts: {last_error}")
 
 
 def download_file(url: str, dest_path: Path, force: bool = False, encode_path: bool = False) -> Path:
@@ -35,6 +62,7 @@ def download_file(url: str, dest_path: Path, force: bool = False, encode_path: b
         except requests.RequestException as exc:
             last_error = exc
             if attempt < DEFAULT_RETRIES:
+                time.sleep(RETRY_BACKOFF_SECONDS[min(attempt - 1, len(RETRY_BACKOFF_SECONDS) - 1)])
                 continue
     raise RuntimeError(f"Failed to download {url} after {DEFAULT_RETRIES} attempts: {last_error}")
 

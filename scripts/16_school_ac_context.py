@@ -99,6 +99,8 @@ CITYWIDE_SOURCE = "https://www.cnews.fr/france/2026-06-20/un-climatiseur-sera-li
 def dissolve_arrondissements() -> gpd.GeoDataFrame:
     iris = gpd.read_file(config.IRIS_REFERENCE_PATH)
     iris["insee_com"] = iris["insee_com"].astype(str)  # comes in as int32; SCHOOL_AC_DATA keys are strings
+    # The reference covers all of the MGP since Phase 5; this layer is Paris-only.
+    iris = iris[iris["insee_com"].str[:2] == config.PARIS_DEP_CODE]
     arrondissements = iris.dissolve(by="insee_com", as_index=False).rename(columns={"nom_com": "nom_arrondissement"})
     return arrondissements[["insee_com", "nom_arrondissement", "geometry"]]
 

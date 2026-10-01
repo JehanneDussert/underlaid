@@ -353,7 +353,7 @@ Villeneuve-Saint-Georges, Nonneville 3 in Aulnay-sous-Bois) are all at
 make test
 ```
 
-`tests/` is a smoke-test suite, not full coverage (54 tests): every per-IRIS layer has exactly 2,752 rows, every context layer
+`tests/` is a smoke-test suite, not full coverage (75 tests): every per-IRIS layer has exactly 2,752 rows, every context layer
 has the row count matching its actual grain (20 for the 3 still-
 Paris-only arrondissement facts, ~143 for the now MGP-wide commune-grain
 RNA layer), `code_iris` is unique and well-formed against any of the 4

@@ -61,6 +61,14 @@ def fetch_association_counts() -> pd.DataFrame:
         group_by="com_code_asso",
     )
     df = pd.DataFrame(records).rename(columns={"com_code_asso": "insee_com"})
+    # A whole department can vanish from the regional extract (seen after its
+    # 2026-09-25 refresh: no dep_code "75" record at all). Publishing that
+    # would show Paris as "no data"; failing lets the run keep the previous
+    # version of this context layer and open an issue (pipeline_policy.py).
+    present = set(df["insee_com"].astype(str).str[:2]) if not df.empty else set()
+    missing = sorted(set(config.MGP_DEP_CODES) - present)
+    if missing:
+        raise RuntimeError(f"RNA extract has no active association in department(s) {missing}: source incomplete")
     return df
 
 

@@ -86,3 +86,57 @@ def test_datagouv_missing_resource_lists_available_titles(monkeypatch):
     with pytest.raises(RuntimeError) as err:
         find("slug", r"indicateurs-icu\.zip")
     assert "indicateurs-icu-v2.zip" in str(err.value)
+
+
+class _Status:
+    def __init__(self, code):
+        self.status_code = code
+        self.url = "https://example.test/x"
+
+    def raise_for_status(self):
+        import requests
+
+        if self.status_code >= 400:
+            raise requests.HTTPError(f"{self.status_code}", response=self)
+
+
+def _fake_get(monkeypatch, outcomes):
+    """outcomes: list of exceptions or status codes, consumed in order."""
+    import utils.download as download
+
+    calls = []
+
+    def fake(url, **kwargs):
+        outcome = outcomes[len(calls)]
+        calls.append(url)
+        if isinstance(outcome, Exception):
+            raise outcome
+        return _Status(outcome)
+
+    monkeypatch.setattr(download.requests, "get", fake)
+    monkeypatch.setattr(download.time, "sleep", lambda seconds: None)
+    return download.get_with_retry, calls
+
+
+def test_transient_dns_failure_is_retried(monkeypatch):
+    import requests
+
+    get, calls = _fake_get(monkeypatch, [requests.ConnectionError("Temporary failure in name resolution"), 200])
+    assert get("https://data.education.gouv.fr/x").status_code == 200
+    assert len(calls) == 2
+
+
+def test_client_error_is_not_retried(monkeypatch):
+    import requests
+
+    get, calls = _fake_get(monkeypatch, [404, 200])
+    with pytest.raises(requests.HTTPError):
+        get("https://example.test/missing")
+    assert len(calls) == 1
+
+
+def test_persistent_gateway_error_gives_up(monkeypatch):
+    get, calls = _fake_get(monkeypatch, [503, 503, 503])
+    with pytest.raises(RuntimeError, match="after 3 attempts"):
+        get("https://example.test/busy")
+    assert len(calls) == 3

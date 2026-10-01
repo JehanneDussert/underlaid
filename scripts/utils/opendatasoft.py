@@ -6,9 +6,7 @@ the same /api/explore/v2.1/catalog/datasets/{id}/... routes.
 """
 from pathlib import Path
 
-import requests
-
-from .download import DEFAULT_TIMEOUT
+from .download import DEFAULT_TIMEOUT, get_with_retry
 
 PAGE_SIZE = 100
 
@@ -30,8 +28,7 @@ def export_dataset(base_url: str, dataset_id: str, dest_path: Path, fmt: str = "
     params = {"where": where} if where else {}
     dest_path.parent.mkdir(parents=True, exist_ok=True)
 
-    response = requests.get(url, params=params, timeout=DEFAULT_TIMEOUT)
-    response.raise_for_status()
+    response = get_with_retry(url, params=params, timeout=DEFAULT_TIMEOUT)
     dest_path.write_bytes(response.content)
     return dest_path
 
@@ -64,8 +61,7 @@ def query_records(
             params["select"] = select
         if group_by:
             params["group_by"] = group_by
-        response = requests.get(url, params=params, timeout=DEFAULT_TIMEOUT)
-        response.raise_for_status()
+        response = get_with_retry(url, params=params, timeout=DEFAULT_TIMEOUT)
         payload = response.json()
         batch = payload.get("results", [])
         records.extend(batch)

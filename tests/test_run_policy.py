@@ -127,3 +127,26 @@ def test_context_failure_without_previous_version_blocks(fake_pipeline, monkeypa
     (fake_pipeline / "context.json").unlink(missing_ok=True)
     with pytest.raises(SystemExit):
         run_all.main()
+
+
+def _rna_module(monkeypatch, records):
+    import importlib
+    rna = importlib.import_module("20_associational_density_context")
+    monkeypatch.setattr(rna, "query_records", lambda *a, **k: records)
+    return rna
+
+
+def test_rna_counts_refuse_a_missing_department(monkeypatch):
+    # Seen after the 2026-09-25 refresh of the regional extract: no Paris
+    # record at all. The script must fail (so the policy keeps the previous
+    # layer) rather than publish Paris as "no data".
+    import pytest
+    records = [{"com_code_asso": c, "active_association_count": 10} for c in ("92004", "93001", "94002")]
+    with pytest.raises(RuntimeError, match=r"\['75'\]"):
+        _rna_module(monkeypatch, records).fetch_association_counts()
+
+
+def test_rna_counts_accept_every_department(monkeypatch):
+    records = [{"com_code_asso": c, "active_association_count": 10} for c in ("75101", "92004", "93001", "94002")]
+    df = _rna_module(monkeypatch, records).fetch_association_counts()
+    assert len(df) == 4

@@ -22,6 +22,7 @@ env:
   # intermediate layer or context-only data with no frontend consumer.
   PUBLISHED_FILES: >-
     vulnerability_score_iris.geojson
+    adaptive_capacity_iris.json
     qpv_boundaries_mgp.geojson
     associational_density_context_commune.geojson
     school_ac_context_arrondissement.geojson
@@ -106,6 +107,11 @@ jobs:
           for f in $PUBLISHED_FILES; do
             cp "data/processed/$f" "frontend/public/data/$f"
           done
+          # Coordinate precision only (6 decimals, ~11 cm) — shapes are never
+          # simplified: the address search relies on exact IRIS outlines. See
+          # README, "Geometry: precision reduced, shapes not simplified".
+          npx --yes mapshaper frontend/public/data/vulnerability_score_iris.geojson \
+            -o precision=0.000001 force frontend/public/data/vulnerability_score_iris.geojson
 
       - name: Commit and push the accepted update
         if: steps.diff.outcome == 'success'

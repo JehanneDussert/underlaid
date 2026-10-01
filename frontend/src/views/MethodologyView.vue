@@ -13,8 +13,8 @@ useSeoMeta({
     fr: "Méthodologie — comment fonctionne le score de cumul d'exposition",
   },
   description: {
-    en: 'Why a count of worst-quartile categories instead of an average, what each of the 4 categories measures, and the known limits — written for a non-technical reader, with the full technical version linked.',
-    fr: "Pourquoi un compte de catégories au pire quartile plutôt qu'une moyenne, ce que mesure chacune des 4 catégories, et les limites connues — écrit pour un lecteur non technique, avec la version technique complète en lien.",
+    en: 'Why a count of worst-quartile categories instead of an average, what each of the 3 categories measures, why access to services left the score, and the known limits — written for a non-technical reader, with the full technical version linked.',
+    fr: "Pourquoi un compte de catégories au pire quartile plutôt qu'une moyenne, ce que mesure chacune des 3 catégories, pourquoi l'accès aux services est sorti du score, et les limites connues — écrit pour un lecteur non technique, avec la version technique complète en lien.",
   },
   jsonLd: (locale) => ({
     '@context': 'https://schema.org',
@@ -25,35 +25,53 @@ useSeoMeta({
         : 'Methodology — how the cumulative exposure score works',
     description:
       locale === 'fr'
-        ? "Explique pourquoi Underlaid compte les catégories au pire quartile plutôt que de faire une moyenne, ce que mesure chacune des 4 catégories, et les limites connues de la méthode."
-        : 'Explains why Underlaid counts worst-quartile categories rather than averaging them, what each of the 4 categories measures, and the method\'s known limits.',
+        ? "Explique pourquoi Underlaid compte les catégories au pire quartile plutôt que de faire une moyenne, ce que mesure chacune des 3 catégories, pourquoi l'accès aux services est sorti du score, et les limites connues de la méthode."
+        : 'Explains why Underlaid counts worst-quartile categories rather than averaging them, what each of the 3 categories measures, why access to services left the score, and the method\'s known limits.',
     author: { '@type': 'Organization', name: 'Underlaid' },
     publisher: { '@type': 'Organization', name: 'Underlaid' },
     inLanguage: locale,
   }),
 })
 
+// Mirrors README "License & data attribution" — each license checked
+// against the publisher's own metadata, not assumed. Keep both in sync.
+const DATA_SOURCES = [
+  { name: { en: 'INSEE — BPE, Filosofi, 2021 census', fr: 'INSEE — BPE, Filosofi, Recensement 2021' }, license: 'lo' },
+  { name: { en: 'IGN & INSEE — IRIS boundaries', fr: 'IGN & INSEE — contours IRIS' }, license: 'lo' },
+  { name: { en: 'CSTB — Sat4BDNB (urban heat islands)', fr: 'CSTB — Sat4BDNB (îlots de chaleur)' }, license: 'lo' },
+  { name: { en: "L'Institut Paris Region — green spaces, MOS land use", fr: "L'Institut Paris Region — espaces verts, MOS" }, license: 'lo' },
+  { name: { en: 'Airparif & Bruitparif — air-noise map', fr: 'Airparif & Bruitparif — cartographie air-bruit' }, license: 'airBruit' },
+  { name: { en: 'DEPP — Ministry of Education (IPS)', fr: "DEPP — Ministère de l'Éducation nationale (IPS)" }, license: 'lo' },
+  { name: { en: 'ADEME — DPE energy certificates', fr: 'ADEME — DPE' }, license: 'lo' },
+  { name: { en: 'Enedis — electricity consumption by IRIS', fr: 'Enedis — consommation électrique par IRIS' }, license: 'lo' },
+  { name: { en: 'Acceslibre', fr: 'Acceslibre' }, license: 'lo' },
+  { name: { en: 'ANCT — priority neighborhoods (QPV)', fr: 'ANCT — quartiers prioritaires (QPV)' }, license: 'lo' },
+  { name: { en: 'Ministry of the Interior — RNA', fr: "Ministère de l'Intérieur — RNA" }, license: 'lo' },
+  { name: { en: 'Ville de Paris — street trees, public lighting', fr: 'Ville de Paris — arbres, éclairage public' }, license: 'odbl' },
+  { name: { en: '© OpenStreetMap contributors — footways', fr: "© les contributeurs d'OpenStreetMap — cheminements piétons" }, license: 'odbl' },
+  { name: { en: '© CARTO, © OpenStreetMap contributors — basemap', fr: "© CARTO, © les contributeurs d'OpenStreetMap — fond de carte" }, license: 'carto' },
+  { name: { en: 'IGN, DINUM — API Adresse (BAN)', fr: 'IGN, DINUM — API Adresse (BAN)' }, license: 'lo' },
+]
+
 // Static facts from SCORING.md (scripts/11_compute_vulnerability_score.py's
 // output) — not user data, so no fetch: this page describes the method,
 // it doesn't recompute or re-derive anything from the live GeoJSON.
 const DISTRIBUTION = [
-  { score: 0, count: 874, share: 0.318 },
-  { score: 1, count: 1230, share: 0.447 },
-  { score: 2, count: 586, share: 0.213 },
-  { score: 3, count: 58, share: 0.021 },
-  { score: 4, count: 4, share: 4 / 2752 },
+  { score: 0, count: 1144, share: 1144 / 2752 },
+  { score: 1, count: 1202, share: 1202 / 2752 },
+  { score: 2, count: 375, share: 375 / 2752 },
+  { score: 3, count: 31, share: 31 / 2752 },
 ]
 
 const SUBSCORES = [
   { key: 'thermal' },
   { key: 'pollution' },
-  { key: 'access' },
   { key: 'housing' },
 ]
 
 const LIMIT_KEYS = [
-  'limitIncome', 'limitIcu', 'limitAccesslibre', 'limitFootway',
-  'limitThermosensitivity', 'limitArtificialization', 'limitCapacity', 'limitEstimate',
+  'limitIncome', 'limitIcu',
+  'limitThermosensitivity', 'limitArtificialization', 'limitEstimate',
 ]
 
 function numberLocale() {
@@ -121,6 +139,14 @@ const lastUpdatedLabel = computed(() => {
       <p>{{ t('methodology.notMeasuredBody3') }}</p>
     </section>
 
+    <section id="means" class="glass">
+      <h2>{{ t('methodology.capacityTitle') }}</h2>
+      <p>{{ t('methodology.capacityBody1') }}</p>
+      <p>{{ t('methodology.capacityBody2') }}</p>
+      <p>{{ t('methodology.capacityBody3') }}</p>
+      <p>{{ t('methodology.capacityBody4') }}</p>
+    </section>
+
     <section class="glass">
       <h2>{{ t('methodology.subscoresTitle') }}</h2>
       <p>{{ t('methodology.subscoresIntro') }}</p>
@@ -130,6 +156,11 @@ const lastUpdatedLabel = computed(() => {
           <p>{{ t(`methodology.${s.key}Desc`) }}</p>
         </div>
       </div>
+    </section>
+
+    <section id="access" class="glass">
+      <h2>{{ t('methodology.accessOutTitle') }}</h2>
+      <p v-for="n in [1, 2, 3, 4, 5]" :key="n">{{ t(`methodology.accessOut${n}`) }}</p>
     </section>
 
     <section class="glass">
@@ -173,7 +204,7 @@ const lastUpdatedLabel = computed(() => {
         </thead>
         <tbody>
           <tr v-for="row in distributionRows" :key="row.score">
-            <td>{{ row.score }} / 4</td>
+            <td>{{ row.score }} / 3</td>
             <td>{{ row.countLabel }}</td>
             <td>{{ row.shareLabel }}</td>
           </tr>
@@ -181,6 +212,18 @@ const lastUpdatedLabel = computed(() => {
       </table>
       <p class="dist-note">{{ t('methodology.distNote') }}</p>
       <p v-if="lastUpdatedLabel" class="dist-note">{{ lastUpdatedLabel }}</p>
+    </section>
+
+    <section id="data-licences" class="glass">
+      <h2>{{ t('methodology.licensesTitle') }}</h2>
+      <p>{{ t('methodology.licensesIntro') }}</p>
+      <ul class="sources-list">
+        <li v-for="source in DATA_SOURCES" :key="source.name.en">
+          <span class="source-name">{{ source.name[locale] }}</span>
+          <span class="source-license">{{ t(`methodology.license_${source.license}`) }}</span>
+        </li>
+      </ul>
+      <p class="dist-note">{{ t('methodology.licensesNote') }}</p>
     </section>
 
     <router-link class="press-kit-link" :to="{ name: localizedRouteName('press', locale) }">{{ t('methodology.pressKitLink') }}</router-link>
@@ -287,6 +330,29 @@ section p:last-child {
 }
 .limits-list li:last-child {
   margin-bottom: 0;
+}
+
+.sources-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+.sources-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gridline);
+  font-size: 13.5px;
+}
+.source-license {
+  color: var(--text-secondary);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+#data-licences {
+  scroll-margin-top: 24px;
 }
 
 .dist-table {

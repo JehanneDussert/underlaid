@@ -6,6 +6,7 @@ import { localizedRouteName } from './router'
 import { loadStaticJson } from './utils/loadStaticJson'
 
 const { t, locale } = useI18n()
+const REPO_URL = 'https://github.com/JehanneDussert/underlaid'
 const route = useRoute()
 const router = useRouter()
 
@@ -60,7 +61,7 @@ const lastUpdatedLabel = computed(() => {
         <a href="#footer-sources">{{ t('nav.sources') }}</a>
         <router-link :to="{ name: localizedRouteName('methodology', locale) }">{{ t('nav.methodology') }}</router-link>
         <router-link :to="{ name: localizedRouteName('ranking', locale) }">{{ t('nav.ranking') }}</router-link>
-        <span class="nav-inert">{{ t('nav.github') }}</span>
+        <a :href="REPO_URL" rel="noopener">{{ t('nav.github') }}</a>
         <div class="lang-toggle" role="group" aria-label="Language / Langue">
           <button :class="{ active: locale === 'en' }" @click="goToLocale('en')">EN</button>
           <button :class="{ active: locale === 'fr' }" @click="goToLocale('fr')">FR</button>
@@ -72,6 +73,10 @@ const lastUpdatedLabel = computed(() => {
 
     <footer id="footer-sources">
       <span>{{ t('footer') }}</span>
+      <span>
+        {{ t('footerLicense') }} ·
+        <router-link :to="{ name: localizedRouteName('methodology', locale), hash: '#data-licences' }">{{ t('footerLicenseLink') }}</router-link>
+      </span>
       <span v-if="lastUpdatedLabel" class="footer-updated">{{ lastUpdatedLabel }}</span>
     </footer>
   </div>
@@ -117,10 +122,6 @@ const lastUpdatedLabel = computed(() => {
 .nav a:focus-visible {
   color: var(--cyan);
 }
-.nav-inert {
-  opacity: 0.6;
-  cursor: default;
-}
 
 .lang-toggle {
   display: flex;
@@ -150,6 +151,26 @@ const lastUpdatedLabel = computed(() => {
   }
 }
 
+/* Phone widths: the 4 links + language toggle don't fit beside the
+   wordmark (overflowed ~100px at 400px wide), so the nav drops to its
+   own line and wraps instead of pushing the page sideways. */
+@media (max-width: 600px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+  .nav {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+  }
+  .lang-toggle {
+    margin-left: auto;
+  }
+}
+
 footer {
   display: flex;
   flex-wrap: wrap;
@@ -159,6 +180,14 @@ footer {
   font-size: 11.5px;
   color: var(--text-secondary);
   font-family: var(--mono);
+}
+
+footer a {
+  color: var(--text-secondary);
+}
+footer a:hover,
+footer a:focus-visible {
+  color: var(--cyan);
 }
 
 .footer-updated {

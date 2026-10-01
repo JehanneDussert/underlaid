@@ -56,7 +56,7 @@ export function localizedRouteName(name, locale) {
 // locale would otherwise leak into another's (caught directly: /ranking
 // prerendered with French content under the old singleton setup).
 export function installLocaleGuard(router, setLocale) {
-  router.beforeEach((to) => {
+  router.beforeEach((to, from) => {
     // The bare, unprefixed "/" is unambiguous for crawlers (always
     // English, matching this project's own "no auto-detection, English
     // default" rule) but a returning visitor whose last explicit choice
@@ -65,7 +65,10 @@ export function installLocaleGuard(router, setLocale) {
     // itself stays stable and crawlable as English content. Guarded to
     // the browser only: during SSG prerendering there is no localStorage
     // and "/" must always prerender as English.
-    if (to.path === '/' && typeof localStorage !== 'undefined') {
+    // Only on the first navigation of a visit (`from` has no matched
+    // route yet): applied on in-app navigations too, it bounced the EN
+    // button on /fr straight back to /fr, since visiting /fr saves "fr".
+    if (to.path === '/' && from.matched.length === 0 && typeof localStorage !== 'undefined') {
       const saved = localStorage.getItem(LOCALE_STORAGE_KEY)
       if (saved === 'fr') return { name: 'home-fr' }
     }

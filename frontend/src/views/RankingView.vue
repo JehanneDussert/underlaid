@@ -7,166 +7,108 @@ import { loadStaticJson } from '../utils/loadStaticJson'
 
 const { t, locale } = useI18n()
 const DATA_URL = '/data/vulnerability_score_iris.geojson'
+const CAPACITY_URL = '/data/adaptive_capacity_iris.json'
+const TOP_SCORE = 3
+// Same floor as cool_facility_deficit's per-resident rate (scripts/11,
+// MIN_POPULATION_FOR_RATE): below 50 residents an IRIS is a park, a
+// station or a business block, not a neighborhood people live in. Such
+// IRIS stay on the map (flagged "very sparsely populated" in the detail
+// panel) but are left out of this public list — see SCORING.md.
+const MIN_POPULATION_FOR_LIST = 50
 
 // Injected at build time (vite.config.js) from the actual scoring
 // output — never hardcoded, so this count can't silently drift out of
 // sync with the pipeline the way a hand-typed number would.
 useSeoMeta({
   title: {
-    en: `Where the Most Stacks Up — ${__RANKING_COUNT__} Most-Exposed Neighborhoods`,
-    fr: `Là où le cumul est le plus fort — les ${__RANKING_COUNT__} quartiers les plus exposés`,
+    en: `Where the Most Stacks Up — ${__RANKING_COUNT__} Neighborhoods at 3 out of 3`,
+    fr: `Là où le cumul est le plus fort — ${__RANKING_COUNT__} quartiers à 3 sur 3`,
   },
   description: {
-    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where heat, pollution, poor access to services, and inefficient housing cumulate most — split into three groups by whether a lack of services is actually the cause, each explained neighborhood by neighborhood.`,
-    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où la chaleur, la pollution, le manque d'accès aux services et le logement énergivore se cumulent le plus — répartis en trois groupes selon qu'un déficit de services en est réellement la cause, expliqué quartier par quartier.`,
+    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where heat, air and noise pollution, and energy-inefficient housing are all in their worst quartile at once — grouped by residents' means to cope.`,
+    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où la chaleur, la pollution de l'air et le bruit, et le logement énergivore sont tous dans leur pire quartile à la fois — regroupés selon les moyens des habitants.`,
   },
 })
 
-const rows = ref([])
+// Grouped by the separate means-to-cope axis (Phase 8), never by an
+// implied cause: every IRIS here has the same score, and the groups only
+// show that the same score doesn't mean the same situation. Each row
+// shows the figures behind the three categories against the metro-wide
+// median — facts rather than generated prose, so a row can't contradict
+// itself.
+const GROUPS = [
+  { key: 'low', capacityClass: 0 },
+  { key: 'mid', capacityClass: 1 },
+  { key: 'high', capacityClass: 2 },
+  { key: 'masked', capacityClass: null },
+]
+
+const allRows = ref([])
+const capacityByIris = ref({})
 const loading = ref(true)
 
-// Editorial rule for this project: always "what the city hasn't brought to
-// this neighborhood," never "what this neighborhood lacks" — the gap is
-// framed as an external provision failure, not an inherent deficiency.
-// That framing only holds where a service genuinely falls short, though:
-// applying it to a neighborhood with decent-to-excellent access (several
-// among the metro area's wealthiest) would assert a public shortfall that
-// doesn't exist there. Split into groups by whether the access sub-score
-// itself is the worst-quartile factor, and — within that — whether the
-// reason is a real deficiency or a fast-in-absolute-terms access_time that
-// only reads as "worst quartile" in relative, metro-wide terms (see Group C
-// below). Each group gets its own wording.
-const GAP_KEYS_UNDERSERVED = {
-  thermal: 'ranking.gapThermal',
-  pollution: 'ranking.gapPollution',
-  housing: 'ranking.gapHousing',
-}
-
-const GAP_KEYS_DENSE = {
-  thermal: 'ranking.denseGapThermal',
-  pollution: 'ranking.denseGapPollution',
-  housing: 'ranking.denseGapHousing',
-}
-
-// The access sub-score is a mean of 4 quite different indicators (travel
-// time, nearby school segregation, documented wheelchair accessibility,
-// footway density) — audited manually (Val de Grâce 6, Champs-Élysées 2,
-// Sorbonne 3/4, École Militaire 5, then a full pass over the ranking; see
-// SCORING.md's "Access time's compressed distribution") and found that a
-// single static "nearby health, education, and transport services" phrase
-// mischaracterizes most of these rows: only a minority are actually driven
-// by travel time, the rest by school segregation or sparse pedestrian
-// infrastructure — both real, but not about distance to services at all.
-// `access_primary_driver` (added to the pipeline output for this reason)
-// picks the phrase that actually reflects what's driving the sub-score,
-// rather than always defaulting to the same generic clause.
-const ACCESS_GAP_KEYS_BY_DRIVER = {
-  access_time: 'ranking.gapAccessTime',
-  school_segregation: 'ranking.gapAccessSchool',
-  mobility_accessibility_deficit: 'ranking.gapAccessMobility',
-  pedestrian_path_deficit: 'ranking.gapAccessFootway',
-}
-
-function accessGapKey(p) {
-  return ACCESS_GAP_KEYS_BY_DRIVER[p.access_primary_driver] || 'ranking.gapAccessTime'
-}
-
-// Loaded via onServerPrefetch during vite-ssg's build-time prerendering
-// (so /ranking's ~58 real neighborhood names/scores land in the actual
-// HTML, not just after client JS runs) and again via onMounted in the
-// browser — this project has no initialState/hydration wiring, so the
-// client fetch simply re-fetches the same static JSON rather than
-// reusing the server-rendered data; harmless, just one extra request.
 async function loadRows() {
-  const geojson = await loadStaticJson(DATA_URL)
-  rows.value = geojson.features
-    .map((f) => f.properties)
-    .filter((p) => p.cumulative_vulnerability_score === 3)
-    .sort((a, b) => a.insee_com - b.insee_com || a.nom_iris.localeCompare(b.nom_iris))
+  const [geojson, capacity] = await Promise.all([loadStaticJson(DATA_URL), loadStaticJson(CAPACITY_URL)])
+  allRows.value = geojson.features.map((f) => f.properties)
+  capacityByIris.value = Object.fromEntries(capacity.iris.map((r) => [r.code_iris, r]))
   loading.value = false
 }
 
 onServerPrefetch(loadRows)
 onMounted(loadRows)
 
-function accessTimeMinutes(p) {
-  const vals = [p.access_minutes_domain_C, p.access_minutes_domain_D, p.access_minutes_domain_E].filter(
-    (v) => v !== null && v !== undefined
-  )
-  if (!vals.length) return null
-  return vals.reduce((a, b) => a + b, 0) / vals.length
+function median(field) {
+  const values = allRows.value.map((p) => p[field]).filter((v) => v !== null && v !== undefined).sort((a, b) => a - b)
+  if (!values.length) return null
+  const mid = Math.floor(values.length / 2)
+  return values.length % 2 ? values[mid] : (values[mid - 1] + values[mid]) / 2
 }
 
-// access_time's own distribution is heavily floor-clustered (most of the
-// metro area ties near "1 minute"), so its z-score can swing hard from a
-// tiny absolute difference — audited directly against Val de Grâce 6 and
-// Champs-Élysées 2 (see SCORING.md's "Access time's compressed
-// distribution" caveat): both land in the worst access quartile mainly
-// because of access_time, despite raw times of ~1.2-1.6 min. Among all
-// IRIS where access_time is the dominant driver of a worst-quartile
-// access score, 94% sit at or under 2.0 min (median 1.33, 90th
-// percentile 1.7) — only a genuine 6% tail is slower than that. 2.0 min
-// is chosen to cover that 94%.
-const ACCESS_TIME_FAST_THRESHOLD_MIN = 2.0
+const medians = computed(() => ({
+  pct_artificialized: median('pct_artificialized'),
+  air_noise_coexposure_class: median('air_noise_coexposure_class'),
+  pct_dpe_fg: median('pct_dpe_fg'),
+  median_income: median('median_income'),
+}))
 
-function formatMinutes(value) {
-  return new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-US', { maximumFractionDigits: 1 }).format(value)
+const listed = computed(() =>
+  allRows.value
+    .filter((p) => p.cumulative_vulnerability_score === TOP_SCORE && (p.population ?? 0) >= MIN_POPULATION_FOR_LIST)
+    .sort((a, b) => a.insee_com - b.insee_com || a.nom_iris.localeCompare(b.nom_iris))
+)
+
+const groups = computed(() =>
+  GROUPS.map((g) => ({
+    ...g,
+    rows: listed.value.filter((p) => {
+      const capacityClass = capacityByIris.value[p.code_iris]?.capacity_class
+      return g.capacityClass === null ? capacityClass === null || capacityClass === undefined : capacityClass === g.capacityClass
+    }),
+  })).filter((g) => g.rows.length)
+)
+
+function numberLocale() {
+  return locale.value === 'fr' ? 'fr-FR' : 'en-US'
+}
+function pct(v) {
+  return v === null || v === undefined ? '—' : `${new Intl.NumberFormat(numberLocale(), { maximumFractionDigits: 0 }).format(v * 100)}%`
+}
+function num(v) {
+  return v === null || v === undefined ? '—' : new Intl.NumberFormat(numberLocale(), { maximumFractionDigits: 1 }).format(v)
+}
+function eur(v) {
+  return v === null || v === undefined
+    ? t('ranking.incomeMasked')
+    : new Intl.NumberFormat(numberLocale(), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(v)
 }
 
-// A second full pass over all 31 access-worst-quartile IRIS (prompted by
-// re-reading the group, not by a single flagged example) found that this
-// wasn't just a wording problem for a handful of rows: 17 of the 31 have
-// access_time as their sole access driver AND a fast-in-absolute-terms
-// time (<=2.0 min) — meaning their presence in an "under-served" group
-// is a purely relative, metro-wide artifact, not a real local shortfall,
-// unlike the other 14 (school segregation, sparse footways, or a
-// genuinely slow access_time). Lumping all 31 into one "Group A" made
-// "the city hasn't brought services here" read as true for cases like
-// Notre-Dame des Champs 8, where it isn't. Fixed by splitting the
-// access-worst-quartile population itself into two groups rather than
-// just softening the sentence for the fast-time rows within a single
-// group.
-function isFastAccessArtifact(p) {
-  if (p.subscore_access_quartile !== 4 || p.access_primary_driver !== 'access_time') return false
-  const minutes = accessTimeMinutes(p)
-  return minutes !== null && minutes <= ACCESS_TIME_FAST_THRESHOLD_MIN
-}
-
-// 'A' — real access deficiency (school segregation, sparse footways, or a
-//       genuinely slow access_time) on top of heat/pollution/housing.
-// 'C' — access is nominally this area's worst-quartile factor too, but
-//       only a fast-in-absolute-terms access_time driving it — the real
-//       story is the same dense/older-fabric pattern as Group B.
-// 'B' — access isn't a worst-quartile factor at all.
-function groupOf(p) {
-  if (p.subscore_access_quartile !== 4) return 'B'
-  return isFastAccessArtifact(p) ? 'C' : 'A'
-}
-
-const groupA = computed(() => rows.value.filter((p) => groupOf(p) === 'A'))
-const groupB = computed(() => rows.value.filter((p) => groupOf(p) === 'B'))
-const groupC = computed(() => rows.value.filter((p) => groupOf(p) === 'C'))
-
-function affectedCategories(p) {
-  return ['thermal', 'pollution', 'access', 'housing'].filter((key) => p[`subscore_${key}_quartile`] === 4)
-}
-
-function gapSentence(p) {
-  const group = groupOf(p)
-  const keys = group === 'A' ? GAP_KEYS_UNDERSERVED : GAP_KEYS_DENSE
-  const fastAccessArtifact = group === 'C'
-  const categories = affectedCategories(p).filter((key) => !(key === 'access' && fastAccessArtifact))
-  const clauses = categories.map((key) => (key === 'access' ? t(accessGapKey(p)) : t(keys[key])))
-  const listFormat = new Intl.ListFormat(locale.value === 'fr' ? 'fr-FR' : 'en-US', { style: 'long', type: 'conjunction' })
-  const sentenceKey = group === 'A' ? 'ranking.gapSentence' : 'ranking.denseSentence'
-  let sentence = t(sentenceKey, { list: listFormat.format(clauses) })
-
-  if (fastAccessArtifact) {
-    const minutes = accessTimeMinutes(p)
-    sentence += ' ' + t('ranking.accessArtifactNote', { min: formatMinutes(minutes) })
-  }
-
-  return sentence
+function figures(p) {
+  return [
+    { key: 'artif', value: pct(p.pct_artificialized), median: pct(medians.value.pct_artificialized) },
+    { key: 'airNoise', value: num(p.air_noise_coexposure_class), median: num(medians.value.air_noise_coexposure_class) },
+    { key: 'dpe', value: pct(p.pct_dpe_fg), median: pct(medians.value.pct_dpe_fg) },
+    { key: 'income', value: eur(p.median_income), median: eur(medians.value.median_income) },
+  ]
 }
 </script>
 
@@ -176,55 +118,33 @@ function gapSentence(p) {
 
     <h1>{{ t('ranking.title') }}</h1>
     <p class="intro">{{ t('ranking.intro') }}</p>
+    <p class="intro-split">{{ t('ranking.sameScoreNote') }}</p>
     <p class="tie-notice">{{ t('ranking.tieNotice') }}</p>
-    <p class="intro-split">{{ t('ranking.introSplit') }}</p>
+    <p class="tie-notice">{{ t('ranking.figuresNote') }}</p>
 
     <p v-if="loading" class="loading">{{ t('scatter.loading') }}</p>
     <template v-else>
-      <section class="ranking-group">
-        <h2 class="group-title">{{ t('ranking.groupATitle', { n: groupA.length }) }}</h2>
-        <p class="group-desc">{{ t('ranking.groupADesc') }}</p>
+      <section v-for="g in groups" :key="g.key" class="ranking-group">
+        <h2 class="group-title">{{ t(`ranking.group_${g.key}_title`, { n: g.rows.length }) }}</h2>
+        <p class="group-desc">{{ t(`ranking.group_${g.key}_desc`) }}</p>
         <ol class="ranking-list">
-          <li v-for="p in groupA" :key="p.code_iris" class="ranking-row glass">
+          <li v-for="p in g.rows" :key="p.code_iris" class="ranking-row glass">
             <div class="row-head">
               <span class="name">{{ p.nom_iris }}</span>
               <span class="commune">{{ p.nom_com }}</span>
             </div>
-            <p class="gap-sentence">{{ gapSentence(p) }}</p>
-          </li>
-        </ol>
-      </section>
-
-      <section class="ranking-group">
-        <h2 class="group-title">{{ t('ranking.groupCTitle', { n: groupC.length }) }}</h2>
-        <p class="group-desc">{{ t('ranking.groupCDesc') }}</p>
-        <ol class="ranking-list">
-          <li v-for="p in groupC" :key="p.code_iris" class="ranking-row glass">
-            <div class="row-head">
-              <span class="name">{{ p.nom_iris }}</span>
-              <span class="commune">{{ p.nom_com }}</span>
-            </div>
-            <p class="gap-sentence">{{ gapSentence(p) }}</p>
-          </li>
-        </ol>
-      </section>
-
-      <section class="ranking-group">
-        <h2 class="group-title">{{ t('ranking.groupBTitle', { n: groupB.length }) }}</h2>
-        <p class="group-desc">{{ t('ranking.groupBDesc') }}</p>
-        <ol class="ranking-list">
-          <li v-for="p in groupB" :key="p.code_iris" class="ranking-row glass">
-            <div class="row-head">
-              <span class="name">{{ p.nom_iris }}</span>
-              <span class="commune">{{ p.nom_com }}</span>
-            </div>
-            <p class="gap-sentence">{{ gapSentence(p) }}</p>
+            <ul class="figures">
+              <li v-for="f in figures(p)" :key="f.key">
+                {{ t(`ranking.fig_${f.key}`) }} <span class="fig-value">{{ f.value }}</span>
+                <span class="fig-median">{{ t('ranking.metroMedian', { value: f.median }) }}</span>
+              </li>
+            </ul>
           </li>
         </ol>
       </section>
     </template>
 
-    <p v-if="!loading" class="footnote">{{ t('ranking.footnote', { n: rows.length }) }}</p>
+    <p v-if="!loading" class="footnote">{{ t('ranking.footnote', { n: listed.length }) }}</p>
   </div>
 </template>
 
@@ -351,6 +271,35 @@ h1 {
 .footnote {
   margin-top: 24px;
   font-size: 12px;
+  color: var(--text-muted);
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 520px) {
+  .figures {
+    grid-template-columns: 1fr;
+  }
+}
+.figures li {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+.figures .fig-value {
+  font-family: var(--mono);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.figures .fig-median {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
   color: var(--text-muted);
 }
 </style>

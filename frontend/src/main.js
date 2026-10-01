@@ -15,7 +15,15 @@ import { routeRecords, installLocaleGuard } from './router'
 // (this setup callback runs once per prerendered route, plus once in the
 // browser) rather than reusing a shared singleton — see createI18nInstance
 // for why that leaked locale state across concurrently-rendered routes.
-export const createApp = ViteSSG(App, { routes: routeRecords }, ({ app, router }) => {
+// Scroll to #anchors on in-app navigation too (the footer links to
+// /methodology#data-licences), and to the top on a plain page change.
+function scrollBehavior(to, from, savedPosition) {
+  if (savedPosition) return savedPosition
+  if (to.hash) return { el: to.hash }
+  return { top: 0 }
+}
+
+export const createApp = ViteSSG(App, { routes: routeRecords, scrollBehavior }, ({ app, router }) => {
   const { i18n, setLocale } = createI18nInstance()
   app.use(i18n)
   installLocaleGuard(router, setLocale)

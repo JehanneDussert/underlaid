@@ -1,4 +1,53 @@
-# Underlaid — mapping cumulative environmental exposure in Paris + inner suburbs
+# Underlaid
+
+**Where environmental exposures overlap in Paris and its inner suburbs —
+and who has the means to cope with them.** For each of 2,752
+neighborhoods (INSEE IRIS), Underlaid counts how many of three exposures
+— heat, air/noise pollution, energy-inefficient housing — are
+*simultaneously* in their worst quartile, and sets that count beside
+residents' means to cope. Built entirely from public open
+data; every formula documented.
+
+![Underlaid map: cumulative environmental exposure score across Paris and the inner suburbs](docs/screenshot.png)
+
+**[Open the map](https://underlaid.vercel.app)** ·
+[Methodology](https://underlaid.vercel.app/methodology) ·
+[Ranking](https://underlaid.vercel.app/ranking) ·
+[Press kit](https://underlaid.vercel.app/press) ·
+[Version française](https://underlaid.vercel.app/fr)
+
+**What it measures / doesn't**
+- ✅ **Exposure**: a count (0-3) of categories in their metro-wide worst quartile — never a smoothed average.
+- ✅ **Means to cope**, on a *separate* axis: median income, overcrowded homes, secondary residences (INSEE 2021) — crossed with exposure on the map, never added to the score.
+- ❌ Not sensitivity (age, health), not what households actually do (air conditioning, time off), not flood, soil or industrial risk (yet). Access to services is shown for information only — no indicator measures it reliably yet ([why](SCORING.md#why-access-to-services-left-the-score)).
+- ❌ Not an accusation: it shows where exposures stack up, not why, and names no one as the cause.
+
+**Key figures** (2,752 IRIS, data snapshot of July 26, 2026 — the score
+moves with every pipeline run):
+
+| Score | 0 | 1 | 2 | 3 |
+|---|---|---|---|---|
+| IRIS | 1,144 (41.6%) | 1,202 (43.7%) | 375 (13.6%) | 31 (1.1%) |
+
+**What crossing exposure with means shows** (2,529 IRIS with published
+income):
+- **Not the same exposures.** Highly exposed neighborhoods (2 or 3 of 3)
+  with the *highest* means are mostly in Paris (189 of 232) and stack
+  **heat and old, inefficient housing** (worst quartile in 93% and 95% of
+  them). Those with the *lowest* means are mostly in Seine-Saint-Denis
+  and Val-de-Marne and stack **heat and air/noise pollution** (87% and
+  89%).
+- **Overall, the link between exposure and means is weak** (Spearman
+  +0.28), and slightly positive only because of dense, older central
+  Paris (+0.39 within Paris); in the three inner-suburb departments
+  there's almost no link.
+- **Where high exposure and low means meet, it's concentrated**: in
+  Seine-Saint-Denis, 79% of the highly exposed neighborhoods are in the
+  metro area's lowest third of means; in Paris, 2%.
+
+---
+
+## About this repository
 
 Interactive mapping tool revealing, per IRIS zone, the cumulative overlap
 of several environmental exposures (heat, air/noise, access to services,
@@ -41,10 +90,11 @@ The score is meant to stay **descriptive, never accusatory**: it shows
 the correlation between income and exposure without asserting intent
 behind it. It's named a **cumulative environmental exposure score**,
 not a "vulnerability score" — in climate science, vulnerability is
-exposure + sensitivity + adaptive capacity together, and adaptive
-capacity is heavily income-linked. Calling this an exposure score is
-more accurate to what it actually measures; see SCORING.md's "What this
-score doesn't measure" for the full reasoning.
+exposure + sensitivity + adaptive capacity together. The score measures
+exposure only; adaptive capacity is measured on its own, separate axis
+(the map's "Exposure × means" view) and never folded into it — see
+SCORING.md's "What this score doesn't measure" and "Adaptive capacity —
+a separate axis".
 
 ## Step 1 — Data
 
@@ -68,7 +118,7 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
 | `04_cool_spots_green_areas.py` | `cool_spots_green_iris.geojson` | data.iledefrance.fr — open/publicly-accessible green & wooded space, region-wide — re-sourced from `opendata.paris.fr` in Phase 5 |
 | `05_air_noise.py` | `air_noise_iris.geojson` | bruitparif.fr — Airparif/Bruitparif air-noise co-exposure map |
 | `06_bpe.py` | `bpe_iris.geojson` | INSEE — Base Permanente des Équipements (BPE), health/education/transport domains |
-| `07_equipment_access_200m.py` | `equipment_access_iris.geojson` | data.gouv.fr — access time to equipment, 200m grid |
+| `07_equipment_access_200m.py` | `equipment_access_iris.geojson` | data.gouv.fr — access time to equipment, 200m grid (unscored context since the v0 launch, like scripts 09, 12, 15) |
 | `08_income_filosofi.py` | `income_iris.geojson` | INSEE Filosofi — median disposable income, 2021 |
 | `09_social_index_schools.py` | `social_index_iris.geojson` | data.education.gouv.fr — social position index (IPS), primary/middle schools |
 | `10_energy_performance.py` | `energy_performance_iris.geojson` | data.ademe.fr — DPE, share of F/G-rated housing |
@@ -83,7 +133,9 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
 | `20_associational_density_context.py` | `associational_density_context_commune.geojson` | data.iledefrance.fr — active-association density (RNA), per km² and per 1,000 residents, MGP-wide **commune** grain (143 communes, widened from 20 Paris arrondissements in Phase 5), context only, not scored |
 | `21_population_iris.py` | `population_iris.geojson` | INSEE Recensement de la population 2021 — municipal population per IRIS, same vintage as Filosofi; used to normalize raw counts into per-1,000-resident rates |
 | `22_artificialization_mos.py` | `artificialization_iris.geojson` | data.iledefrance.fr — MOS (Mode d'Occupation du Sol) land use, % of IRIS area artificialized/sealed; 4th thermal sub-score indicator, substituted for IGN's OCS GE (no accessible vector API — see SCORING.md) |
-| `24_secondary_residences.py` | `secondary_residences_iris.geojson` | INSEE Recensement de la population 2021 ("base infra-communale logement") — share of housing units that are secondary residences or occasional dwellings, same vintage as Filosofi/population; adaptive-capacity context alongside median income, never scored — see SCORING.md |
+| `24_secondary_residences.py` | `secondary_residences_iris.geojson` | INSEE Recensement de la population 2021 ("base infra-communale logement") — share of housing units that are secondary residences or occasional dwellings, same vintage as Filosofi/population; one of the 3 indicators of the separate adaptive-capacity axis (script 26), never part of the exposure score — see SCORING.md |
+| `25_overcrowding.py` | `overcrowding_iris.geojson` | INSEE Recensement 2021 ("base infra-communale logement", same file as script 24) — share of overcrowded main residences, INSEE definition (`C21_RP_HSTU1P_SUROCC`); adaptive-capacity indicator, never scored |
+| `26_adaptive_capacity.py` | `adaptive_capacity_iris.json` | Derived — adaptive-capacity index (mean percentile rank of median income, overcrowding, secondary residences), its tertile, and the exposure × means bivariate class. **Separate file, never an input to the exposure score** — see SCORING.md "Adaptive capacity — a separate axis" |
 
 ### Things worth knowing before re-running these scripts
 
@@ -198,8 +250,8 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
   — a real 5th sub-score would have changed the cumulative score from
   "X out of 4" to "X out of 5" everywhere in the app for one indicator
   that, unlike the other four, only proxies nighttime visibility rather
-  than "inclusive mobility" (already partly covered by the access
-  sub-score's PMR-accessibility and footway-density indicators).
+  than "inclusive mobility" (PMR accessibility and footway density, both
+  now unscored context — see SCORING.md).
   Restricted to Paris communes from the start of
   the aggregation (not just filtered afterward): pandas' `.sum()` over an
   all-NaN group silently returns `0`, not `NaN`, so a non-Paris commune
@@ -266,14 +318,16 @@ container.
 ## Step 2 — Cumulative environmental exposure score
 
 `scripts/11_compute_vulnerability_score.py` combines the layers above
-into `data/processed/vulnerability_score_iris.geojson`: 4 sub-scores
-(thermal — now built from 4 indicators since Phase 5 added
+into `data/processed/vulnerability_score_iris.geojson`: 3 sub-scores
+(thermal — built from 4 indicators since Phase 5 added
 artificialized-surface share alongside heat vulnerability, cool
-facilities and canopy; pollution; access to services; housing — built
-from 2 indicators since Phase 3 added electrical thermosensitivity
-alongside DPE) plus a cumulative score = the count of sub-scores
-simultaneously in their worst quartile (0-4), by design not a weighted
-average — see **[SCORING.md](SCORING.md)** for the full formula,
+facilities and canopy; air/noise pollution; housing — built from 2
+indicators since Phase 3 added electrical thermosensitivity alongside
+DPE) plus a cumulative score = the count of sub-scores simultaneously in
+their worst quartile (0-3), by design not a weighted average. Access to
+services was a 4th sub-score until the v0 launch; its raw figures stay
+in the output as unscored context (see SCORING.md, "Why access to
+services left the score") — see **[SCORING.md](SCORING.md)** for the full formula,
 weights, thresholds and known caveats (nothing here is a black box).
 
 Run it after `run_all.py` (or `make run`, which already includes it):
@@ -282,17 +336,14 @@ Run it after `run_all.py` (or `make run`, which already includes it):
 make run-11_compute_vulnerability_score
 ```
 
-Current distribution across the full MGP's 2,752 IRIS: 31.8% score 0,
-44.7% score 1, 21.3% score 2, 2.1% (58 IRIS) score 3, 0.1% (4 IRIS)
-score 4 — see
-SCORING.md's "Minimum-indicator threshold", "Access time's compressed
-distribution", "cool_facility_deficit's small-population inflation" and
-"Expanding beyond Paris" sections for the corrections and the extension
-that moved this
-distribution, including 4 IRIS now at 4/4 — Économie 1 (Drancy), the
-first found, plus 3 more (Le Perreux-sur-Marne, Villeneuve-Saint-
-Georges, Aulnay-sous-Bois) that surfaced once the
-`cool_facility_deficit` small-population-inflation bug was fixed.
+Current distribution across the full MGP's 2,752 IRIS: 41.6% score 0,
+43.7% score 1, 13.6% score 2, 1.1% (31 IRIS) score 3 — see SCORING.md's
+"Current distribution" and the correction sections before it for
+everything that moved this distribution. The four IRIS that reached 4/4
+under the former 4-sub-score version (Économie 1 in Drancy, Les
+Parclairs in Le Perreux-sur-Marne, Président Wilson in
+Villeneuve-Saint-Georges, Nonneville 3 in Aulnay-sous-Bois) are all at
+3/3 now.
 
 ### Tests
 
@@ -300,8 +351,7 @@ Georges, Aulnay-sous-Bois) that surfaced once the
 make test
 ```
 
-`tests/test_pipeline.py` is a smoke-test suite, not full coverage (30
-tests): every per-IRIS layer has exactly 2,752 rows, every context layer
+`tests/` is a smoke-test suite, not full coverage (53 tests): every per-IRIS layer has exactly 2,752 rows, every context layer
 has the row count matching its actual grain (20 for the 3 still-
 Paris-only arrondissement facts, ~143 for the now MGP-wide commune-grain
 RNA layer), `code_iris` is unique and well-formed against any of the 4
@@ -312,7 +362,14 @@ among IRIS with valid data**. That last one is a standing regression
 guard for the sparse-data bias described above: it's the automated
 version of the 47%-vs-25% check that caught it in the first place, so a
 future source addition (or a further geographic expansion) can't
-reintroduce the same bias silently.
+reintroduce the same bias silently. Because an exact overall quartile
+split can hide that bias, a second test checks the worst-quartile share
+by *number of indicators available* for each sub-score (max/min ratio
+under 1.5) — the check that caught access's 29.6%-vs-17.6% skew. The
+adaptive-capacity axis has its
+own guards: masking follows income masking exactly, tertiles stay
+balanced, no cell of the 3×3 grid is anomalously over-represented, and
+no capacity field ever appears in the exposure score's output.
 
 ## Step 3 — Web map
 
@@ -322,13 +379,17 @@ frontend-specific details). It reads
 step-2 output — re-copy it after re-running the scoring script) and
 never recomputes anything client-side.
 
-- Choropleth of the cumulative score by default, toggle to any of the 4
+- Choropleth of the cumulative score by default, toggle to any of the 3
   sub-score quartiles.
 - Click an IRIS for a detail panel: which sub-scores are unfavorable,
   median income, and the concrete figures behind them (e.g. "1.0 min to
   the nearest health equipment").
 - Clear legend, consistent with the step-2 distribution chart's color
   ramp.
+- "Exposure × means" view: a 3×3 bivariate map crossing the exposure
+  class (0 / 1 / 2+) with the adaptive-capacity tertile, read from its own
+  file (`frontend/public/data/adaptive_capacity_iris.json`); the detail
+  panel shows the two axes separately.
 - Basemap: CARTO Positron via MapLibre GL, no API key required.
 
 ```bash
@@ -362,174 +423,10 @@ concrete example of a claim that had to be walked back once checked).
 
 ## What building this actually taught us
 
-Not the plan — the surprises. Kept here because they'd otherwise get
-lost the next time someone (human or not) touches this pipeline.
-
-**French open data is less standardized than it looks.**
-- Identical-sounding dataset titles on data.gouv.fr are not globally
-  unique. The generic-looking slug for "Carte des îlots de chaleur
-  urbains (ICU)" turned out to belong to Toulouse Métropole, not Paris —
-  the actual Paris-relevant heat data lived under a differently-named
-  national dataset (Sat4BDNB). Always check the *publishing
-  organization* field, never trust a title match.
-- A regional portal mirror can be the authoritative source, not a
-  derivative to be suspicious of: `data.iledefrance.fr`'s "iris" dataset
-  is a direct IGN & INSEE republication (confirmed via its own API
-  metadata), and ended up more practical to query than hunting for the
-  "official" national endpoint would have been.
-- The "recommended" source isn't always the practical one: Paris's
-  official pedestrian-path dataset only ships NeTEx (a transit-industry
-  XML format with no simple geometry export). The same OpenStreetMap
-  data underneath it is directly queryable via Overpass in plain
-  GeoJSON-friendly form — same information, far less parsing.
-- Paris itself is coded two incompatible ways across sources: 20
-  per-arrondissement commune codes (`75101`-`75120`, used by our IRIS
-  reference and Filosofi) vs. one legacy citywide code (`75056`, used by
-  the equipment-access grid and the QPV dataset). Three different
-  scripts had to detect this and fall back to spatial joins instead of
-  attribute joins.
-- Crowdsourced data (Acceslibre) is sparse in ways that matter: only
-  ~19% of accessibility records nationally have their key field filled
-  in at all. Treating "undocumented" as "inaccessible" would have
-  silently invented a signal that isn't there.
-- Sometimes the honest answer is that the data simply doesn't exist.
-  DansMaRue's open data (live dataset and all yearly historical exports,
-  2012-2025) has a report date but never a resolution date or status —
-  the "differentiated public-service responsiveness" axis originally
-  planned for Phase 3 had to be dropped entirely, not approximated,
-  once that was confirmed directly rather than assumed. Same for tree
-  planting dates (trunk circumference stands in instead). Population
-  was a temporary version of this story, not a permanent one: Phase 3
-  reported associational density per km² only because no clean
-  population figure existed in the pipeline at the time; Phase 5 later
-  added one (script 21, INSEE Recensement), which is exactly why that
-  figure could be revisited and switched to per-1,000-residents as the
-  primary metric rather than staying a workaround forever. A data source
-  not existing is a finding worth documenting, not a blocker to quietly
-  route around — but it's also worth re-checking later, since "doesn't
-  exist yet" and "will never exist" aren't the same claim.
-- Not every accessible mirror is equally trustworthy for equally
-  sensitive data. A third-party commune's Opendatasoft mirror was the
-  only accessible source found for 2026 municipal-election results —
-  fine for tree circumference, not solid enough footing to publish
-  arrondissement-level abstention rates, given how much more politically
-  loaded that topic is than canopy age. Skipped rather than published on
-  uncertain provenance.
-
-**Small bugs hid in type coercion, not logic.**
-- pandas silently parses a CSV column of `"True"`/`"False"` text as
-  actual Python booleans, not strings — comparing against the string
-  `"True"` fails with no error, just quietly wrong (all-zero) output.
-  Caught only because a summary statistic looked implausible.
-- Vue's `<style scoped>` silently no-ops a `:root { }` block (the
-  scoping attribute gets appended to `:root`, which never matches
-  `<html>`), so CSS custom properties defined there never apply. They
-  have to live in a genuinely global stylesheet.
-- `pd.NA` as a missing-value placeholder is a trap two levels deep.
-  First: Fiona's GeoJSON writer doesn't recognize it and serializes it
-  as the literal string `"<NA>"` instead of JSON `null` — caught because
-  the frontend rendered "Q<NA>" for one IRIS. The naive fix (plain
-  Python `None` instead) turned out to be its own trap: assigning `None`
-  into a column forces pandas to "object" dtype, and Fiona then
-  stringifies **every** value in an object-dtype column, not just the
-  missing ones — a subsequent feature's strict `=== 4` comparison in JS
-  silently matched nothing, because `4` had become the string `'4'`.
-  The actual fix was `np.nan`, which keeps the column genuine `float64`
-  end to end — the same pattern that had already worked correctly,
-  un-remarked, for `cumulative_vulnerability_score` the whole time.
-- A page's own CSS can shadow a global rule by accident. A print
-  stylesheet meant to hide only the app shell's footer used a bare
-  `footer` selector, which also matched an unrelated page's legitimate
-  content `<footer>` and silently deleted it from the printed PDF.
-  Fixed by selecting the shell's footer by its actual `id` instead of
-  its tag.
-- A background that looks fine can be silently wrong for content that
-  doesn't exist yet. `html`/`body` were pinned to `height: 100%` (one
-  viewport) for a decorative radial-gradient glow, which worked
-  perfectly until a page taller than one screen (the methodology page)
-  got built — the glow then tiled down the entire scrollable canvas,
-  since nothing told the browser not to repeat it past that first
-  screen's height. Fixed with `background-attachment: fixed` +
-  `background-repeat: no-repeat`, but it only became visible once a
-  taller page actually existed to reveal it.
-
-**The environment fought back more than the code did.**
-- A corporate/AV TLS-inspecting proxy broke certificate validation two
-  different ways for two different tools (Python's `requests` — fixed
-  with `pip-system-certs`; `curl`'s Windows `schannel` backend — no fix
-  found, still broken) while a real browser's network stack handled the
-  exact same hosts without any special configuration at all.
-- Headless Chromium (via Playwright, used to verify the frontend)
-  intermittently loses its WebGL context for reasons specific to
-  software-rendered headless GPU emulation — fixable with
-  `--use-angle=swiftshader-webgl` most of the time, but not always. Real
-  users on real GPUs won't see this; it's purely a test-environment
-  artifact, and worth not over-indexing on.
-- A completely unrelated Docker container was already squatting on the
-  default Vite port (5173), so `curl localhost:5173` returned a
-  confident `200` from someone else's app. The real dev server had
-  silently moved to 5174; only tracing the listening PID caught it.
-- What a browser *displays* and what `canvas.toDataURL()`/`drawImage()`
-  can actually *read back* from that same canvas aren't guaranteed to
-  match — and this turned out to be true even outside headless
-  software-rendered WebGL, not just inside it. The press-kit map export
-  composites the MapLibre canvas + deck.gl's own canvas; the deck.gl
-  layer (vector data, no textures) always reads back correctly, but the
-  MapLibre basemap (raster tiles) sometimes came back solid black
-  despite rendering correctly on screen moments earlier. Tested directly
-  on a real, hardware-accelerated browser (confirmed via `chrome://gpu`:
-  "WebGL: Hardware accelerated") rather than assumed fixed once off
-  headless — and the same failure reproduced there too, intermittently,
-  with no fixed wait time (tried up to 3s) that reliably prevented it.
-  That ruled out "headless-only" as the explanation; it's a transient
-  GPU/driver buffer-swap race on this specific canvas. Fixed with
-  detection + retry (sample a few pixels after each repaint; if the
-  basemap area is still solid black, wait and try again, up to 4
-  attempts) rather than a longer fixed delay, which doesn't reliably
-  help against a race — the same defensive pattern already used
-  elsewhere in this codebase for WebGL context loss.
-
-  Verified at two sample sizes rather than trusting an initial small
-  one: a first batch of 5 runs, then a second batch of 20 (a 5-run
-  sample can easily hide a residual 5-10% failure rate that only shows
-  up at more scale). Combined result: **24 of 25 runs read back the
-  basemap correctly** — independently verified each time by sampling
-  actual pixels from the downloaded PNG in a fresh page, not just
-  trusting the app's own console log. The single failure (in the first,
-  5-run batch) turned out to be a genuine CARTO tile-fetch network
-  error, not the WebGL race the fix targets — correctly distinguished
-  because the retry logic logs which one occurred instead of masking
-  both the same way. The 20-run batch alone came back 20/20, with the
-  retry path never even triggered (every run's basemap read back
-  correctly on the very first attempt) — a good sign the underlying
-  race is either rare or specific to conditions this second batch's
-  brief pause between runs happened to avoid, but 0 failures in 20
-  trials still leaves real uncertainty about the exact residual rate
-  (a common small-sample rule of thumb puts the plausible upper bound
-  closer to 10-15% than to 0%, not "proven negligible"). Treat this as
-  strong evidence the fix meaningfully helps, not proof the race can
-  never resurface.
-
-- pandas' `.sum()` over an all-`NaN` group silently returns `0`, not
-  `NaN` — a second instance of the same underlying failure mode as the
-  unconditional-`fillna(0)` bug already caught in street lighting's raw
-  layer (script 13), this time one level removed, inside script 19's
-  `groupby().agg()` aggregation up to arrondissement grain. Fixed by
-  restricting the whole script to Paris communes from the start, rather
-  than trying to patch the aggregation after the fact. Found precisely
-  because Phase 5's expansion introduced groups (non-Paris communes)
-  that could legitimately have zero underlying rows for a Paris-only
-  source — a case the original Paris-only version never exercised.
-
-**The score itself is an estimate, not a fixed ground truth.**
-Adding the two accessibility indicators (Acceslibre, footway density)
-shifted which IRIS reach a cumulative score of 4 — one dropped out, one
-new one appeared. That's expected for a score built from equal-weighted
-z-scores and percentile ranks, not a bug: every new indicator nudges the
-boundary. It also means the score should be re-examined, not blindly
-trusted, each time a new sub-score indicator is added — which is exactly
-why SCORING.md documents the current distribution instead of leaving
-it implicit.
+The surprises along the way — French open data quirks, the sparse-data
+bias found (twice) in the quartile ranking, and why the score is an
+estimate that moves with every correction — are in
+**[docs/LESSONS.md](docs/LESSONS.md)**.
 
 ## Step 5 — Static build & deployment
 
@@ -561,24 +458,18 @@ context) add another ~1.4 MB combined. All static hosts below apply
 gzip/brotli automatically, so the real transfer size is closer to
 ~2.6 MB than 7.3 MB.
 
-**Geometry simplification applied**: the brief's "simplify geometry if
-it exceeds a few MB" threshold was genuinely hit at 6.3 MB unsimplified
-(1.6 MB gzipped). Ran `npx mapshaper vulnerability_score_iris.geojson
--simplify 10% keep-shapes -o precision=0.000001 simplified.geojson` —
-`keep-shapes` prevents small IRIS polygons from being simplified into
-nothing, and the precision cap (6 decimal places, ~11cm at this
-latitude) trims redundant coordinate precision no city-wide map needs.
-Result: 6.3 MB → 4.05 MB (a 36% reduction), verified before trusting
-it — not just eyeballed:
-- All 2,752 features and every property retained, spot-checked several
-  IRIS's values for an exact match against the unsimplified file.
-- A test IRIS's polygon area shifted by 0.22% — imperceptible at any
-  zoom level the app actually uses.
-- Checked visually at both the city-wide view and zoomed all the way
-  into a single IRIS (the most demanding case, since that's where
-  simplification artifacts would show first): boundaries are slightly
-  more angular up close, as expected, but no self-intersections, no
-  missing slivers, side panel data unaffected.
+**Geometry: precision reduced, shapes not simplified.** The published
+`vulnerability_score_iris.geojson` goes through
+`npx mapshaper vulnerability_score_iris.geojson -o precision=0.000001` only
+(6 decimal places, ~11 cm at this latitude): 6.4 MB → 4.6 MB (1.0 MB
+gzipped), every coordinate kept. An earlier version also ran
+`-simplify 10% keep-shapes`; re-measured on all 2,752 IRIS (not one
+spot-checked polygon) at the v0 launch, it shifted IRIS areas by 3.9% at
+the median and up to 85% for small IRIS — and the address search uses
+these exact outlines to decide which neighborhood an address falls in.
+Every simplification level tested saved at most ~160 KB gzipped
+(properties, not shapes, dominate the file), so shapes are kept intact.
+Re-run the command above after every copy from `data/processed/`.
 
 ### SEO and pre-rendering
 
@@ -646,6 +537,28 @@ Neither config needs any environment variables — unless the automated
 update workflow below is wired to a deploy hook, in which case that
 hook lives in the host's own dashboard, not in these files.
 
+**A real bug, found and fixed after the switch to static pre-rendering
+(see "SEO and pre-rendering" above):** both configs originally carried
+a blanket SPA-fallback rewrite (`/(.*)` → `/index.html` on Vercel,
+`/*` → `/index.html` on Netlify) — correct for the pure client-side-routed
+app this was before `vite-ssg`, where a direct visit to `/ranking` had
+no matching file and needed Vue Router to handle it after the fact.
+Once every declared route got its own real prerendered HTML file (8
+total — `index.html`, `methodology.html`, `ranking.html`, `press.html`,
+and their `fr/` counterparts), that same rewrite became actively
+harmful: it would have made both hosts serve the home page's
+`index.html` for every URL, `/ranking` and `/fr/ranking` included,
+silently undoing the entire prerendering effort. This wouldn't show up
+testing locally via `vite preview` — that server has no concept of
+either host's rewrite rules, it just serves whatever static file
+matches the request path directly, which is exactly why it went
+unnoticed until the configs themselves were reviewed directly rather
+than only testing the local build output. Fixed by removing the
+fallback entirely from both files: with every route now a real static
+file, no SPA fallback is needed, and a truly unmatched path should
+return each host's normal 404 rather than silently serving the home
+page.
+
 ### Keeping the data current — automated updates
 
 `.github/workflows/update-pipeline.yml` re-runs the full pipeline on a
@@ -670,7 +583,7 @@ below. Only once tests pass does it run `scripts/23_diff_report.py` to
 compare the fresh output against whatever is currently live in
 `frontend/public/data/`:
 how many IRIS entered/left the score->=3 population, and how much the
-0-4 category breakdown shifted. This is the automated form of an audit
+0-3 category breakdown shifted. This is the automated form of an audit
 this project has already had to do by hand twice (`access_time`,
 `cool_facility_deficit` — see SCORING.md): in both of those real cases,
 a distribution shift this large turned out to be a bug, not a real
@@ -732,11 +645,65 @@ not the parent page's.
 
 ## Roadmap
 
-Nothing left from the original brief (steps 1-5 all done). Work beyond
-the MVP has gone through several phases: reliability, credibility/press
-kit, address search/sharing/ranking, new data axes, and **the Petite
-Couronne geographic expansion, now done too** — this README already
-reflects it (2,752 IRIS, 4 departments, the 4th thermal indicator,
-population normalization). Open-sourcing and citizen reporting are next
-up; Grande Couronne (explicitly not a default next step) and PWA/stretch
-goals are further out and not currently planned.
+**v0.1** — the public launch: cumulative exposure score over the 2,752
+IRIS of Paris and the inner suburbs, the separate "means to cope" axis
+and its exposure × means map, methodology and press pages in French and
+English, quarterly automated data updates behind a publication
+guard-rail.
+
+Next, in order:
+1. **New indicators** (Phase 7): APL healthcare accessibility (capacity,
+   not just distance), **flood risk** (Seine/Marne PPRI — a possible next
+   layer, not measured today), soil and water pollution, aircraft noise,
+   industrial risk, digital divide. Each goes through the same
+   variance/skew check before entering anything.
+2. **Access to public services nationwide** (Phase 9): a separate
+   commune/200 m-grid module for rural and peri-urban France, where the
+   question is distance rather than heat — not an extension of this
+   score.
+3. Citizen reporting, a guide to adapting Underlaid to another city.
+
+Not planned for now: Grande Couronne, PWA.
+
+## License & data attribution
+
+**Code**: [MIT](LICENSE). **Published data** (`frontend/public/data/*.geojson`,
+i.e. the score and every indicator behind it): [Open Database License (ODbL)
+1.0](https://opendatacommons.org/licenses/odbl/1-0/). That's not a free
+choice: two inputs (OpenStreetMap, and the Ville de Paris datasets) are
+themselves ODbL, whose share-alike clause applies to any derived database
+made public. Every other input is under the Licence Ouverte / Open Licence
+2.0 (Etalab), which explicitly allows redistribution under ODbL.
+
+Each source keeps its original license. Every entry below was checked
+against the publisher's own metadata (portal API or reuse-terms page) in
+September 2026, not assumed:
+
+| Source | Publisher | Used for | License |
+|---|---|---|---|
+| IRIS contours 2024 (data.iledefrance.fr) | IGN & INSEE | Neighborhood boundaries | Licence Ouverte 2.0 |
+| BPE 2025, Filosofi 2021, Recensement 2021 (population, housing), access-time 200m grid | INSEE | Services, cool facilities, income, population, secondary residences, access time | Licence Ouverte 2.0 — "Source : Insee" |
+| Urban heat island indicators (Sat4BDNB, data.gouv.fr) | CSTB | Thermal | Licence Ouverte 2.0 |
+| Open green & wooded spaces; MOS land use 2021 (data.iledefrance.fr) | L'Institut Paris Region | Thermal | Licence Ouverte 2.0 |
+| Air-noise co-exposure map 2024 | Airparif & Bruitparif | Pollution | Published as open data with no formal license named; the publisher requires this citation: *"Source des données : Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr"* |
+| IPS social position index, school directory (data.education.gouv.fr) | DEPP — Ministère de l'Éducation nationale | Context, not scored (school social mix) | Licence Ouverte 2.0 |
+| DPE energy performance certificates (data.ademe.fr) | ADEME | Housing | Licence Ouverte 2.0 |
+| Electricity consumption by IRIS (opendata.enedis.fr) | Enedis | Housing (thermosensitivity) | Licence Ouverte 2.0 |
+| Acceslibre (data.gouv.fr) | Acceslibre | Context, not scored (PMR accessibility) | Licence Ouverte 2.0 |
+| QPV boundaries (data.iledefrance.fr) | ANCT | Validation layer, not scored | Licence Ouverte |
+| RNA associations directory (data.iledefrance.fr) | Ministère de l'Intérieur | Context, not scored | Licence Ouverte 2.0 |
+| Street trees, public lighting (opendata.paris.fr) | Ville de Paris | Context, not scored | **ODbL** |
+| Footways (Overpass API) | © OpenStreetMap contributors | Context, not scored (pedestrian infrastructure) | **ODbL** |
+| Basemap tiles (Positron) | © CARTO, © OpenStreetMap contributors | Web map background | CARTO basemap terms; OSM data ODbL |
+| Address search (API Adresse / BAN) | IGN, DINUM | Web map search | Licence Ouverte 2.0 |
+
+Context figures quoted but not redistributed as data (life expectancy —
+Institut Paris Region / APUR / ORS Île-de-France; heatwave excess
+mortality — Santé publique France; air-conditioned schools — mairie and
+press communications, see `scripts/16_school_ac_context.py`) are cited
+with their source where they appear on the site.
+
+To cite the project, see [`CITATION.cff`](CITATION.cff) (GitHub shows a
+"Cite this repository" button), and include the date of the data
+snapshot you used — it's shown in the site footer, and the score moves
+with every pipeline run.

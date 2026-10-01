@@ -56,7 +56,10 @@ def download() -> Path:
 
 
 def load_raw(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path, sep=";")
+    # IRIS codes read as text: parsed as numbers, codes with a leading zero
+    # (e.g. Ariège, "09...") lose it and some then start with "92", slipping
+    # through the MGP department filter as bogus 8-digit codes.
+    return pd.read_csv(path, sep=";", dtype={code: str for code in IRIS_CODE_FIELD_CANDIDATES}, low_memory=False)
 
 
 def normalize(df: pd.DataFrame):

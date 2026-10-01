@@ -9,7 +9,9 @@ const DATA_URL = '/data/vulnerability_score_iris.geojson'
 // Same validated (colorblind-safe, single-hue) magenta ramp as the map's
 // choropleth — see App.vue's DATA_RAMP_5 comment for how/why it was
 // picked over the maquette's raw cyan->amber->magenta gradient.
-const RAMP_5 = ['#efc8d7', '#e977a3', '#f11e6f', '#c9034f', '#99003b']
+// Same 0-3 ramp as the map's cumulative score (HomeView.vue CUMULATIVE_RAMP).
+const RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#99003b']
+const MAX_SCORE = 3
 
 const WIDTH = 720
 const HEIGHT = 440
@@ -62,8 +64,8 @@ function xScale(income) {
 }
 
 function yScale(score) {
-  // score 0 near the bottom, score 4 near the top
-  return PLOT_HEIGHT - (score / 4) * PLOT_HEIGHT
+  // score 0 near the bottom, the top score (3) near the top
+  return PLOT_HEIGHT - (score / MAX_SCORE) * PLOT_HEIGHT
 }
 
 const xTicks = computed(() => {
@@ -72,12 +74,11 @@ const xTicks = computed(() => {
   return Array.from({ length: 6 }, (_, i) => Math.round(min + step * i))
 })
 
-const yTicks = [0, 1, 2, 3, 4]
+const yTicks = [0, 1, 2, 3]
 
 // Direct-label the IRIS at the highest cumulative score actually present
-// in the data (not hardcoded to 4 — the threshold fix in
-// 11_compute_vulnerability_score.py means 4/4 may not exist at all right
-// now). Only label when that top group is small; per
+// in the data (not hardcoded — the top score has moved before, and
+// moved again when access left the count at the v0 launch). Only label when that top group is small; per
 // marks-and-anatomy.md, labeling every point in a 45-IRIS cluster would
 // be noise, not signal — the tooltip carries per-point detail instead.
 const outliers = computed(() => {
@@ -179,7 +180,7 @@ function exportPng() {
           <circle
             :cx="xScale(p.income)" :cy="yScale(p.jitteredScore)"
             r="5"
-            :fill="RAMP_5[p.score]"
+            :fill="RAMP[p.score]"
             class="point"
             @pointerenter="hovered = p"
             @pointerleave="hovered = null"

@@ -20,6 +20,10 @@ thermal indicator) — both listed early, right after the IRIS reference.
 output (just the IRIS reference), so it can run anywhere before 11;
 listed alongside 21/22 since all three are the same
 "context/normalization layer needed by 11" category.
+25_overcrowding.py re-reads the INSEE file script 24 downloads, so it
+runs right after it. 26_adaptive_capacity.py (Phase 8's separate
+adaptive-capacity axis) reads 11's output and 25's, so it runs last among
+the scoring steps — its output is a separate file, never an input to 11.
 """
 import json
 import subprocess
@@ -36,6 +40,7 @@ SCRIPT_ORDER = [
     "21_population_iris.py",
     "22_artificialization_mos.py",
     "24_secondary_residences.py",
+    "25_overcrowding.py",
     "02_icu_sat4bdnb.py",
     "03_cool_spots_facilities.py",
     "04_cool_spots_green_areas.py",
@@ -52,6 +57,7 @@ SCRIPT_ORDER = [
     "15_pedestrian_paths.py",
     "17_enedis_thermosensitivity.py",
     "11_compute_vulnerability_score.py",
+    "26_adaptive_capacity.py",
     "16_school_ac_context.py",
     "18_tree_age_context.py",
     "20_associational_density_context.py",

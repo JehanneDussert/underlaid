@@ -13,7 +13,11 @@ Run with: pytest tests/ -v
 import sys
 from pathlib import Path
 
+import json
+
 import geopandas as gpd
+import numpy as np
+import pandas as pd
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
@@ -53,6 +57,7 @@ PER_IRIS_LAYERS = [
     "artificialization_iris.geojson",
     "population_iris.geojson",
     "secondary_residences_iris.geojson",
+    "overcrowding_iris.geojson",
     "vulnerability_score_iris.geojson",
 ]
 
@@ -161,9 +166,14 @@ def test_secondary_residences_rate_is_a_0_to_1_fraction():
 
 # --- Scoring output sanity ---
 
+# The 3 scored sub-scores. Access to services left the count at the v0
+# launch (see SCORING.md, "Why access to services left the score"); its
+# raw figures remain in the output as unscored context.
+SCORED_SUBSCORES = ["thermal", "pollution", "housing"]
+
 def test_subscore_status_values_are_known():
     gdf = load("vulnerability_score_iris.geojson")
-    for name in ["thermal", "pollution", "access", "housing"]:
+    for name in SCORED_SUBSCORES:
         values = set(gdf[f"subscore_{name}_status"].dropna().unique())
         assert values <= {"ok", "insufficient_data"}, (
             f"subscore_{name}_status has unexpected values: {values - {'ok', 'insufficient_data'}}"
@@ -173,7 +183,17 @@ def test_subscore_status_values_are_known():
 def test_cumulative_score_is_in_valid_range():
     gdf = load("vulnerability_score_iris.geojson")
     scored = gdf["cumulative_vulnerability_score"].dropna()
-    assert scored.between(0, 4).all(), "cumulative_vulnerability_score must be 0-4 (or null)"
+    assert scored.between(0, 3).all(), "cumulative_vulnerability_score must be 0-3 (or null)"
+
+
+def test_access_is_context_only():
+    """Access figures stay available as context, but no access sub-score
+    exists anymore — nothing access-related may feed the count."""
+    columns = set(load("vulnerability_score_iris.geojson").columns)
+    assert not {c for c in columns if c.startswith("subscore_access")}, "an access sub-score is back in the output"
+    assert {"access_minutes_domain_C", "footway_density_m_per_km2", "pct_pmr_accessible", "social_index_schools"} <= columns, (
+        "access context figures missing from the output"
+    )
 
 
 def test_cumulative_score_distribution_is_plausible():
@@ -182,13 +202,13 @@ def test_cumulative_score_distribution_is_plausible():
     before the minimum-indicator threshold fix, sparse-data IRIS landed in
     a sub-score's worst quartile at ~47% instead of the ~25% chance rate.
     If any single cumulative score value balloons past a third of all
-    IRIS, or if score=4 becomes implausibly common, something regressed.
+    IRIS, or if the top score (3/3) becomes implausibly common, something regressed.
     """
     gdf = load("vulnerability_score_iris.geojson")
     counts = gdf["cumulative_vulnerability_score"].value_counts(normalize=True, dropna=True)
 
     assert counts.get(0, 0) < 0.60, "over 60% of IRIS at score 0 would be an implausibly clean city"
-    for score in (3, 4):
+    for score in (3,):
         share = counts.get(score, 0)
         assert share < 0.15, (
             f"score={score} accounts for {share:.1%} of IRIS — implausibly high; "
@@ -206,7 +226,7 @@ def test_subscore_quartiles_are_roughly_balanced():
     prevent (see SCORING.md).
     """
     gdf = load("vulnerability_score_iris.geojson")
-    for name in ["thermal", "pollution", "access", "housing"]:
+    for name in SCORED_SUBSCORES:
         ok = gdf[gdf[f"subscore_{name}_status"] == "ok"]
         if ok.empty:
             continue
@@ -221,8 +241,157 @@ def test_subscore_quartiles_are_roughly_balanced():
 
 def test_n_subscores_evaluated_is_consistent():
     gdf = load("vulnerability_score_iris.geojson")
-    status_cols = [f"subscore_{name}_status" for name in ["thermal", "pollution", "access", "housing"]]
+    status_cols = [f"subscore_{name}_status" for name in SCORED_SUBSCORES]
     expected_n = (gdf[status_cols] == "ok").sum(axis=1)
     assert (gdf["n_subscores_evaluated"] == expected_n).all(), (
         "n_subscores_evaluated doesn't match the count of 'ok' sub-score statuses"
+    )
+
+
+# --- Phase 8: adaptive-capacity axis (separate from the exposure score) ---
+
+def load_capacity() -> pd.DataFrame:
+    path = config.DATA_PROCESSED / "adaptive_capacity_iris.json"
+    if not path.exists():
+        pytest.skip("adaptive_capacity_iris.json not found — run the pipeline first")
+    return pd.DataFrame(json.loads(path.read_text(encoding="utf-8"))["iris"])
+
+
+def test_overcrowding_rate_is_a_0_to_1_fraction():
+    values = load("overcrowding_iris.geojson")["pct_overcrowded"].dropna()
+    assert len(values) > 2000, "pct_overcrowded mostly null — join or column name likely broke"
+    assert values.between(0, 1).all(), "pct_overcrowded should be a 0-1 fraction"
+
+
+def test_capacity_file_has_one_row_per_iris():
+    cap = load_capacity()
+    score = load("vulnerability_score_iris.geojson")
+    assert len(cap) == EXPECTED_IRIS_COUNT and cap["code_iris"].is_unique
+    assert set(cap["code_iris"]) == set(score["code_iris"])
+
+
+def test_capacity_masking_follows_income_masking():
+    """Documented null share: the index exists only where INSEE publishes
+    median income (the anchor) — 223/2,752 masked as of the 2021 vintage.
+    Never imputed: masked IRIS must stay null, not become 0 or a median.
+    """
+    cap = load_capacity().merge(
+        load("vulnerability_score_iris.geojson")[["code_iris", "median_income"]], on="code_iris"
+    )
+    n_masked = cap["capacity_index"].isna().sum()
+    assert 100 <= n_masked <= 600, f"{n_masked} IRIS without a capacity index — expected ~223"
+    assert (cap["capacity_index"].isna() == cap["median_income"].isna()).all(), (
+        "capacity_index should be null exactly where median_income is masked"
+    )
+    assert (cap["capacity_class"].isna() == cap["capacity_index"].isna()).all()
+
+
+def test_capacity_tertiles_are_balanced():
+    share = load_capacity()["capacity_class"].value_counts(normalize=True)
+    assert set(share.index) == {0, 1, 2}
+    assert share.between(0.30, 0.37).all(), f"capacity tertiles unbalanced: {share.to_dict()}"
+
+
+def test_exposure_class_matches_cumulative_score():
+    cap = load_capacity().merge(
+        load("vulnerability_score_iris.geojson")[["code_iris", "cumulative_vulnerability_score"]], on="code_iris"
+    )
+    expected = cap["cumulative_vulnerability_score"].clip(upper=2)
+    assert (cap["exposure_class"] == expected).all(), "exposure_class should be 0, 1, or 2 for a score of 2+"
+
+
+def test_no_bivariate_cell_is_anomalously_overrepresented():
+    """Anti-bias guard, same spirit as the quartile-balance test above: no
+    cell of the 3x3 grid should hold wildly more IRIS than it would if
+    exposure and capacity were independent, and the masked IRIS must not
+    pile up in one exposure class (they'd then silently vanish from one
+    part of the map).
+
+    Bound history: first run (4-sub-score exposure) 0.72-1.31x, guarded at
+    0.4-2.0x. With access out of the score (v0 launch), exposure follows
+    means more (Spearman +0.28, driven by dense, older central Paris):
+    "2+ exposures / highest means" is 1.88x, "2+ / lowest means" 0.36x —
+    a documented finding, not a data artefact. Bounds now 0.2-2.5x: the
+    ceiling catches a cell anomalously over-filled; the floor sits well
+    below the lowest real cell (0.36x) — a cell under-filled because of
+    the data is a result to report, not a bias — and only catches a future
+    bug that would empty a cell (e.g. a broken join or class mapping).
+    """
+    cap = load_capacity()
+    rated = cap.dropna(subset=["capacity_class"])
+    grid = pd.crosstab(rated["exposure_class"], rated["capacity_class"])
+    expected = np.outer(grid.sum(axis=1), grid.sum(axis=0)) / grid.values.sum()
+    ratio = grid.values / expected
+    assert ratio.max() < 2.5 and ratio.min() > 0.2, f"bivariate grid badly skewed (obs/expected): {ratio.round(2).tolist()}"
+
+    overall = cap["exposure_class"].value_counts(normalize=True)
+    masked = cap[cap["capacity_class"].isna()]["exposure_class"].value_counts(normalize=True)
+    gap = (masked.reindex(overall.index, fill_value=0) - overall).abs().max()
+    assert gap < 0.10, f"masked IRIS concentrated in one exposure class (max gap {gap:.1%})"
+
+
+def test_capacity_never_leaks_into_the_exposure_score():
+    """Non-negotiable principle (CLAUDE.md/SCORING.md): adaptive capacity is
+    a separate axis. The exposure score output must not carry it."""
+    columns = set(load("vulnerability_score_iris.geojson").columns)
+    leaked = {c for c in columns if "capacity" in c or c == "pct_overcrowded"}
+    assert not leaked, f"capacity fields found in the exposure score output: {leaked}"
+
+
+# --- Sparse-data bias, per indicator count (not just overall) ---
+
+def _indicator_availability(gdf):
+    """Which of each sub-score's indicators are present per IRIS, rebuilt
+    from the raw figures carried in the scored output (same validity rules
+    as 11_compute_vulnerability_score.py: cool-facility rate needs
+    population >= 50)."""
+    return {
+        "thermal": [
+            gdf["hvi"].notna(),
+            gdf["cool_spots_within_400m"].notna() & (gdf["population"] >= 50),
+            gdf["pct_cool_green_area"].notna(),
+            gdf["pct_artificialized"].notna(),
+        ],
+        "housing": [gdf["pct_dpe_fg"].notna(), gdf["pct_thermosensitive"].notna()],
+        "pollution": [gdf["air_noise_coexposure_class"].notna()],
+    }
+
+
+MIN_GROUP_SIZE = 100
+MAX_Q4_RATIO = 1.5
+
+
+@pytest.mark.parametrize("name", SCORED_SUBSCORES)
+def test_worst_quartile_share_does_not_depend_on_indicator_count(name):
+    """The overall quartile check above can pass while the bias it exists
+    to catch is still there: every sub-score is split into exact quartiles
+    overall, so the skew only shows up when IRIS are grouped by how many of
+    its indicators they actually have. IRIS computed from fewer indicators
+    must not land in the worst quartile much more (or less) often than
+    fully-documented ones.
+
+    Threshold: among groups of >= 100 IRIS, the highest worst-quartile share
+    must stay under 1.5x the lowest. The original sparse-data bias (47% vs
+    25%, ratio ~1.9) fails it; thermal as of this writing (30.2% with 3
+    indicators vs 24.6% with 4, ratio 1.23) passes. Access failed it (29.6%
+    with 3 indicators vs 17.6% with 4, ratio 1.68) — one of the reasons it
+    left the score at the v0 launch; any candidate return of access must
+    pass this test first (see CLAUDE.md, Phase 7).
+    """
+    gdf = load("vulnerability_score_iris.geojson")
+    n_available = sum(col.astype(int) for col in _indicator_availability(gdf)[name])
+    ok = gdf[f"subscore_{name}_status"] == "ok"
+    groups = (
+        pd.DataFrame({"n": n_available[ok], "q4": gdf.loc[ok, f"subscore_{name}_quartile"] == 4})
+        .groupby("n")["q4"]
+        .agg(["size", "mean"])
+    )
+    groups = groups[groups["size"] >= MIN_GROUP_SIZE]
+    if len(groups) < 2:
+        return  # a single indicator-count group: nothing to compare
+    ratio = groups["mean"].max() / groups["mean"].min()
+    detail = ", ".join(f"{int(n)} indicators: {row['mean']:.1%} of {int(row['size'])}" for n, row in groups.iterrows())
+    assert ratio < MAX_Q4_RATIO, (
+        f"subscore_{name}: worst-quartile share depends on how many indicators an IRIS has "
+        f"({detail}; ratio {ratio:.2f} >= {MAX_Q4_RATIO}) — sparse-data bias"
     )

@@ -2,10 +2,3 @@
   base = "frontend/"
   command = "npm run build"
   publish = "frontend/dist"
-
-# Client-side routing (vue-router, history mode): a direct visit/refresh on
-# a route like /methodology must still resolve to the SPA's index.html.
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200

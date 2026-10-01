@@ -21,8 +21,8 @@ useSeoMeta({
     fr: "Là où les expositions environnementales se superposent à Paris et en petite couronne",
   },
   description: {
-    en: 'Interactive map of 2,752 neighborhoods across Paris and its inner suburbs (Hauts-de-Seine, Seine-Saint-Denis, Val-de-Marne): where heat, pollution, poor access to services, and inefficient housing cumulate at once — a count, never a smoothed average.',
-    fr: "Carte interactive de 2 752 quartiers à Paris et en petite couronne (Hauts-de-Seine, Seine-Saint-Denis, Val-de-Marne) : où la chaleur, la pollution, le manque d'accès aux services et le logement énergivore se cumulent à la fois — un compte, jamais une moyenne lissée.",
+    en: 'Interactive map of 2,752 neighborhoods across Paris and its inner suburbs (Hauts-de-Seine, Seine-Saint-Denis, Val-de-Marne): where heat, air and noise pollution, and energy-inefficient housing cumulate at once — a count, never a smoothed average — crossed with the means residents have to cope.',
+    fr: "Carte interactive de 2 752 quartiers à Paris et en petite couronne (Hauts-de-Seine, Seine-Saint-Denis, Val-de-Marne) : où la chaleur, la pollution de l'air et le bruit, et le logement énergivore se cumulent à la fois — un compte, jamais une moyenne lissée — croisé avec les moyens des habitants pour y faire face.",
   },
   // schema.org Dataset: this score genuinely is a public dataset (a
   // downloadable GeoJSON with a documented, reproducible methodology),
@@ -37,13 +37,14 @@ useSeoMeta({
         : 'Underlaid — cumulative environmental exposure score, Paris & inner suburbs',
     description:
       locale === 'fr'
-        ? "Pour 2 752 quartiers (IRIS) de Paris et de la petite couronne, combien des 4 catégories suivies (thermique, pollution, accès aux services, logement) se retrouvent simultanément dans leur pire quartile à l'échelle régionale — un compte, jamais une moyenne lissée, construit à partir de données publiques (INSEE, IGN, Airparif/Bruitparif, Enedis, ADEME, OpenStreetMap)."
-        : 'For 2,752 neighborhoods (IRIS) across Paris and its inner suburbs, how many of 4 tracked categories (thermal, pollution, access to services, housing) land simultaneously in their region-wide worst quartile — a count, never a smoothed average, built from public data (INSEE, IGN, Airparif/Bruitparif, Enedis, ADEME, OpenStreetMap).',
+        ? "Pour 2 752 quartiers (IRIS) de Paris et de la petite couronne, combien des 3 catégories suivies (thermique, pollution de l'air et bruit, logement) se retrouvent simultanément dans leur pire quartile à l'échelle régionale — un compte, jamais une moyenne lissée, construit à partir de données publiques (INSEE, IGN, Airparif/Bruitparif, Enedis, ADEME, OpenStreetMap)."
+        : 'For 2,752 neighborhoods (IRIS) across Paris and its inner suburbs, how many of 3 tracked categories (thermal, air/noise pollution, housing) land simultaneously in their region-wide worst quartile — a count, never a smoothed average, built from public data (INSEE, IGN, Airparif/Bruitparif, Enedis, ADEME, OpenStreetMap).',
     creator: { '@type': 'Organization', name: 'Underlaid' },
-    // No license has actually been chosen for this project's own output
-    // yet (Phase 4 — "open-source the code, pick a clear license" —
-    // hasn't started). Omitted rather than asserting one that isn't
-    // real; add it here once Phase 4 picks one.
+    // The published data is ODbL (share-alike inherited from the
+    // OpenStreetMap and Ville de Paris inputs); the code is MIT — see
+    // README "License & data attribution".
+    license: 'https://opendatacommons.org/licenses/odbl/1-0/',
+    isAccessibleForFree: true,
     spatialCoverage: {
       '@type': 'Place',
       name: 'Paris, Hauts-de-Seine, Seine-Saint-Denis, Val-de-Marne, France',
@@ -105,23 +106,50 @@ const QPV_COLOR = [255, 176, 32]
 // state) where they don't have to encode an ordered value — only the
 // actual choropleth swaps to this validated ramp.
 const DATA_RAMP_5 = ['#efc8d7', '#e977a3', '#f11e6f', '#c9034f', '#99003b']
+// Sub-score quartiles Q1-Q4.
 const DATA_RAMP_4 = DATA_RAMP_5.slice(1)
+// Cumulative score 0-3 (access left the count at the v0 launch). Picked
+// among 4-step subsets of the same validated ramp with validate_palette.js
+// (--ordinal --mode dark --surface #080A0F): passes every ordinal check,
+// worst adjacent pair ΔE 9.0 (deutan) / 13.0 (normal) — the best of the
+// subsets tested — and keeps #99003b as the "worst" end.
+const CUMULATIVE_RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#99003b']
+const MAX_SCORE = 3
 const NO_DATA_COLOR = '#3a3f4a'
+
+// Phase 8 — "Exposure × means" bivariate grid, indexed [capacity_class][exposure_class]
+// (capacity 0 = lowest third of the metro area, 2 = highest; exposure 0,
+// 1, 2 = "2 or more"). Pink carries exposure (the brand magenta at its
+// end, like DATA_RAMP_5), blue carries LACK of means, so the darkest cell
+// is "exposures stacked, lowest means". Found by a search over two-ink
+// multiply blends, checked with the dataviz skill's validate_palette.js
+// (--ordinal --mode dark --surface #080A0F): every row and column passes
+// lightness-monotone / adjacent-ΔL / end-contrast (darkest 2.02:1);
+// grid-neighbour ΔE >= 8.2 under protan/deutan and >= 12.1 normal — both
+// above DATA_RAMP_5's own adjacent figures (7.8 / 9.3). Nine ordered cells
+// can't reach the categorical normal-vision floor of 15, so the cell is
+// also always named in words (legend titles, detail panel, sr-only table).
+const BIVARIATE_GRID = [
+  ['#70a4e1', '#6f5ca3', '#6f2272'],
+  ['#aec8e6', '#ac70a7', '#ab2a75'],
+  ['#ebebeb', '#e984ab', '#e83178'],
+]
+const CAPACITY_URL = '/data/adaptive_capacity_iris.json'
 
 function hexToRgb(hex) {
   const n = parseInt(hex.slice(1), 16)
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
 }
 
-const cumulativeLegend = computed(() => ['0', '1', '2', '3', t('legend.worst', { n: 4 })])
+const cumulativeLegend = computed(() => ['0', '1', '2', t('legend.worst', { n: MAX_SCORE })])
 const quartileLegend = computed(() => [t('legend.qBest'), t('legend.q', { n: 2 }), t('legend.q', { n: 3 }), t('legend.qWorst')])
 
 const METRICS = computed(() => ({
   cumulative: {
     label: t('metrics.cumulative'),
     field: 'cumulative_vulnerability_score',
-    steps: [0, 1, 2, 3, 4],
-    ramp: DATA_RAMP_5,
+    steps: [0, 1, 2, 3],
+    ramp: CUMULATIVE_RAMP,
     legendLabels: cumulativeLegend.value,
   },
   thermal: {
@@ -138,13 +166,6 @@ const METRICS = computed(() => ({
     ramp: DATA_RAMP_4,
     legendLabels: quartileLegend.value,
   },
-  access: {
-    label: t('metrics.access'),
-    field: 'subscore_access_quartile',
-    steps: [1, 2, 3, 4],
-    ramp: DATA_RAMP_4,
-    legendLabels: quartileLegend.value,
-  },
   housing: {
     label: t('metrics.housing'),
     field: 'subscore_housing_quartile',
@@ -154,11 +175,21 @@ const METRICS = computed(() => ({
   },
 }))
 
+// 'exposure' (the 5 metric pills) or 'bivariate' (exposure x means) — a
+// view switch that replaces the pill row rather than adding a 6th pill.
+const viewMode = ref('exposure')
 const selectedMetricKey = ref('cumulative')
 const selectedMetric = computed(() => METRICS.value[selectedMetricKey.value])
 const selectedFeature = shallowRef(null)
 
+function bivariateColorFor(code) {
+  const record = capacityByIris.value[code]
+  if (!record || record.capacity_class === null || record.exposure_class === null) return hexToRgb(NO_DATA_COLOR)
+  return hexToRgb(BIVARIATE_GRID[record.capacity_class][record.exposure_class])
+}
+
 function colorForFeature(feature, metric) {
+  if (viewMode.value === 'bivariate') return bivariateColorFor(feature.properties.code_iris)
   const value = feature.properties[metric.field]
   if (value === null || value === undefined) return hexToRgb(NO_DATA_COLOR)
   const index = metric.steps.indexOf(Number(value))
@@ -180,7 +211,7 @@ function buildChoroplethLayer() {
     getLineColor: [234, 240, 245, 90],
     lineWidthMinPixels: 0.5,
     updateTriggers: {
-      getFillColor: [selectedMetricKey.value],
+      getFillColor: [selectedMetricKey.value, viewMode.value, capacityLoaded.value],
     },
     onClick: (info) => {
       selectedFeature.value = info.object ?? null
@@ -332,32 +363,53 @@ function captureMapSnapshot() {
 
   ctx.fillStyle = '#8b96a6'
   ctx.font = `${Math.round(15 * dpr)}px "Space Grotesk", sans-serif`
-  ctx.fillText(selectedMetric.value.label, Math.round(24 * dpr), Math.round(58 * dpr))
+  const isBivariate = viewMode.value === 'bivariate'
+  ctx.fillText(isBivariate ? t('view.bivariate') : selectedMetric.value.label, Math.round(24 * dpr), Math.round(58 * dpr))
 
   ctx.drawImage(mapCanvas, 0, headerHeight)
   ctx.drawImage(deckCanvas, 0, headerHeight)
 
   let x = Math.round(24 * dpr)
-  const swatchH = Math.round(8 * dpr)
-  const swatchW = Math.round(22 * dpr)
-  const swatchY = headerHeight + height + Math.round(22 * dpr)
-  for (const color of selectedMetric.value.ramp) {
-    ctx.fillStyle = color
-    ctx.fillRect(x, swatchY, swatchW, swatchH)
-    x += swatchW + Math.round(4 * dpr)
+  let swatchY = headerHeight + height + Math.round(22 * dpr)
+  let swatchH = Math.round(8 * dpr)
+  let legendText
+  if (isBivariate) {
+    // 3x3 mini grid, same orientation as the on-page legend (means high at
+    // the top, exposure increasing to the right).
+    const cell = Math.round(12 * dpr)
+    const cellGap = Math.round(2 * dpr)
+    swatchY = headerHeight + height + Math.round(8 * dpr)
+    bivariateLegendRows.value.forEach((row, r) => {
+      row.forEach((c, col) => {
+        ctx.fillStyle = c.color
+        ctx.fillRect(x + col * (cell + cellGap), swatchY + r * (cell + cellGap), cell, cell)
+      })
+    })
+    x += 3 * (cell + cellGap)
+    swatchH = Math.round(30 * dpr)
+    legendText = `${t('bivariate.axisExposure')} 0 · 1 · 2+   ·   ${t('bivariate.axisMeans')} ↓ ${t('bivariate.meansLower')}`
+  } else {
+    const swatchW = Math.round(22 * dpr)
+    for (const color of selectedMetric.value.ramp) {
+      ctx.fillStyle = color
+      ctx.fillRect(x, swatchY, swatchW, swatchH)
+      x += swatchW + Math.round(4 * dpr)
+    }
+    const labels = selectedMetric.value.legendLabels
+    legendText = `${labels[0]} → ${labels[labels.length - 1]}`
   }
 
   ctx.fillStyle = '#6b7686'
   ctx.font = `${Math.round(12 * dpr)}px "IBM Plex Mono", monospace`
-  const labels = selectedMetric.value.legendLabels
-  const caption = `${labels[0]} → ${labels[labels.length - 1]}   ·   underlaid   ·   ${new Date().toISOString().slice(0, 10)}`
+  const caption = `${legendText}   ·   underlaid   ·   ${new Date().toISOString().slice(0, 10)}`
   ctx.fillText(caption, x + Math.round(12 * dpr), swatchY + swatchH)
 
   out.toBlob((blob) => {
     if (!blob) return
     const link = document.createElement('a')
     const suffix = showQpv.value ? '-qpv' : ''
-    link.download = `underlaid-${selectedMetricKey.value}${suffix}-map.png`
+    const view = viewMode.value === 'bivariate' ? 'exposure-x-means' : selectedMetricKey.value
+    link.download = `underlaid-${view}${suffix}-map.png`
     link.href = URL.createObjectURL(blob)
     link.click()
     setTimeout(() => URL.revokeObjectURL(link.href), 2000)
@@ -375,6 +427,11 @@ const allProperties = ref([])
 // ever read imperatively from a click handler, never rendered, so there's
 // no reason to pay for reactivity on 992 polygons.
 let allFeatures = []
+// Phase 8 adaptive-capacity axis, keyed by code_iris — loaded from its own
+// file, deliberately separate from the exposure score's GeoJSON.
+const capacityByIris = shallowRef({})
+const capacityMedians = ref({})
+const capacityLoaded = ref(false)
 
 // Shared between SSR prerendering and the browser: onServerPrefetch runs
 // this during vite-ssg's build-time render (so the sr-only screen-reader
@@ -383,9 +440,13 @@ let allFeatures = []
 // has no initialState/hydration wiring, so the client simply re-fetches
 // the same static JSON after mount, same pattern as RankingView.vue.
 async function loadData() {
-  const geojson = await loadStaticJson(DATA_URL)
+  const [geojson, capacity] = await Promise.all([loadStaticJson(DATA_URL), loadStaticJson(CAPACITY_URL)])
   allProperties.value = geojson.features.map((f) => f.properties)
   allFeatures = geojson.features
+  capacityByIris.value = Object.fromEntries(capacity.iris.map((r) => [r.code_iris, r]))
+  capacityMedians.value = capacity.mgp_medians
+  capacityLoaded.value = true
+  refreshLayer()
 }
 
 onServerPrefetch(loadData)
@@ -424,6 +485,45 @@ function selectMetric(key) {
   refreshLayer()
 }
 
+function setViewMode(mode) {
+  viewMode.value = mode
+  refreshLayer()
+}
+
+const selectedCapacity = computed(() => {
+  const code = selectedFeature.value?.properties?.code_iris
+  return code ? capacityByIris.value[code] ?? null : null
+})
+
+function tierLabel(capacityClass) {
+  return t(`bivariate.tier${capacityClass}`)
+}
+
+function bivariateCellText(record) {
+  if (!record || record.capacity_class === null || record.exposure_class === null) return ''
+  return t(`bivariate.cell_${record.exposure_class}_${record.capacity_class}`)
+}
+
+// Legend rows top -> bottom = means high -> low, columns = exposure 0 -> 2+.
+const bivariateLegendRows = computed(() =>
+  [2, 1, 0].map((capacityClass) =>
+    [0, 1, 2].map((exposureClass) => ({
+      key: `${capacityClass}-${exposureClass}`,
+      color: BIVARIATE_GRID[capacityClass][exposureClass],
+      title: t('bivariate.cellTitle', {
+        exposure: t(`bivariate.exposureLevel${exposureClass}`),
+        means: tierLabel(capacityClass),
+      }),
+    }))
+  )
+)
+
+function metroMedianNote(field, formatter) {
+  const m = capacityMedians.value[field]
+  if (m === null || m === undefined) return ''
+  return t('panel.cityMedian', { value: formatter(m) })
+}
+
 function median(field) {
   const values = allProperties.value
     .map((p) => p[field])
@@ -454,7 +554,16 @@ const medians = computed(() => ({
 const srRows = computed(() => {
   return allProperties.value
     .filter((p) => p.cumulative_vulnerability_score !== null && p.cumulative_vulnerability_score !== undefined)
-    .map((p) => ({ code_iris: p.code_iris, nom_iris: p.nom_iris, nom_com: p.nom_com, score: p.cumulative_vulnerability_score }))
+    .map((p) => {
+      const capacityClass = capacityByIris.value[p.code_iris]?.capacity_class
+      return {
+        code_iris: p.code_iris,
+        nom_iris: p.nom_iris,
+        nom_com: p.nom_com,
+        score: p.cumulative_vulnerability_score,
+        means: capacityClass === null || capacityClass === undefined ? t('srTable.meansMasked') : tierLabel(capacityClass),
+      }
+    })
     .sort((a, b) => b.score - a.score)
 })
 
@@ -462,7 +571,9 @@ const liveMessage = computed(() => {
   const p = selectedFeature.value?.properties
   if (!p) return ''
   const score = p.cumulative_vulnerability_score
-  return `${p.nom_iris}, ${p.nom_com}. ${t('metrics.cumulative')}: ${score ?? '—'} / 4.`
+  const capacity = capacityByIris.value[p.code_iris]
+  const means = capacity && capacity.capacity_class !== null ? ` ${t('panel.capacityTitle')}: ${tierLabel(capacity.capacity_class)}.` : ''
+  return `${p.nom_iris}, ${p.nom_com}. ${t('metrics.cumulative')}: ${score ?? '—'} / ${MAX_SCORE}.${means}`
 })
 
 function closePanel() {
@@ -627,7 +738,7 @@ async function buildShareCard(feature, percentile) {
   scoreGrad.addColorStop(1, '#ff3d8a')
   ctx.font = '700 320px "IBM Plex Mono", monospace'
   ctx.fillStyle = scoreGrad
-  ctx.fillText(`${p.cumulative_vulnerability_score ?? '—'}/4`, SHARE_CARD_WIDTH / 2, 980)
+  ctx.fillText(`${p.cumulative_vulnerability_score ?? '—'}/${MAX_SCORE}`, SHARE_CARD_WIDTH / 2, 980)
 
   ctx.font = '500 30px "Space Grotesk", sans-serif'
   ctx.fillStyle = '#8b96a6'
@@ -643,14 +754,13 @@ async function buildShareCard(feature, percentile) {
   const chipRows = [
     { label: t('metrics.thermal'), quartile: p.subscore_thermal_quartile },
     { label: t('metrics.pollution'), quartile: p.subscore_pollution_quartile },
-    { label: t('metrics.access'), quartile: p.subscore_access_quartile },
     { label: t('metrics.housing'), quartile: p.subscore_housing_quartile },
   ]
   const chipY = y + 60
-  const chipW = 220
+  const chipW = 260
   const chipH = 130
-  const gap = 24
-  const totalW = chipW * 4 + gap * 3
+  const gap = 28
+  const totalW = chipW * chipRows.length + gap * (chipRows.length - 1)
   let chipX = (SHARE_CARD_WIDTH - totalW) / 2
   for (const chip of chipRows) {
     const color = quartileColor(chip.quartile)
@@ -674,11 +784,23 @@ async function buildShareCard(feature, percentile) {
     chipX += chipW + gap
   }
 
+  // Means to cope — the separate axis, stated in words below the exposure
+  // chips so a shared card never reads as "exposure = vulnerability".
+  const capacity = capacityByIris.value[p.code_iris]
+  const colon = locale.value === 'fr' ? ' : ' : ': '
+  const meansValue = capacity && capacity.capacity_class !== null ? tierLabel(capacity.capacity_class) : t('srTable.meansMasked')
+  const meansText = `${t('panel.capacityTitle')}${colon}${meansValue}`
+  ctx.textAlign = 'center'
+  ctx.font = '500 30px "Space Grotesk", sans-serif'
+  ctx.fillStyle = '#b7c2cf'
+  drawCenteredLines(ctx, meansText, SHARE_CARD_WIDTH / 2, chipY + chipH + 80, SHARE_CARD_WIDTH - 160, 40)
+
   // footer tagline
   ctx.textAlign = 'center'
   ctx.font = '500 28px "IBM Plex Mono", monospace'
   ctx.fillStyle = '#6b7686'
-  ctx.fillText(t('share.tagline'), SHARE_CARD_WIDTH / 2, SHARE_CARD_HEIGHT - 80)
+  // Wrapped: on one line the tagline ran past both edges of the card.
+  drawCenteredLines(ctx, t('share.tagline'), SHARE_CARD_WIDTH / 2, SHARE_CARD_HEIGHT - 130, SHARE_CARD_WIDTH - 160, 38)
 
   return canvas
 }
@@ -756,7 +878,6 @@ const subScoreRows = computed(() => {
   return [
     { key: 'thermal', label: t('metrics.thermal'), quartile: p.subscore_thermal_quartile, status: p.subscore_thermal_status },
     { key: 'pollution', label: t('metrics.pollution'), quartile: p.subscore_pollution_quartile, status: p.subscore_pollution_status },
-    { key: 'access', label: t('metrics.access'), quartile: p.subscore_access_quartile, status: p.subscore_access_status },
     { key: 'housing', label: t('metrics.housing'), quartile: p.subscore_housing_quartile, status: p.subscore_housing_status },
   ]
 })
@@ -812,7 +933,16 @@ function quartileColor(quartile) {
         </div>
         <p v-if="searchMessage" class="search-message">{{ searchMessage }}</p>
 
-        <div class="toolbar">
+        <div class="view-switch-row">
+          <div class="view-switch" role="group" :aria-label="t('view.label')">
+            <button :class="{ active: viewMode === 'exposure' }" :aria-pressed="viewMode === 'exposure'" @click="setViewMode('exposure')">{{ t('view.exposure') }}</button>
+            <button :class="{ active: viewMode === 'bivariate' }" :aria-pressed="viewMode === 'bivariate'" @click="setViewMode('bivariate')">{{ t('view.bivariate') }}</button>
+          </div>
+          <InfoTip :text="t('jargon.capacity')" />
+        </div>
+
+        <p v-if="viewMode === 'bivariate'" class="bivariate-intro">{{ t('bivariate.intro') }}</p>
+        <div v-else class="toolbar">
           <button
             v-for="(metric, key) in METRICS"
             :key="key"
@@ -828,7 +958,27 @@ function quartileColor(quartile) {
           <div id="map" role="img" :aria-label="t('srTable.caption')"></div>
         </div>
 
-        <div class="legend">
+        <div v-if="viewMode === 'bivariate'" class="legend bivariate-legend">
+          <div class="bv-grid-wrap">
+            <span class="bv-axis-y" aria-hidden="true">{{ t('bivariate.axisMeans') }}<br /><small>↑ {{ t('bivariate.meansHigher') }}<br />↓ {{ t('bivariate.meansLower') }}</small></span>
+            <div>
+              <div class="bv-grid" role="img" :aria-label="t('bivariate.caption')">
+                <template v-for="row in bivariateLegendRows" :key="row[0].key">
+                  <span v-for="c in row" :key="c.key" class="bv-cell" :style="{ background: c.color }" :title="c.title"></span>
+                </template>
+              </div>
+              <div class="bv-axis-x" aria-hidden="true">
+                <span>0</span><span>1</span><span>2+</span>
+              </div>
+              <div class="bv-axis-x-label" aria-hidden="true">{{ t('bivariate.axisExposure') }}</div>
+            </div>
+          </div>
+          <div class="bv-notes">
+            <span>{{ t('bivariate.caption') }}</span>
+            <span class="bv-masked"><span class="swatch" :style="{ background: NO_DATA_COLOR }"></span> {{ t('bivariate.masked') }}</span>
+          </div>
+        </div>
+        <div v-else class="legend">
           <div class="legend-swatches">
             <span v-for="(color, i) in selectedMetric.ramp" :key="i" class="swatch" :style="{ background: color }" :title="selectedMetric.legendLabels[i]"></span>
             <span class="swatch" :style="{ background: NO_DATA_COLOR }" :title="t('legend.noData')"></span>
@@ -862,13 +1012,15 @@ function quartileColor(quartile) {
                 <th scope="col">{{ t('srTable.colIris') }}</th>
                 <th scope="col">{{ t('srTable.colCommune') }}</th>
                 <th scope="col">{{ t('srTable.colScore') }}</th>
+                <th scope="col">{{ t('srTable.colMeans') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in srRows" :key="row.code_iris">
                 <td>{{ row.nom_iris }}</td>
                 <td>{{ row.nom_com }}</td>
-                <td>{{ row.score }} / 4</td>
+                <td>{{ row.score }} / {{ MAX_SCORE }}</td>
+                <td>{{ row.means }}</td>
               </tr>
             </tbody>
           </table>
@@ -887,6 +1039,7 @@ function quartileColor(quartile) {
           <button class="close" @click="closePanel" :aria-label="t('sidePanel.prompt')">&times;</button>
           <div class="iris-code">{{ selectedFeature.properties.nom_iris }}</div>
           <p class="commune">{{ selectedFeature.properties.nom_com }}</p>
+          <p v-if="(selectedFeature.properties.population ?? 0) < 50" class="sparse-note">{{ t('panel.sparselyPopulated') }}</p>
 
           <div class="stat-row" v-for="row in subScoreRows" :key="row.key">
             <span>{{ row.label }} <InfoTip v-if="row.key === 'thermal'" :text="t('jargon.quartile')" /></span>
@@ -894,32 +1047,8 @@ function quartileColor(quartile) {
           </div>
 
           <div class="stat-row">
-            <span>{{ t('panel.medianIncome') }}</span>
-            <span class="v">{{ formatIncome(selectedFeature.properties.median_income) }}</span>
-          </div>
-          <div class="stat-row">
             <span>{{ t('panel.population') }}</span>
             <span class="v">{{ formatNumber(selectedFeature.properties.population, 0) }}</span>
-          </div>
-          <div class="stat-row">
-            <span>{{ t('panel.secondaryResidences') }} <InfoTip :text="t('jargon.secondaryResidences')" /></span>
-            <span class="v">{{ formatPercent(selectedFeature.properties.pct_secondary_residences) }}
-              <small class="cmp">{{ cityMedianNote('pct_secondary_residences', (v) => `${formatDecimal(v * 100, 0)}%`) }}</small></span>
-          </div>
-          <div class="stat-row">
-            <span>{{ t('panel.timeToEducation') }}</span>
-            <span class="v">{{ formatMinutes(selectedFeature.properties.access_minutes_domain_C) }}
-              <small class="cmp">{{ cityMedianNote('access_minutes_domain_C', (v) => t('panel.minutes', { n: formatDecimal(v, 1) })) }}</small></span>
-          </div>
-          <div class="stat-row">
-            <span>{{ t('panel.timeToHealth') }}</span>
-            <span class="v">{{ formatMinutes(selectedFeature.properties.access_minutes_domain_D) }}
-              <small class="cmp">{{ cityMedianNote('access_minutes_domain_D', (v) => t('panel.minutes', { n: formatDecimal(v, 1) })) }}</small></span>
-          </div>
-          <div class="stat-row">
-            <span>{{ t('panel.timeToTransport') }}</span>
-            <span class="v">{{ formatMinutes(selectedFeature.properties.access_minutes_domain_E) }}
-              <small class="cmp">{{ cityMedianNote('access_minutes_domain_E', (v) => t('panel.minutes', { n: formatDecimal(v, 1) })) }}</small></span>
           </div>
           <div class="stat-row">
             <span>{{ t('panel.coolSpots400m') }}</span>
@@ -952,25 +1081,9 @@ function quartileColor(quartile) {
             <span class="v">{{ formatPercent(selectedFeature.properties.pct_thermosensitive) }}
               <small class="cmp">{{ cityMedianNote('pct_thermosensitive', (v) => `${formatDecimal(v * 100, 0)}%`) }}</small></span>
           </div>
-          <div class="stat-row">
-            <span>{{ t('panel.schoolsIPS') }}</span>
-            <span class="v">{{ formatNumber(selectedFeature.properties.social_index_schools) }}</span>
-          </div>
-          <div class="stat-row">
-            <span>{{ t('panel.middleSchoolsIPS') }}</span>
-            <span class="v">{{ formatNumber(selectedFeature.properties.social_index_middle_schools) }}</span>
-          </div>
-          <div class="stat-row">
-            <span>{{ t('panel.pmrAccessible') }}</span>
-            <span class="v">{{ formatPercent(selectedFeature.properties.pct_pmr_accessible) }}</span>
-          </div>
-          <div class="stat-row">
-            <span>{{ t('panel.footwayDensity') }}</span>
-            <span class="v">{{ t('panel.mPerKm2', { n: formatNumber(selectedFeature.properties.footway_density_m_per_km2, 0) }) }}</span>
-          </div>
 
           <div class="cumul-box">
-            <div class="n">{{ selectedFeature.properties.cumulative_vulnerability_score ?? '—' }}/4</div>
+            <div class="n">{{ selectedFeature.properties.cumulative_vulnerability_score ?? '—' }}/{{ MAX_SCORE }}</div>
             <div class="d">
               {{ t('panel.subscoresWorstQuartile') }}<br />
               {{ t('panel.evaluated', { n: selectedFeature.properties.n_subscores_evaluated }) }}
@@ -979,6 +1092,70 @@ function quartileColor(quartile) {
               {{ t('panel.morevulnerable', { n: selectedPercentile }) }}
             </div>
           </div>
+
+          <section class="access-context" :aria-label="t('panel.accessContextTitle')">
+            <div class="capacity-title">{{ t('panel.accessContextTitle') }}</div>
+            <p class="capacity-note">{{ t('panel.accessContextNote') }}</p>
+            <div class="stat-row">
+              <span>{{ t('panel.timeToEducation') }}</span>
+              <span class="v">{{ formatMinutes(selectedFeature.properties.access_minutes_domain_C) }}
+                <small class="cmp">{{ cityMedianNote('access_minutes_domain_C', (v) => t('panel.minutes', { n: formatDecimal(v, 1) })) }}</small></span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.timeToHealth') }}</span>
+              <span class="v">{{ formatMinutes(selectedFeature.properties.access_minutes_domain_D) }}
+                <small class="cmp">{{ cityMedianNote('access_minutes_domain_D', (v) => t('panel.minutes', { n: formatDecimal(v, 1) })) }}</small></span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.timeToTransport') }}</span>
+              <span class="v">{{ formatMinutes(selectedFeature.properties.access_minutes_domain_E) }}
+                <small class="cmp">{{ cityMedianNote('access_minutes_domain_E', (v) => t('panel.minutes', { n: formatDecimal(v, 1) })) }}</small></span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.schoolsIPS') }}</span>
+              <span class="v">{{ formatNumber(selectedFeature.properties.social_index_schools) }}</span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.middleSchoolsIPS') }}</span>
+              <span class="v">{{ formatNumber(selectedFeature.properties.social_index_middle_schools) }}</span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.pmrAccessible') }}</span>
+              <span class="v">{{ formatPercent(selectedFeature.properties.pct_pmr_accessible) }}</span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.footwayDensity') }}</span>
+              <span class="v">{{ t('panel.mPerKm2', { n: formatNumber(selectedFeature.properties.footway_density_m_per_km2, 0) }) }}</span>
+            </div>
+          </section>
+
+          <section class="capacity-box" :aria-label="t('panel.capacityTitle')">
+            <div class="capacity-title">{{ t('panel.capacityTitle') }} <InfoTip :text="t('jargon.capacity')" /></div>
+            <p v-if="selectedCapacity && selectedCapacity.capacity_class !== null" class="capacity-tier">
+              {{ t('panel.capacityTier', { tier: tierLabel(selectedCapacity.capacity_class) }) }}
+            </p>
+            <p v-else class="capacity-tier muted">{{ t('panel.capacityMasked') }}</p>
+            <div class="stat-row">
+              <span>{{ t('panel.medianIncome') }}</span>
+              <span class="v">{{ formatIncome(selectedFeature.properties.median_income) }}
+                <small class="cmp">{{ metroMedianNote('median_income', (v) => formatIncome(v)) }}</small></span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.overcrowding') }} <InfoTip :text="t('jargon.overcrowding')" /></span>
+              <span class="v">{{ formatPercent(selectedCapacity?.pct_overcrowded) }}
+                <small class="cmp">{{ metroMedianNote('pct_overcrowded', (v) => `${formatDecimal(v * 100, 0)}%`) }}</small></span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.secondaryResidences') }} <InfoTip :text="t('jargon.secondaryResidences')" /></span>
+              <span class="v">{{ formatPercent(selectedFeature.properties.pct_secondary_residences) }}
+                <small class="cmp">{{ metroMedianNote('pct_secondary_residences', (v) => `${formatDecimal(v * 100, 0)}%`) }}</small></span>
+            </div>
+            <p v-if="bivariateCellText(selectedCapacity)" class="capacity-cell">
+              <span class="swatch" :style="{ background: BIVARIATE_GRID[selectedCapacity.capacity_class][selectedCapacity.exposure_class] }" aria-hidden="true"></span>
+              {{ bivariateCellText(selectedCapacity) }}
+            </p>
+            <p class="capacity-note">{{ t('panel.capacitySeparate') }}</p>
+          </section>
 
           <button class="share-btn" @click="shareSelectedNeighborhood">{{ t('share.button') }}</button>
         </template>
@@ -1294,6 +1471,157 @@ h1 .grad {
   border-radius: 2px;
   display: inline-block;
 }
+.view-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.view-switch {
+  display: inline-flex;
+  border: 1px solid var(--panel-b);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.view-switch button {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.view-switch button.active {
+  background: var(--text-primary);
+  color: #080a0f;
+  font-weight: 600;
+}
+.view-switch button:hover:not(.active) {
+  color: var(--text-primary);
+}
+.bivariate-intro {
+  margin: 0 0 18px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.bivariate-legend {
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+}
+.bv-grid-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.bv-axis-y {
+  text-align: right;
+  line-height: 1.35;
+  padding-top: 2px;
+}
+.bv-axis-y small {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.bv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 22px);
+  gap: 2px;
+  padding: 2px;
+  border-radius: 4px;
+  /* light ring: the darkest cells sit close to the page background */
+  background: rgba(234, 240, 245, 0.35);
+}
+.bv-cell {
+  width: 22px;
+  height: 22px;
+  border-radius: 2px;
+}
+.bv-axis-x {
+  display: grid;
+  grid-template-columns: repeat(3, 22px);
+  gap: 2px;
+  padding: 0 2px;
+  margin-top: 3px;
+  text-align: center;
+}
+.bv-axis-x-label {
+  margin-top: 2px;
+}
+.bv-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 280px;
+  line-height: 1.45;
+}
+.bv-masked {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sparse-note {
+  margin: -4px 0 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--panel-b);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.access-context {
+  margin-top: 16px;
+  padding: 16px 18px 6px;
+  border-radius: 12px;
+  border: 1px dashed var(--panel-b);
+}
+
+.capacity-box {
+  margin-top: 16px;
+  padding: 16px 18px 6px;
+  border-radius: 12px;
+  border: 1px solid var(--panel-b);
+  background: rgba(112, 164, 225, 0.08);
+}
+.capacity-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.capacity-tier {
+  margin: 6px 0 4px;
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+.capacity-tier.muted,
+.capacity-note {
+  color: var(--text-muted);
+}
+.capacity-cell {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 12px 0 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.capacity-cell .swatch {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+}
+.capacity-note {
+  font-size: 11px;
+  margin: 8px 0 10px;
+}
+
 .legend-caption {
   white-space: nowrap;
 }

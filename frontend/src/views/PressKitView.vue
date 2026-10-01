@@ -19,14 +19,13 @@ useSeoMeta({
 
 // Same static facts as MethodologyView.vue — see SCORING.md.
 const DISTRIBUTION = [
-  { score: 0, count: 874, share: 0.318 },
-  { score: 1, count: 1230, share: 0.447 },
-  { score: 2, count: 586, share: 0.213 },
-  { score: 3, count: 58, share: 0.021 },
-  { score: 4, count: 4, share: 4 / 2752 },
+  { score: 0, count: 1144, share: 1144 / 2752 },
+  { score: 1, count: 1202, share: 1202 / 2752 },
+  { score: 2, count: 375, share: 375 / 2752 },
+  { score: 3, count: 31, share: 31 / 2752 },
 ]
 
-const CATEGORY_LINES = ['thermalLine', 'pollutionLine', 'accessLine', 'housingLine']
+const CATEGORY_LINES = ['thermalLine', 'pollutionLine', 'housingLine']
 const CAVEATS = ['caveat1', 'caveat2', 'caveat3', 'caveat4']
 
 function numberLocale() {
@@ -68,6 +67,11 @@ function print() {
       </section>
 
       <section>
+        <h2>{{ t('press.meansTitle') }}</h2>
+        <p>{{ t('press.meansBody') }}</p>
+      </section>
+
+      <section>
         <h2>{{ t('press.categoriesTitle') }}</h2>
         <ul>
           <li v-for="key in CATEGORY_LINES" :key="key">{{ t(`press.${key}`) }}</li>
@@ -86,7 +90,7 @@ function print() {
         <table>
           <tbody>
             <tr v-for="row in distributionRows" :key="row.score">
-              <td>{{ row.score }} / 4</td>
+              <td>{{ row.score }} / 3</td>
               <td>{{ row.count }}</td>
               <td>{{ row.shareLabel }}</td>
             </tr>

@@ -26,14 +26,11 @@ from pathlib import Path
 import geopandas as gpd
 
 SCORE_COL = "cumulative_vulnerability_score"
-SCORE_CATEGORIES = [0, 1, 2, 3, 4]
-# Score >= 3 is the metric already tracked by hand throughout this
-# project's docs (SCORING.md's "Current distribution") — note this is
-# NOT the same count as the public /ranking page, which lists only
-# score == 3 (58 IRIS) and excludes the 4 already at 4/4 by design (that
-# sample is still too small and recent for a public ranking — see
-# SCORING.md). This script tracks >=3 (62 IRIS) because a score-4 IRIS's
-# existence is itself part of what a large shift would reveal.
+SCORE_CATEGORIES = [0, 1, 2, 3]
+# Score 3 is the top of the scale since access to services left the count
+# at the v0 launch (0-3, see SCORING.md) — the IRIS at 3/3 (31 at launch)
+# are the population tracked by hand throughout this project's docs and
+# listed on the public /ranking page.
 PUBLIC_THRESHOLD_SCORE = 3
 
 # The turnover threshold the user picked as a starting point ("par
@@ -43,7 +40,7 @@ PUBLIC_THRESHOLD_SCORE = 3
 # buried in the CLI default, so a future adjustment has one obvious
 # place to change and reason about.
 DEFAULT_TURNOVER_THRESHOLD_PCT = 15.0
-# Secondary check: the categories 0-4 breakdown shouldn't swing hard
+# Secondary check: the categories 0-3 breakdown shouldn't swing hard
 # even if the >=3 turnover looks fine (e.g. a systematic re-standardization
 # could move many IRIS between 1 and 2 without touching the >=3 boundary
 # at all) — flagged if any single category's share of the total moves by
@@ -121,7 +118,7 @@ def render_markdown(report: dict, ok: bool, turnover_threshold: float, category_
         f"- Left score >= {PUBLIC_THRESHOLD_SCORE}: {len(report['left_high'])}",
         f"- Turnover on score >= {PUBLIC_THRESHOLD_SCORE}: **{report['turnover_pct']}%** "
         f"(threshold: {turnover_threshold}%)",
-        f"- Largest single-category share shift (0-4 breakdown): "
+        f"- Largest single-category share shift (0-3 breakdown): "
         f"**{report['max_category_shift_pp']} pp** (threshold: {category_shift_threshold} pp)",
         f"- IRIS whose score category changed at all (any category, not just >=3): "
         f"{report['iris_with_changed_score']}",

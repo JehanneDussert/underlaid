@@ -395,3 +395,25 @@ def test_worst_quartile_share_does_not_depend_on_indicator_count(name):
         f"subscore_{name}: worst-quartile share depends on how many indicators an IRIS has "
         f"({detail}; ratio {ratio:.2f} >= {MAX_Q4_RATIO}) — sparse-data bias"
     )
+
+
+def test_quartile_thresholds_come_from_inhabited_iris():
+    """Quartile thresholds are set by IRIS with >= 50 residents only
+    (MIN_POPULATION_FOR_RATE, see SCORING.md "Quartile thresholds:
+    inhabited IRIS only"): among them, every scored sub-score is split
+    into exact quartiles. IRIS under 50 residents are placed against those
+    thresholds afterwards — they must still get a quartile, never be
+    silently dropped from the map."""
+    gdf = load("vulnerability_score_iris.geojson")
+    inhabited = gdf["population"] >= 50
+    assert (~inhabited).sum() > 0, "expected some IRIS under 50 residents (parks, stations...)"
+    for name in SCORED_SUBSCORES:
+        ok = gdf[f"subscore_{name}_status"] == "ok"
+        share = gdf.loc[ok & inhabited, f"subscore_{name}_quartile"].value_counts(normalize=True)
+        assert share.between(0.24, 0.26).all(), (
+            f"subscore_{name}: quartiles among inhabited IRIS are not exact ({share.round(3).to_dict()}) — "
+            "thresholds may be computed on the wrong population"
+        )
+        assert gdf.loc[ok & ~inhabited, f"subscore_{name}_quartile"].notna().all(), (
+            f"subscore_{name}: an IRIS under 50 residents lost its quartile"
+        )

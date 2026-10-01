@@ -19,6 +19,7 @@ Indicator: total footway length per IRIS, normalized by IRIS area
 """
 import json
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -31,7 +32,16 @@ from shapely.geometry import LineString
 import config
 from utils.io import save_geojson
 
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+# Public Overpass instances are often overloaded (a cold run on 2026-10-01
+# got a 504 Gateway Timeout): try the main instance and two mirrors, a few
+# rounds apart, before giving up.
+OVERPASS_URLS = (
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+)
+OVERPASS_ROUNDS = 3
+OVERPASS_BACKOFF_SECONDS = (0, 60, 180)
 RAW_PATH = config.DATA_RAW / "pedestrian_paths" / "footways_mgp_raw.json"
 USER_AGENT = "underlaid-research/1.0 (Paris/Grand Paris urban vulnerability mapping project)"
 
@@ -44,15 +54,42 @@ def download() -> Path:
     min_lon, min_lat, max_lon, max_lat = iris.total_bounds
     bbox = f"{min_lat},{min_lon},{max_lat},{max_lon}"
 
-    query = f'[out:json][timeout:120];way["highway"="footway"]({bbox});out geom;'
-    response = requests.get(
-        OVERPASS_URL, params={"data": query}, timeout=180, headers={"User-Agent": USER_AGENT}
-    )
-    response.raise_for_status()
+    query = f'[out:json][timeout:300];way["highway"="footway"]({bbox});out geom;'
+    text = fetch_overpass(query)
 
     RAW_PATH.parent.mkdir(parents=True, exist_ok=True)
-    RAW_PATH.write_text(response.text, encoding="utf-8")
+    RAW_PATH.write_text(text, encoding="utf-8")
     return RAW_PATH
+
+
+def fetch_overpass(query: str) -> str:
+    """Overpass answer as text, refusing partial results.
+
+    Overpass can answer 200 OK with *truncated* data when it runs out of
+    time or memory, flagging it only in a "remark" field — saving that would
+    silently produce an incomplete layer, so it is treated as a failure.
+    """
+    errors = []
+    for wait in OVERPASS_BACKOFF_SECONDS[:OVERPASS_ROUNDS]:
+        if wait:
+            time.sleep(wait)
+        for url in OVERPASS_URLS:
+            try:
+                response = requests.post(url, data={"data": query}, timeout=360, headers={"User-Agent": USER_AGENT})
+                response.raise_for_status()
+                payload = response.json()
+            except (requests.RequestException, ValueError) as exc:
+                errors.append(f"{url}: {exc}")
+                continue
+            remark = payload.get("remark", "")
+            if "error" in remark.lower():
+                errors.append(f"{url}: partial result refused ({remark.strip()[:200]})")
+                continue
+            if not payload.get("elements"):
+                errors.append(f"{url}: empty result")
+                continue
+            return response.text
+    raise RuntimeError("Overpass query failed on every instance:\n  " + "\n  ".join(errors))
 
 
 def load_footways(raw_path: Path) -> gpd.GeoDataFrame:

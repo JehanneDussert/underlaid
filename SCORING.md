@@ -175,24 +175,24 @@ muddy in Paris, where many well-off households rent.
 
 | | means: lowest third | middle third | highest third |
 |---|---|---|---|
-| **exposure 0** | 431 | 415 | 223 |
-| **exposure 1** | 367 | 334 | 388 |
-| **exposure 2+** | 45 | 94 | 232 |
+| **exposure 0** | 423 | 405 | 216 |
+| **exposure 1** | 373 | 344 | 393 |
+| **exposure 2+** | 47 | 94 | 234 |
 
 "2+" means 2 or 3 of the 3 sub-scores in their worst quartile.
 
 **1. Two profiles, not one scale.** Correlation of the capacity index
 with each sub-score: housing +0.66, thermal +0.37, pollution −0.30.
-Highly exposed IRIS (2+) with the highest means are mostly in Paris (189
-of 232) and stack heat + housing (worst quartile in 93% / 95% of them) —
-dense, older building stock. Those with the lowest means (45, about
-120,000 residents) are mostly in Seine-Saint-Denis (27) and Val-de-Marne
-(12) and stack heat + air/noise pollution (87% / 89%).
+Highly exposed IRIS (2+) with the highest means are mostly in Paris (191
+of 234) and stack heat + housing (worst quartile in 92% / 94% of them) —
+dense, older building stock. Those with the lowest means (47, about
+126,000 residents) are mostly in Seine-Saint-Denis (27) and Val-de-Marne
+(13) and stack heat + air/noise pollution (87% / 89%).
 
 **2. The link between exposure and means is weak.** Spearman(capacity
 index, exposure score) = **+0.28** — slightly positive only because of
 dense, older central Paris (+0.39 within Paris); within the inner-suburb
-departments it's near zero (92: +0.07, 93: −0.08, 94: +0.08). Always
+departments it's near zero (92: +0.06, 93: −0.08, 94: +0.09). Always
 state it with that explanation in public copy — never as "the well-off
 are more exposed", which the data doesn't show outside Paris.
 
@@ -983,37 +983,57 @@ re-checked against whatever the data looks like at the time — but it
 isn't dismissable as an artifact the way the first two were, and now
 isn't resting on data alone either.
 
+## Quartile thresholds: inhabited IRIS only
+
+Since the v0 launch, each sub-score's quartile thresholds are computed
+on IRIS with at least **50 residents** only (`MIN_POPULATION_FOR_RATE`,
+the same floor as `cool_facility_deficit`'s per-resident rate). The 62
+IRIS below it — parks, river banks, rail yards, stations, business
+blocks — are then placed against those thresholds
+(`quartiles_against_reference()` in script 11): they keep a quartile and
+a score on the map, flagged "very sparsely populated" in the detail
+panel, but no longer take quartile slots that belong to neighborhoods
+people live in.
+
+Why: an exposure score describes where people live. These IRIS took
+74% of their slots in the worst air/noise quartile (they sit along rail
+lines and expressways), 22% in thermal and 38% in housing (8 IRIS with
+housing data), pushing inhabited IRIS out of the worst quartiles.
+Effect: among the 2,690 inhabited IRIS, each sub-score is now split into
+exactly 25/25/25/25; 34 inhabited IRIS changed score (1.3%); one enters
+3/3 (Folie Méricourt 6, Paris 11e), none leaves.
+
 ## Current distribution (MGP — Paris + Petite Couronne, 2,752 IRIS)
 
 3 sub-scores (thermal, air/noise pollution, housing), after access left
 the count at the v0 launch (see "Why access to services left the
-score"):
+score"), quartile thresholds on inhabited IRIS (see above):
 
 | Cumulative score | IRIS count | Share |
 |---|---|---|
-| 0 | 1,144 | 41.6% |
-| 1 | 1,202 | 43.7% |
-| 2 | 375 | 13.6% |
-| 3 | 31 | 1.1% |
+| 0 | 1,119 | 40.7% |
+| 1 | 1,223 | 44.4% |
+| 2 | 378 | 13.7% |
+| 3 | 32 | 1.2% |
 
-Before that change (4 sub-scores): 874 / 1,230 / 586 / 58 / 4.
+Inhabited IRIS only (≥ 50 residents, 2,690): 1,110 / 1,178 / 371 / 31.
+Before the inhabited-thresholds rule: 1,144 / 1,202 / 375 / 31. Before
+access left the count (4 sub-scores): 874 / 1,230 / 586 / 58 / 4.
 
-The 31 IRIS at 3/3: 19 in Paris (mostly dense 8th, 11th, 12th, 15th,
+The 32 IRIS at 3/3: 20 in Paris (mostly dense 8th, 11th, 12th, 15th,
 16th, 17th arrondissements), 5 in Hauts-de-Seine (Neuilly-sur-Seine ×4,
 Asnières), 3 in Seine-Saint-Denis (Aulnay ×2, Drancy), 4 in
-Val-de-Marne (Villeneuve-Saint-Georges ×2, Champigny, Le Perreux). By
-means: 17 in the highest third, 5 middle, 5 lowest, 4 without published
-income (tiny or non-residential IRIS, e.g. Chaussée d'Antin 2 with no
-residents).
+Val-de-Marne (Villeneuve-Saint-Georges ×2, Champigny, Le Perreux). One
+of them is not inhabited (Chaussée d'Antin 2, 0 residents).
 
 **Public ranking (`/ranking`).** Lists the IRIS at 3/3 with at least
 **50 residents** — the same floor as `cool_facility_deficit`'s
 per-resident rate (`MIN_POPULATION_FOR_RATE`): below it an IRIS is a
 park, a station or a business block, not a neighborhood people live in.
-This removes 1 of the 31 (Chaussée d'Antin 2, 0 residents); such IRIS
+This removes 1 of the 32 (Chaussée d'Antin 2, 0 residents); such IRIS
 stay on the map, flagged "very sparsely populated" in the detail panel
-(62 IRIS in all are under 50 residents). The 30 listed IRIS are grouped
-by the means-to-cope tertile (5 lowest, 5 middle, 17 highest, 3 without
+(62 IRIS in all are under 50 residents). The 31 listed IRIS are grouped
+by the means-to-cope tertile (5 lowest, 5 middle, 18 highest, 3 without
 published income), never by an implied cause, ordered by commune then
 name, and each row shows the figures behind the three categories
 (sealed ground, air/noise index, F/G-rated homes) plus median income,

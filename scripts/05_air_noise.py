@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import geopandas as gpd
 
 import config
-from utils.download import download_file, extract_zip
+from utils.download import download_file, extract_zip, find_extracted_file
 from utils.geo import areal_weighted_aggregate, check_unmatched_codes, load_iris_reference
 from utils.io import save_geojson
 
@@ -38,10 +38,9 @@ def download() -> Path:
 
 
 def find_layer(extract_dir: Path) -> gpd.GeoDataFrame:
-    candidates = list(extract_dir.rglob("*.shp")) + list(extract_dir.rglob("*.gpkg")) + list(extract_dir.rglob("*.geojson"))
-    if not candidates:
-        raise RuntimeError(f"No GIS layer found under {extract_dir}; inspect the zip contents manually.")
-    return gpd.read_file(candidates[0])
+    # The zip ships one shapefile (AirBruit_<year>.shp and its sidecars).
+    layer = find_extracted_file(extract_dir, r".+\.(gpkg|shp|geojson)", "Airparif/Bruitparif air-noise layer")
+    return gpd.read_file(layer)
 
 
 def normalize(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:

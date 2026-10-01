@@ -44,11 +44,11 @@ PARIS_OPENDATASOFT_BASE = "https://opendata.paris.fr"
 # green area" moved to this genuine Ile-de-France-wide dataset.
 COOL_GREEN_SPACE_DATASET_ID = "espaces-verts-et-boises-surfaciques-ouverts-ou-en-projets-douverture-au-public"
 
-ICU_SAT4BDNB_ZIP_URL = (
-    "https://static.data.gouv.fr/resources/"
-    "cartographie-nationale-des-indicateurs-lies-a-lilot-de-chaleur-urbain/"
-    "20250114-092141/indicateurs-icu.zip"
-)
+# data.gouv.fr dataset + resource title, resolved to the current URL at run
+# time (utils.download.find_datagouv_resource) — static URLs embed the
+# upload timestamp and break when the file is republished.
+ICU_SAT4BDNB_DATASET_SLUG = "cartographie-nationale-des-indicateurs-lies-a-lilot-de-chaleur-urbain"
+ICU_SAT4BDNB_RESOURCE_TITLE = r"indicateurs-icu\.zip"
 
 # Bruitparif serves files behind a path containing literal spaces; the
 # download helper takes care of percent-encoding it.
@@ -89,11 +89,13 @@ ENERGY_PERFORMANCE_POOR_CLASSES = ("F", "G")
 # Bulk export, no API key needed (the live Acceslibre API requires one;
 # this static CSV mirror doesn't). ~524MB for all of France, filtered to
 # MGP_DEP_CODES while reading in chunks.
-ACCESSIBILITY_CSV_URL = (
-    "https://static.data.gouv.fr/resources/"
-    "accessibilite-des-etablissements-recevant-du-public-erp-pour-les-personnes-en-situation-de-handicap/"
-    "20260710-231714/acceslibre.csv"
+# Resolved at run time like ICU above (the dated July URL returned 404 by
+# October). "acceslibre.csv" exactly — not "acceslibre-with-web-url.csv",
+# the 2.6x larger variant with extra URL columns.
+ACCESSIBILITY_DATASET_SLUG = (
+    "accessibilite-des-etablissements-recevant-du-public-erp-pour-les-personnes-en-situation-de-handicap"
 )
+ACCESSIBILITY_RESOURCE_TITLE = r"acceslibre\.csv"
 
 STREET_LIGHTING_DATASET_ID = "eclairage-public"  # opendata.paris.fr
 

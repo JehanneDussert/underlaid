@@ -31,7 +31,7 @@ import geopandas as gpd
 import pandas as pd
 
 import config
-from utils.download import download_file, extract_zip
+from utils.download import download_file, extract_zip, find_extracted_file
 from utils.geo import join_points_to_iris, load_iris_reference
 from utils.io import save_geojson
 
@@ -54,10 +54,7 @@ def download() -> Path:
     zip_path = download_file(config.BPE_ZIP_URL, config.BPE_RAW_ZIP)
     extract_dir = config.DATA_RAW / "bpe" / "extracted"
     extract_zip(zip_path, extract_dir)
-    candidates = list(extract_dir.rglob("*.csv"))
-    if not candidates:
-        raise RuntimeError(f"No CSV found after extracting {zip_path}; inspect its contents manually.")
-    return candidates[0]
+    return find_extracted_file(extract_dir, r"BPE\d{2}\.csv", "BPE equipment file")
 
 
 def load_cool_facility_rows(csv_path: Path) -> pd.DataFrame:

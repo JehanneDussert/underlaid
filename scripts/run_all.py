@@ -26,14 +26,21 @@ adaptive-capacity axis) reads 11's output and 25's, so it runs last among
 the scoring steps — its output is a separate file, never an input to 11.
 """
 import json
+import shutil
 import subprocess
 import sys
+import tempfile
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS_DIR))
 import config
+import pipeline_policy as policy
+
+METADATA_PATH = config.DATA_PROCESSED / "last_updated.json"
+REPORT_PATH = config.DATA_PROCESSED / "run_report.json"
 
 SCRIPT_ORDER = [
     "01_iris_contours.py",
@@ -64,28 +71,102 @@ SCRIPT_ORDER = [
 ]
 
 
-def write_run_metadata():
-    """Records when this run finished — the only way anyone citing a
-    specific IRIS by example (Drancy, etc.) can know which snapshot of
-    the score they're looking at, since the score itself is explicitly
-    not a fixed, final number (see SCORING.md). Written here rather
-    than inside 11_compute_vulnerability_score.py because it describes
-    the whole run, not just the scoring step.
+def run_script(script_name: str) -> tuple[int, str]:
+    """Run one script, streaming its output; return (exit code, last lines)."""
+    tail = deque(maxlen=40)
+    proc = subprocess.Popen(
+        [sys.executable, "-u", str(SCRIPTS_DIR / script_name)],
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace",
+    )
+    for line in proc.stdout:
+        print(line, end="")
+        tail.append(line)
+    return proc.wait(), "".join(tail)
+
+
+def iris_codes() -> set[str] | None:
+    import geopandas as gpd
+
+    if not config.IRIS_REFERENCE_PATH.exists():
+        return None
+    return set(gpd.read_file(config.IRIS_REFERENCE_PATH)["code_iris"].astype(str))
+
+
+def write_run_metadata(generated_at: str, layer_dates: dict[str, str], context_failures: list[dict]) -> None:
+    """last_updated.json: when the run finished ("generated_at", shown in
+    every page footer) and when each layer was last successfully rebuilt
+    ("layers") — a context layer kept from a previous run keeps its old
+    date, which the site shows next to its figures. run_report.json lists
+    the context failures for the workflow to open an issue.
     """
-    metadata = {"generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
-    path = config.DATA_PROCESSED / "last_updated.json"
-    path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    print(f"\nWrote run metadata to {path}: {metadata}")
+    metadata = {"generated_at": generated_at, "layers": dict(sorted(layer_dates.items()))}
+    METADATA_PATH.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    REPORT_PATH.write_text(json.dumps({"generated_at": generated_at, "context_failures": context_failures}, indent=2), encoding="utf-8")
+    print(f"\nWrote {METADATA_PATH.name} and {REPORT_PATH.name} ({len(context_failures)} context failure(s))")
 
 
 def main():
-    for script_name in SCRIPT_ORDER:
-        print(f"\n=== Running {script_name} ===")
-        result = subprocess.run([sys.executable, str(SCRIPTS_DIR / script_name)])
-        if result.returncode != 0:
-            print(f"\n{script_name} failed (exit code {result.returncode}); stopping.")
-            sys.exit(result.returncode)
-    write_run_metadata()
+    missing = [s for s in SCRIPT_ORDER if s not in policy.SCRIPTS]
+    if missing:
+        sys.exit(f"Scripts without a failure-policy family in pipeline_policy.SCRIPTS: {missing}")
+
+    started = policy.now_iso()
+    now = policy.parse_iso(started)
+    layer_dates = policy.previous_layer_dates(METADATA_PATH)
+    context_failures = []
+    snapshot_dir = Path(tempfile.mkdtemp(prefix="underlaid-previous-layers-"))
+
+    try:
+        for script_name in SCRIPT_ORDER:
+            family, layers = policy.SCRIPTS[script_name]
+            print(f"\n=== Running {script_name} ({family}) ===")
+            if family == "context":
+                for layer in layers:
+                    current = config.DATA_PROCESSED / layer.filename
+                    if current.exists():
+                        shutil.copy2(current, snapshot_dir / layer.filename)
+
+            code, tail = run_script(script_name)
+            if code == 0:
+                for layer in layers:
+                    layer_dates[layer.filename] = started
+                continue
+
+            if family in policy.BLOCKING_FAMILIES:
+                print(f"\n{script_name} failed (exit code {code}) — {family} layer, blocking; stopping.")
+                sys.exit(code)
+
+            # Context layer: restore and keep the previous version if it is
+            # still valid and recent enough; otherwise block like the others.
+            reasons = []
+            for layer in layers:
+                kept = snapshot_dir / layer.filename
+                target = config.DATA_PROCESSED / layer.filename
+                if kept.exists():
+                    shutil.copy2(kept, target)
+                problem = policy.schema_problem(target, layer, iris_codes())
+                if problem:
+                    reasons.append(problem)
+                elif policy.too_old(layer_dates.get(layer.filename), now):
+                    reasons.append(
+                        f"{layer.filename}: previous version from {layer_dates.get(layer.filename)} is older than "
+                        f"{policy.MAX_CONTEXT_AGE_DAYS} days"
+                    )
+            if reasons:
+                print(f"\n{script_name} failed and its previous output can't be kept: {reasons}; stopping.")
+                sys.exit(code)
+
+            print(f"\n{script_name} failed (exit code {code}) — context layer, previous version kept; continuing.")
+            context_failures.append({
+                "script": script_name,
+                "exit_code": code,
+                "layers_kept": {layer.filename: layer_dates.get(layer.filename) for layer in layers},
+                "log_tail": tail,
+            })
+    finally:
+        shutil.rmtree(snapshot_dir, ignore_errors=True)
+
+    write_run_metadata(started, layer_dates, context_failures)
 
 
 if __name__ == "__main__":

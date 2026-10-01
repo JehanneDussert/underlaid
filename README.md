@@ -27,13 +27,13 @@ moves with every pipeline run):
 
 | Score | 0 | 1 | 2 | 3 |
 |---|---|---|---|---|
-| IRIS | 1,144 (41.6%) | 1,202 (43.7%) | 375 (13.6%) | 31 (1.1%) |
+| IRIS | 1,119 (40.7%) | 1,223 (44.4%) | 378 (13.7%) | 32 (1.2%) |
 
 **What crossing exposure with means shows** (2,529 IRIS with published
 income):
 - **Not the same exposures.** Highly exposed neighborhoods (2 or 3 of 3)
-  with the *highest* means are mostly in Paris (189 of 232) and stack
-  **heat and old, inefficient housing** (worst quartile in 93% and 95% of
+  with the *highest* means are mostly in Paris (191 of 234) and stack
+  **heat and old, inefficient housing** (worst quartile in 92% and 94% of
   them). Those with the *lowest* means are mostly in Seine-Saint-Denis
   and Val-de-Marne and stack **heat and air/noise pollution** (87% and
   89%).
@@ -336,10 +336,12 @@ Run it after `run_all.py` (or `make run`, which already includes it):
 make run-11_compute_vulnerability_score
 ```
 
-Current distribution across the full MGP's 2,752 IRIS: 41.6% score 0,
-43.7% score 1, 13.6% score 2, 1.1% (31 IRIS) score 3 — see SCORING.md's
-"Current distribution" and the correction sections before it for
-everything that moved this distribution. The four IRIS that reached 4/4
+Current distribution across the full MGP's 2,752 IRIS: 40.7% score 0,
+44.4% score 1, 13.7% score 2, 1.2% (32 IRIS) score 3 — quartile
+thresholds are computed on IRIS with at least 50 residents only (see
+SCORING.md, "Quartile thresholds: inhabited IRIS only", and the
+correction sections before it for everything that moved this
+distribution). The four IRIS that reached 4/4
 under the former 4-sub-score version (Économie 1 in Drancy, Les
 Parclairs in Le Perreux-sur-Marne, Président Wilson in
 Villeneuve-Saint-Georges, Nonneville 3 in Aulnay-sous-Bois) are all at
@@ -351,7 +353,7 @@ Villeneuve-Saint-Georges, Nonneville 3 in Aulnay-sous-Bois) are all at
 make test
 ```
 
-`tests/` is a smoke-test suite, not full coverage (53 tests): every per-IRIS layer has exactly 2,752 rows, every context layer
+`tests/` is a smoke-test suite, not full coverage (54 tests): every per-IRIS layer has exactly 2,752 rows, every context layer
 has the row count matching its actual grain (20 for the 3 still-
 Paris-only arrondissement facts, ~143 for the now MGP-wide commune-grain
 RNA layer), `code_iris` is unique and well-formed against any of the 4
@@ -570,6 +572,24 @@ frequently upstream and could get their own faster schedule later if
 that turns out to matter — not built now since a full run only takes a
 few minutes, so splitting it adds workflow complexity for a benefit
 nothing has needed yet.
+
+**When a source fails** (`scripts/pipeline_policy.py`). Every script
+belongs to a family. The IRIS reference, the scored categories and the
+means-to-cope axis are **blocking**: if one fails, the run stops and
+nothing is published. Context-only layers (detail-panel figures such as
+travel times or school social mix, the context modal, the QPV outline)
+are **not blocking**, under guardrails: their previous version is
+restored and kept only if it still has the expected schema (columns,
+and exactly the current IRIS codes for IRIS-grain layers) and is less
+than two quarters old — otherwise the failure blocks like the others.
+A kept layer keeps its own date in `last_updated.json` (`"layers"`),
+which the site shows next to its figures ("data as of …"), and the
+failure is written to `data/processed/run_report.json`, from which the
+workflow opens a GitHub issue (or comments on the open one for that
+script). Why: on 2026-10-01, two context-only sources broke upstream
+(the middle-school IPS dataset lost its coordinates; the Acceslibre
+file URL changed); under an "everything blocks" rule they would have
+held back the quarterly refresh of the whole score.
 
 The workflow never publishes blind. After running `scripts/run_all.py`
 (inside the project's own Docker image, so it gets the same

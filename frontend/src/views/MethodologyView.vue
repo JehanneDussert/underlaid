@@ -57,10 +57,10 @@ const DATA_SOURCES = [
 // output) — not user data, so no fetch: this page describes the method,
 // it doesn't recompute or re-derive anything from the live GeoJSON.
 const DISTRIBUTION = [
-  { score: 0, count: 1144, share: 1144 / 2752 },
-  { score: 1, count: 1202, share: 1202 / 2752 },
-  { score: 2, count: 375, share: 375 / 2752 },
-  { score: 3, count: 31, share: 31 / 2752 },
+  { score: 0, count: 1119, share: 1119 / 2752 },
+  { score: 1, count: 1223, share: 1223 / 2752 },
+  { score: 2, count: 378, share: 378 / 2752 },
+  { score: 3, count: 32, share: 32 / 2752 },
 ]
 
 const SUBSCORES = [
@@ -168,6 +168,7 @@ const lastUpdatedLabel = computed(() => {
       <p>{{ t('methodology.thresholdBody1') }}</p>
       <p>{{ t('methodology.thresholdBody2') }}</p>
       <p>{{ t('methodology.thresholdBody3') }}</p>
+      <p>{{ t('methodology.thresholdBody4') }}</p>
     </section>
 
     <section class="glass">

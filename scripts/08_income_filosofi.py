@@ -43,12 +43,12 @@ def download() -> Path:
     downloaded = download_file(file_url, dest)
 
     if downloaded.suffix == ".zip":
-        from utils.download import extract_zip
+        from utils.download import extract_zip, find_extracted_file
         extract_zip(downloaded, RAW_DIR / "extracted")
-        candidates = list((RAW_DIR / "extracted").rglob("*.xlsx")) + list((RAW_DIR / "extracted").rglob("*.csv"))
-        if not candidates:
-            raise RuntimeError(f"No xlsx/csv found after extracting {downloaded}")
-        return candidates[0]
+        # The data file, not the "meta_…" data dictionary shipped alongside it.
+        return find_extracted_file(
+            RAW_DIR / "extracted", r"BASE_TD_FILO_IRIS_\d{4}_DISP\.(csv|xlsx)", "Filosofi IRIS income file"
+        )
     return downloaded
 
 

@@ -31,8 +31,9 @@ CHUNK_SIZE = 200_000
 
 
 def download() -> Path:
-    from utils.download import download_file
-    return download_file(config.ACCESSIBILITY_CSV_URL, RAW_CSV)
+    from utils.download import download_file, find_datagouv_resource
+    url = find_datagouv_resource(config.ACCESSIBILITY_DATASET_SLUG, config.ACCESSIBILITY_RESOURCE_TITLE)
+    return download_file(url, RAW_CSV)
 
 
 def load_mgp_rows(csv_path: Path) -> pd.DataFrame:

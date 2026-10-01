@@ -62,25 +62,31 @@ def average_ips_per_iris(points: gpd.GeoDataFrame, iris: gpd.GeoDataFrame, out_c
     return joined.groupby(config.IRIS_JOIN_COLUMN)["ips"].mean().rename(out_col).reset_index()
 
 
-def build_ecoles_points() -> gpd.GeoDataFrame:
-    ips_df = fetch_ips_records(config.SOCIAL_INDEX_SCHOOLS_DATASET_ID)
-    directory_df = fetch_school_directory()
+def geolocate_by_uai(ips_df: pd.DataFrame, directory_df: pd.DataFrame) -> gpd.GeoDataFrame:
+    """Coordinates from the national school directory, joined on the UAI
+    code. Used for both datasets: the primary-school IPS never carried
+    coordinates, and the middle-school IPS dropped its `position` field
+    when it was republished on 2026-09-01 (found by a cold pipeline run —
+    the quarterly workflow would have failed on it right after script 21).
+    """
     merged = ips_df.merge(directory_df, left_on="uai", right_on="numero_uai", how="inner")
     return to_points(merged, "longitude", "latitude")
 
 
-def build_colleges_points() -> gpd.GeoDataFrame:
-    df = fetch_ips_records(config.SOCIAL_INDEX_MIDDLE_SCHOOLS_DATASET_ID)
-    df["longitude"] = df["position.lon"]
-    df["latitude"] = df["position.lat"]
-    return to_points(df, "longitude", "latitude")
+def build_ecoles_points(directory_df: pd.DataFrame) -> gpd.GeoDataFrame:
+    return geolocate_by_uai(fetch_ips_records(config.SOCIAL_INDEX_SCHOOLS_DATASET_ID), directory_df)
+
+
+def build_colleges_points(directory_df: pd.DataFrame) -> gpd.GeoDataFrame:
+    return geolocate_by_uai(fetch_ips_records(config.SOCIAL_INDEX_MIDDLE_SCHOOLS_DATASET_ID), directory_df)
 
 
 def main():
     iris = load_iris_reference(config.IRIS_REFERENCE_PATH, config.CRS_PROJECTED)
 
-    ecoles_points = build_ecoles_points()
-    colleges_points = build_colleges_points()
+    directory_df = fetch_school_directory()
+    ecoles_points = build_ecoles_points(directory_df)
+    colleges_points = build_colleges_points(directory_df)
 
     ecoles_ips = average_ips_per_iris(ecoles_points, iris, "social_index_schools")
     colleges_ips = average_ips_per_iris(colleges_points, iris, "social_index_middle_schools")

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { loadDataDates, staleLayerDate, formatDataDate } from '../utils/dataDates'
 
 const { t, locale } = useI18n()
 
@@ -17,6 +18,17 @@ const lightingRows = ref([])
 const lightingLoading = ref(true)
 const rnaRows = ref([])
 const rnaLoading = ref(true)
+
+// Date shown next to a source only if its layer is older than the last run
+// (its refresh failed and the previous version was kept).
+const dataDates = ref(null)
+onMounted(async () => {
+  dataDates.value = await loadDataDates()
+})
+function staleNote(layer) {
+  const date = staleLayerDate(dataDates.value, [layer])
+  return date ? t('context.layerAsOf', { date: formatDataDate(date, locale.value) }) : ''
+}
 
 onMounted(async () => {
   const response = await fetch(DATA_URL)
@@ -132,7 +144,7 @@ function localizedNote(row) {
           </li>
         </ul>
       </template>
-      <p class="source">{{ t('context.schoolsSource') }}</p>
+      <p class="source">{{ t('context.schoolsSource') }} {{ staleNote('school_ac_context_arrondissement.geojson') }}</p>
     </section>
 
     <section>
@@ -154,7 +166,7 @@ function localizedNote(row) {
           </li>
         </ul>
       </template>
-      <p class="source">{{ t('context.treesSource') }}</p>
+      <p class="source">{{ t('context.treesSource') }} {{ staleNote('tree_age_context_arrondissement.geojson') }}</p>
     </section>
 
     <section>
@@ -176,7 +188,7 @@ function localizedNote(row) {
           </li>
         </ul>
       </template>
-      <p class="source">{{ t('context.lightingSource') }}</p>
+      <p class="source">{{ t('context.lightingSource') }} {{ staleNote('street_lighting_context_arrondissement.geojson') }}</p>
     </section>
 
     <section>
@@ -203,7 +215,7 @@ function localizedNote(row) {
           </li>
         </ul>
       </template>
-      <p class="source">{{ t('context.rnaSource') }}</p>
+      <p class="source">{{ t('context.rnaSource') }} {{ staleNote('associational_density_context_commune.geojson') }}</p>
     </section>
   </div>
 </template>

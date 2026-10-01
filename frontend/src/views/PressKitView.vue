@@ -19,10 +19,10 @@ useSeoMeta({
 
 // Same static facts as MethodologyView.vue — see SCORING.md.
 const DISTRIBUTION = [
-  { score: 0, count: 1144, share: 1144 / 2752 },
-  { score: 1, count: 1202, share: 1202 / 2752 },
-  { score: 2, count: 375, share: 375 / 2752 },
-  { score: 3, count: 31, share: 31 / 2752 },
+  { score: 0, count: 1119, share: 1119 / 2752 },
+  { score: 1, count: 1223, share: 1223 / 2752 },
+  { score: 2, count: 378, share: 378 / 2752 },
+  { score: 3, count: 32, share: 32 / 2752 },
 ]
 
 const CATEGORY_LINES = ['thermalLine', 'pollutionLine', 'housingLine']

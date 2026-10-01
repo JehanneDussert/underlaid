@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import pandas as pd
 
 import config
-from utils.download import download_file, extract_zip, find_download_link
+from utils.download import download_file, extract_zip, find_download_link, find_extracted_file
 from utils.geo import check_unmatched_codes, load_iris_reference
 from utils.io import save_geojson
 
@@ -39,10 +39,11 @@ def download() -> Path:
     downloaded = download_file(file_url, dest)
 
     extract_zip(downloaded, RAW_DIR / "extracted")
-    candidates = list((RAW_DIR / "extracted").rglob("*.csv"))
-    if not candidates:
-        raise RuntimeError(f"No csv found after extracting {downloaded}")
-    return candidates[0]
+    # INSEE ships "base-ic-evol-struct-pop-<year>.CSV" (uppercase extension)
+    # next to a "meta_…" data dictionary — match the data file by name.
+    return find_extracted_file(
+        RAW_DIR / "extracted", r"base-ic-evol-struct-pop-\d{4}\.csv", "INSEE IRIS population file"
+    )
 
 
 def load_raw(path: Path) -> pd.DataFrame:

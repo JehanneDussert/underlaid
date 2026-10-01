@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import geopandas as gpd
 
 import config
-from utils.download import download_file, extract_zip
+from utils.download import download_file, extract_zip, find_datagouv_resource, find_extracted_file
 from utils.geo import areal_weighted_aggregate, check_unmatched_codes, load_iris_reference
 from utils.io import save_geojson
 
@@ -33,16 +33,16 @@ VALUE_FIELD_PATTERNS = ("uhi", "hvi")
 
 
 def download() -> Path:
-    zip_path = download_file(config.ICU_SAT4BDNB_ZIP_URL, RAW_ZIP)
+    url = find_datagouv_resource(config.ICU_SAT4BDNB_DATASET_SLUG, config.ICU_SAT4BDNB_RESOURCE_TITLE)
+    zip_path = download_file(url, RAW_ZIP)
     extract_zip(zip_path, EXTRACT_DIR)
     return EXTRACT_DIR
 
 
 def find_layer(extract_dir: Path) -> gpd.GeoDataFrame:
-    candidates = list(extract_dir.rglob("*.shp")) + list(extract_dir.rglob("*.gpkg")) + list(extract_dir.rglob("*.geojson"))
-    if not candidates:
-        raise RuntimeError(f"No GIS layer found under {extract_dir}; inspect the zip contents manually.")
-    return gpd.read_file(candidates[0])
+    # The zip ships one GeoPackage (plus a CSV, PDF and QGIS project files).
+    layer = find_extracted_file(extract_dir, r".+\.(gpkg|shp|geojson)", "Sat4BDNB heat-island layer")
+    return gpd.read_file(layer)
 
 
 def filter_to_mgp(gdf: gpd.GeoDataFrame, iris: gpd.GeoDataFrame) -> gpd.GeoDataFrame:

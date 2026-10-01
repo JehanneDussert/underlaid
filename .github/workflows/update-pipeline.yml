@@ -15,6 +15,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write  # context-layer failures (see scripts/pipeline_policy.py)
 
 env:
   # The 6 processed files the frontend actually fetches (see README's
@@ -44,6 +45,18 @@ jobs:
           docker run --rm --user "$(id -u):$(id -g)" \
             -v "${{ github.workspace }}/data:/app/data" \
             underlaid-pipeline python scripts/run_all.py
+
+      # Failure policy (scripts/pipeline_policy.py): a failing context-only
+      # layer (not scored) doesn't block the run — run_all.py keeps its
+      # previous version (if valid and under two quarters old) and lists it
+      # in data/processed/run_report.json. Make that visible as an issue,
+      # one per script, commenting on it instead if one is already open.
+      - name: Open an issue for context layers kept from a previous run
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: python3 .github/scripts/context_failure_issues.py
 
       # Regression tests (tests/test_pipeline.py) are a broader guard
       # than the diff report alone — code_iris well-formedness, layer

@@ -46,6 +46,64 @@ def extract_zip(zip_path: Path, dest_dir: Path) -> Path:
     return dest_dir
 
 
+def find_extracted_file(extract_dir: Path, name_pattern: str, what: str) -> Path:
+    """The single file under extract_dir (searched recursively) whose name
+    fully matches name_pattern, case-insensitively.
+
+    Case-insensitive because publishers don't keep extensions stable: INSEE
+    ships "base-ic-evol-struct-pop-2021.CSV" — a `rglob("*.csv")` finds it
+    on Windows/macOS (case-insensitive filesystems) but not on Linux, which
+    is exactly how the quarterly workflow broke on 2026-10-01 while every
+    local run passed. A precise name pattern rather than "the first CSV":
+    INSEE zips also carry a "meta_….CSV" data dictionary, and directory
+    order on Linux is arbitrary, so "first match" could silently load the
+    dictionary instead of the data.
+
+    Raises with the full list of files actually extracted when there isn't
+    exactly one match, so a renamed upstream file is diagnosed from the
+    workflow log alone.
+    """
+    regex = re.compile(name_pattern, re.IGNORECASE)
+    files = sorted(p for p in Path(extract_dir).rglob("*") if p.is_file())
+    matches = [p for p in files if regex.fullmatch(p.name)]
+    if len(matches) == 1:
+        return matches[0]
+    listing = "\n".join(f"  - {p.relative_to(extract_dir)}" for p in files) or "  (no files at all)"
+    problem = "no file" if not matches else f"{len(matches)} files"
+    raise RuntimeError(
+        f"{what}: {problem} under {extract_dir} match /{name_pattern}/ (case-insensitive). "
+        f"Files found:\n{listing}"
+    )
+
+
+DATAGOUV_API = "https://www.data.gouv.fr/api/1/datasets"
+
+
+def find_datagouv_resource(dataset_slug: str, title_pattern: str) -> str:
+    """Current download URL of a data.gouv.fr resource, looked up by its
+    title (full match, case-insensitive) through the dataset API.
+
+    Never hardcode a static.data.gouv.fr URL: it embeds the upload
+    timestamp (".../20260710-231714/acceslibre.csv") and returns 404 as
+    soon as the publisher replaces the file — which broke script 12 in a
+    cold run on 2026-10-01 while the July file cached locally hid it. When
+    several resources match, the most recently modified one wins.
+    """
+    response = requests.get(f"{DATAGOUV_API}/{dataset_slug}/", timeout=DEFAULT_TIMEOUT)
+    response.raise_for_status()
+    resources = response.json().get("resources", [])
+    regex = re.compile(title_pattern, re.IGNORECASE)
+    matches = [r for r in resources if regex.fullmatch(r.get("title", ""))]
+    if not matches:
+        titles = "\n".join(f"  - {r.get('title')}" for r in resources) or "  (no resources)"
+        raise RuntimeError(
+            f"No resource of data.gouv.fr dataset '{dataset_slug}' matches /{title_pattern}/. "
+            f"Resources found:\n{titles}"
+        )
+    latest = max(matches, key=lambda r: r.get("last_modified") or "")
+    return latest["url"]
+
+
 def find_download_link(page_url: str, filename_pattern: str) -> str:
     """Scrape a plain HTML page for the first href matching filename_pattern.
 

@@ -12,6 +12,7 @@ import AboutBanner from '../components/AboutBanner.vue'
 import InfoTip from '../components/InfoTip.vue'
 import { useSeoMeta } from '../composables/useSeoMeta'
 import { loadStaticJson } from '../utils/loadStaticJson'
+import { loadDataDates, staleLayerDate, formatDataDate } from '../utils/dataDates'
 
 const { t, locale } = useI18n()
 
@@ -453,6 +454,23 @@ let allFeatures = []
 const capacityByIris = shallowRef({})
 const capacityMedians = ref({})
 const capacityLoaded = ref(false)
+// Per-layer dates (failure policy): a context layer kept from a previous
+// run is shown with its own date.
+const dataDates = ref(null)
+const ACCESS_CONTEXT_LAYERS = [
+  'equipment_access_iris.geojson',
+  'social_index_iris.geojson',
+  'accessibility_iris.geojson',
+  'pedestrian_paths_iris.geojson',
+]
+const accessContextStaleNote = computed(() => {
+  const date = staleLayerDate(dataDates.value, ACCESS_CONTEXT_LAYERS)
+  return date ? t('context.layerAsOf', { date: formatDataDate(date, locale.value) }) : ''
+})
+const qpvStaleNote = computed(() => {
+  const date = staleLayerDate(dataDates.value, ['qpv_boundaries_mgp.geojson'])
+  return date ? t('context.layerAsOf', { date: formatDataDate(date, locale.value) }) : ''
+})
 
 // Shared between SSR prerendering and the browser: onServerPrefetch runs
 // this during vite-ssg's build-time render (so the sr-only screen-reader
@@ -461,7 +479,8 @@ const capacityLoaded = ref(false)
 // has no initialState/hydration wiring, so the client simply re-fetches
 // the same static JSON after mount, same pattern as RankingView.vue.
 async function loadData() {
-  const [geojson, capacity] = await Promise.all([loadStaticJson(DATA_URL), loadStaticJson(CAPACITY_URL)])
+  const [geojson, capacity, dates] = await Promise.all([loadStaticJson(DATA_URL), loadStaticJson(CAPACITY_URL), loadDataDates()])
+  dataDates.value = dates
   allProperties.value = geojson.features.map((f) => f.properties)
   allFeatures = geojson.features
   capacityByIris.value = Object.fromEntries(capacity.iris.map((r) => [r.code_iris, r]))
@@ -1027,7 +1046,7 @@ function quartileColor(quartile) {
           :aria-pressed="showQpv"
           @click="toggleQpv"
         >{{ t('buttons.qpvToggle') }}</button>
-        <p v-if="showQpv" class="qpv-note">{{ t('legend.qpvNote') }}</p>
+        <p v-if="showQpv" class="qpv-note">{{ t('legend.qpvNote') }} {{ qpvStaleNote }}</p>
 
         <!-- Text alternative to the canvas choropleth for screen readers.
              The wrapping div (not the table itself) carries .sr-only:
@@ -1127,6 +1146,7 @@ function quartileColor(quartile) {
           <section class="access-context" :aria-label="t('panel.accessContextTitle')">
             <div class="capacity-title">{{ t('panel.accessContextTitle') }}</div>
             <p class="capacity-note">{{ t('panel.accessContextNote') }}</p>
+            <p v-if="accessContextStaleNote" class="capacity-note">{{ accessContextStaleNote }}</p>
             <div class="stat-row">
               <span>{{ t('panel.timeToEducation') }}</span>
               <span class="v">{{ formatMinutes(selectedFeature.properties.access_minutes_domain_C) }}

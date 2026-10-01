@@ -1,3 +1,30 @@
 {
-  "generated_at": "2026-07-26T20:15:50Z"
+  "generated_at": "2026-10-01T09:50:54Z",
+  "layers": {
+    "accessibility_iris.geojson": "2026-10-01T09:50:54Z",
+    "adaptive_capacity_iris.json": "2026-10-01T09:50:54Z",
+    "air_noise_iris.geojson": "2026-10-01T09:50:54Z",
+    "artificialization_iris.geojson": "2026-10-01T09:50:54Z",
+    "associational_density_context_commune.geojson": "2026-10-01T09:50:54Z",
+    "bpe_iris.geojson": "2026-10-01T09:50:54Z",
+    "cool_spots_facilities_iris.geojson": "2026-10-01T09:50:54Z",
+    "cool_spots_green_iris.geojson": "2026-10-01T09:50:54Z",
+    "enedis_thermosensitivity_iris.geojson": "2026-10-01T09:50:54Z",
+    "energy_performance_iris.geojson": "2026-10-01T09:50:54Z",
+    "equipment_access_iris.geojson": "2026-10-01T09:50:54Z",
+    "icu_iris.geojson": "2026-10-01T09:50:54Z",
+    "income_iris.geojson": "2026-10-01T09:50:54Z",
+    "iris_mgp.geojson": "2026-10-01T09:50:54Z",
+    "overcrowding_iris.geojson": "2026-10-01T09:50:54Z",
+    "pedestrian_paths_iris.geojson": "2026-10-01T09:50:54Z",
+    "population_iris.geojson": "2026-10-01T09:50:54Z",
+    "qpv_boundaries_mgp.geojson": "2026-10-01T09:50:54Z",
+    "school_ac_context_arrondissement.geojson": "2026-10-01T09:50:54Z",
+    "secondary_residences_iris.geojson": "2026-10-01T09:50:54Z",
+    "social_index_iris.geojson": "2026-07-26T20:15:50Z",
+    "street_lighting_context_arrondissement.geojson": "2026-10-01T09:50:54Z",
+    "street_lighting_iris.geojson": "2026-10-01T09:50:54Z",
+    "tree_age_context_arrondissement.geojson": "2026-10-01T09:50:54Z",
+    "vulnerability_score_iris.geojson": "2026-10-01T09:50:54Z"
+  }
 }

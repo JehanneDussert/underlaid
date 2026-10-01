@@ -1,5 +1,7 @@
 # Underlaid
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23083312.svg)](https://doi.org/10.5281/zenodo.23083312)
+
 **Where environmental exposures overlap in Paris and its inner suburbs —
 and who has the means to cope with them.** For each of 2,752
 neighborhoods (INSEE IRIS), Underlaid counts how many of three exposures

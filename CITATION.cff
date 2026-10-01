@@ -6,6 +6,14 @@ authors:
   - family-names: Dussert
     given-names: Jehanne
     orcid: "https://orcid.org/0009-0008-3247-2180"
+doi: 10.5281/zenodo.23083312
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23083312
+    description: Concept DOI, always resolves to the latest version
+  - type: doi
+    value: 10.5281/zenodo.23083313
+    description: DOI of version 0.1.0
 repository-code: "https://github.com/JehanneDussert/underlaid"
 url: "https://underlaid.vercel.app"
 abstract: >-

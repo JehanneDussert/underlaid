@@ -606,7 +606,7 @@ nothing has needed yet.
 belongs to a family. The IRIS reference, the scored categories and the
 means-to-cope axis are **blocking**: if one fails, the run stops and
 nothing is published. Context-only layers (detail-panel figures such as
-travel times or school social mix, the context modal, the QPV outline)
+travel times or the school social position index, the context modal, the QPV outline)
 are **not blocking**, under guardrails: their previous version is
 restored and kept only if it still has the expected schema (columns,
 and exactly the current IRIS codes for IRIS-grain layers) and is less
@@ -747,7 +747,7 @@ September 2026, not assumed:
 | Urban heat island indicators (Sat4BDNB, data.gouv.fr) | CSTB | Thermal | Licence Ouverte 2.0 |
 | Open green & wooded spaces; MOS land use 2021 (data.iledefrance.fr) | L'Institut Paris Region | Thermal | Licence Ouverte 2.0 |
 | Air-noise co-exposure map 2024 | Airparif & Bruitparif | Pollution | Published as open data with no formal license named; the publisher requires this citation: *"Source des données : Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr"* |
-| IPS social position index, school directory (data.education.gouv.fr) | DEPP — Ministère de l'Éducation nationale | Context, not scored (school social mix) | Licence Ouverte 2.0 |
+| IPS social position index, school directory (data.education.gouv.fr) | DEPP — Ministère de l'Éducation nationale | Context, not scored (school social position index) | Licence Ouverte 2.0 |
 | DPE energy performance certificates (data.ademe.fr) | ADEME | Housing | Licence Ouverte 2.0 |
 | Electricity consumption by IRIS (opendata.enedis.fr) | Enedis | Housing (thermosensitivity) | Licence Ouverte 2.0 |
 | Acceslibre (data.gouv.fr) | Acceslibre | Context, not scored (PMR accessibility) | Licence Ouverte 2.0 |

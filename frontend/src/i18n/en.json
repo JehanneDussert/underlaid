@@ -87,7 +87,7 @@
     "capacityMasked": "INSEE doesn't publish income for this neighborhood (too few households — statistical secrecy), so it has no means class.",
     "overcrowding": "Overcrowded homes",
     "accessContextTitle": "Other access figures — for information, not scored",
-    "accessContextNote": "These earlier indicators don't measure access reliably across the whole metro area (travel times are almost identical everywhere, wheelchair data is sparse, and school social mix describes who lives here). They stay on display for information; access to care above replaces them in the score.",
+    "accessContextNote": "These earlier indicators don't measure access reliably across the whole metro area (travel times are almost identical everywhere, wheelchair data is sparse, and the school index reflects families' resources, already measured separately). They stay on display for information; access to care above replaces them in the score.",
     "sparselyPopulated": "Very sparsely populated neighborhood (fewer than 50 residents): its figures describe a place more than the people living there.",
     "gpAccess": "GPs within reach, without a car (per 10,000 residents)",
     "pharmacyAccess": "Pharmacies within a 15-min walk (per 10,000 residents)",
@@ -218,7 +218,7 @@
     "capacityBody4": "What it doesn't show: it measures means, not what households do with them — nothing here says whether a home has air conditioning or whether someone can take time off during a heatwave. The groups are relative to this metro area, not an absolute threshold of \"enough.\"",
     "accessOutTitle": "Access to care: taken out, rebuilt, back in the score",
     "accessOut1": "At launch, the score counted a fourth category, access to services. Crossing the score with residents' means showed it wasn't measuring what it claimed, and a series of checks confirmed it for each of its four indicators. It was taken out of the score in September 2026, then rebuilt; those earlier indicators stay on display for information in the detail panel.",
-    "accessOut2": "The social mix of nearby schools describes who lives in a neighborhood, not an exposure — it follows household income by construction. It was the main reason the access category moved with residents' means (correlation −0.52): part of the score was income in disguise.",
+    "accessOut2": "The social position index of nearby schools reflected families' resources, already measured separately on the means axis: keeping it in the score counted them twice. It accounted for most of the link between the access category and residents' means (correlation −0.52).",
     "accessOut3": "Wheelchair-accessible entrances come from a crowdsourced register that's missing for 39% of neighborhoods. Those without it landed in the worst access quartile 29.6% of the time, against 17.6% for those with it — the same missing-data bias this project already had to fix once.",
     "accessOut4": "Pedestrian-path density, from OpenStreetMap, mostly measures how volunteers map sidewalks: Paris draws 53% of its sidewalks as separate paths, Seine-Saint-Denis 17% — elsewhere they're usually noted as an attribute of the street, which wasn't counted. Checked on aerial imagery: the \"Klock\" neighborhood in Clichy (53,000 residents per km², sidewalks clearly visible) counted 52 m of path per km²; Saint-Ambroise 4 in Paris's 11th, with the same kind of streets, 165,000.",
     "accessOut5": "Travel time to the nearest school, clinic or transport stop is 1.5 minutes or less for 98% of neighborhoods in this dense area, so it barely tells them apart. Hence the rebuild: a measure that accounts for how many people share each service, not just how close it is.",
@@ -561,11 +561,6 @@
       "title": "Corrections made",
       "intro": "Indicators that measured something other than what they were meant to measure were removed, including when they widened the observed gaps.",
       "items": [
-        {
-          "when": "Sept. 2026",
-          "what": "School social-composition indicator removed from the score",
-          "why": "It reflected pupils' social background, hence family income, not an exposure."
-        },
         {
           "when": "Sept. 2026",
           "what": "Access to services removed from the score, pending a reliable measure",

@@ -217,7 +217,8 @@ area's lowest third of means; in Paris, 4% (92: 21%, 94: 39%).
 version of this grid was computed with the former 4-sub-score exposure
 score, and its "2+ / lowest means" cell turned out to be largely built
 in: the access sub-score included school social position (IPS), which
-follows household income by construction (capacity vs access: −0.52).
+reflects families' resources — already measured on this axis, so they
+were counted twice (capacity vs access: −0.52).
 That finding started the audit that took access out of the score — see
 "Why access to services left the score" below. With the 3-sub-score
 score, the cell has no such mechanical overlap: none of the three
@@ -294,10 +295,10 @@ Every alternative was simulated on the full data before deciding,
 without touching the published score.
 
 **The four indicators, one by one.**
-- **School IPS (social position index)** describes the population, not
-  an exposure — it follows household income by construction. It was the
-  access driver for most of the IRIS whose "high exposure / low means"
-  profile relied on access.
+- **School IPS (social position index)** reflects families' resources,
+  which the separate means axis already measures: keeping it in the
+  score counted them twice. It was the access driver for most of the
+  IRIS whose "high exposure / low means" profile relied on access.
 - **Acceslibre wheelchair-accessible entrances** are crowdsourced and
   missing for 1,064 of 2,752 IRIS (39%). In the 4-sub-score version,
   IRIS with 3 of the 4 access indicators landed in the worst access

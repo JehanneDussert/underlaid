@@ -87,7 +87,7 @@
     "capacityMasked": "L'INSEE ne publie pas le revenu de ce quartier (trop peu de ménages — secret statistique) : pas de classe de moyens.",
     "overcrowding": "Logements suroccupés",
     "accessContextTitle": "Autres repères d'accès — pour information, non notés",
-    "accessContextNote": "Ces anciens indicateurs ne mesurent pas l'accès de façon fiable sur toute la métropole (temps de trajet presque identiques partout, données fauteuil roulant lacunaires, et la mixité scolaire décrit qui habite ici). Ils restent affichés pour information ; l'accès aux soins ci-dessus les remplace dans le score.",
+    "accessContextNote": "Ces anciens indicateurs ne mesurent pas l'accès de façon fiable sur toute la métropole (temps de trajet presque identiques partout, données fauteuil roulant lacunaires, et l'indice des écoles reflète les ressources des familles, déjà mesurées à part). Ils restent affichés pour information ; l'accès aux soins ci-dessus les remplace dans le score.",
     "sparselyPopulated": "Quartier très peu habité (moins de 50 habitants) : ses chiffres décrivent un lieu plus que les personnes qui y vivent.",
     "gpAccess": "Médecins généralistes à portée, sans voiture (pour 10 000 hab.)",
     "pharmacyAccess": "Pharmacies à 15 min à pied (pour 10 000 hab.)",
@@ -218,7 +218,7 @@
     "capacityBody4": "Ce qu'elle ne montre pas : elle mesure des moyens, pas ce que les ménages en font — rien ici ne dit si un logement est climatisé ni si quelqu'un peut s'absenter pendant une canicule. Les groupes sont relatifs à cette métropole, pas un seuil absolu de moyens « suffisants ».",
     "accessOutTitle": "L'accès aux soins : retiré, reconstruit, revenu dans le score",
     "accessOut1": "Au lancement, le score comptait une quatrième catégorie, l'accès aux services. Le croisement avec les moyens des habitants a montré qu'elle ne mesurait pas ce qu'elle prétendait, et une série de vérifications l'a confirmé pour chacun de ses quatre indicateurs. Elle a été retirée du score en septembre 2026, puis reconstruite ; ces anciens indicateurs restent affichés pour information dans le panneau de détail.",
-    "accessOut2": "La mixité sociale des écoles proches décrit qui habite un quartier, pas une exposition — elle suit le revenu des ménages par construction. C'est la principale raison pour laquelle la catégorie accès suivait les moyens des habitants (corrélation de −0,52) : une partie du score était du revenu déguisé.",
+    "accessOut2": "L'indice de position sociale des écoles proches reflétait les ressources des familles, déjà mesurées séparément par l'axe des ressources : le garder dans le score revenait à les compter deux fois. Il expliquait l'essentiel du lien entre la catégorie accès et les ressources des habitants (corrélation de −0,52).",
     "accessOut3": "Les entrées accessibles en fauteuil roulant viennent d'un registre collaboratif absent pour 39% des quartiers. Ceux qui n'en avaient pas se retrouvaient dans le pire quartile d'accès 29,6% du temps, contre 17,6% pour les autres — le même biais de données manquantes que ce projet avait déjà dû corriger une fois.",
     "accessOut4": "La densité de cheminements piétons, issue d'OpenStreetMap, mesure surtout la façon dont les bénévoles cartographient les trottoirs : Paris dessine 53% de ses trottoirs comme des chemins séparés, la Seine-Saint-Denis 17% — ailleurs, ils sont le plus souvent notés comme un attribut de la rue, ce qui n'était pas compté. Vérifié sur imagerie aérienne : le quartier « Klock » à Clichy (53 000 habitants au km², trottoirs bien visibles) comptait 52 m de cheminements au km² ; Saint-Ambroise 4, dans le 11e à Paris, avec le même type de rues, 165 000.",
     "accessOut5": "Le temps de trajet jusqu'à l'école, au cabinet médical ou à l'arrêt de transport le plus proche est de 1,5 minute ou moins pour 98 % des quartiers de ce territoire dense : il ne les départage presque pas. D'où la reconstruction : une mesure qui tienne compte de la charge des services, pas seulement de leur distance.",
@@ -561,11 +561,6 @@
       "title": "Corrections apportées",
       "intro": "Les indicateurs qui mesuraient autre chose que ce qu'ils étaient censés mesurer ont été retirés, y compris lorsqu'ils accentuaient les écarts observés.",
       "items": [
-        {
-          "when": "Sept. 2026",
-          "what": "Indicateur de composition sociale des écoles retiré du score",
-          "why": "Il reflétait le profil social des élèves, donc les revenus des familles, et non une exposition."
-        },
         {
           "when": "Sept. 2026",
           "what": "Accès aux services retiré du score, dans l'attente d'une mesure fiable",

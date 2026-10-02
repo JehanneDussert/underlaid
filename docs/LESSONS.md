@@ -175,9 +175,9 @@ it implicit.
 **Crossing the score with residents' means revealed income hidden in the exposure score.**
 The exposure score was built to measure exposure only — income was
 deliberately kept out. But the "access to services" sub-score included
-the social position index (IPS) of nearby schools, which describes who
-lives in a neighborhood, not what it's exposed to, and follows household
-income by construction. Nothing flagged it while the score was looked
+the social position index (IPS) of nearby schools, which reflects
+families' resources — something the separate means axis already
+measures, so the two ended up counted twice. Nothing flagged it while the score was looked
 at on its own: every quartile check passed. It only showed once the
 score was crossed with a separate measure of means (Phase 8): the
 access sub-score moved with means at −0.52, and the "high exposure /

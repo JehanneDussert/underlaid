@@ -30,7 +30,7 @@ IRIS that contains their centre. An IRIS that contains no cell centre
 (small IRIS) takes the cell whose square contains its representative
 point; none at all -> NaN (no residents on the grid).
 
-Indicators written (access_e2sfca_iris.csv, MGP IRIS):
+Indicators written (data/processed/access_e2sfca_iris.csv, MGP IRIS):
 - gp_std: GPs, standard network, morning (main);
 - gp_acc_no / gp_acc_yes: GPs, accessible travel (unknown stops/trips
   counted as not accessible / accessible), standard competition;
@@ -55,7 +55,8 @@ import config
 
 ACCESS_DIR = config.DATA_PROCESSED / "access"
 TTM_DIR = config.DATA_INTERIM / "access" / "ttm"
-OUT_PATH = ACCESS_DIR / "access_e2sfca_iris.csv"
+# Published (tracked in git, read by script 11), unlike the working files in ACCESS_DIR.
+OUT_PATH = config.DATA_PROCESSED / "access_e2sfca_iris.csv"
 PER = 10_000
 
 GP_DECAY = [(10, 1.0), (15, 2 / 3), (20, 1 / 3)]

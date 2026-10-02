@@ -166,10 +166,10 @@ def test_secondary_residences_rate_is_a_0_to_1_fraction():
 
 # --- Scoring output sanity ---
 
-# The 3 scored sub-scores. Access to services left the count at the v0
-# launch (see SCORING.md, "Why access to services left the score"); its
-# raw figures remain in the output as unscored context.
-SCORED_SUBSCORES = ["thermal", "pollution", "housing"]
+# The 4 scored sub-scores. Access left the count at the v0 launch and came
+# back in v0.2 as "access to care" (E2SFCA, scripts 27-32; SCORING.md,
+# "Access to care"). The inclusive-mobility gap is information only.
+SCORED_SUBSCORES = ["thermal", "pollution", "housing", "access_care"]
 
 def test_subscore_status_values_are_known():
     gdf = load("vulnerability_score_iris.geojson")
@@ -183,17 +183,30 @@ def test_subscore_status_values_are_known():
 def test_cumulative_score_is_in_valid_range():
     gdf = load("vulnerability_score_iris.geojson")
     scored = gdf["cumulative_vulnerability_score"].dropna()
-    assert scored.between(0, 3).all(), "cumulative_vulnerability_score must be 0-3 (or null)"
+    assert scored.between(0, 4).all(), "cumulative_vulnerability_score must be 0-4 (or null)"
 
 
-def test_access_is_context_only():
-    """Access figures stay available as context, but no access sub-score
-    exists anymore — nothing access-related may feed the count."""
-    columns = set(load("vulnerability_score_iris.geojson").columns)
-    assert not {c for c in columns if c.startswith("subscore_access")}, "an access sub-score is back in the output"
-    assert {"access_minutes_domain_C", "footway_density_m_per_km2", "pct_pmr_accessible", "social_index_schools"} <= columns, (
-        "access context figures missing from the output"
-    )
+def test_access_care_is_scored_and_mobility_is_information_only():
+    """Access to care is a scored sub-score; the inclusive-mobility gap is
+    carried for information and must never become a sub-score (it compares
+    two ways of travelling in the same place, not places — decision of
+    2026-10-02, CLAUDE.md)."""
+    gdf = load("vulnerability_score_iris.geojson")
+    columns = set(gdf.columns)
+    assert {"subscore_access_care", "subscore_access_care_quartile", "subscore_access_care_status"} <= columns
+    assert not {c for c in columns if c.startswith("subscore_mobility")}, "inclusive mobility must not be a sub-score"
+    assert {"gp_std", "pharmacy_std", "gp_acc_no", "gp_gap_no", "gp_gap_yes"} <= columns
+    gap = gdf["gp_gap_no"].dropna()
+    # Accessible travel can't beat unrestricted travel (script 32 caps each
+    # pair); 1.01 leaves room for rounding in the IRIS averages.
+    assert gap.between(0, 1.01).all(), f"inclusive-mobility gap outside [0, 1]: {gap.min():.3f}-{gap.max():.3f}"
+    # Unroutable IRIS (no GP or pharmacy reached at all) are rare.
+    assert gdf["gp_std"].isna().sum() <= 10, "too many IRIS without an access value — routing broke?"
+
+
+def test_access_file_covers_every_iris():
+    df = pd.read_csv(config.DATA_PROCESSED / "access_e2sfca_iris.csv", dtype={"code_iris": str})
+    assert len(df) == 2752 and df["code_iris"].is_unique
 
 
 def test_cumulative_score_distribution_is_plausible():
@@ -202,13 +215,13 @@ def test_cumulative_score_distribution_is_plausible():
     before the minimum-indicator threshold fix, sparse-data IRIS landed in
     a sub-score's worst quartile at ~47% instead of the ~25% chance rate.
     If any single cumulative score value balloons past a third of all
-    IRIS, or if the top score (3/3) becomes implausibly common, something regressed.
+    IRIS, or if the top scores (3/4, 4/4) become implausibly common, something regressed.
     """
     gdf = load("vulnerability_score_iris.geojson")
     counts = gdf["cumulative_vulnerability_score"].value_counts(normalize=True, dropna=True)
 
     assert counts.get(0, 0) < 0.60, "over 60% of IRIS at score 0 would be an implausibly clean city"
-    for score in (3,):
+    for score in (3, 4):
         share = counts.get(score, 0)
         assert share < 0.15, (
             f"score={score} accounts for {share:.1%} of IRIS — implausibly high; "
@@ -354,6 +367,7 @@ def _indicator_availability(gdf):
         ],
         "housing": [gdf["pct_dpe_fg"].notna(), gdf["pct_thermosensitive"].notna()],
         "pollution": [gdf["air_noise_coexposure_class"].notna()],
+        "access_care": [gdf["gp_std"].notna(), gdf["pharmacy_std"].notna()],
     }
 
 
@@ -375,8 +389,9 @@ def test_worst_quartile_share_does_not_depend_on_indicator_count(name):
     25%, ratio ~1.9) fails it; thermal as of this writing (30.2% with 3
     indicators vs 24.6% with 4, ratio 1.23) passes. Access failed it (29.6%
     with 3 indicators vs 17.6% with 4, ratio 1.68) — one of the reasons it
-    left the score at the v0 launch; any candidate return of access must
-    pass this test first (see CLAUDE.md, Phase 7).
+    left the score at the v0 launch. Access to care (v0.2) passes it: both
+    its indicators come from the same routing run, so an IRIS has both or
+    neither.
     """
     gdf = load("vulnerability_score_iris.geojson")
     n_available = sum(col.astype(int) for col in _indicator_availability(gdf)[name])

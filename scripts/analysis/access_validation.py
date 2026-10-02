@@ -1,6 +1,6 @@
 """Step 3 of the access rebuild: validation of the E2SFCA indicators.
 
-Reads data/processed/access/access_e2sfca_iris.csv (script 32). Never
+Reads data/processed/access_e2sfca_iris.csv (script 32). Never
 looks at residents' means (working hypothesis, CLAUDE.md): only
 distributions, departments, the DREES APL, extremes and sensitivity.
 
@@ -27,7 +27,7 @@ def spearman(a: pd.Series, b: pd.Series) -> float:
 
 
 def load() -> pd.DataFrame:
-    acc = pd.read_csv(config.DATA_PROCESSED / "access" / "access_e2sfca_iris.csv", dtype={"code_iris": str})
+    acc = pd.read_csv(config.DATA_PROCESSED / "access_e2sfca_iris.csv", dtype={"code_iris": str})
     iris = gpd.read_file(config.IRIS_REFERENCE_PATH)[["code_iris", "nom_iris", "nom_com", "insee_com"]]
     pop = gpd.read_file(config.DATA_PROCESSED / "population_iris.geojson")[["code_iris", "population"]]
     d = acc.merge(iris, on="code_iris").merge(pop, on="code_iris")

@@ -14,8 +14,11 @@ frontend/dist
 # Local project-context/planning file and tool settings, not part of
 # the public project
 CLAUDE.md
+COM.md
+docs/maquettes
 .claude/
-# Access rebuild outputs (scripts 27-32): regenerable, not validated yet,
-# and derived from the IDFM timetables (Licence Mobilités: any public use
-# needs its attribution notice). Published only once access is scored.
+# Access working files (scripts 27-32): regenerable. The per-IRIS result,
+# data/processed/access_e2sfca_iris.csv, is versioned and read by script
+# 11 (derived from the IDFM timetables: Licence Mobilités notice in the
+# README, SCORING.md and on the site).
 data/processed/access/

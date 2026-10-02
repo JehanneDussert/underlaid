@@ -461,7 +461,6 @@ const ACCESS_CONTEXT_LAYERS = [
   'equipment_access_iris.geojson',
   'social_index_iris.geojson',
   'accessibility_iris.geojson',
-  'pedestrian_paths_iris.geojson',
 ]
 const accessContextStaleNote = computed(() => {
   const date = staleLayerDate(dataDates.value, ACCESS_CONTEXT_LAYERS)
@@ -596,7 +595,6 @@ const medians = computed(() => ({
   pct_dpe_fg: median('pct_dpe_fg'),
   pct_thermosensitive: median('pct_thermosensitive'),
   pct_pmr_accessible: median('pct_pmr_accessible'),
-  footway_density_m_per_km2: median('footway_density_m_per_km2'),
   pct_secondary_residences: median('pct_secondary_residences'),
 }))
 
@@ -1173,10 +1171,6 @@ function quartileColor(quartile) {
             <div class="stat-row">
               <span>{{ t('panel.pmrAccessible') }}</span>
               <span class="v">{{ formatPercent(selectedFeature.properties.pct_pmr_accessible) }}</span>
-            </div>
-            <div class="stat-row">
-              <span>{{ t('panel.footwayDensity') }}</span>
-              <span class="v">{{ t('panel.mPerKm2', { n: formatNumber(selectedFeature.properties.footway_density_m_per_km2, 0) }) }}</span>
             </div>
           </section>
 

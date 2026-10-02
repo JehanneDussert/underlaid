@@ -1,0 +1,23 @@
+# Image for the access-to-services computation (E2SFCA, scripts 27-31):
+# the pipeline image plus Java (R5 routing engine, via r5py) and osmium
+# (filtering the OpenStreetMap extract for the accessible scenario).
+# Kept separate from the quarterly pipeline image until access is
+# integrated into the score.
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gdal-bin \
+    libgdal-dev \
+    g++ \
+    openjdk-21-jre-headless \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt requirements-access.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-access.txt
+
+COPY scripts/ scripts/
+COPY tests/ tests/
+
+VOLUME ["/app/data"]

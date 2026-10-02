@@ -1,0 +1,3 @@
+# Access-to-services computation only (Dockerfile.access).
+r5py>=0.1.2
+osmium>=4.0

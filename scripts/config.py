@@ -123,3 +123,25 @@ POPULATION_IRIS_PAGE = "https://www.insee.fr/fr/statistiques/8268806"
 # see script 22's docstring for why this replaces IGN's OCS GE (no
 # queryable vector API found for OCS GE, only WMTS/WMS tile services).
 MOS_DATASET_ID = "mos-occupation-du-sol-2025-and-2021-en-79-postes-de-la-region-ile-de-france"
+
+# --- Access to services (E2SFCA, scripts 27-31) ---
+# Supply and demand are taken over the whole region, not just the MGP:
+# inner-ring IRIS use services across the boundary, and those services
+# also serve outer-ring residents (edge effect).
+IDF_DEP_CODES = ["75", "77", "78", "91", "92", "93", "94", "95"]
+# RPPS open extract (Annuaire Santé, ANS), zip edition.
+RPPS_DATASET_SLUG = (
+    "annuaire-sante-extractions-des-donnees-en-libre-acces-des-professionnels-"
+    "intervenant-dans-le-systeme-de-sante-rpps-format-zip"
+)
+RPPS_RESOURCE_TITLE = r"PS_LibreAcces\.zip"
+# FINESS establishments with coordinates (Lambert-93), Etalab extract.
+FINESS_DATASET_SLUG = "finess-extraction-du-fichier-des-etablissements"
+FINESS_GEO_RESOURCE_TITLE = r"Extraction Finess des Etablissements g[ée]olocalis[ée]s.*"
+FINESS_PHARMACY_CATEGORY = "620"
+# Filosofi 2021 population grid (200 m squares, INSEE), CSV edition.
+FILOSOFI_GRID_PAGE = "https://www.insee.fr/fr/statistiques/8735162"
+# Île-de-France Mobilités timetables (GTFS), Licence Mobilités.
+IDFM_GTFS_URL = "https://eu.ftp.opendatasoft.com/stif/GTFS/IDFM-gtfs.zip"
+# Geofabrik OpenStreetMap extract for the region (walking network).
+OSM_IDF_PBF_URL = "https://download.geofabrik.de/europe/france/ile-de-france-latest.osm.pbf"

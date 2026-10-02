@@ -202,6 +202,40 @@ before it enters a score: compare it with a physical driver (population
 density) by area, look at how the feature is tagged in each area, and
 eyeball the extremes on imagery.
 
+**Counting the tags properly doesn't fix uneven mapping.** The obvious
+repair — count sidewalks both ways they're recorded (drawn `footway=sidewalk`
+lines, and `sidewalk=both|left|right` on the street, each sidewalk once) —
+does fix Klock: 1.87 m of sidewalk per metre of street, against 1.76 in
+Saint-Ambroise 4. But the audit run before rebuilding access
+(`scripts/analysis/osm_sidewalk_completeness.py`, Geofabrik extract of
+2026-09-30) measured the deeper problem: the share of street length with
+*any* sidewalk information. The rule was set before computing: a gap of
+more than 15 points between departments at equal density would make the
+indicator unusable for comparisons.
+
+| Residents per km² (fifths of inhabited IRIS) | Paris | Hauts-de-Seine | Seine-Saint-Denis | Val-de-Marne |
+|---|---|---|---|---|
+| All | 96% | 63% | 26% | 47% |
+| under 7,200 | 83% | 51% | 23% | 36% |
+| 7,200 to 12,900 | 97% | 62% | 26% | 60% |
+| 12,900 to 21,000 | 97% | 72% | 32% | 62% |
+| 21,000 to 34,100 | 99% | 75% | 37% | 74% |
+| over 34,100 | 99% | 82% | 48%* | 57%* |
+
+\* fewer than 20 IRIS of that department in the band.
+
+The gap reaches 71 points. Unknown isn't absent: Aubervilliers "Firmin
+Gemier" has no sidewalk information on any street, and imagery shows
+sidewalks. Wheelchair-relevant attributes are worse: width recorded for
+under 1% of sidewalks everywhere, surface for 72% in Paris vs 21% in
+Seine-Saint-Denis, kerbs 119 vs 33 per 100 crossings. So no OSM sidewalk
+figure enters the score, the old footway density left the map, and the
+access rebuild routes walking on the full street network and takes
+accessibility from official sources (Île-de-France Mobilités). The
+general point: before trusting a crowd-mapped *attribute*, measure how
+often it's filled in, by area and at equal density — not just its value
+where it is filled in.
+
 **A balanced quartile split can hide a sparse-data bias.**
 Every sub-score is cut into exact quartiles overall, so the standing
 "no quartile above 35%" test passes by construction. The bias only

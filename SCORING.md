@@ -299,6 +299,13 @@ without touching the published score.
   `sidewalk=*`) counts 52 m/km²; Aubervilliers "Firmin Gemier" and Bondy
   "Suzanne Buisson" likewise; Paris 11e "Saint-Ambroise 4", same urban
   form, 165,000 m/km².
+  Counting street-tagged sidewalks too fixes Klock but not the root
+  problem: the share of street length with *any* sidewalk information is
+  75: 96%, 92: 63%, 93: 26%, 94: 47%, and the gap between departments
+  reaches 71 points at equal density (rule set beforehand: 15 points
+  max). Audit of 2026-10-01 in docs/LESSONS.md and
+  `scripts/analysis/osm_sidewalk_completeness.py`; footway density no
+  longer appears on the map.
 - **Access time** sits at its floor: 98% of IRIS are at 1.5 min or less
   on average (18 distinct rounded values). It barely discriminates, so
   any access score built on it is effectively driven by the other
@@ -333,6 +340,125 @@ and cumulative exposure), on purpose — folding it into the score would
 make that correlation circular. It's also one of the three
 indicators of the separate adaptive-capacity axis — see "Adaptive
 capacity — a separate axis" below.
+
+## Rebuilding access to services (in progress, not scored yet)
+
+Access to services is the project's central question, and it is being
+rebuilt from scratch (scripts 27-32). Nothing below enters the score
+until the rebuild is validated; the method is documented here as it is
+decided.
+
+### Access without a car
+
+The new measure counts what residents can reach **on foot and by public
+transport**, not by car. That's a deliberate choice, coherent with what
+the project is about:
+
+- the question is equal access to everyday services for everyone,
+  including people who can't drive or don't have a car: children and
+  teenagers, many older people, people with disabilities, people with a
+  pushchair, and the many households without a car in dense areas
+  (most households in Paris, many in the inner suburbs);
+- the inclusive-mobility part of the measure (step-free walking,
+  accessible public transport) only makes sense for trips made without
+  a car;
+- it is also why this measure differs from the DREES APL, which uses
+  car travel times between communes: the two answer different questions
+  and both are useful.
+
+### Planned structure (decided 2026-10-02, before any crossing with residents' means)
+
+Two separate sub-scores, not one: **access to care** (GPs and
+pharmacies) and **inclusive mobility** (the gap described below). They
+pull in opposite directions (rank correlation −0.62 across inhabited
+IRIS: central Paris has the most GPs within reach but loses the most when
+travelling step-free, since the metro is largely inaccessible), so
+averaging them would cancel two distinct phenomena. With them, the
+cumulative score would count 5 sub-scores. Not applied yet.
+
+The consequence, stated plainly: a neighbourhood where GPs are easy to
+reach by car but far on foot or by bus scores low here. That's what the
+measure is meant to show, not an error.
+
+### Method (E2SFCA)
+
+Enhanced two-step floating catchment area (Luo & Qi 2009), with the
+DREES APL's distance decay (under 10 min: 1; 10-15: 2/3; 15-20: 1/3;
+beyond: 0) for GPs, and a 15-minute walk for pharmacies. Demand is the
+INSEE 200 m population grid (Filosofi 2021), weighted by age with the
+DREES weights for GPs. Supply and demand cover the whole of
+Île-de-France so neighbourhoods at the edge of the inner ring see
+services across the boundary. Travel times: R5 (r5py) on OpenStreetMap
+and the Île-de-France Mobilités timetables, Tuesday 13 October 2026,
+departures 10:00-11:00 (sensitivity: 17:30-18:30), walking 4.5 km/h.
+Full parameters and their sources are in the docstrings of scripts
+29-32.
+
+Inclusive mobility: GP access is recomputed with step-free walking
+(OpenStreetMap steps plus paths along IGN staircases missing from
+OpenStreetMap) and public transport restricted to stops and trips marked
+accessible in the timetables, with the competition for each practice
+kept as in the standard scenario. The gap (accessible access / standard
+access, between 0 and 1) is the share of reachable GP capacity a resident
+keeps when travelling step-free.
+
+### General practitioners: who is counted
+
+GPs from the national directory (RPPS), liberal or salaried in a health
+centre, the same field as the DREES APL. Left out by sector:
+teleconsultation companies, hospitals, maternal and child health
+centres, social security, workplace health. Then left out by an explicit
+list, decided on 2026-10-02 after reviewing by hand every address with
+15 or more GPs: structures registered as practices or health centres
+that don't offer local, everyday GP consultations — teleconsultation
+platforms (their headcount is the remote workforce), on-call and
+home-visit services (their doctors are registered at every on-call
+point), hospital and clinic emergency departments, and services reserved
+to one population.
+
+| Reason | Structure(s) / address | GPs registered there | How identified |
+|---|---|---|---|
+| SOS 92 on-call point (Boulogne-Billancourt) | 27 Rue De Sevres, 92100 Boulogne-Billancourt | 44 | address, checked |
+| SOS Médecins 91 (Chevannes) | 19 Rue De La Liberation, 91750 Chevannes | 20 | address, checked |
+| SOS Médecins Paris (centre and home visits) | 87 Boulevard De Port Royal, 75013 Paris | 139 | address, checked |
+| SOS Médecins Paris 17 | 2 Rue Francis Garnier, 75017 Paris | 48 | address, checked |
+| SOS Médecins Paris 19 | 128 Boulevard Macdonald, 75019 Paris | 70 | address, checked |
+| SOS Médecins on-call point (Marly-le-Roi) | 14 Rue Titreville, 78160 Marly-le-Roi | 19 | address, checked |
+| Urgences Médicales de Paris | 24 Rue De L Est, 75020 Paris | 45 | address, checked |
+| Urgences Médicales de Paris / Urgences Franciliennes (Clinique du Parc Monceau) | 21 Rue De Chazelles, 75017 Paris | 24 | address, checked |
+| clinic (Clinique de l'Estrée, Stains) | 35 Rue D Amiens, 93240 Stains | 16 | address, checked |
+| SOS Médecins 77 network (Chelles) | 18 Rue Gustave Nast, 77500 Chelles | 28 | address, same doctors as a checked site |
+| SOS Médecins 77 network (Coulommiers) | 14 Allee De La Rotonde, 77120 Coulommiers | 28 | address, same doctors as a checked site |
+| SOS Médecins 77 network (Crécy-la-Chapelle) | Place Michel Houel, 77580 Crécy-la-Chapelle | 26 | address, same doctors as a checked site |
+| SOS Médecins 77 network (Meaux) | 35 Rue Des Cordeliers, 77100 Meaux | 28 | address, same doctors as a checked site |
+| SOS Médecins 77 network (Roissy-en-Brie) | 5 Place De La Revolution, 77680 Roissy-en-Brie | 27 | address, same doctors as a checked site |
+| SOS Médecins 77 network (Serris) | 1 Rue Du Theatre, 77700 Serris | 26 | address, same doctors as a checked site |
+| SOS Médecins 95 network (Argenteuil) | 54 Rue Vigneronde, 95100 Argenteuil | 15 | address, same doctors as a checked site |
+| SOS Médecins 95 network (Saint-Ouen-l'Aumône) | 21 Rue Des Freres Capucins, 95310 Saint-Ouen-l'Aumône | 20 | address, same doctors as a checked site |
+| SOS Médecins 95 network (Taverny) | 2 Place Des 7 Fontaines, 95150 Taverny | 40 | address, same doctors as a checked site |
+| on-call network (Bondy) | 17 Avenue Henri Varagnat, 93140 Bondy | 18 | address, same doctors as a checked site |
+| on-call network (Groslay) | 5 Rue Des Ouches, 95410 Groslay | 18 | address, same doctors as a checked site |
+| on-call network (Lieusaint) | 18 Trait D Union, 77127 Lieusaint | 15 | address, same doctors as a checked site |
+| on-call network (Épinay-sur-Seine) | 12 Rue Du General Julien, 93800 Épinay-sur-Seine | 19 | address, same doctors as a checked site |
+| on-call network, same doctors as Bondy and Épinay (Drancy) | 17 Avenue Henri Barbusse, 93700 Drancy | 17 | address, same doctors as a checked site |
+| on-call network, same doctors as SOS Médecins 91 (Brie-Comte-Robert) | 37 Rue Du General Leclerc, 77170 Brie-Comte-Robert | 18 | address, same doctors as a checked site |
+| on-call network, same doctors as SOS Médecins 91 (Melun) | 11 Boulevard De L Almont, 77000 Melun | 14 | address, same doctors as a checked site |
+| on-call network, same doctors as Urgences Médicales de Paris (rue de Bagnolet) | 122 Rue De Bagnolet, 75020 Paris | 26 | address, same doctors as a checked site |
+| on-call network, same doctors as Urgences Médicales de Paris (rue de Vaugirard) | 178 Bis Rue De Vaugirard, 75015 Paris | 21 | address, same doctors as a checked site |
+| on-call point, same doctors as SOS 92 (Antony) | 14 Rue De L Abbaye, 92160 Antony | 30 | address, same doctors as a checked site |
+| airport medical service | CTRE SOINS PREVENTION AEROPORTS PARIS (Orly) | 8 | name pattern |
+| hospital or clinic emergency department | SEL URG HPMC (Brou-sur-Chantereine); SELARL DES URGENCES FRANCILIENNES (Champigny-sur-Marne); SELARL DES URGENCES FRANCILIENNES (Jossigny); SELARL DES URGENCES FRANCILIENNES (Magny-le-Hongre); SELARL DES URGENCES FRANCILIENNES (Paris); SELARL DES URGENCES FRANCILIENNES (Pontault-Combault); SELARL URGENCES HOPITAL PRIVE ANTONY (Antony); URGENCE TRAUMATOLOGIE DU SPORT (Issy-les-Moulineaux); URGENCE TRAUMATOLOGIE DU SPORT (Paris); URGENCES ORANGERIE (Le Perreux-sur-Marne); URGENCES ORANGERIE (Nogent-sur-Marne) | 47 | name pattern |
+| reserved to students (university health service) | CDS SSE SERVICE DE SANTE ETUDIANTE (Paris 6e arr.) | 32 | name pattern |
+| teleconsultation platform (Livi) | CDS JONQUIERE LIVI (Paris 17e arr.) | 57 | name pattern |
+| teleconsultation platform (Medadom / Mediksanté) | CDS MEDIKSANTE (Paris 17e arr.); CDS MEDIKSANTE PARIS 2 (Paris 2e arr.) | 103 | name pattern |
+| teleconsultation platform (Qare / Access Santé) | CDS ACCESS SANTE PARIS 17 (Paris 17e arr.); CDS QARE (Saint-Maur-des-Fossés) | 105 | name pattern |
+
+764 GPs have at least one excluded registration. GP capacity in Île-de-France goes from 9,873 to 9,294; a GP who also practises elsewhere keeps their capacity there.
+
+Known limits of the supply: one GP counts 1 whatever their working time
+(actual activity per GP, used by the APL, isn't public), so health
+centres with many part-time GPs weigh more here than in the APL;
+pharmacies all count the same.
 
 ## From sub-score to quartile
 

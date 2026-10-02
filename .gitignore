@@ -15,3 +15,7 @@ frontend/dist
 # the public project
 CLAUDE.md
 .claude/
+# Access rebuild outputs (scripts 27-32): regenerable, not validated yet,
+# and derived from the IDFM timetables (Licence Mobilités: any public use
+# needs its attribution notice). Published only once access is scored.
+data/processed/access/

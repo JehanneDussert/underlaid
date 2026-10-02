@@ -74,6 +74,20 @@ const LIMIT_KEYS = [
   'limitThermosensitivity', 'limitArtificialization', 'limitEstimate',
 ]
 
+// OSM sidewalk audit (scripts/analysis/osm_sidewalk_completeness.py,
+// Geofabrik extract of 2026-09-30): share of street length with any
+// sidewalk information, by density quintile of inhabited IRIS. `few`
+// marks departments with fewer than 20 neighborhoods in that band.
+const SIDEWALK_DEPS = ['75', '92', '93', '94']
+const SIDEWALK_COMPLETENESS = [
+  { band: 'all', values: [96.2, 62.7, 25.9, 47.2] },
+  { band: 'q1', min: null, max: 7200, values: [83.2, 50.9, 22.8, 35.6] },
+  { band: 'q2', min: 7200, max: 12900, values: [97.2, 62.4, 25.7, 60.3] },
+  { band: 'q3', min: 12900, max: 21000, values: [97.2, 72.3, 32.0, 61.7] },
+  { band: 'q4', min: 21000, max: 34100, values: [98.6, 74.7, 36.7, 73.5] },
+  { band: 'q5', min: 34100, max: null, values: [98.8, 82.1, 47.9, 57.2], few: ['93', '94'] },
+]
+
 function numberLocale() {
   return locale.value === 'fr' ? 'fr-FR' : 'en-US'
 }
@@ -85,6 +99,25 @@ function formatShare(value) {
 function formatCount(value) {
   return new Intl.NumberFormat(numberLocale()).format(value)
 }
+
+const sidewalkRows = computed(() =>
+  SIDEWALK_COMPLETENESS.map((row) => {
+    let label
+    if (row.band === 'all') label = t('methodology.sidewalkBandAll')
+    else if (row.min === null) label = t('methodology.sidewalkBandBelow', { n: formatCount(row.max) })
+    else if (row.max === null) label = t('methodology.sidewalkBandAbove', { n: formatCount(row.min) })
+    else label = t('methodology.sidewalkBandRange', { min: formatCount(row.min), max: formatCount(row.max) })
+    const percent = new Intl.NumberFormat(numberLocale(), { style: 'percent', maximumFractionDigits: 0 })
+    return {
+      band: row.band,
+      label,
+      cells: row.values.map((v, i) => ({
+        dep: SIDEWALK_DEPS[i],
+        text: percent.format(v / 100) + (row.few?.includes(SIDEWALK_DEPS[i]) ? '*' : ''),
+      })),
+    }
+  })
+)
 
 const distributionRows = computed(() =>
   DISTRIBUTION.map((row) => ({
@@ -161,6 +194,31 @@ const lastUpdatedLabel = computed(() => {
     <section id="access" class="glass">
       <h2>{{ t('methodology.accessOutTitle') }}</h2>
       <p v-for="n in [1, 2, 3, 4, 5]" :key="n">{{ t(`methodology.accessOut${n}`) }}</p>
+      <h3 id="osm-sidewalks">{{ t('methodology.sidewalkTitle') }}</h3>
+      <p>{{ t('methodology.sidewalkBody1') }}</p>
+      <p id="sidewalk-caption" class="table-caption">{{ t('methodology.sidewalkCaption') }}</p>
+      <div class="table-scroll">
+        <table class="dist-table sidewalk-table" aria-labelledby="sidewalk-caption">
+          <thead>
+            <tr>
+              <th scope="col">{{ t('methodology.sidewalkColDensity') }}</th>
+              <th v-for="dep in SIDEWALK_DEPS" :key="dep" scope="col">{{ t(`methodology.dep${dep}`) }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in sidewalkRows" :key="row.band">
+              <th scope="row">{{ row.label }}</th>
+              <td v-for="cell in row.cells" :key="cell.dep">{{ cell.text }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="dist-note">{{ t('methodology.sidewalkNote') }}</p>
+      <p>{{ t('methodology.sidewalkBody2') }}</p>
+      <p>{{ t('methodology.sidewalkBody3') }}</p>
+      <h3 id="access-without-car">{{ t('methodology.carFreeTitle') }}</h3>
+      <p>{{ t('methodology.carFreeBody1') }}</p>
+      <p>{{ t('methodology.carFreeBody2') }}</p>
     </section>
 
     <section class="glass">
@@ -380,6 +438,42 @@ section p:last-child {
   color: var(--text-primary);
   font-family: var(--mono);
   font-weight: 600;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+.table-caption {
+  font-size: 13px !important;
+  color: var(--text-secondary);
+  margin-bottom: 0 !important;
+}
+.sidewalk-table th[scope='row'] {
+  font-family: inherit;
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .sidewalk-table th,
+  .sidewalk-table td {
+    padding: 7px 4px;
+    font-size: 12px;
+  }
+  .sidewalk-table th[scope='col'] {
+    font-size: 9.5px;
+    letter-spacing: 0.02em;
+    hyphens: manual;
+  }
+}
+.sidewalk-table td,
+.sidewalk-table td:first-child {
+  font-family: inherit;
+  font-weight: normal;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
 }
 
 .dist-note {

@@ -29,8 +29,8 @@ useSeoMeta({
     fr: `Les quartiers où les expositions se cumulent — ${__RANKING_COUNT__} quartiers à 3 ou 4 sur 4`,
   },
   description: {
-    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where at least 3 of 4 categories — heat, air and noise pollution, energy-inefficient housing, access to care — are in their worst quartile at once, grouped by residents' means to cope.`,
-    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où au moins 3 des 4 catégories — chaleur, pollution de l'air et bruit, logement énergivore, accès aux soins — sont dans leur pire quartile à la fois, regroupés selon les moyens des habitants.`,
+    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where at least 3 of 4 categories — heat, air and noise pollution, energy-inefficient housing, access to care — place them among the most affected quarter of neighbourhoods, grouped by residents' means.`,
+    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où au moins 3 des 4 catégories — chaleur, pollution de l'air et bruit, logement énergivore, accès aux soins — les placent parmi le quart des quartiers les plus touchés, regroupés selon les ressources des habitants.`,
   },
 })
 

@@ -38,14 +38,14 @@ SCHOOL_AC_DATA = {
         "ac_schools": 2,
         "total_schools": 9,
         "note": (
-            "Only 2 city-supplied air conditioners for 9 schools as of the "
-            "article date; the arrondissement mairie separately ordered "
-            "40 portable units (~EUR20,000) to cover the shortfall."
+            "2 air conditioners supplied by the City of Paris for 9 schools at "
+            "the article date; the arrondissement town hall ordered 40 "
+            "portable units (about EUR 20,000) in addition."
         ),
         "note_fr": (
-            "Seulement 2 climatiseurs fournis par la Ville pour 9 écoles à la "
-            "date de l'article ; la mairie d'arrondissement a commandé "
-            "séparément 40 unités mobiles (~20 000€) pour combler le manque."
+            "2 climatiseurs fournis par la Ville de Paris pour 9 écoles à la "
+            "date de l'article ; la mairie d'arrondissement a commandé en "
+            "complément 40 unités mobiles (environ 20 000 €)."
         ),
         "source": "https://www.catherinelecuyer.fr/post/canicule-à-paris-la-mairie-du-8-e-agit",
     },
@@ -69,29 +69,27 @@ SCHOOL_AC_DATA = {
 # individually by the source — kept as a citywide note rather than forced
 # into per-arrondissement rows.
 WEST_BLOC_NOTE = (
-    "Reported as a group (6e, 7e, 8e, 15e, 16e, 17e): only 36 city-supplied "
-    "air conditioners shared across these 6 arrondissements' 168 schools "
-    "combined, as of the article date."
+    "Reported as a group (6e, 7e, 8e, 15e, 16e, 17e): 36 air conditioners "
+    "supplied by the City of Paris for the 168 schools of these 6 "
+    "arrondissements combined, at the article date."
 )
 WEST_BLOC_NOTE_FR = (
-    "Signalé en groupe (6e, 7e, 8e, 15e, 16e, 17e) : seulement 36 climatiseurs "
-    "fournis par la Ville partagés entre les 168 écoles de ces 6 "
-    "arrondissements réunis, à la date de l'article."
+    "Chiffre publié pour l'ensemble des 6e, 7e, 8e, 15e, 16e et 17e "
+    "arrondissements : 36 climatiseurs fournis par la Ville de Paris pour "
+    "leurs 168 écoles, à la date de l'article."
 )
 WEST_BLOC_SOURCE = "https://info.fr/paris-gregoire-ouvre-parcs-24h24-climatiseurs-ecoles-canicule/"
 
 CITYWIDE_NOTE = (
     "Citywide plan: 620 schools, 1,200+ portable air conditioners ordered, "
     "150 delivered first (prioritizing the hottest nursery schools), "
-    "announced 2026-06-20. Portable units only — explicitly described by "
-    "the mayor as not a structural building-renovation response."
+    "announced on 2026-06-20. Portable units, without building works."
 )
 CITYWIDE_NOTE_FR = (
     "Plan municipal : 620 écoles, plus de 1 200 climatiseurs d'appoint "
     "commandés, 150 livrés en premier (priorité aux maternelles les plus "
-    "chaudes), annoncé le 20/06/2026. Unités mobiles uniquement — "
-    "explicitement décrites par le maire comme n'étant pas une réponse "
-    "structurelle de rénovation du bâti."
+    "chaudes), annoncé le 20/06/2026. Climatiseurs d'appoint mobiles, sans "
+    "travaux sur les bâtiments."
 )
 CITYWIDE_SOURCE = "https://www.cnews.fr/france/2026-06-20/un-climatiseur-sera-livre-dans-chaque-ecole-de-paris-dici-la-fin-de-la-semaine"
 

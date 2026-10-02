@@ -9,24 +9,24 @@ const { t, locale } = useI18n()
 
 useSeoMeta({
   title: {
-    en: 'Methodology — How the Cumulative Exposure Score Works',
-    fr: "Méthodologie — comment fonctionne le score de cumul d'exposition",
+    en: 'Detailed method — How the Cumulative Score Works',
+    fr: 'Méthode détaillée — comment fonctionne le score de cumul',
   },
   description: {
-    en: 'Why a count of worst-quartile categories instead of an average, what each of the 3 categories measures, why access to services left the score, and the known limits — written for a non-technical reader, with the full technical version linked.',
-    fr: "Pourquoi un compte de catégories au pire quartile plutôt qu'une moyenne, ce que mesure chacune des 3 catégories, pourquoi l'accès aux services est sorti du score, et les limites connues — écrit pour un lecteur non technique, avec la version technique complète en lien.",
+    en: 'Why the score counts categories instead of averaging them, what each of the 4 categories measures, how access to care was rebuilt, the corrections made and the known limits, with the full technical version linked.',
+    fr: "Pourquoi le score compte les catégories au lieu d'en faire la moyenne, ce que mesure chacune des 4 catégories, comment l'accès aux soins a été reconstruit, les corrections apportées et les limites connues, avec la version technique complète en lien.",
   },
   jsonLd: (locale) => ({
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline:
       locale === 'fr'
-        ? "Méthodologie — comment fonctionne le score de cumul d'exposition"
-        : 'Methodology — how the cumulative exposure score works',
+        ? 'Méthode détaillée — comment fonctionne le score de cumul'
+        : 'Detailed method — how the cumulative score works',
     description:
       locale === 'fr'
-        ? "Explique pourquoi Underlaid compte les catégories au pire quartile plutôt que de faire une moyenne, ce que mesure chacune des 3 catégories, pourquoi l'accès aux services est sorti du score, et les limites connues de la méthode."
-        : 'Explains why Underlaid counts worst-quartile categories rather than averaging them, what each of the 3 categories measures, why access to services left the score, and the method\'s known limits.',
+        ? "Explique pourquoi Underlaid compte les catégories au lieu d'en faire la moyenne, ce que mesure chacune des 4 catégories, comment l'accès aux soins a été reconstruit, et les limites connues de la méthode."
+        : 'Explains why Underlaid counts categories rather than averaging them, what each of the 4 categories measures, how access to care was rebuilt, and the method\'s known limits.',
     author: { '@type': 'Organization', name: 'Underlaid' },
     publisher: { '@type': 'Organization', name: 'Underlaid' },
     inLanguage: locale,

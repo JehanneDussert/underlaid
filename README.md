@@ -21,7 +21,7 @@ data; every formula documented.
 **What it measures / doesn't**
 - ✅ **Exposure**: a count (0-3) of categories in their metro-wide worst quartile — never a smoothed average.
 - ✅ **Means to cope**, on a *separate* axis: median income, overcrowded homes, secondary residences (INSEE 2021) — crossed with exposure on the map, never added to the score.
-- ❌ Not sensitivity (age, health), not what households actually do (air conditioning, time off), not flood, soil or industrial risk (yet). Access to services is shown for information only — no indicator measures it reliably yet ([why](SCORING.md#why-access-to-services-left-the-score)).
+- ❌ Not sensitivity (age, health), not what households actually do (air conditioning, time off), not flood, soil or industrial risk (yet). Access to services is shown for information only for now ([why](SCORING.md#why-access-to-services-left-the-score)); it is being rebuilt — access without a car, accounting for how many people share each service, and inclusive mobility (step-free, accessible public transport) — see [Roadmap](#roadmap).
 - ❌ Not an accusation: it shows where exposures stack up, not why, and names no one as the cause.
 
 **Key figures** (2,752 IRIS, data snapshot of October 1, 2026 — the score
@@ -127,7 +127,7 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
 | `12_accessibility_erp.py` | `accessibility_iris.geojson` | Acceslibre (data.gouv.fr) — PMR accessibility of ERPs |
 | `13_street_lighting.py` | `street_lighting_iris.geojson` | opendata.paris.fr — street lighting density (Paris only — no MGP-wide equivalent) |
 | `14_qpv_boundaries.py` | `qpv_boundaries_mgp.geojson` | data.iledefrance.fr — QPV priority-neighborhood boundaries, MGP-wide (validation layer, not scored) |
-| `15_pedestrian_paths.py` | `pedestrian_paths_iris.geojson` | OpenStreetMap (Overpass API) — footway density |
+| `15_pedestrian_paths.py` | `pedestrian_paths_iris.geojson` | OpenStreetMap (Overpass API) — footway density. Unscored and no longer shown on the map: OSM sidewalk mapping is too uneven across departments (audit in `scripts/analysis/osm_sidewalk_completeness.py`, [docs/LESSONS.md](docs/LESSONS.md)) |
 | `16_school_ac_context.py` | `school_ac_context_arrondissement.geojson` | press/mairie communications, 2026 heatwave — air-conditioned schools (context only, Paris arrondissement grain only, not scored) |
 | `17_enedis_thermosensitivity.py` | `enedis_thermosensitivity_iris.geojson` | opendata.enedis.fr — residential electrical thermosensitivity (winter heating load), second housing sub-score indicator alongside DPE |
 | `18_tree_age_context.py` | `tree_age_context_arrondissement.geojson` | opendata.paris.fr — average street-tree trunk circumference (age proxy, no planting-date field exists) and young-tree share, Paris arrondissement grain only, context only, not scored |
@@ -138,6 +138,18 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
 | `24_secondary_residences.py` | `secondary_residences_iris.geojson` | INSEE Recensement de la population 2021 ("base infra-communale logement") — share of housing units that are secondary residences or occasional dwellings, same vintage as Filosofi/population; one of the 3 indicators of the separate adaptive-capacity axis (script 26), never part of the exposure score — see SCORING.md |
 | `25_overcrowding.py` | `overcrowding_iris.geojson` | INSEE Recensement 2021 ("base infra-communale logement", same file as script 24) — share of overcrowded main residences, INSEE definition (`C21_RP_HSTU1P_SUROCC`); adaptive-capacity indicator, never scored |
 | `26_adaptive_capacity.py` | `adaptive_capacity_iris.json` | Derived — adaptive-capacity index (mean percentile rank of median income, overcrowding, secondary residences), its tertile, and the exposure × means bivariate class. **Separate file, never an input to the exposure score** — see SCORING.md "Adaptive capacity — a separate axis" |
+| `27_gp_supply.py` | `access/gp_sites_idf.geojson` | Access rebuild, **not scored yet** — RPPS (Annuaire Santé) GP practice sites in Île-de-France, liberal and health-centre GPs, minus an explicit list of teleconsultation, on-call, emergency and restricted services (listed in SCORING.md) |
+| `28_pharmacy_supply.py` | `access/pharmacy_sites_idf.geojson` | Access rebuild — FINESS community pharmacies, Île-de-France |
+| `29_access_demand_grid.py` | `access/demand_grid_idf.geojson` | Access rebuild — INSEE Filosofi 2021 200 m population grid, age-weighted with the DREES APL weights |
+| `30_access_networks.py` | working files (`data/interim/access`) | Access rebuild — standard and accessible networks: OSM without steps (plus IGN BD TOPO staircases), Île-de-France Mobilités GTFS restricted to accessible stops and trips |
+| `31_access_travel_times.py` | working files | Access rebuild — R5 (r5py) travel times, walking and public transport, several hours; runs in `Dockerfile.access` |
+| `32_access_e2sfca.py` | `access/access_e2sfca_iris.csv` | Access rebuild — E2SFCA indicators per IRIS (GPs, pharmacies, inclusive-mobility gap) and sensitivity runs |
+
+Scripts 27-32 are not part of `run_all.py` yet and their outputs are not
+published (`data/processed/access/` is git-ignored) until access is
+scored. They need the access image: `docker build -f Dockerfile.access
+-t underlaid-access .` (Java 21, r5py, osmium). One-off audits and
+validation analyses live in `scripts/analysis/`.
 
 ### Things worth knowing before re-running these scripts
 
@@ -674,16 +686,28 @@ English, quarterly automated data updates behind a publication
 guard-rail.
 
 Next, in order:
-1. **New indicators** (Phase 7): APL healthcare accessibility (capacity,
-   not just distance), **flood risk** (Seine/Marne PPRI — a possible next
-   layer, not measured today), soil and water pollution, aircraft noise,
-   industrial risk, digital divide. Each goes through the same
-   variance/skew check before entering anything.
-2. **Access to public services nationwide** (Phase 9): a separate
+1. **Access to services and inclusive mobility** — the project's central
+   question, being rebuilt (scripts 27-32, see SCORING.md "Rebuilding
+   access to services"). Access is measured **without a car** (walking
+   and public transport), sharing each service's capacity among everyone
+   who can reach it (E2SFCA), for GPs and pharmacies, plus the share of
+   that access kept when travelling step-free on accessible public
+   transport. Design, data and validation are done; next comes the
+   simulation of a 5-sub-score exposure count (heat, air/noise, housing,
+   access to care, inclusive mobility), then publication. Possible
+   additions: access to public services (town halls, France Services,
+   CAF, CPAM, France Travail, post offices), sidewalk widths (Paris only,
+   from the City's street plan) and public toilets — each only if its data
+   is even across departments.
+2. **New indicators** (Phase 7): **flood risk** (Seine/Marne PPRI — a
+   possible next layer, not measured today), soil and water pollution,
+   aircraft noise, industrial risk, digital divide. Each goes through the
+   same variance/skew check before entering anything.
+3. **Access to public services nationwide** (Phase 9): a separate
    commune/200 m-grid module for rural and peri-urban France, where the
    question is distance rather than heat — not an extension of this
    score.
-3. Citizen reporting, a guide to adapting Underlaid to another city.
+4. Citizen reporting, a guide to adapting Underlaid to another city.
 
 Not planned for now: Grande Couronne, PWA.
 

@@ -387,11 +387,11 @@ function captureMapSnapshot() {
   ctx.fillRect(0, 0, out.width, out.height)
 
   ctx.fillStyle = '#eaf0f5'
-  ctx.font = `700 ${Math.round(26 * dpr)}px "Space Grotesk", sans-serif`
+  ctx.font = `700 ${Math.round(26 * dpr)}px "Schibsted Grotesk", sans-serif`
   ctx.fillText('Underlaid', Math.round(24 * dpr), Math.round(38 * dpr))
 
   ctx.fillStyle = '#8b96a6'
-  ctx.font = `${Math.round(15 * dpr)}px "Space Grotesk", sans-serif`
+  ctx.font = `${Math.round(15 * dpr)}px "Schibsted Grotesk", sans-serif`
   const isBivariate = viewMode.value === 'bivariate'
   ctx.fillText(isBivariate ? t('view.bivariate') : selectedMetric.value.label, Math.round(24 * dpr), Math.round(58 * dpr))
 
@@ -429,7 +429,7 @@ function captureMapSnapshot() {
   }
 
   ctx.fillStyle = '#6b7686'
-  ctx.font = `${Math.round(12 * dpr)}px "IBM Plex Mono", monospace`
+  ctx.font = `${Math.round(12 * dpr)}px "Schibsted Grotesk", sans-serif`
   const caption = `${legendText}   ·   underlaid   ·   ${new Date().toISOString().slice(0, 10)}`
   ctx.fillText(caption, x + Math.round(12 * dpr), swatchY + swatchH)
 
@@ -766,7 +766,7 @@ async function buildShareCard(feature, percentile) {
 
   // wordmark
   ctx.textAlign = 'left'
-  ctx.font = '700 44px "Space Grotesk", sans-serif'
+  ctx.font = '700 44px "Schibsted Grotesk", sans-serif'
   ctx.fillStyle = '#eaf0f5'
   ctx.fillText('Under', 64, 110)
   const underWidth = ctx.measureText('Under').width
@@ -777,16 +777,16 @@ async function buildShareCard(feature, percentile) {
   ctx.fillText('laid', 64 + underWidth, 110)
 
   // eyebrow
-  ctx.font = '600 26px "IBM Plex Mono", monospace'
+  ctx.font = '600 26px "Schibsted Grotesk", sans-serif'
   ctx.fillStyle = '#22e6d6'
   ctx.fillText(t('hero.eyebrow').toUpperCase(), 64, 172)
 
   // neighborhood name + commune
-  ctx.font = '700 66px "Space Grotesk", sans-serif'
+  ctx.font = '700 66px "Schibsted Grotesk", sans-serif'
   ctx.fillStyle = '#eaf0f5'
   const afterName = drawCenteredLines(ctx, p.nom_iris, 64, 300, SHARE_CARD_WIDTH - 128, 76)
 
-  ctx.font = '400 32px "Space Grotesk", sans-serif'
+  ctx.font = '400 32px "Schibsted Grotesk", sans-serif'
   ctx.fillStyle = '#8b96a6'
   ctx.fillText(p.nom_com, 64, afterName + 20)
 
@@ -795,16 +795,16 @@ async function buildShareCard(feature, percentile) {
   const scoreGrad = ctx.createLinearGradient(SHARE_CARD_WIDTH / 2 - 220, 0, SHARE_CARD_WIDTH / 2 + 220, 0)
   scoreGrad.addColorStop(0, '#22e6d6')
   scoreGrad.addColorStop(1, '#ff3d8a')
-  ctx.font = '700 320px "IBM Plex Mono", monospace'
+  ctx.font = '700 320px "Schibsted Grotesk", sans-serif'
   ctx.fillStyle = scoreGrad
   ctx.fillText(`${p.cumulative_vulnerability_score ?? '—'}/${MAX_SCORE}`, SHARE_CARD_WIDTH / 2, 980)
 
-  ctx.font = '500 30px "Space Grotesk", sans-serif'
+  ctx.font = '500 30px "Schibsted Grotesk", sans-serif'
   ctx.fillStyle = '#8b96a6'
   let y = drawCenteredLines(ctx, t('panel.subscoresWorstQuartile'), SHARE_CARD_WIDTH / 2, 1095, SHARE_CARD_WIDTH - 200, 40)
 
   if (percentile !== null) {
-    ctx.font = '600 34px "Space Grotesk", sans-serif'
+    ctx.font = '600 34px "Schibsted Grotesk", sans-serif'
     ctx.fillStyle = '#22e6d6'
     y = drawCenteredLines(ctx, t('panel.morevulnerable', { n: percentile }), SHARE_CARD_WIDTH / 2, y + 30, SHARE_CARD_WIDTH - 160, 44)
   }
@@ -834,10 +834,10 @@ async function buildShareCard(feature, percentile) {
     ctx.fill()
 
     ctx.textAlign = 'center'
-    ctx.font = '600 24px "Space Grotesk", sans-serif'
+    ctx.font = '600 24px "Schibsted Grotesk", sans-serif'
     ctx.fillStyle = '#8b96a6'
     ctx.fillText(chip.label, chipX + chipW / 2, chipY + 50)
-    ctx.font = '700 40px "IBM Plex Mono", monospace'
+    ctx.font = '700 40px "Schibsted Grotesk", sans-serif'
     ctx.fillStyle = '#eaf0f5'
     ctx.fillText(chip.quartile ? `Q${chip.quartile}` : '—', chipX + chipW / 2, chipY + 100)
 
@@ -851,13 +851,13 @@ async function buildShareCard(feature, percentile) {
   const meansValue = capacity && capacity.capacity_class !== null ? tierLabel(capacity.capacity_class) : t('srTable.meansMasked')
   const meansText = `${t('panel.capacityTitle')}${colon}${meansValue}`
   ctx.textAlign = 'center'
-  ctx.font = '500 30px "Space Grotesk", sans-serif'
+  ctx.font = '500 30px "Schibsted Grotesk", sans-serif'
   ctx.fillStyle = '#b7c2cf'
   drawCenteredLines(ctx, meansText, SHARE_CARD_WIDTH / 2, chipY + chipH + 80, SHARE_CARD_WIDTH - 160, 40)
 
   // footer tagline
   ctx.textAlign = 'center'
-  ctx.font = '500 28px "IBM Plex Mono", monospace'
+  ctx.font = '500 28px "Schibsted Grotesk", sans-serif'
   ctx.fillStyle = '#6b7686'
   // Wrapped: on one line the tagline ran past both edges of the card.
   drawCenteredLines(ctx, t('share.tagline'), SHARE_CARD_WIDTH / 2, SHARE_CARD_HEIGHT - 130, SHARE_CARD_WIDTH - 160, 38)
@@ -1284,8 +1284,8 @@ function quartileColor(quartile) {
   position: absolute;
   left: -9999px;
   top: 0;
-  background: var(--cyan);
-  color: #080a0f;
+  background: var(--dark);
+  color: #ffffff;
   padding: 10px 16px;
   z-index: 100;
   border-radius: 0 0 8px 0;
@@ -1513,9 +1513,9 @@ h1 .grad {
   transition: all 0.15s;
 }
 .pill.active {
-  background: linear-gradient(90deg, var(--cyan), var(--magenta));
-  border-color: transparent;
-  color: #080a0f;
+  background: var(--dark);
+  border-color: var(--dark);
+  color: #ffffff;
   font-weight: 600;
 }
 .pill:hover:not(.active) {
@@ -1579,7 +1579,7 @@ h1 .grad {
 }
 .view-switch button.active {
   background: var(--text-primary);
-  color: #080a0f;
+  color: #ffffff;
   font-weight: 600;
 }
 .view-switch button:hover:not(.active) {
@@ -1838,8 +1838,8 @@ h1 .grad {
   font-family: var(--mono);
   font-size: 12.5px;
   font-weight: 600;
-  background: linear-gradient(90deg, var(--cyan), var(--magenta));
-  color: #080a0f;
+  background: var(--dark);
+  color: #ffffff;
   cursor: pointer;
 }
 .share-btn:hover {

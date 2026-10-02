@@ -65,6 +65,7 @@ SCRIPTS: dict[str, tuple[str, tuple[Layer, ...]]] = {
     "17_enedis_thermosensitivity.py": ("score", (Layer("enedis_thermosensitivity_iris.geojson", ("code_iris", "pct_thermosensitive")),)),
     "11_compute_vulnerability_score.py": ("score", (Layer("vulnerability_score_iris.geojson", ("code_iris", "cumulative_vulnerability_score")),)),
     "26_adaptive_capacity.py": ("means", (Layer("adaptive_capacity_iris.json", (), iris_grain=False),)),
+    "35_key_figures.py": ("means", (Layer("key_figures.json", (), iris_grain=False),)),
     "16_school_ac_context.py": ("context", (Layer("school_ac_context_arrondissement.geojson", ("insee_com",), iris_grain=False),)),
     "18_tree_age_context.py": ("context", (Layer("tree_age_context_arrondissement.geojson", ("insee_com",), iris_grain=False),)),
     "20_associational_density_context.py": ("context", (Layer("associational_density_context_commune.geojson", ("insee_com",), iris_grain=False),)),

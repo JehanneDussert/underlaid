@@ -350,5 +350,261 @@
     "cell_2_0": "Several exposures stacked, with among the lowest means in the metro area: the combination where making up for the exposure with one's own means is hardest.",
     "cell_2_1": "Several exposures stacked, with middle-range means.",
     "cell_2_2": "Several exposures stacked, with among the highest means in the metro area. The exposure is real; the map doesn't say which means residents actually use to cope with it."
+  },
+  "site": {
+    "skipLink": "Skip to content",
+    "navLabel": "Main navigation",
+    "languageLabel": "Language / Langue",
+    "nav": {
+      "address": "By address",
+      "routes": "Routes",
+      "quiz": "Quiz",
+      "map": "Map",
+      "methodology": "Method",
+      "ranking": "Most exposed neighbourhoods",
+      "press": "Press"
+    },
+    "code": "Source code",
+    "cite": "Cite (DOI)"
+  },
+  "figure": {
+    "sources": "Sources: {sources}",
+    "dataAt": "data as of {date}",
+    "howComputed": "How this figure is computed"
+  },
+  "method": {
+    "eyebrow": "Method",
+    "title": "Sources and method",
+    "lead": "All the data comes from public sources and can be checked. This page sets out the essentials; the detailed method and the code are published.",
+    "tocLabel": "Contents",
+    "sources": {
+      "short": "Sources",
+      "title": "Data sources",
+      "intro": "The data comes from public bodies and open databases. It is downloaded again at every quarterly update, except access to care, which is recomputed by hand.",
+      "colWhat": "Data",
+      "colWho": "Producer",
+      "colWhen": "Edition used",
+      "legend": "Flagged: a more recent edition exists but is not used, or does not exist at neighbourhood level. The reason is given.",
+      "mobilityNotice": "Contains information from \"Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub)\", made available by Île-de-France Mobilités under the terms of the \"Licence Mobilités\".",
+      "rows": [
+        {
+          "what": "Heat vulnerability",
+          "who": "CSTB (Sat4BDNB project)",
+          "when": "Summer 2022 conditions",
+          "note": ""
+        },
+        {
+          "what": "Sealed ground, green spaces",
+          "who": "L'Institut Paris Region (land-use survey)",
+          "when": "2021",
+          "note": "2025 edition published; 2021 kept to match the INSEE data vintage."
+        },
+        {
+          "what": "Facilities (cool spots, services)",
+          "who": "INSEE (permanent facilities database)",
+          "when": "As of 1 January 2025",
+          "note": ""
+        },
+        {
+          "what": "Air pollution and noise",
+          "who": "Airparif and Bruitparif",
+          "when": "2024 map",
+          "note": ""
+        },
+        {
+          "what": "Homes rated F or G",
+          "who": "ADEME (energy performance certificates)",
+          "when": "October 2026 extract",
+          "note": ""
+        },
+        {
+          "what": "Electricity consumption",
+          "who": "Enedis",
+          "when": "2024",
+          "note": ""
+        },
+        {
+          "what": "General practitioners, pharmacies",
+          "who": "French digital health agency (RPPS); Ministry of Health (FINESS)",
+          "when": "24 September 2026; May 2026",
+          "note": ""
+        },
+        {
+          "what": "Public transport timetables",
+          "who": "Île-de-France Mobilités",
+          "when": "1 October 2026",
+          "note": ""
+        },
+        {
+          "what": "Streets, footpaths, stairs",
+          "who": "OpenStreetMap contributors; IGN (BD TOPO)",
+          "when": "30 September 2026; October 2026",
+          "note": ""
+        },
+        {
+          "what": "Residents' income",
+          "who": "INSEE (Filosofi)",
+          "when": "2021",
+          "note": "2023 edition published at commune level only, with a changed method: not comparable."
+        },
+        {
+          "what": "Population, overcrowded homes, second homes",
+          "who": "INSEE (census)",
+          "when": "2021",
+          "note": "2022 edition published; its definition of overcrowding changes. 2021 kept so as not to mix two measures."
+        }
+      ]
+    },
+    "calc": {
+      "short": "Calculation",
+      "title": "How the score is calculated",
+      "intro": "Paris and its inner suburbs are divided into 2,752 neighbourhoods, following INSEE's official division (about 2,000 residents each). Four criteria are assessed for each.",
+      "criterion": "Criterion {n}",
+      "criteria": [
+        {
+          "name": "Heat",
+          "desc": "Heat vulnerability, sealed ground, cool green spaces, cool places within 400 metres."
+        },
+        {
+          "name": "Air pollution and noise",
+          "desc": "Combined exposure to air pollution and noise, from the Airparif and Bruitparif map."
+        },
+        {
+          "name": "Housing",
+          "desc": "Share of homes rated F or G, and how strongly electricity consumption rises with the cold."
+        },
+        {
+          "name": "Access to care",
+          "desc": "GPs and pharmacies reachable on foot or by public transport, relative to the number of residents who can also reach them."
+        }
+      ],
+      "resultKicker": "Result",
+      "resultName": "Number of unfavourable criteria",
+      "resultDesc": "A criterion is unfavourable when the neighbourhood is among the most affected quarter of neighbourhoods. Score from 0 to 4.",
+      "exampleTitle": "Example: {name} neighbourhood, {commune}",
+      "chip": "{category}: {state}",
+      "cat": {
+        "thermal": "Heat",
+        "pollution": "Air and noise",
+        "housing": "Housing",
+        "access_care": "Access to care"
+      },
+      "unfavourable": "unfavourable",
+      "notUnfavourable": "not unfavourable",
+      "exampleScore": "{score} out of 4",
+      "countNotMean": "The score is a count, not an average. An average smooths differences away: a very hot but quiet neighbourhood would get the same mark as a moderately hot, moderately noisy one. Counting shows the neighbourhoods where difficulties add up.",
+      "distTitle": "Current distribution of the 2,752 neighbourhoods",
+      "distScore": "Score",
+      "distCount": "Neighbourhoods",
+      "distShare": "Share",
+      "outOf4": "{score} out of 4",
+      "distSources": "Underlaid calculation from the sources above"
+    },
+    "measures": {
+      "title": "Four measures, published separately",
+      "intro": "The score does not sum everything up. Four measures are published for each neighbourhood; only the first two enter the score.",
+      "items": [
+        {
+          "name": "Environmental exposure",
+          "status": "In the score",
+          "desc": "Heat, air pollution and noise, housing: the three exposures measured."
+        },
+        {
+          "name": "Access to care",
+          "status": "In the score since October 2026",
+          "desc": "GPs and pharmacies reachable without a car, taking into account how many people share each practice or pharmacy."
+        },
+        {
+          "name": "Residents' means",
+          "status": "Measured separately, never in the score",
+          "desc": "Median income, share of overcrowded homes, share of second homes. Crossing it with exposure shows whether the two coincide, without assuming it."
+        },
+        {
+          "name": "Inclusive mobility",
+          "status": "Published for information, outside the score",
+          "desc": "Share of GP access kept when travelling step-free (wheelchair, pushchair). It compares two ways of travelling from the same place, not places with each other."
+        }
+      ]
+    },
+    "limits": {
+      "short": "Limits",
+      "title": "Limits",
+      "items": [
+        {
+          "name": "Individual situations.",
+          "desc": "The indicators describe neighbourhoods, not the age, health or circumstances of their residents."
+        },
+        {
+          "name": "Private adaptations.",
+          "desc": "Air conditioning, shutters or private solutions do not appear in public data."
+        },
+        {
+          "name": "Risks not included.",
+          "desc": "Flooding, soil pollution and industrial risks are not yet taken into account."
+        },
+        {
+          "name": "A relative score.",
+          "desc": "Neighbourhoods are compared with each other: adding data can change the results."
+        },
+        {
+          "name": "Step-free travel.",
+          "desc": "Stop accessibility is as declared by Île-de-France Mobilités; the state of lifts and pavements is not known."
+        },
+        {
+          "name": "Access to care.",
+          "desc": "Each GP counts as one, whatever their working hours: each practitioner's actual activity is not public."
+        }
+      ]
+    },
+    "fixes": {
+      "short": "Corrections",
+      "title": "Corrections made",
+      "intro": "Indicators that measured something other than what they were meant to measure were removed, including when they widened the observed gaps.",
+      "items": [
+        {
+          "when": "Sept. 2026",
+          "what": "School social-composition indicator removed from the score",
+          "why": "It reflected pupils' social background, hence family income, not an exposure."
+        },
+        {
+          "when": "Sept. 2026",
+          "what": "Access to services removed from the score, pending a reliable measure",
+          "why": "The data measured distance to services rather than their capacity, and was incomplete in the inner suburbs."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Pavement data set aside",
+          "why": "Pavement information exists for 96% of street length in Paris but 26% in Seine-Saint-Denis: no fair comparison was possible."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Nearly uninhabited neighbourhoods excluded from the thresholds",
+          "why": "Neighbourhoods with fewer than 50 residents (river banks, parks, business areas) skewed the comparison thresholds."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Energy ratings of small homes checked",
+          "why": "The labels published by ADEME already include the 2024 correction for homes under 40 m²: no adjustment needed."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Access to care: structures without on-site consultations excluded",
+          "why": "Teleconsultation platforms, SOS Médecins, emergency departments: list published, with the reason for each exclusion."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Access to care back in the score",
+          "why": "Rebuilt measure: the capacity of GPs and pharmacies shared among the residents who can reach them on foot or by public transport."
+        }
+      ]
+    },
+    "doc": {
+      "title": "Full documentation",
+      "body": "The detailed method, source code and datasets are openly published.",
+      "details": "Detailed method",
+      "scoring": "Formulas (SCORING.md)",
+      "code": "Source code",
+      "cite": "Cite (DOI)"
+    }
   }
 }

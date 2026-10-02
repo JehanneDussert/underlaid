@@ -350,5 +350,261 @@
     "cell_2_0": "Plusieurs expositions cumulées, avec des moyens parmi les plus faibles de la métropole : la combinaison où il est le plus difficile de compenser l'exposition par ses propres moyens.",
     "cell_2_1": "Plusieurs expositions cumulées, avec des moyens dans la moyenne.",
     "cell_2_2": "Plusieurs expositions cumulées, avec des moyens parmi les plus élevés de la métropole. L'exposition est bien réelle ; la carte ne dit pas quels moyens les habitants utilisent effectivement pour y faire face."
+  },
+  "site": {
+    "skipLink": "Aller au contenu",
+    "navLabel": "Navigation principale",
+    "languageLabel": "Langue / Language",
+    "nav": {
+      "address": "Par adresse",
+      "routes": "Itinéraires",
+      "quiz": "Quiz",
+      "map": "Carte",
+      "methodology": "Méthode",
+      "ranking": "Quartiers les plus exposés",
+      "press": "Presse"
+    },
+    "code": "Code source",
+    "cite": "Citer (DOI)"
+  },
+  "figure": {
+    "sources": "Sources : {sources}",
+    "dataAt": "données au {date}",
+    "howComputed": "Comment ce chiffre est calculé"
+  },
+  "method": {
+    "eyebrow": "Méthode",
+    "title": "Sources et méthode de calcul",
+    "lead": "Toutes les données proviennent de sources publiques et peuvent être vérifiées. Cette page en présente l'essentiel ; la méthode détaillée et le code sont publiés.",
+    "tocLabel": "Sommaire",
+    "sources": {
+      "short": "Sources",
+      "title": "Sources des données",
+      "intro": "Les données proviennent d'organismes publics et de bases ouvertes. Elles sont téléchargées de nouveau à chaque mise à jour trimestrielle, sauf l'accès aux soins, recalculé à la main.",
+      "colWhat": "Donnée",
+      "colWho": "Producteur",
+      "colWhen": "Édition utilisée",
+      "legend": "Signalé : une édition plus récente existe mais n'est pas utilisée, ou n'existe pas à l'échelle du quartier. La raison est indiquée.",
+      "mobilityNotice": "Contient des informations de « Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub) », mises à disposition par Île-de-France Mobilités aux conditions de la « Licence Mobilités ».",
+      "rows": [
+        {
+          "what": "Vulnérabilité à la chaleur",
+          "who": "CSTB (projet Sat4BDNB)",
+          "when": "Conditions de l'été 2022",
+          "note": ""
+        },
+        {
+          "what": "Sols artificialisés, espaces verts",
+          "who": "L'Institut Paris Region (mode d'occupation du sol)",
+          "when": "2021",
+          "note": "Édition 2025 publiée ; 2021 conservé pour rester au même millésime que les données de l'INSEE."
+        },
+        {
+          "what": "Équipements (lieux frais, services)",
+          "who": "INSEE (base permanente des équipements)",
+          "when": "Au 1er janvier 2025",
+          "note": ""
+        },
+        {
+          "what": "Pollution de l'air et bruit",
+          "who": "Airparif et Bruitparif",
+          "when": "Carte 2024",
+          "note": ""
+        },
+        {
+          "what": "Logements classés F ou G",
+          "who": "ADEME (diagnostics de performance énergétique)",
+          "when": "Extraction d'octobre 2026",
+          "note": ""
+        },
+        {
+          "what": "Consommation électrique",
+          "who": "Enedis",
+          "when": "2024",
+          "note": ""
+        },
+        {
+          "what": "Médecins généralistes, pharmacies",
+          "who": "Agence du numérique en santé (RPPS) ; ministère de la Santé (FINESS)",
+          "when": "24 septembre 2026 ; mai 2026",
+          "note": ""
+        },
+        {
+          "what": "Horaires des transports en commun",
+          "who": "Île-de-France Mobilités",
+          "when": "1er octobre 2026",
+          "note": ""
+        },
+        {
+          "what": "Rues, cheminements, escaliers",
+          "who": "Contributeurs d'OpenStreetMap ; IGN (BD TOPO)",
+          "when": "30 septembre 2026 ; octobre 2026",
+          "note": ""
+        },
+        {
+          "what": "Revenus des habitants",
+          "who": "INSEE (Filosofi)",
+          "when": "2021",
+          "note": "Édition 2023 publiée à la commune seulement, avec une méthode modifiée : non comparable."
+        },
+        {
+          "what": "Population, logements surpeuplés, résidences secondaires",
+          "who": "INSEE (recensement)",
+          "when": "2021",
+          "note": "Édition 2022 publiée ; la définition de la suroccupation y change. 2021 conservé pour ne pas mélanger deux mesures."
+        }
+      ]
+    },
+    "calc": {
+      "short": "Calcul",
+      "title": "Méthode de calcul",
+      "intro": "Paris et la petite couronne sont divisés en 2 752 quartiers, selon le découpage de l'INSEE (environ 2 000 habitants chacun). Quatre critères sont évalués pour chacun d'eux.",
+      "criterion": "Critère {n}",
+      "criteria": [
+        {
+          "name": "Chaleur",
+          "desc": "Vulnérabilité à la chaleur, sols artificialisés, espaces verts frais, lieux frais accessibles à moins de 400 mètres."
+        },
+        {
+          "name": "Pollution de l'air et bruit",
+          "desc": "Exposition combinée à la pollution de l'air et au bruit, d'après la carte d'Airparif et Bruitparif."
+        },
+        {
+          "name": "Logement",
+          "desc": "Part des logements classés F ou G, et sensibilité de la consommation électrique au froid."
+        },
+        {
+          "name": "Accès aux soins",
+          "desc": "Médecins généralistes et pharmacies accessibles à pied ou en transports en commun, rapportés au nombre d'habitants qui peuvent aussi les atteindre."
+        }
+      ],
+      "resultKicker": "Résultat",
+      "resultName": "Nombre de critères défavorables",
+      "resultDesc": "Un critère est défavorable lorsque le quartier figure parmi le quart des quartiers les plus touchés. Score de 0 à 4.",
+      "exampleTitle": "Exemple : quartier {name}, {commune}",
+      "chip": "{category} : {state}",
+      "cat": {
+        "thermal": "Chaleur",
+        "pollution": "Air et bruit",
+        "housing": "Logement",
+        "access_care": "Accès aux soins"
+      },
+      "unfavourable": "défavorable",
+      "notUnfavourable": "non défavorable",
+      "exampleScore": "{score} sur 4",
+      "countNotMean": "Le score repose sur un comptage plutôt que sur une moyenne. Une moyenne atténue les écarts : un quartier très chaud mais calme obtiendrait la même note qu'un quartier modérément chaud et modérément bruyant. Le comptage fait apparaître les quartiers où les difficultés se cumulent.",
+      "distTitle": "Répartition actuelle des 2 752 quartiers",
+      "distScore": "Score",
+      "distCount": "Quartiers",
+      "distShare": "Part",
+      "outOf4": "{score} sur 4",
+      "distSources": "calcul Underlaid à partir des sources ci-dessus"
+    },
+    "measures": {
+      "title": "Quatre mesures, publiées séparément",
+      "intro": "Le score ne résume pas tout. Quatre mesures sont publiées pour chaque quartier ; seules les deux premières entrent dans le score.",
+      "items": [
+        {
+          "name": "Exposition environnementale",
+          "status": "Dans le score",
+          "desc": "Chaleur, pollution de l'air et bruit, logement : les trois expositions mesurées."
+        },
+        {
+          "name": "Accès aux soins",
+          "status": "Dans le score depuis octobre 2026",
+          "desc": "Médecins et pharmacies accessibles sans voiture, en tenant compte du nombre de personnes qui se partagent chaque cabinet ou officine."
+        },
+        {
+          "name": "Ressources des habitants",
+          "status": "Mesurée à part, jamais dans le score",
+          "desc": "Revenu médian, part de logements surpeuplés, part de résidences secondaires. Le croisement avec l'exposition permet d'observer si les deux coïncident, sans le présupposer."
+        },
+        {
+          "name": "Mobilité inclusive",
+          "status": "Publiée pour information, hors du score",
+          "desc": "Part de l'accès aux médecins conservée lors d'un déplacement sans marches (fauteuil roulant, poussette). Elle compare deux façons de se déplacer depuis un même lieu, et non des lieux entre eux."
+        }
+      ]
+    },
+    "limits": {
+      "short": "Limites",
+      "title": "Limites",
+      "items": [
+        {
+          "name": "Situations individuelles.",
+          "desc": "Les indicateurs décrivent des quartiers, et non l'âge, l'état de santé ou la situation de leurs habitants."
+        },
+        {
+          "name": "Adaptations privées.",
+          "desc": "Climatisation, volets ou solutions privées n'apparaissent pas dans les données publiques."
+        },
+        {
+          "name": "Risques non intégrés.",
+          "desc": "Inondations, pollution des sols et risques industriels ne sont pas encore pris en compte."
+        },
+        {
+          "name": "Caractère relatif du score.",
+          "desc": "Les quartiers sont comparés entre eux : l'ajout d'une donnée peut modifier les résultats."
+        },
+        {
+          "name": "Déplacements sans marches.",
+          "desc": "L'accessibilité des points d'arrêt est celle déclarée par Île-de-France Mobilités ; l'état des ascenseurs et des trottoirs n'est pas connu."
+        },
+        {
+          "name": "Accès aux soins.",
+          "desc": "Un médecin compte pour un, quel que soit son temps de travail : l'activité réelle de chaque praticien n'est pas publique."
+        }
+      ]
+    },
+    "fixes": {
+      "short": "Corrections",
+      "title": "Corrections apportées",
+      "intro": "Les indicateurs qui mesuraient autre chose que ce qu'ils étaient censés mesurer ont été retirés, y compris lorsqu'ils accentuaient les écarts observés.",
+      "items": [
+        {
+          "when": "Sept. 2026",
+          "what": "Indicateur de composition sociale des écoles retiré du score",
+          "why": "Il reflétait le profil social des élèves, donc les revenus des familles, et non une exposition."
+        },
+        {
+          "when": "Sept. 2026",
+          "what": "Accès aux services retiré du score, dans l'attente d'une mesure fiable",
+          "why": "Les données mesuraient la distance aux services et non leur capacité, et étaient incomplètes en petite couronne."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Données sur les trottoirs écartées",
+          "why": "Une information sur les trottoirs existe pour 96 % de la longueur des rues à Paris, contre 26 % en Seine-Saint-Denis : la comparaison n'était pas possible."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Quartiers quasi inhabités exclus du calcul des seuils",
+          "why": "Les quartiers de moins de 50 habitants (berges, parcs, zones d'activité) faussaient les seuils de comparaison."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Diagnostics énergétiques des petits logements vérifiés",
+          "why": "Les étiquettes publiées par l'ADEME intègrent déjà la correction de 2024 pour les surfaces de moins de 40 m² : aucun ajustement nécessaire."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Accès aux soins : structures sans consultation sur place exclues",
+          "why": "Plateformes de téléconsultation, SOS Médecins, services d'urgence : liste publiée, avec le motif de chaque exclusion."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Accès aux soins réintégré dans le score",
+          "why": "Mesure reconstruite : capacité des médecins et pharmacies partagée entre les habitants qui peuvent les atteindre à pied ou en transports en commun."
+        }
+      ]
+    },
+    "doc": {
+      "title": "Documentation complète",
+      "body": "Méthode détaillée, code source et jeux de données sont publiés en accès libre.",
+      "details": "Méthode détaillée",
+      "scoring": "Formules (SCORING.md)",
+      "code": "Code source",
+      "cite": "Citer (DOI)"
+    }
   }
 }

@@ -432,3 +432,20 @@ def test_quartile_thresholds_come_from_inhabited_iris():
         assert gdf.loc[ok & ~inhabited, f"subscore_{name}_quartile"].notna().all(), (
             f"subscore_{name}: an IRIS under 50 residents lost its quartile"
         )
+
+
+def test_key_figures_match_the_published_score():
+    """The figures quoted in the site's sentences (script 35) come from the
+    published score, not from a hand-typed copy that could drift."""
+    figures = json.loads((config.DATA_PROCESSED / "key_figures.json").read_text(encoding="utf-8"))
+    score = load("vulnerability_score_iris.geojson")
+    s = score["cumulative_vulnerability_score"]
+    inhabited = score[score["population"] >= 50]
+    assert figures["n_iris"] == len(score)
+    assert figures["distribution"] == {str(k): int((s == k).sum()) for k in range(5)}
+    assert sum(figures["distribution_inhabited"].values()) == len(inhabited)
+    assert len(figures["at_max"]) == int((inhabited["cumulative_vulnerability_score"] == 4).sum())
+    assert figures["n_three_plus_inhabited"] == int((inhabited["cumulative_vulnerability_score"] >= 3).sum())
+    assert sum(figures["three_plus_by_department"].values()) == figures["n_three_plus_inhabited"]
+    example = score[score["code_iris"] == figures["example"]["code_iris"]].iloc[0]
+    assert figures["example"]["score"] == int(example["cumulative_vulnerability_score"])

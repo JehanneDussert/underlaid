@@ -1,4 +1,10 @@
 import { ViteSSG } from 'vite-ssg'
+// Self-hosted font (no request to a third-party font service).
+import '@fontsource/schibsted-grotesk/400.css'
+import '@fontsource/schibsted-grotesk/500.css'
+import '@fontsource/schibsted-grotesk/600.css'
+import '@fontsource/schibsted-grotesk/700.css'
+import '@fontsource/schibsted-grotesk/800.css'
 import './style.css'
 import App from './App.vue'
 import { createI18nInstance } from './i18n'

@@ -11,6 +11,15 @@ import vue from '@vitejs/plugin-vue'
 // custom domain later) — no trailing slash.
 const SITE_URL = (process.env.SITE_URL || 'https://underlaid.vercel.app').replace(/\/+$/, '')
 
+// Only the production deployment may be indexed. On Vercel, preview
+// deployments (any branch other than master, e.g. the redesign branch)
+// get VERCEL_ENV=preview: every page then carries <meta name="robots"
+// content="noindex, nofollow"> and robots.txt disallows everything — on
+// top of the X-Robots-Tag: noindex header Vercel adds to previews itself.
+// A local build (no VERCEL_ENV) is indexable, as before, so the dist/
+// checks keep testing the production output.
+const NOINDEX = Boolean(process.env.VERCEL_ENV) && process.env.VERCEL_ENV !== 'production'
+
 // Read at config-eval time (Node, not the browser) so the /ranking page's
 // meta description can state the real neighborhood count without either
 // hardcoding a number that drifts every time the scoring pipeline re-runs,
@@ -33,7 +42,7 @@ function countRankingNeighborhoods() {
 // The same 8 routes declared in src/router.js — kept as a plain literal
 // here rather than imported, since router.js pulls in Vue SFCs that
 // this Node-context config file can't (and shouldn't need to) resolve.
-const ROUTE_SEGMENTS = ['', 'methodology', 'ranking', 'press']
+const ROUTE_SEGMENTS = ['', 'methodology', 'methodology/details', 'ranking', 'press']
 
 function routePaths(prefix) {
   return ROUTE_SEGMENTS.map((segment) => {
@@ -71,7 +80,9 @@ ${urls.join('\n')}
 </urlset>
 `
       writeFileSync(`${options.dir}/sitemap.xml`, xml)
-      writeFileSync(`${options.dir}/robots.txt`, `User-agent: *
+      writeFileSync(`${options.dir}/robots.txt`, NOINDEX ? `User-agent: *
+Disallow: /
+` : `User-agent: *
 Allow: /
 
 Sitemap: ${SITE_URL}/sitemap.xml
@@ -86,5 +97,6 @@ export default defineConfig({
   define: {
     __RANKING_COUNT__: JSON.stringify(countRankingNeighborhoods()),
     __SITE_URL__: JSON.stringify(SITE_URL),
+    __NOINDEX__: JSON.stringify(NOINDEX),
   },
 })

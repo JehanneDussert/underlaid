@@ -12,50 +12,80 @@ body,
 }
 
 body {
-  font-family: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
-  color-scheme: dark;
-  background:
-    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(34, 230, 214, 0.14), transparent 60%),
-    radial-gradient(ellipse 900px 600px at 100% 10%, rgba(255, 61, 138, 0.12), transparent 60%),
-    var(--bg);
-  /* html/body are pinned to 100% height above (one viewport), so on any
-     page taller than that (e.g. the methodology page) the background
-     would otherwise tile down the scrollable canvas — no-repeat plus
-     fixed keeps it a single, truly static glow instead. */
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  font-family: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+  background: var(--bg);
   color: var(--text-primary);
 }
 
-/* "Dark glass" design system (maquette E). This is the one committed
-   theme — no light-mode variant — per CLAUDE.md's visual direction.
-   The --cyan/--magenta/--amber trio is for IDENTITY/branding use only
-   (wordmark, badges, focus rings, active-state pills); it deliberately
-   is NOT used as-is for data encoding — see App.vue's DATA_RAMP comment
-   for why (it fails the colorblind-safe ordinal-ramp check) and what's
-   used instead. */
+/* Light, sober design (site redesign of October 2026, mock-ups in
+   docs/maquettes/): very light grey page, near-black text, one accent —
+   magenta, which always means "the least favourable value". Contrasts
+   checked by calculation (WCAG AA): text #14161A 16.6:1, #3D424A 9.3:1,
+   #5B616B 5.7:1 on the page; magenta #B0024A 6.5:1 on the page and 7.1:1
+   on white; control borders #868B94 3.1:1 (1.4.11 asks for 3:1).
+   The old dark-theme variable names (--ink, --cyan, --magenta, --amber…)
+   are kept as aliases so the views not yet redesigned stay readable on
+   the light background until their turn comes. */
 :root {
-  --bg: #080a0f;
-  --panel: rgba(255, 255, 255, 0.045);
-  --panel-b: rgba(255, 255, 255, 0.09);
-  --ink: #eaf0f5;
-  --ink-dim: #8b96a6;
-  --cyan: #22e6d6;
-  --magenta: #ff3d8a;
-  --amber: #ffb020;
-  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-muted: #e7e9ed;
+  --dark: #14161a;
+  --text-primary: #14161a;
+  --text-body: #3d424a;
+  --text-secondary: #5b616b;
+  --text-muted: #5b616b;
+  --text-on-dark: #ffffff;
+  --text-on-dark-secondary: #d4d7dc;
+  --accent: #b0024a;
+  --accent-on-dark: #f28ab3;
+  --line: #dadde2;
+  --line-soft: #eef0f3;
+  --control-border: #868b94;
+  --focus: #1d4ed8;
+  --radius: 20px;
+  --radius-small: 12px;
+  --content-width: 1120px;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
-  --surface-1: var(--panel);
-  --surface-2: #12151ce6;
-  --surface-3: #0d0f15;
-  --text-primary: var(--ink);
-  --text-secondary: var(--ink-dim);
-  --text-muted: #6b7686;
-  --border-color: var(--panel-b);
-  --gridline: rgba(255, 255, 255, 0.08);
-  --accent: var(--cyan);
-  --accent-strong: var(--magenta);
-  --panel-shadow: rgba(0, 0, 0, 0.55);
+  /* Aliases for the views not yet redesigned. */
+  --panel: var(--surface);
+  --panel-b: var(--line);
+  --ink: var(--text-primary);
+  --ink-dim: var(--text-secondary);
+  --cyan: var(--focus);
+  --magenta: var(--accent);
+  --amber: #8a5300;
+  --surface-1: var(--surface);
+  --surface-2: var(--surface);
+  --surface-3: var(--surface-muted);
+  --border-color: var(--line);
+  --gridline: var(--line);
+  --accent-strong: var(--accent);
+  --panel-shadow: rgba(20, 22, 26, 0.12);
+}
+
+a {
+  color: var(--text-primary);
+}
+a:hover {
+  color: var(--accent);
+}
+
+/* Page container shared by every redesigned page. */
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+@media (max-width: 600px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 /* "Glass panel" surface — the one recurring container look across every
@@ -63,11 +93,9 @@ body {
    panel + soft border + backdrop blur. Global so new views/pages don't
    have to redeclare it per component. */
 .glass {
-  background: var(--panel);
-  border: 1px solid var(--panel-b);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: 16px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
 }
 
 /* Screen-reader-only content: visually hidden but present for assistive
@@ -89,8 +117,11 @@ body {
    global rather than per-component so every view/page gets it, not just
    the one that happened to define it first. */
 button:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--cyan);
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
 
@@ -101,7 +132,8 @@ a:focus-visible {
   /* #footer-sources (not a bare "footer" selector) so this doesn't also
      catch PressKitView's own content <footer> (source/data-credit line),
      which is part of the printed page, not app chrome. */
-  .topbar,
+  .site-header,
+  .skip-link,
   #footer-sources {
     display: none !important;
   }

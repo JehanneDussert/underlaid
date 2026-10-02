@@ -1,4 +1,5 @@
 import HomeView from './views/HomeView.vue'
+import MethodView from './views/MethodView.vue'
 import MethodologyView from './views/MethodologyView.vue'
 import PressKitView from './views/PressKitView.vue'
 import RankingView from './views/RankingView.vue'
@@ -13,7 +14,10 @@ import { LOCALE_STORAGE_KEY } from './i18n'
 // (see localizedRouteName below) rather than just re-rendering in place.
 const ROUTE_DEFS = [
   { segment: '', name: 'home', component: HomeView },
-  { segment: 'methodology', name: 'methodology', component: MethodologyView },
+  { segment: 'methodology', name: 'methodology', component: MethodView },
+  // The detailed methodology page (before the redesign): kept in full for
+  // journalists and researchers, linked from the short "Method" page.
+  { segment: 'methodology/details', name: 'methodology-details', component: MethodologyView },
   { segment: 'ranking', name: 'ranking', component: RankingView },
   { segment: 'press', name: 'press', component: PressKitView },
 ]

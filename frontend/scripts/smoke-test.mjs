@@ -141,7 +141,7 @@ try {
   check('FR -> EN', new URL(page.url()).pathname === '/')
 
   // Every route by direct access
-  for (const path of ['/methodology', '/fr/methodology', '/ranking', '/fr/ranking', '/press', '/fr/press']) {
+  for (const path of ['/methodology', '/fr/methodology', '/methodology/details', '/fr/methodology/details', '/ranking', '/fr/ranking', '/press', '/fr/press']) {
     const response = await page.goto(base + path, { waitUntil: 'networkidle' })
     check(`direct ${path}`, response.status() === 200 && (await page.locator('h1').count()) === 1)
     if (path.endsWith('ranking')) {
@@ -163,6 +163,13 @@ try {
         `${value}: ${filtered} rows, "${announced}"`)
     }
     if (path.endsWith('methodology')) {
+      // Short method page (redesign): its four sections, the worked
+      // example and the distribution, all from key_figures.json.
+      const sections = await page.locator('#sources, #calcul, #limites, #corrections').count()
+      const distRows = await page.locator('.dist tbody tr').count()
+      check(`${path} four sections, example and distribution`, sections === 4 && (await page.locator('.example .chip').count()) === 4 && distRows === 5, `${sections} sections, ${distRows} rows`)
+    }
+    if (path.endsWith('details')) {
       check(`${path} access + licences sections`, (await page.locator('#access').count()) === 1 && (await page.locator('#data-licences').count()) === 1)
     }
   }
@@ -170,7 +177,7 @@ try {
   // Phone width: no sideways scroll
   const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()
   phone.on('pageerror', (e) => errors.push(`phone ${phone.url()}: ${e.message}`))
-  for (const path of ['/fr', '/fr/ranking', '/fr/methodology']) {
+  for (const path of ['/fr', '/fr/ranking', '/fr/methodology', '/fr/methodology/details']) {
     await phone.goto(base + path, { waitUntil: 'networkidle' })
     const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
     check(`phone ${path}: no horizontal scroll`, overflow <= 0, overflow > 0 ? `${overflow}px` : '')

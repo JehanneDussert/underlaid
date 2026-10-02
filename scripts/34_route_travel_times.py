@@ -1,0 +1,186 @@
+"""Travel times to the nearest key destinations, for the routes page.
+
+Pre-registered on 2026-10-02 before any of these times was computed
+(CLAUDE.md, "Hypothèse de travail", routes pre-registration and its
+addendum). From every inhabited 200 m cell of the MGP (Filosofi 2021
+grid, script 29) to the nearest destination of each type (script 33),
+with R5 (r5py) on the networks of script 30. Only the minimum time per
+cell and destination type is kept.
+
+Profiles (4 per time slot):
+- standard: full OSM network + full IDFM GTFS, walking 4.5 km/h;
+- slow: same networks, walking 3.4 km/h (0.943 m/s, women aged 80-99,
+  Bohannon & Andrews 2011, Physiotherapy 97(3):182-189);
+- step_free_no / step_free_yes ("sans marches": wheelchair, pushchair):
+  OSM without stairs (script 30) + GTFS restricted to accessible stops and
+  trips, unknown counted as not accessible / accessible; walking 4.5 km/h.
+Time slots: departures over 60 min, R5 median travel time — Tuesday
+13 October 2026 at 10:00 (main), 21:00 and 01:00; Sunday 11 October 2026
+at 10:00. Maximum 90 min; beyond, the cell is "not reached" (no row).
+
+Stations (heavy-network stop points) are reached on foot only, so they get
+one walking task per profile (no time slot); step-free profiles go to
+accessible stops only (wheelchair = 1; also 0 in the "unknown = yes"
+variant).
+
+Output: data/interim/access/routes_ttm/<task>_<chunk>.parquet with
+cell_id, type, minutes. Long-running (about 21 h with 3 processes);
+resumable and shareable between processes like script 31 (env WORKER /
+WORKERS); progress in data/interim/access/routes_progress.txt.
+
+Runs in the access Docker image (Dockerfile.access).
+"""
+import os
+import sys
+
+sys.argv += ["--max-memory", os.environ.get("R5_MAX_MEMORY", "26G")]
+
+import datetime as dt
+import gc
+import time
+from dataclasses import dataclass
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import geopandas as gpd
+import pandas as pd
+
+import config
+
+ACCESS_DIR = config.DATA_PROCESSED / "access"
+WORK_DIR = config.DATA_INTERIM / "access"
+OUT_DIR = WORK_DIR / "routes_ttm"
+PROGRESS = WORK_DIR / "routes_progress.txt"
+CHUNK = 300
+MAX_MINUTES = 90
+WINDOW = dt.timedelta(minutes=60)
+WORKER = int(os.environ.get("WORKER", "0"))
+WORKERS = int(os.environ.get("WORKERS", "1"))
+
+SLOTS = {
+    "tue10": dt.datetime(2026, 10, 13, 10, 0),
+    "tue21": dt.datetime(2026, 10, 13, 21, 0),
+    "tue01": dt.datetime(2026, 10, 13, 1, 0),
+    "sun10": dt.datetime(2026, 10, 11, 10, 0),
+}
+NETWORKS = {
+    "standard": (config.DATA_RAW / "osm" / "ile-de-france-latest.osm.pbf", config.DATA_RAW / "gtfs" / "IDFM-gtfs.zip"),
+    "acc_unknown_no": (WORK_DIR / "idf_no_stairs.osm.pbf", WORK_DIR / "gtfs_accessible_unknown_no.zip"),
+    "acc_unknown_yes": (WORK_DIR / "idf_no_stairs.osm.pbf", WORK_DIR / "gtfs_accessible_unknown_yes.zip"),
+}
+# profile -> (network, walking speed km/h, station accessibility values kept)
+PROFILES = {
+    "standard": ("standard", 4.5, None),
+    "slow": ("standard", 3.4, None),
+    "step_free_no": ("acc_unknown_no", 4.5, {"1"}),
+    "step_free_yes": ("acc_unknown_yes", 4.5, {"1", "0"}),
+}
+
+
+@dataclass
+class Task:
+    name: str
+    profile: str
+    transit: bool
+    departure: dt.datetime
+
+
+TASKS = [Task(f"{p}_{s}", p, True, d) for p in PROFILES for s, d in SLOTS.items()]
+TASKS += [Task(f"{p}_stations_walk", p, False, SLOTS["tue10"]) for p in PROFILES]
+
+
+def origins() -> gpd.GeoDataFrame:
+    """Inhabited grid cells whose centre lies in an MGP IRIS."""
+    cells = gpd.read_file(ACCESS_DIR / "demand_grid_idf.geojson")[["cell_id", "pop", "geometry"]]
+    iris = gpd.read_file(config.IRIS_REFERENCE_PATH)[["code_iris", "geometry"]].to_crs(cells.crs)
+    inside = gpd.sjoin(cells, iris, predicate="within", how="inner")
+    inside = inside[inside["pop"] > 0].drop_duplicates("cell_id")
+    return inside[["cell_id", "geometry"]].rename(columns={"cell_id": "id"}).to_crs(config.CRS_LATLON).reset_index(drop=True)
+
+
+def destinations(task: Task, dest: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    if task.transit:
+        d = dest[dest["type"] != "station"]
+    else:
+        keep = PROFILES[task.profile][2]
+        d = dest[dest["type"] == "station"]
+        if keep is not None:
+            d = d[d["wheelchair"].isin(keep)]
+    return d[["dest_id", "geometry"]].rename(columns={"dest_id": "id"})
+
+
+def write_progress(started, done_at_start, total, current):
+    done = len(list(OUT_DIR.glob("*.parquet")))
+    elapsed = time.time() - started
+    eta = ""
+    if done > done_at_start:
+        eta = f" — about {elapsed / (done - done_at_start) * (total - done) / 60:.0f} min left"
+    PROGRESS.write_text(
+        f"Routes travel times: {100 * done / total:.0f}% ({done}/{total} chunks, {WORKERS} processes){eta}\n"
+        f"Worker {WORKER} on: {current}\nUpdated {dt.datetime.now():%H:%M:%S}\n",
+        encoding="utf-8",
+    )
+
+
+def main():
+    import jpype
+    import r5py
+
+    orig = origins()
+    dest = gpd.read_file(ACCESS_DIR / "route_destinations_idf.geojson")
+    dest["wheelchair"] = dest["wheelchair"].fillna("").astype(str)
+    dest_type = dest.set_index("dest_id")["type"]
+    print(f"{len(orig)} origin cells, {len(dest)} destinations", flush=True)
+
+    jobs = []
+    for task in sorted(TASKS, key=lambda t: list(NETWORKS).index(PROFILES[t.profile][0])):
+        for k, start in enumerate(range(0, len(orig), CHUNK)):
+            jobs.append((task, k, orig.iloc[start:start + CHUNK]))
+    total = len(jobs)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    started = time.time()
+    done_at_start = len(list(OUT_DIR.glob("*.parquet")))
+    network_name, network = None, None
+
+    for index, (task, k, chunk) in enumerate(jobs):
+        out = OUT_DIR / f"{task.name}_{k:02d}.parquet"
+        if index % WORKERS != WORKER or out.exists():
+            continue
+        net, speed, _ = PROFILES[task.profile]
+        label = f"{task.name}, chunk {k + 1}"
+        if net != network_name:
+            write_progress(started, done_at_start, total, f"loading the '{net}' network")
+            network = None
+            gc.collect()
+            jpype.java.lang.System.gc()
+            osm, gtfs = NETWORKS[net]
+            network = r5py.TransportNetwork(str(osm), [str(gtfs)])
+            network_name = net
+        write_progress(started, done_at_start, total, label)
+        modes = [r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK] if task.transit else [r5py.TransportMode.WALK]
+        ttm = r5py.TravelTimeMatrix(
+            network,
+            origins=chunk,
+            destinations=destinations(task, dest),
+            departure=task.departure,
+            departure_time_window=WINDOW if task.transit else dt.timedelta(minutes=1),
+            transport_modes=modes,
+            speed_walking=speed,
+            max_time=dt.timedelta(minutes=MAX_MINUTES),
+            snap_to_network=True,
+        )
+        ttm = pd.DataFrame(ttm).dropna(subset=["travel_time"])
+        ttm = ttm[ttm.travel_time <= MAX_MINUTES]
+        ttm["type"] = ttm["to_id"].map(dest_type)
+        best = ttm.groupby(["from_id", "type"], as_index=False)["travel_time"].min()
+        best = best.rename(columns={"from_id": "cell_id", "travel_time": "minutes"})
+        best.astype({"minutes": "int16"}).to_parquet(out, index=False)
+        write_progress(started, done_at_start, total, label + " done")
+        print(f"{label}: {len(best)} cell-type rows", flush=True)
+    if len(list(OUT_DIR.glob("*.parquet"))) == total:
+        PROGRESS.write_text(f"Routes travel times: 100% — finished {dt.datetime.now():%Y-%m-%d %H:%M}\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

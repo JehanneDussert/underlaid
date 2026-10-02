@@ -783,5 +783,47 @@
   "mapPage": {
     "title": "Carte des 2 752 quartiers",
     "lead": "Chaque quartier est coloré selon le nombre de critères — chaleur, pollution de l'air et bruit, logement, accès aux soins — pour lesquels il figure parmi le quart des plus touchés. Cliquez sur un quartier ou saisissez une adresse."
+  },
+  "routes": {
+    "title": "Un même trajet, des durées inégales.",
+    "lead": "Depuis votre quartier, durée jusqu'à la destination la plus proche de chaque type, selon la façon de se déplacer et l'heure de départ.",
+    "formLabel": "Choix du trajet",
+    "from": "Départ (adresse)",
+    "to": "Destination la plus proche",
+    "when": "Heure de départ",
+    "stationNoSlot": "Les stations se rejoignent à pied : la durée ne dépend pas de l'heure.",
+    "types": {
+      "emergency": "Urgences",
+      "gp": "Médecin généraliste",
+      "pharmacy": "Pharmacie",
+      "town_hall": "Mairie",
+      "france_services": "France Services",
+      "caf": "CAF",
+      "cpam": "CPAM",
+      "employment": "France Travail",
+      "post_office": "Bureau de poste",
+      "station": "Station de métro, RER, train ou tram"
+    },
+    "slots": {
+      "tue10": "Mardi, 10 h",
+      "tue21": "Mardi, 21 h",
+      "tue01": "Nuit, 1 h",
+      "sun10": "Dimanche, 10 h"
+    },
+    "profiles": {
+      "standard": "Sans contrainte",
+      "slow": "Marche lente (3,4 km/h)",
+      "step_free_no": "Sans marches (fauteuil roulant, poussette)"
+    },
+    "resultTitle": "{dest} la plus proche depuis {name}, {commune}",
+    "minutes": "{n} min",
+    "over90": "plus de 90 min",
+    "ratio": "Sans marches, la durée du trajet est multipliée par {n}.",
+    "detour": "Détour imposé par les escaliers et les transports non accessibles : {n} min de plus.",
+    "variant": "Si les arrêts dont l'accessibilité n'est pas renseignée sont en réalité accessibles : {v} sans marches.",
+    "noValue": "Pas de résultat pour ce quartier (aucun habitant recensé dans la grille de l'INSEE).",
+    "unavailable": "Les résultats sont en cours de calcul et seront publiés prochainement.",
+    "note": "Durée médiane pour les habitants du quartier, porte à porte, à pied et en transports en commun, pour des départs étalés sur une heure. La destination la plus proche peut différer selon le mode de déplacement. L'accessibilité du bâtiment d'arrivée n'est pas connue. Jours de référence : mardi 13 et dimanche 11 octobre 2026.",
+    "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026, Licence Mobilités), OpenStreetMap, IGN, INSEE (BPE 2025, grille de population 2021), ANCT, annuaire de l'administration (DILA), ANS, FINESS"
   }
 }

@@ -783,5 +783,47 @@
   "mapPage": {
     "title": "Map of the 2,752 neighbourhoods",
     "lead": "Each neighbourhood is shaded by the number of criteria — heat, air pollution and noise, housing, access to care — on which it is among the most affected quarter. Click a neighbourhood or enter an address."
+  },
+  "routes": {
+    "title": "One trip, unequal durations.",
+    "lead": "From your neighbourhood, travel time to the nearest destination of each type, depending on how you travel and when you leave.",
+    "formLabel": "Choose a trip",
+    "from": "Departure (address)",
+    "to": "Nearest destination",
+    "when": "Departure time",
+    "stationNoSlot": "Stations are reached on foot: the time does not depend on the hour.",
+    "types": {
+      "emergency": "Emergency department",
+      "gp": "GP",
+      "pharmacy": "Pharmacy",
+      "town_hall": "Town hall",
+      "france_services": "France Services",
+      "caf": "CAF (family benefits)",
+      "cpam": "CPAM (health insurance)",
+      "employment": "France Travail (employment)",
+      "post_office": "Post office",
+      "station": "Metro, RER, train or tram station"
+    },
+    "slots": {
+      "tue10": "Tuesday, 10 am",
+      "tue21": "Tuesday, 9 pm",
+      "tue01": "Night, 1 am",
+      "sun10": "Sunday, 10 am"
+    },
+    "profiles": {
+      "standard": "No constraint",
+      "slow": "Walking slowly (3.4 km/h)",
+      "step_free_no": "Step-free (wheelchair, pushchair)"
+    },
+    "resultTitle": "Nearest {dest} from {name}, {commune}",
+    "minutes": "{n} min",
+    "over90": "more than 90 min",
+    "ratio": "Step-free, the trip takes {n} times as long.",
+    "detour": "Detour imposed by stairs and inaccessible transport: {n} more minutes.",
+    "variant": "If the stops whose accessibility is not recorded are in fact accessible: {v} step-free.",
+    "noValue": "No result for this neighbourhood (no residents in the INSEE grid).",
+    "unavailable": "The results are being computed and will be published soon.",
+    "note": "Median door-to-door time for the neighbourhood's residents, on foot and by public transport, for departures spread over one hour. The nearest destination may differ by travel mode. Whether the destination building is accessible is not known. Reference days: Tuesday 13 and Sunday 11 October 2026.",
+    "sources": "Île-de-France Mobilités (timetables of 1 October 2026, Licence Mobilités), OpenStreetMap, IGN, INSEE (BPE 2025, 2021 population grid), ANCT, public administration directory (DILA), ANS, FINESS"
   }
 }

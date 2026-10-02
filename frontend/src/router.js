@@ -2,6 +2,7 @@ import HomeView from './views/HomeView.vue'
 import MapView from './views/MapView.vue'
 import AddressView from './views/AddressView.vue'
 import QuizView from './views/QuizView.vue'
+import RoutesView from './views/RoutesView.vue'
 import MethodView from './views/MethodView.vue'
 import MethodologyView from './views/MethodologyView.vue'
 import PressKitView from './views/PressKitView.vue'
@@ -19,6 +20,8 @@ const ROUTE_DEFS = [
   { segment: '', name: 'home', component: HomeView },
   { segment: 'address', name: 'address', component: AddressView },
   { segment: 'quiz', name: 'quiz', component: QuizView },
+  // Not in the navigation until its data is published (scripts 34, 36).
+  { segment: 'routes', name: 'routes', component: RoutesView },
   { segment: 'map', name: 'map', component: MapView },
   { segment: 'methodology', name: 'methodology', component: MethodView },
   // The detailed methodology page (before the redesign): kept in full for

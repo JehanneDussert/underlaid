@@ -42,7 +42,7 @@ function countRankingNeighborhoods() {
 // The same 8 routes declared in src/router.js — kept as a plain literal
 // here rather than imported, since router.js pulls in Vue SFCs that
 // this Node-context config file can't (and shouldn't need to) resolve.
-const ROUTE_SEGMENTS = ['', 'map', 'methodology', 'methodology/details', 'ranking', 'press']
+const ROUTE_SEGMENTS = ['', 'address', 'map', 'methodology', 'methodology/details', 'ranking', 'press']
 
 function routePaths(prefix) {
   return ROUTE_SEGMENTS.map((segment) => {

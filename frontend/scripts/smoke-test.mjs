@@ -102,9 +102,29 @@ try {
     await page.locator('#home-address').press('ArrowDown')
     const activeId = await page.locator('#home-address').getAttribute('aria-activedescendant')
     await page.locator('#home-address').press('Enter')
-    await page.waitForURL(/\/fr\/map\?/)
-    const panel = await page.waitForSelector('.cumul-box .n', { timeout: 30_000 }).then(() => true, () => false)
-    check('home address -> map with the neighbourhood selected', !!activeId && panel)
+    await page.waitForURL(/\/fr\/address\?/)
+    const rowsShown = await page.waitForSelector('.criterion-row', { timeout: 30_000 }).then(() => true, () => false)
+    const rowCount = await page.locator('.criterion-row').count()
+    const scoreLine = rowsShown ? await page.locator('.score-line').innerText() : ''
+    check('home address -> address page: score line and 6 rows', !!activeId && rowCount === 6 && /sur 4/.test(scoreLine), `${rowCount} rows, "${scoreLine.slice(0, 60)}"`)
+    // Travel mode: only access to care and transport change.
+    const before = await page.locator('.criterion-row').allInnerTexts()
+    await page.locator('.segmented button').nth(1).click()
+    const after = await page.locator('.criterion-row').allInnerTexts()
+    const changed = before.map((txt, i) => txt !== after[i])
+    check('address page: step-free mode changes access to care only among scored rows', changed[4] && !changed[0] && !changed[1] && !changed[2] && !changed[3], JSON.stringify(changed))
+    // Comparison with a second address.
+    await page.locator('.compare .pill-btn').click()
+    await page.locator('#address-other').fill('10 rue de Rivoli Paris')
+    const otherOption = await page.locator('#address-other-list [role="option"]').first().waitFor({ timeout: 10_000 }).then(() => true, () => false)
+    if (otherOption) {
+      await page.locator('#address-other').press('ArrowDown')
+      await page.locator('#address-other').press('Enter')
+      await page.waitForTimeout(300)
+      check('address page: comparison marker on every row with data', (await page.locator('.marker.other').count()) >= 5 && /cmp_lon/.test(page.url()))
+    } else {
+      record('SKIP', 'address page comparison', 'address API (BAN) did not answer within 10 s')
+    }
   }
 
   // Map, both languages
@@ -167,7 +187,7 @@ try {
   check('FR -> EN', new URL(page.url()).pathname === '/')
 
   // Every route by direct access
-  for (const path of ['/methodology', '/fr/methodology', '/methodology/details', '/fr/methodology/details', '/ranking', '/fr/ranking', '/press', '/fr/press']) {
+  for (const path of ['/address', '/fr/address', '/methodology', '/fr/methodology', '/methodology/details', '/fr/methodology/details', '/ranking', '/fr/ranking', '/press', '/fr/press']) {
     const response = await page.goto(base + path, { waitUntil: 'networkidle' })
     check(`direct ${path}`, response.status() === 200 && (await page.locator('h1').count()) === 1)
     if (path.endsWith('ranking')) {
@@ -203,7 +223,7 @@ try {
   // Phone width: no sideways scroll
   const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()
   phone.on('pageerror', (e) => errors.push(`phone ${phone.url()}: ${e.message}`))
-  for (const path of ['/fr', '/fr/map', '/fr/ranking', '/fr/methodology', '/fr/methodology/details']) {
+  for (const path of ['/fr', '/fr/address?lon=2.4431&lat=48.9248&label=Drancy', '/fr/map', '/fr/ranking', '/fr/methodology', '/fr/methodology/details']) {
     await phone.goto(base + path, { waitUntil: 'networkidle' })
     const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
     check(`phone ${path}: no horizontal scroll`, overflow <= 0, overflow > 0 ? `${overflow}px` : '')

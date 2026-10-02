@@ -668,5 +668,57 @@
       "sources": "contributeurs d'OpenStreetMap (extrait du 30 septembre 2026), calcul Underlaid"
     },
     "consult": "Consulter un quartier"
+  },
+  "addressPage": {
+    "title": "Consulter un quartier",
+    "another": "Consulter une autre adresse",
+    "outside": "Cette adresse ne se trouve pas à Paris ni en petite couronne.",
+    "loadError": "Les données n'ont pas pu être chargées. Réessayez plus tard.",
+    "score": "Score de cumul : {score} sur 4 — {domains}.",
+    "scoreZero": "Score de cumul : {score} sur 4 — aucun critère parmi le quart des quartiers les plus touchés.",
+    "scoreUnknown": "Score de cumul non calculé : données insuffisantes pour ce quartier.",
+    "scoreLink": "Comment ce score est calculé",
+    "controlsLabel": "Réglages de l'affichage",
+    "summary": "Ce quartier est moins favorable que la médiane métropolitaine sur {n} des {total} critères.",
+    "modeLabel": "Mode de déplacement",
+    "modeStandard": "Sans contrainte",
+    "modeStepFree": "Sans marches (fauteuil roulant, poussette)",
+    "compare": "Comparer avec un autre quartier",
+    "compareLabel": "Adresse à comparer",
+    "compareClose": "Retirer la comparaison",
+    "moreFav": "Plus favorable",
+    "median": "Médiane métropolitaine",
+    "lessFav": "Moins favorable",
+    "infoTag": "pour information",
+    "titles": {
+      "thermal": "Chaleur",
+      "pollution": "Pollution de l'air et bruit",
+      "housing": "Logement",
+      "cool": "Lieux et espaces de fraîcheur",
+      "care": "Accès aux soins",
+      "transport": "Transports"
+    },
+    "rows": {
+      "thermal": "Sols artificialisés : {v} de la surface, contre {m} en médiane.",
+      "pollution": "Indice de co-exposition air-bruit : {v}, contre {m} en médiane (de 11, le plus faible, à 33, le plus élevé).",
+      "housing": "{v} de logements classés F ou G, contre {m} en médiane.",
+      "cool": "Piscines, bibliothèques et musées à moins de 400 m : {n}, contre {mn} en médiane ; espaces verts frais : {g} de la surface, contre {mg}.",
+      "care": "Médecins généralistes accessibles à pied ou en transports en commun : {gp} pour 10 000 habitants, contre {mgp} en médiane ; pharmacies à 15 minutes à pied : {ph}, contre {mph}.",
+      "careStepFree": "Médecins généralistes accessibles sans marches : {v} pour 10 000 habitants, contre {m} en médiane. Les pharmacies ne sont pas recalculées pour ce mode.",
+      "transport": "Part de l'accès aux médecins conservée lors d'un déplacement sans marches : {v}, contre {m} en médiane. Hors du score."
+    },
+    "moreFavourable": "Plus favorable que {n} % des quartiers",
+    "lessFavourable": "Moins favorable que {n} % des quartiers",
+    "noData": "Donnée non disponible",
+    "means": "Ressources des habitants (revenu médian, logements surpeuplés, résidences secondaires) : {third} de la métropole. Elles sont mesurées à part et n'entrent pas dans le score.",
+    "meansMasked": "Ressources des habitants : non publiées pour ce quartier (secret statistique de l'INSEE).",
+    "third0": "tiers le plus bas",
+    "third1": "tiers médian",
+    "third2": "tiers le plus élevé",
+    "meansLink": "Pourquoi une mesure distincte",
+    "note": "Position : rang du quartier parmi les {n} quartiers habités (50 habitants ou plus), le milieu de l'échelle correspondant à la médiane. Pour les lieux et espaces de fraîcheur, moyenne des rangs des deux indicateurs. Seuls l'accès aux soins et les transports varient selon le mode de déplacement.",
+    "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif et Bruitparif, ADEME, Enedis, ANS, FINESS, Île-de-France Mobilités, OpenStreetMap",
+    "onMap": "Voir ce quartier sur la carte",
+    "otherPos": "{name} : {text}"
   }
 }

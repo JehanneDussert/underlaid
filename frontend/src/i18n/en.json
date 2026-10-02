@@ -668,5 +668,57 @@
       "sources": "OpenStreetMap contributors (extract of 30 September 2026), Underlaid calculation"
     },
     "consult": "Look up a neighbourhood"
+  },
+  "addressPage": {
+    "title": "Look up a neighbourhood",
+    "another": "Look up another address",
+    "outside": "This address is not in Paris or its inner suburbs.",
+    "loadError": "The data could not be loaded. Please try again later.",
+    "score": "Cumulative score: {score} out of 4 — {domains}.",
+    "scoreZero": "Cumulative score: {score} out of 4 — no criterion among the most affected quarter of neighbourhoods.",
+    "scoreUnknown": "Cumulative score not computed: not enough data for this neighbourhood.",
+    "scoreLink": "How this score is computed",
+    "controlsLabel": "Display settings",
+    "summary": "This neighbourhood is less favourable than the metro-wide median on {n} of {total} criteria.",
+    "modeLabel": "Travel mode",
+    "modeStandard": "No constraint",
+    "modeStepFree": "Step-free (wheelchair, pushchair)",
+    "compare": "Compare with another neighbourhood",
+    "compareLabel": "Address to compare",
+    "compareClose": "Remove the comparison",
+    "moreFav": "More favourable",
+    "median": "Metro-wide median",
+    "lessFav": "Less favourable",
+    "infoTag": "for information",
+    "titles": {
+      "thermal": "Heat",
+      "pollution": "Air pollution and noise",
+      "housing": "Housing",
+      "cool": "Cool places and green spaces",
+      "care": "Access to care",
+      "transport": "Transport"
+    },
+    "rows": {
+      "thermal": "Sealed ground: {v} of the area, against {m} for the median.",
+      "pollution": "Air-noise co-exposure index: {v}, against {m} for the median (from 11, the lowest, to 33, the highest).",
+      "housing": "{v} of homes rated F or G, against {m} for the median.",
+      "cool": "Swimming pools, libraries and museums within 400 m: {n}, against {mn} for the median; cool green space: {g} of the area, against {mg}.",
+      "care": "GPs reachable on foot or by public transport: {gp} per 10,000 residents, against {mgp} for the median; pharmacies within a 15-minute walk: {ph}, against {mph}.",
+      "careStepFree": "GPs reachable step-free: {v} per 10,000 residents, against {m} for the median. Pharmacies are not recomputed for this mode.",
+      "transport": "Share of GP access kept when travelling step-free: {v}, against {m} for the median. Outside the score."
+    },
+    "moreFavourable": "More favourable than {n}% of neighbourhoods",
+    "lessFavourable": "Less favourable than {n}% of neighbourhoods",
+    "noData": "No data",
+    "means": "Residents' means (median income, overcrowded homes, second homes): {third} of the metro area. Measured separately, they are not part of the score.",
+    "meansMasked": "Residents' means: not published for this neighbourhood (INSEE statistical confidentiality).",
+    "third0": "lowest third",
+    "third1": "middle third",
+    "third2": "highest third",
+    "meansLink": "Why a separate measure",
+    "note": "Position: rank of the neighbourhood among the {n} inhabited neighbourhoods (50 residents or more); the middle of the scale is the median. For cool places and green spaces, the mean rank of the two indicators. Only access to care and transport change with the travel mode.",
+    "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif and Bruitparif, ADEME, Enedis, ANS, FINESS, Île-de-France Mobilités, OpenStreetMap",
+    "onMap": "See this neighbourhood on the map",
+    "otherPos": "{name}: {text}"
   }
 }

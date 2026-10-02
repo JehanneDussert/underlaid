@@ -67,7 +67,7 @@ const answerText = computed(() => {
 })
 
 function goToAddress({ label, lon, lat }) {
-  router.push({ name: localizedRouteName('map', locale.value), query: { lon, lat, label } })
+  router.push({ name: localizedRouteName('address', locale.value), query: { lon, lat, label } })
 }
 </script>
 

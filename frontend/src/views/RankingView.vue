@@ -131,7 +131,7 @@ function figures(p) {
 
 <template>
   <div class="ranking-view">
-    <router-link class="back-link" :to="{ name: localizedRouteName('home', locale) }">{{ t('methodology.backLink') }}</router-link>
+    <router-link class="back-link" :to="{ name: localizedRouteName('map', locale) }">{{ t('methodology.backLink') }}</router-link>
 
     <h1>{{ t('ranking.title') }}</h1>
     <p class="intro">{{ t('ranking.intro') }}</p>

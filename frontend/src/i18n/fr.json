@@ -601,5 +601,72 @@
       "code": "Code source",
       "cite": "Citer (DOI)"
     }
+  },
+  "address": {
+    "label": "Adresse",
+    "placeholder": "Numéro, rue, commune",
+    "placeholderShort": "Adresse",
+    "submit": "Consulter",
+    "suggestions": "{n} adresses proposées. Utilisez les flèches haut et bas pour choisir.",
+    "listLabel": "Adresses proposées",
+    "unavailable": "Le service de recherche d'adresse ne répond pas. Réessayez plus tard.",
+    "tooShort": "Saisissez au moins 3 caractères.",
+    "notFound": "Aucune adresse trouvée."
+  },
+  "home": {
+    "eyebrow": "Paris et petite couronne · 2 752 quartiers",
+    "title": "Une même ville, des conditions de vie inégales.",
+    "lead": "Chaleur, pollution de l'air et bruit, logement, accès aux soins : les écarts entre quartiers, mesurés à partir de données publiques.",
+    "hint": "Les principaux constats sont présentés ci-dessous.",
+    "dep": {
+      "75": "Paris",
+      "92": "Hauts-de-Seine",
+      "93": "Seine-Saint-Denis",
+      "94": "Val-de-Marne"
+    },
+    "f1": {
+      "title": "{n} quartiers figurent parmi les plus touchés pour les quatre critères à la fois.",
+      "body": "Chaleur, pollution de l'air et bruit, logements énergivores, accès aux soins : ces situations sont le plus souvent cartographiées séparément. Leur superposition, quartier par quartier, l'est rarement.",
+      "body2": "{n} quartiers habités figurent parmi le quart des plus touchés pour au moins trois des quatre critères.",
+      "mapLink": "Voir la carte",
+      "listLink": "Voir la liste des {n} quartiers",
+      "alt": "Carte de Paris et de la petite couronne : chaque quartier est coloré selon le nombre de critères pour lesquels il figure parmi le quart des plus touchés, de 0 (rose clair) à 4 (bordeaux).",
+      "legend": "Nombre de critères pour lesquels le quartier figure parmi le quart des plus touchés",
+      "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif et Bruitparif, ADEME, Enedis, ANS, Île-de-France Mobilités"
+    },
+    "f2": {
+      "title": "À exposition égale, des situations sociales opposées.",
+      "body": "Parmi les quartiers très exposés dont les habitants ont les ressources les plus élevées, la plupart se trouvent à Paris et cumulent surtout la chaleur et des logements énergivores. Parmi ceux dont les habitants ont les ressources les plus faibles, la plupart se trouvent en Seine-Saint-Denis et dans le Val-de-Marne, et cumulent surtout la pollution de l'air, le bruit et un accès aux soins plus faible.",
+      "body2": "Sur l'ensemble de la métropole, le lien entre exposition et ressources est faible (corrélation de rang de {rho}), et légèrement positif à cause du centre de Paris, dense et ancien.",
+      "question": "Parmi les quartiers très exposés (au moins 2 des 4 critères), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
+      "definition": "Les 4 critères : chaleur, pollution de l'air et bruit, logement, accès aux soins. Ressources des habitants : revenu médian, part de logements surpeuplés, part de résidences secondaires (INSEE, 2021), mesurées à part du score.",
+      "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME, ANS"
+    },
+    "quiz": {
+      "kicker": "Question",
+      "question": "Où la part des points d'arrêt du métro accessibles en fauteuil roulant est-elle la plus élevée ?",
+      "right": "Réponse exacte : la Seine-Saint-Denis.",
+      "wrong": "Réponse inexacte : il s'agit de la Seine-Saint-Denis.",
+      "explanation": "Seine-Saint-Denis : {ssd} des points d'arrêt du métro signalés accessibles en fauteuil roulant. Paris : {paris}. En Seine-Saint-Denis, ce sont les points d'arrêt des prolongements récents des lignes 11 et 14.",
+      "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026, Licence Mobilités)"
+    },
+    "f3": {
+      "title": "L'accès aux soins dépend aussi du nombre de personnes qui se partagent l'offre.",
+      "body": "Nombre de médecins généralistes et de pharmacies accessibles à pied ou en transports en commun, rapporté à l'ensemble des habitants qui peuvent aussi les atteindre. Dans les Hauts-de-Seine et le Val-de-Marne, les quartiers aux ressources les plus faibles sont plus souvent parmi les moins bien desservis.",
+      "question": "Part des quartiers figurant parmi le quart des moins bien desservis en soins, selon les ressources des habitants",
+      "lowest": "Tiers aux ressources les plus faibles",
+      "highest": "Tiers aux ressources les plus élevées",
+      "density": "À densité de population égale, l'écart atteint {n92} points dans les Hauts-de-Seine et {n94} points dans le Val-de-Marne (test défini avant tout calcul, octobre 2026). En Seine-Saint-Denis, presque aucun quartier n'appartient au tiers aux ressources les plus élevées : la comparaison n'est pas possible.",
+      "wheelchair": "En fauteuil roulant, le nombre de médecins atteignables reste plus faible en petite couronne : médiane de {p} pour 10 000 habitants à Paris, {d92} dans les Hauts-de-Seine, {d93} en Seine-Saint-Denis, {d94} dans le Val-de-Marne.",
+      "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités, OpenStreetMap"
+    },
+    "f4": {
+      "title": "Des données publiques inégales selon les territoires.",
+      "body": "Les trottoirs sont recensés par les contributeurs bénévoles d'OpenStreetMap. Ce recensement est presque complet à Paris et lacunaire en Seine-Saint-Denis : une donnée manquante ne signifie pas l'absence de trottoir. Ces données ont donc été écartées du calcul.",
+      "paris": "de la longueur des rues de Paris comporte une information sur les trottoirs",
+      "ssd": "en Seine-Saint-Denis",
+      "sources": "contributeurs d'OpenStreetMap (extrait du 30 septembre 2026), calcul Underlaid"
+    },
+    "consult": "Consulter un quartier"
   }
 }

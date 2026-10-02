@@ -601,5 +601,72 @@
       "code": "Source code",
       "cite": "Cite (DOI)"
     }
+  },
+  "address": {
+    "label": "Address",
+    "placeholder": "Number, street, town",
+    "placeholderShort": "Address",
+    "submit": "Look up",
+    "suggestions": "{n} addresses suggested. Use the up and down arrows to choose.",
+    "listLabel": "Suggested addresses",
+    "unavailable": "The address search service is not responding. Please try again later.",
+    "tooShort": "Type at least 3 characters.",
+    "notFound": "No address found."
+  },
+  "home": {
+    "eyebrow": "Paris and its inner suburbs · 2,752 neighbourhoods",
+    "title": "One city, unequal living conditions.",
+    "lead": "Heat, air pollution and noise, housing, access to care: the gaps between neighbourhoods, measured from public data.",
+    "hint": "The main findings are set out below.",
+    "dep": {
+      "75": "Paris",
+      "92": "Hauts-de-Seine",
+      "93": "Seine-Saint-Denis",
+      "94": "Val-de-Marne"
+    },
+    "f1": {
+      "title": "{n} neighbourhoods are among the most affected on all four criteria at once.",
+      "body": "Heat, air pollution and noise, energy-inefficient housing, access to care: these are usually mapped separately. How they overlap, neighbourhood by neighbourhood, rarely is.",
+      "body2": "{n} inhabited neighbourhoods are among the most affected quarter on at least three of the four criteria.",
+      "mapLink": "See the map",
+      "listLink": "See the list of {n} neighbourhoods",
+      "alt": "Map of Paris and its inner suburbs: each neighbourhood is shaded by the number of criteria on which it is among the most affected quarter, from 0 (light pink) to 4 (dark red).",
+      "legend": "Number of criteria on which the neighbourhood is among the most affected quarter",
+      "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif and Bruitparif, ADEME, Enedis, ANS, Île-de-France Mobilités"
+    },
+    "f2": {
+      "title": "Same exposure, opposite social situations.",
+      "body": "Among highly exposed neighbourhoods whose residents have the most means, most are in Paris and combine mainly heat and energy-inefficient housing. Among those whose residents have the fewest means, most are in Seine-Saint-Denis and Val-de-Marne, and combine mainly air pollution, noise and weaker access to care.",
+      "body2": "Across the metropolis, the link between exposure and means is weak (rank correlation {rho}), and slightly positive because of central Paris, dense and old.",
+      "question": "Among highly exposed neighbourhoods (at least 2 of the 4 criteria), what share is also in the metro area's third where residents have the fewest means?",
+      "definition": "The 4 criteria: heat, air pollution and noise, housing, access to care. Residents' means: median income, share of overcrowded homes, share of second homes (INSEE, 2021), measured separately from the score.",
+      "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME, ANS"
+    },
+    "quiz": {
+      "kicker": "Question",
+      "question": "Where is the share of wheelchair-accessible metro stop points highest?",
+      "right": "Correct: Seine-Saint-Denis.",
+      "wrong": "Incorrect: it is Seine-Saint-Denis.",
+      "explanation": "Seine-Saint-Denis: {ssd} of metro stop points marked wheelchair-accessible. Paris: {paris}. In Seine-Saint-Denis, they are the stop points of the recent extensions of lines 11 and 14.",
+      "sources": "Île-de-France Mobilités (timetables of 1 October 2026, Licence Mobilités)"
+    },
+    "f3": {
+      "title": "Access to care also depends on how many people share what is on offer.",
+      "body": "Number of GPs and pharmacies reachable on foot or by public transport, relative to all the residents who can also reach them. In Hauts-de-Seine and Val-de-Marne, neighbourhoods whose residents have the fewest means are more often among the least well served.",
+      "question": "Share of neighbourhoods among the least well-served quarter for care, by residents' means",
+      "lowest": "Third with the fewest means",
+      "highest": "Third with the most means",
+      "density": "At equal population density, the gap reaches {n92} points in Hauts-de-Seine and {n94} points in Val-de-Marne (test set before any calculation, October 2026). In Seine-Saint-Denis, almost no neighbourhood is in the third with the most means: no comparison is possible.",
+      "wheelchair": "In a wheelchair, the number of GPs within reach remains lower in the inner suburbs: median of {p} per 10,000 residents in Paris, {d92} in Hauts-de-Seine, {d93} in Seine-Saint-Denis, {d94} in Val-de-Marne.",
+      "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités, OpenStreetMap"
+    },
+    "f4": {
+      "title": "Public data that is uneven from one area to another.",
+      "body": "Pavements are recorded by OpenStreetMap's volunteer contributors. This record is almost complete in Paris and patchy in Seine-Saint-Denis: missing data does not mean there is no pavement. This data was therefore left out of the calculation.",
+      "paris": "of street length in Paris has pavement information",
+      "ssd": "in Seine-Saint-Denis",
+      "sources": "OpenStreetMap contributors (extract of 30 September 2026), Underlaid calculation"
+    },
+    "consult": "Look up a neighbourhood"
   }
 }

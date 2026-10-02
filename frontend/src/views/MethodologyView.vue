@@ -161,7 +161,7 @@ const lastUpdatedLabel = computed(() => {
 
 <template>
   <div class="methodology">
-    <router-link class="back-link" :to="{ name: localizedRouteName('home', locale) }">{{ t('methodology.backLink') }}</router-link>
+    <router-link class="back-link" :to="{ name: localizedRouteName('map', locale) }">{{ t('methodology.backLink') }}</router-link>
 
     <h1>{{ t('methodology.title') }}</h1>
     <p class="intro">{{ t('methodology.intro') }}</p>

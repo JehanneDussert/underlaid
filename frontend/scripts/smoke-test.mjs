@@ -32,8 +32,8 @@ const EXPECTED_RANKING_ROWS = published.features.filter(
 ).length
 
 const MAP_TIMEOUT_MS = 60_000
-// Same 0-4 ramp as HomeView.vue's CUMULATIVE_RAMP (= DATA_RAMP_5).
-const CUMULATIVE_RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#c9034f', '#99003b']
+// Same 0-4 ramp as MapView.vue's CUMULATIVE_RAMP (= DATA_RAMP_5).
+const CUMULATIVE_RAMP = ['#e09ab7', '#d2668f', '#bf336a', '#980f48', '#5f002d']
 
 // Share of map pixels whose colour is close to one of the ramp colours,
 // read back from both canvases (MapLibre keeps its drawing buffer; the
@@ -81,8 +81,34 @@ try {
   page.on('pageerror', (e) => errors.push(`${page.url()}: ${e.message}`))
   page.on('console', (m) => m.type() === 'error' && errors.push(`${page.url()}: ${m.text()}`))
 
-  // Map, both languages
+  // Home page, both languages: four findings with figures from
+  // key_figures.json, the metro question answered in a live region.
   for (const [path, lang] of [['/', 'en'], ['/fr', 'fr']]) {
+    await page.goto(base + path, { waitUntil: 'networkidle' })
+    const findings = await page.locator('.finding').count()
+    const bars = await page.locator('.finding .bars li').count()
+    check(`${path} home: 4 findings, 8 bars, html lang=${lang}`, findings === 4 && bars === 8 && (await page.getAttribute('html', 'lang')) === lang, `${findings} findings, ${bars} bars`)
+    await page.locator('.choices button').nth(1).click()
+    check(`${path} home: question answered`, (await page.locator('.verdict').count()) === 1)
+  }
+
+  // Home address field (combobox, keyboard only) -> map with that neighbourhood
+  await page.goto(base + '/fr', { waitUntil: 'networkidle' })
+  await page.locator('#home-address').fill('1 rue Marie Louise Drancy')
+  const homeOption = await page.locator('#home-address-list [role="option"]').first().waitFor({ timeout: 10_000 }).then(() => true, () => false)
+  if (!homeOption) {
+    record('SKIP', 'home address field', 'address API (BAN) did not answer within 10 s')
+  } else {
+    await page.locator('#home-address').press('ArrowDown')
+    const activeId = await page.locator('#home-address').getAttribute('aria-activedescendant')
+    await page.locator('#home-address').press('Enter')
+    await page.waitForURL(/\/fr\/map\?/)
+    const panel = await page.waitForSelector('.cumul-box .n', { timeout: 30_000 }).then(() => true, () => false)
+    check('home address -> map with the neighbourhood selected', !!activeId && panel)
+  }
+
+  // Map, both languages
+  for (const [path, lang] of [['/map', 'en'], ['/fr/map', 'fr']]) {
     await page.goto(base + path, { waitUntil: 'networkidle' })
     // Wait for the choropleth's data, then check it is actually drawn — a
     // canvas that merely exists passed this test once while the map was
@@ -177,7 +203,7 @@ try {
   // Phone width: no sideways scroll
   const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()
   phone.on('pageerror', (e) => errors.push(`phone ${phone.url()}: ${e.message}`))
-  for (const path of ['/fr', '/fr/ranking', '/fr/methodology', '/fr/methodology/details']) {
+  for (const path of ['/fr', '/fr/map', '/fr/ranking', '/fr/methodology', '/fr/methodology/details']) {
     await phone.goto(base + path, { waitUntil: 'networkidle' })
     const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
     check(`phone ${path}: no horizontal scroll`, overflow <= 0, overflow > 0 ? `${overflow}px` : '')

@@ -16,7 +16,7 @@ const router = useRouter()
 // added here as they are built: a link never leads to a page that doesn't
 // exist yet. Five links at most (CLAUDE.md, "pas plus de 5 boutons").
 const NAV = [
-  { name: 'home', key: 'map' },
+  { name: 'map', key: 'map' },
   { name: 'methodology', key: 'methodology' },
 ]
 

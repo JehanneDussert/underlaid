@@ -1,6 +1,7 @@
 // Generates the 1200x630 social-preview images (public/og-image.png for
 // English, public/og-image-fr.png for French) and the README screenshot
-// (docs/screenshot.png) from the real map, so the
+// (docs/screenshot.png) and the home-page illustration (public/home-map.png)
+// from the real map, so the
 // preview a LinkedIn/Twitter visitor sees is the actual choropleth rather
 // than a mock-up. Re-run after any scoring change that visibly moves the map:
 //
@@ -8,7 +9,7 @@
 //
 // Starts its own Vite dev server, screenshots the live #map element (the
 // browser composites the MapLibre basemap and deck.gl overlay itself, so
-// this sidesteps the canvas read-back race documented in HomeView.vue),
+// this sidesteps the canvas read-back race documented in MapView.vue),
 // then lays that capture out next to the title/legend in a plain HTML
 // card rendered at exactly 1200x630.
 import { mkdirSync, writeFileSync } from 'fs'
@@ -19,13 +20,13 @@ import { chromium } from 'playwright'
 
 const OUT_DIR = fileURLToPath(new URL('../public/', import.meta.url))
 const README_SCREENSHOT = fileURLToPath(new URL('../../docs/screenshot.png', import.meta.url))
-// Same 0-4 ramp as the map's cumulative score (HomeView.vue CUMULATIVE_RAMP).
-const RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#c9034f', '#99003b']
+// Same 0-4 ramp as the map's cumulative score (MapView.vue CUMULATIVE_RAMP).
+const RAMP = ['#e09ab7', '#d2668f', '#bf336a', '#980f48', '#5f002d']
 
 const COPY = {
   en: {
     file: 'og-image.png',
-    path: '/',
+    path: '/map',
     tagline: 'Where environmental exposures overlap',
     body: 'Heat, air/noise pollution, housing, access to care — counted neighborhood by neighborhood across 2,752 IRIS in Paris & its inner suburbs, beside the means to cope.',
     legend: 'Categories in their worst quartile at once',
@@ -33,7 +34,7 @@ const COPY = {
   },
   fr: {
     file: 'og-image-fr.png',
-    path: '/fr',
+    path: '/fr/map',
     tagline: 'Là où les expositions environnementales se superposent',
     body: "Chaleur, pollution de l'air et bruit, logement, accès aux soins — comptés quartier par quartier sur 2 752 IRIS à Paris et en petite couronne, en regard des moyens des habitants.",
     legend: 'Catégories simultanément dans leur pire quartile',
@@ -123,12 +124,20 @@ try {
     console.log(`${locale}: wrote public/${copy.file}`)
   }
 
+  // Home page illustration (first finding): the bare choropleth, no
+  // controls; the legend and the text alternative are in the page itself.
+  // Same image for both languages (the basemap labels are place names).
+  const homePage = await browser.newPage({ viewport: { width: 1200, height: 900 }, deviceScaleFactor: 1.5 })
+  writeFileSync(`${OUT_DIR}home-map.png`, await captureMap(homePage, baseUrl, '/map'))
+  await homePage.close()
+  console.log('wrote public/home-map.png')
+
   // README screenshot: the real page (map panel + side panel), English.
   // Viewport tall enough for the whole block: an element screenshot
   // larger than the viewport resizes the page mid-capture, and the WebGL
   // map doesn't repaint in time (came out as a narrow strip).
   const shot = await browser.newPage({ viewport: { width: 1440, height: 1400 }, deviceScaleFactor: 1 })
-  await shot.goto(`${baseUrl}/`, { waitUntil: 'networkidle' })
+  await shot.goto(`${baseUrl}/map`, { waitUntil: 'networkidle' })
   await shot.waitForSelector('#deckgl-overlay')
   await shot.evaluate(() => {
     document.querySelector('.heatwave-banner')?.remove()

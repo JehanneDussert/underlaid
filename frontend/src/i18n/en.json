@@ -679,7 +679,7 @@
     "scoreUnknown": "Cumulative score not computed: not enough data for this neighbourhood.",
     "scoreLink": "How this score is computed",
     "controlsLabel": "Display settings",
-    "summary": "This neighbourhood is less favourable than the metro-wide median on {n} of {total} criteria.",
+    "summary": "This neighbourhood is less favourable than the metro-wide median on {n} of the {total} criteria assessed.",
     "modeLabel": "Travel mode",
     "modeStandard": "No constraint",
     "modeStepFree": "Step-free (wheelchair, pushchair)",
@@ -699,13 +699,13 @@
       "transport": "Transport"
     },
     "rows": {
-      "thermal": "Sealed ground: {v} of the area, against {m} for the median.",
-      "pollution": "Air-noise co-exposure index: {v}, against {m} for the median (from 11, the lowest, to 33, the highest).",
-      "housing": "{v} of homes rated F or G, against {m} for the median.",
+      "thermal": "Example: sealed ground over {v} of the area, against {m} for the median.",
+      "pollution": "Index combining air pollution and noise (Airparif, Bruitparif): {v}, against {m} for the median. It runs from 11 for the least exposed neighbourhoods to 33 for the most exposed.",
+      "housing": "Example: {v} of homes rated F or G, against {m} for the median.",
       "cool": "Swimming pools, libraries and museums within 400 m: {n}, against {mn} for the median; cool green space: {g} of the area, against {mg}.",
       "care": "GPs reachable on foot or by public transport: {gp} per 10,000 residents, against {mgp} for the median; pharmacies within a 15-minute walk: {ph}, against {mph}.",
       "careStepFree": "GPs reachable step-free: {v} per 10,000 residents, against {m} for the median. Pharmacies are not recomputed for this mode.",
-      "transport": "Share of GP access kept when travelling step-free: {v}, against {m} for the median. Outside the score."
+      "transport": "In a wheelchair or with a pushchair, this neighbourhood keeps {v} of its access to GPs (median: {m}). It is the share of reachable GPs that stay reachable when avoiding stairs and inaccessible transport."
     },
     "moreFavourable": "More favourable than {n}% of neighbourhoods",
     "lessFavourable": "Less favourable than {n}% of neighbourhoods",
@@ -719,6 +719,13 @@
     "note": "Position: rank of the neighbourhood among the {n} inhabited neighbourhoods (50 residents or more); the middle of the scale is the median. For cool places and green spaces, the mean rank of the two indicators. Only access to care and transport change with the travel mode.",
     "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif and Bruitparif, ADEME, Enedis, ANS, FINESS, Île-de-France Mobilités, OpenStreetMap",
     "onMap": "See this neighbourhood on the map",
-    "otherPos": "{name}: {text}"
+    "otherPos": "{name}: {text}",
+    "scope": {
+      "thermal": "The position covers the whole criterion: heat vulnerability, sealed ground, cool green space, cool places.",
+      "housing": "The position covers the whole criterion: homes rated F or G, how strongly electricity use rises with the cold."
+    },
+    "legendLabel": "Marker key",
+    "legendWorse": "{name}, less favourable than the median",
+    "legendBetter": "{name}, more favourable than the median"
   }
 }

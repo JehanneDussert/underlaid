@@ -177,9 +177,9 @@ const rows = computed(() => {
   const posOther = other.value ? positions(other.value.feature.properties) : {}
   const stepFree = mode.value !== 'standard'
   const list = [
-    { key: 'thermal', text: t('addressPage.rows.thermal', { v: frac(p.pct_artificialized), m: frac(m.pct_artificialized) }) },
+    { key: 'thermal', text: t('addressPage.rows.thermal', { v: frac(p.pct_artificialized), m: frac(m.pct_artificialized) }), scope: t('addressPage.scope.thermal') },
     { key: 'pollution', text: t('addressPage.rows.pollution', { v: nf(p.air_noise_coexposure_class, 1), m: nf(m.air_noise_coexposure_class, 1) }) },
-    { key: 'housing', text: t('addressPage.rows.housing', { v: frac(p.pct_dpe_fg), m: frac(m.pct_dpe_fg) }) },
+    { key: 'housing', text: t('addressPage.rows.housing', { v: frac(p.pct_dpe_fg), m: frac(m.pct_dpe_fg) }), scope: t('addressPage.scope.housing') },
     {
       key: 'cool',
       text: t('addressPage.rows.cool', { n: nf(p.cool_spots_within_400m), mn: nf(m.cool_spots_within_400m), g: frac(p.pct_cool_green_area, 1), mg: frac(m.pct_cool_green_area, 1) }),
@@ -214,8 +214,9 @@ function positionText(position) {
   return r >= 50 ? t('addressPage.lessFavourable', { n: r }) : t('addressPage.moreFavourable', { n: 100 - r })
 }
 
-const worseCount = computed(() => rows.value.filter((r) => r.position !== null && r.position > 50).length)
-const ratedCount = computed(() => rows.value.filter((r) => r.position !== null).length)
+// Information-only rows (transport) are not counted in the summary.
+const worseCount = computed(() => rows.value.filter((r) => !r.info && r.position !== null && r.position > 50).length)
+const ratedCount = computed(() => rows.value.filter((r) => !r.info && r.position !== null).length)
 
 const scoreLine = computed(() => {
   if (!main.value) return null
@@ -289,12 +290,14 @@ watch(locale, () => {
             <AddressSearch id="address-other" :label="t('addressPage.compareLabel')" :placeholder="t('address.placeholder')" @select="(a) => locate(a, 'other')" />
             <button type="button" class="pill-btn" @click="closeCompare">{{ t('addressPage.compareClose') }}</button>
           </div>
-          <p v-if="other" class="compare-legend">
-            <span class="key"><span class="dot main"></span>{{ main.feature.properties.nom_iris }}</span>
-            <span class="key"><span class="dot other"></span>{{ other.feature.properties.nom_iris }}, {{ other.feature.properties.nom_com }}</span>
-          </p>
         </template>
       </section>
+
+      <ul class="legend" role="list" :aria-label="t('addressPage.legendLabel')">
+        <li class="key"><span class="dot bad" aria-hidden="true"></span>{{ t('addressPage.legendWorse', { name: main.feature.properties.nom_iris }) }}</li>
+        <li class="key"><span class="dot main" aria-hidden="true"></span>{{ t('addressPage.legendBetter', { name: main.feature.properties.nom_iris }) }}</li>
+        <li v-if="other" class="key"><span class="dot other" aria-hidden="true"></span>{{ other.feature.properties.nom_iris }}, {{ other.feature.properties.nom_com }}</li>
+      </ul>
 
       <div class="scale-head" aria-hidden="true">
         <span>{{ t('addressPage.moreFav') }}</span>
@@ -307,6 +310,7 @@ watch(locale, () => {
           <div class="row-text">
             <h2>{{ r.title }}<span v-if="r.info" class="tag">{{ t('addressPage.infoTag') }}</span></h2>
             <p>{{ r.text }}</p>
+            <p v-if="r.scope" class="scope">{{ r.scope }}</p>
           </div>
           <div class="row-scale">
             <div class="track" aria-hidden="true">
@@ -461,13 +465,20 @@ h1 {
 .compare-row .pill-btn {
   margin-top: 33px;
 }
-.compare-legend {
+.legend {
   display: flex;
-  gap: 16px;
+  gap: 8px 20px;
   flex-wrap: wrap;
   margin: 0;
+  padding: 0;
+  list-style: none;
   font-size: 14px;
   color: var(--text-body);
+}
+.scope {
+  margin-top: 4px !important;
+  font-size: 13px !important;
+  color: var(--text-secondary) !important;
 }
 .key {
   display: flex;
@@ -481,6 +492,9 @@ h1 {
 }
 .dot.main {
   background: var(--dark);
+}
+.dot.bad {
+  background: var(--accent);
 }
 .dot.other {
   border: 2.5px solid var(--focus);

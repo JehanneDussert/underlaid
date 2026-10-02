@@ -20,13 +20,14 @@ abstract: >-
   For 2,752 IRIS neighborhoods across Paris, Hauts-de-Seine,
   Seine-Saint-Denis and Val-de-Marne, counts how many of four categories
   (thermal, air/noise pollution, housing, access to care) are
-  simultaneously in their metro-wide worst quartile, and sets that count
+  simultaneously in their metro-wide worst quartile (a score from 0 to 4,
+  since version 0.2.0; 0 to 3 in version 0.1.0), and sets that count
   beside residents' means to cope (median income, overcrowding, secondary
   residences), measured on a separate axis. Access to care counts GPs and
   pharmacies reachable on foot and by public transport, shared among
   everyone who can reach them (E2SFCA); inclusive mobility (step-free
-  travel) is published for information. Built entirely from French public open
-  data; methodology documented in SCORING.md. Code under MIT; the
+  travel) is published for information. Built entirely from French public
+  open data; methodology documented in SCORING.md. Code under MIT; the
   published data files are under the Open Database License (ODbL) 1.0.
 keywords:
   - environmental justice
@@ -38,5 +39,5 @@ keywords:
   - access to care
   - accessibility
 license: MIT
-version: 0.1.0
-date-released: "2026-10-01"
+version: 0.2.0
+date-released: "2026-10-02"

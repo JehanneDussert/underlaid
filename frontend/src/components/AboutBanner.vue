@@ -72,6 +72,6 @@ section p {
   margin: 0;
 }
 .source a {
-  color: var(--cyan);
+  color: var(--accent);
 }
 </style>

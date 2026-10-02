@@ -323,7 +323,7 @@ const lastUpdatedLabel = computed(() => {
   text-decoration: none;
 }
 .back-link:hover {
-  color: var(--cyan);
+  color: var(--accent);
 }
 
 h1 {
@@ -378,7 +378,7 @@ section p:last-child {
   padding: 14px 16px;
   border: 1px solid var(--panel-b);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface);
 }
 .subscore-card h3 {
   font-size: 13px;
@@ -421,7 +421,6 @@ section p:last-child {
 }
 .source-license {
   color: var(--text-secondary);
-  font-family: var(--mono);
   font-size: 12px;
 }
 #data-licences {
@@ -442,15 +441,11 @@ section p:last-child {
   color: var(--text-secondary);
 }
 .dist-table th {
-  font-family: var(--mono);
   font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
   color: var(--text-muted);
 }
 .dist-table td:first-child {
   color: var(--text-primary);
-  font-family: var(--mono);
   font-weight: 600;
 }
 
@@ -478,7 +473,6 @@ section p:last-child {
   }
   .sidewalk-table th[scope='col'] {
     font-size: 9.5px;
-    letter-spacing: 0.02em;
     hyphens: manual;
   }
 }
@@ -500,7 +494,7 @@ section p:last-child {
   display: inline-block;
   margin-top: 4px;
   font-size: 13px;
-  color: var(--cyan);
+  color: var(--accent);
   text-decoration: none;
 }
 .press-kit-link:hover {

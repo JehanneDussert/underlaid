@@ -207,9 +207,9 @@ function figures(p) {
   color: var(--text-secondary);
 }
 .filter select {
-  background: var(--glass, rgba(255, 255, 255, 0.06));
+  background: var(--surface);
   color: var(--text-primary);
-  border: 1px solid var(--gridline, rgba(255, 255, 255, 0.18));
+  border: 1.5px solid var(--control-border);
   border-radius: 8px;
   padding: 7px 10px;
   font: inherit;
@@ -232,7 +232,7 @@ function figures(p) {
   border-radius: 999px;
   font-size: 11.5px;
   font-weight: 600;
-  background: #99003b;
+  background: var(--accent);
   color: #ffffff;
 }
 .ranking-view {
@@ -254,7 +254,7 @@ function figures(p) {
   text-decoration: none;
 }
 .back-link:hover {
-  color: var(--cyan);
+  color: var(--accent);
 }
 
 h1 {
@@ -286,8 +286,8 @@ h1 {
   color: var(--text-secondary);
   margin: 0 0 28px;
   padding: 14px 16px;
-  border-left: 2px solid var(--cyan);
-  background: rgba(255, 255, 255, 0.02);
+  border-left: 2px solid var(--accent);
+  background: var(--surface);
 }
 
 .loading {
@@ -344,7 +344,6 @@ h1 {
 .commune {
   font-size: 12px;
   color: var(--text-muted);
-  font-family: var(--mono);
 }
 
 .gap-sentence {
@@ -378,13 +377,11 @@ h1 {
   color: var(--text-secondary);
 }
 .figures .fig-value {
-  font-family: var(--mono);
   color: var(--text-primary);
   font-weight: 500;
 }
 .figures .fig-median {
   display: block;
-  font-family: var(--mono);
   font-size: 10.5px;
   color: var(--text-muted);
 }

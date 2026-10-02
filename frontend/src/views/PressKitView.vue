@@ -129,17 +129,16 @@ function print() {
   text-decoration: none;
 }
 .back-link:hover {
-  color: var(--cyan);
+  color: var(--accent);
 }
 
 .print-btn {
-  font-family: var(--mono);
   font-size: 12px;
   padding: 8px 16px;
   border-radius: 999px;
   border: 1px solid var(--panel-b);
-  background: linear-gradient(90deg, var(--cyan), var(--magenta));
-  color: #080a0f;
+  background: var(--dark);
+  color: #ffffff;
   font-weight: 600;
   cursor: pointer;
 }
@@ -172,9 +171,7 @@ section {
 h2 {
   font-size: 13px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--cyan);
+  color: var(--accent);
   margin: 0 0 6px;
 }
 
@@ -199,7 +196,6 @@ section ul li {
 table {
   border-collapse: collapse;
   font-size: 12px;
-  font-family: var(--mono);
 }
 table td {
   padding: 3px 12px 3px 0;

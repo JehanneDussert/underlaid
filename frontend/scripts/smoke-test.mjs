@@ -92,6 +92,24 @@ try {
     check(`${path} home: question answered`, (await page.locator('.verdict').count()) === 1)
   }
 
+  // Quiz, keyboard only: answer each question (Tab to an option, Enter),
+  // the verdict appears in the live region, "next" moves focus to the
+  // next question's heading; the last screen gives the result.
+  await page.goto(base + '/fr/quiz', { waitUntil: 'networkidle' })
+  let quizOk = true
+  for (let i = 0; i < 4; i++) {
+    await page.locator('.option').first().focus()
+    await page.keyboard.press('Enter')
+    const verdict = await page.locator('[aria-live="polite"] .verdict').count()
+    await page.locator('button.next').focus()
+    await page.keyboard.press('Enter')
+    await page.waitForTimeout(100)
+    const focused = await page.evaluate(() => document.activeElement?.tagName)
+    if (verdict !== 1 || focused !== 'H1') quizOk = false
+  }
+  const result = await page.locator('h1').innerText()
+  check('quiz by keyboard: 4 verdicts, focus on each heading, result', quizOk && /sur 4/.test(result), result)
+
   // Home address field (combobox, keyboard only) -> map with that neighbourhood
   await page.goto(base + '/fr', { waitUntil: 'networkidle' })
   await page.locator('#home-address').fill('1 rue Marie Louise Drancy')
@@ -187,7 +205,7 @@ try {
   check('FR -> EN', new URL(page.url()).pathname === '/')
 
   // Every route by direct access
-  for (const path of ['/address', '/fr/address', '/methodology', '/fr/methodology', '/methodology/details', '/fr/methodology/details', '/ranking', '/fr/ranking', '/press', '/fr/press']) {
+  for (const path of ['/quiz', '/fr/quiz', '/address', '/fr/address', '/methodology', '/fr/methodology', '/methodology/details', '/fr/methodology/details', '/ranking', '/fr/ranking', '/press', '/fr/press']) {
     const response = await page.goto(base + path, { waitUntil: 'networkidle' })
     check(`direct ${path}`, response.status() === 200 && (await page.locator('h1').count()) === 1)
     if (path.endsWith('ranking')) {
@@ -223,7 +241,7 @@ try {
   // Phone width: no sideways scroll
   const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()
   phone.on('pageerror', (e) => errors.push(`phone ${phone.url()}: ${e.message}`))
-  for (const path of ['/fr', '/fr/address?lon=2.4431&lat=48.9248&label=Drancy', '/fr/map', '/fr/ranking', '/fr/methodology', '/fr/methodology/details']) {
+  for (const path of ['/fr', '/fr/quiz', '/fr/address?lon=2.4431&lat=48.9248&label=Drancy', '/fr/map', '/fr/ranking', '/fr/methodology', '/fr/methodology/details']) {
     await phone.goto(base + path, { waitUntil: 'networkidle' })
     const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
     check(`phone ${path}: no horizontal scroll`, overflow <= 0, overflow > 0 ? `${overflow}px` : '')

@@ -11,11 +11,14 @@ const props = defineProps({
   // Anchor on the method page (e.g. "calcul"); no link when already there.
   anchor: { type: String, default: '' },
   dark: { type: Boolean, default: false },
+  // False when the source text carries its own date (audits, datasets
+  // with their own edition date) rather than the score's data date.
+  showDate: { type: Boolean, default: true },
 })
 
 const { t, locale } = useI18n()
 const dataDate = inject('dataDate')
-const dateLabel = computed(() => (dataDate?.value ? t('figure.dataAt', { date: dataDate.value }) : ''))
+const dateLabel = computed(() => (props.showDate && dataDate?.value ? t('figure.dataAt', { date: dataDate.value }) : ''))
 </script>
 
 <template>

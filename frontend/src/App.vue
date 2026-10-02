@@ -17,6 +17,7 @@ const router = useRouter()
 // exist yet. Five links at most (CLAUDE.md, "pas plus de 5 boutons").
 const NAV = [
   { name: 'address', key: 'address' },
+  { name: 'quiz', key: 'quiz' },
   { name: 'map', key: 'map' },
   { name: 'methodology', key: 'methodology' },
 ]

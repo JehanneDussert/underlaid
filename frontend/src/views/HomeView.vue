@@ -195,7 +195,7 @@ function goToAddress({ label, lon, lat }) {
               <span>{{ t('home.f4.ssd') }}</span>
             </div>
           </div>
-          <FigureSource :sources="t('home.f4.sources')" anchor="corrections" />
+          <FigureSource :sources="t('home.f4.sources')" anchor="corrections" :show-date="false" />
         </div>
       </div>
     </section>

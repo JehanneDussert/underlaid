@@ -238,6 +238,12 @@ try {
     }
   }
 
+  // Links from before the redesign: /methodology#data-licences now lives
+  // on the detailed page.
+  await page.goto(base + '/fr/methodology#data-licences', { waitUntil: 'networkidle' })
+  await page.waitForTimeout(300)
+  check('old methodology anchor redirected to the detailed page', new URL(page.url()).pathname === '/fr/methodology/details' && (await page.locator('#data-licences').count()) === 1, page.url())
+
   // Phone width: no sideways scroll
   const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()
   phone.on('pageerror', (e) => errors.push(`phone ${phone.url()}: ${e.message}`))

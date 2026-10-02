@@ -12,7 +12,9 @@ data; every formula documented.
 
 ![Underlaid map: cumulative environmental exposure score across Paris and the inner suburbs](docs/screenshot.png)
 
-**[Open the map](https://underlaid.vercel.app)** ·
+**[Open the site](https://underlaid.vercel.app)** ·
+[Map](https://underlaid.vercel.app/map) ·
+[Look up an address](https://underlaid.vercel.app/address) ·
 [Methodology](https://underlaid.vercel.app/methodology) ·
 [Ranking](https://underlaid.vercel.app/ranking) ·
 [Press kit](https://underlaid.vercel.app/press) ·

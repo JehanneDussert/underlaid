@@ -4,12 +4,24 @@
 // /methodology/details (MethodologyView.vue) and in SCORING.md.
 import { computed, onMounted, onServerPrefetch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import FigureSource from '../components/FigureSource.vue'
 import { useSeoMeta } from '../composables/useSeoMeta'
 import { localizedRouteName } from '../router'
 import { loadStaticJson } from '../utils/loadStaticJson'
 
 const { t, tm, rt, locale } = useI18n()
+const route = useRoute()
+const router = useRouter()
+
+// Links published before the redesign point to anchors of the former
+// methodology page, now at /methodology/details: send them there.
+const DETAILS_ANCHORS = ['#access', '#access-rebuilt', '#access-without-car', '#data-licences', '#inclusive-mobility', '#means', '#osm-sidewalks']
+onMounted(() => {
+  if (DETAILS_ANCHORS.includes(route.hash)) {
+    router.replace({ name: localizedRouteName('methodology-details', locale.value), hash: route.hash })
+  }
+})
 
 useSeoMeta({
   title: { en: 'Sources and method', fr: 'Sources et méthode' },

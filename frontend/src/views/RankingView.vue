@@ -8,7 +8,11 @@ import { loadStaticJson } from '../utils/loadStaticJson'
 const { t, locale } = useI18n()
 const DATA_URL = '/data/vulnerability_score_iris.geojson'
 const CAPACITY_URL = '/data/adaptive_capacity_iris.json'
-const TOP_SCORE = 3
+// v0.2: score on 4 (heat, air/noise, housing, access to care). Listed:
+// every inhabited IRIS at 3 or 4 out of 4; those at 4/4 come first and are
+// flagged as such.
+const MAX_SCORE = 4
+const MIN_LISTED_SCORE = 3
 // Same floor as cool_facility_deficit's per-resident rate (scripts/11,
 // MIN_POPULATION_FOR_RATE): below 50 residents an IRIS is a park, a
 // station or a business block, not a neighborhood people live in. Such
@@ -21,21 +25,20 @@ const MIN_POPULATION_FOR_LIST = 50
 // sync with the pipeline the way a hand-typed number would.
 useSeoMeta({
   title: {
-    en: `Where the Most Stacks Up — ${__RANKING_COUNT__} Neighborhoods at 3 out of 3`,
-    fr: `Là où le cumul est le plus fort — ${__RANKING_COUNT__} quartiers à 3 sur 3`,
+    en: `Where Exposures Stack Up — ${__RANKING_COUNT__} Neighborhoods at 3 or 4 out of 4`,
+    fr: `Les quartiers où les expositions se cumulent — ${__RANKING_COUNT__} quartiers à 3 ou 4 sur 4`,
   },
   description: {
-    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where heat, air and noise pollution, and energy-inefficient housing are all in their worst quartile at once — grouped by residents' means to cope.`,
-    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où la chaleur, la pollution de l'air et le bruit, et le logement énergivore sont tous dans leur pire quartile à la fois — regroupés selon les moyens des habitants.`,
+    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where at least 3 of 4 categories — heat, air and noise pollution, energy-inefficient housing, access to care — are in their worst quartile at once, grouped by residents' means to cope.`,
+    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où au moins 3 des 4 catégories — chaleur, pollution de l'air et bruit, logement énergivore, accès aux soins — sont dans leur pire quartile à la fois, regroupés selon les moyens des habitants.`,
   },
 })
 
 // Grouped by the separate means-to-cope axis (Phase 8), never by an
-// implied cause: every IRIS here has the same score, and the groups only
-// show that the same score doesn't mean the same situation. Each row
-// shows the figures behind the three categories against the metro-wide
-// median — facts rather than generated prose, so a row can't contradict
-// itself.
+// implied cause: the groups only show that the same score doesn't mean the
+// same situation. Each row shows one figure per category against the
+// metro-wide median — facts rather than generated prose, so a row can't
+// contradict itself.
 const GROUPS = [
   { key: 'low', capacityClass: 0 },
   { key: 'mid', capacityClass: 1 },
@@ -69,18 +72,31 @@ const medians = computed(() => ({
   air_noise_coexposure_class: median('air_noise_coexposure_class'),
   pct_dpe_fg: median('pct_dpe_fg'),
   median_income: median('median_income'),
+  gp_std: median('gp_std'),
 }))
+
+// Department filter (native <select>: keyboard- and screen-reader-ready;
+// the visible count is announced through an aria-live region).
+const DEPARTMENTS = ['75', '92', '93', '94']
+const department = ref('all')
+const filterAnnouncement = computed(() =>
+  t('ranking.filterCount', { n: listed.value.length })
+)
 
 const listed = computed(() =>
   allRows.value
-    .filter((p) => p.cumulative_vulnerability_score === TOP_SCORE && (p.population ?? 0) >= MIN_POPULATION_FOR_LIST)
-    .sort((a, b) => a.insee_com - b.insee_com || a.nom_iris.localeCompare(b.nom_iris))
+    .filter((p) => (p.cumulative_vulnerability_score ?? 0) >= MIN_LISTED_SCORE && (p.population ?? 0) >= MIN_POPULATION_FOR_LIST)
+    .filter((p) => department.value === 'all' || String(p.code_iris).slice(0, 2) === department.value)
+    .sort((a, b) => String(a.insee_com).localeCompare(String(b.insee_com)) || a.nom_iris.localeCompare(b.nom_iris))
 )
+
+const atMax = computed(() => listed.value.filter((p) => p.cumulative_vulnerability_score === MAX_SCORE))
+const atThree = computed(() => listed.value.filter((p) => p.cumulative_vulnerability_score < MAX_SCORE))
 
 const groups = computed(() =>
   GROUPS.map((g) => ({
     ...g,
-    rows: listed.value.filter((p) => {
+    rows: atThree.value.filter((p) => {
       const capacityClass = capacityByIris.value[p.code_iris]?.capacity_class
       return g.capacityClass === null ? capacityClass === null || capacityClass === undefined : capacityClass === g.capacityClass
     }),
@@ -107,6 +123,7 @@ function figures(p) {
     { key: 'artif', value: pct(p.pct_artificialized), median: pct(medians.value.pct_artificialized) },
     { key: 'airNoise', value: num(p.air_noise_coexposure_class), median: num(medians.value.air_noise_coexposure_class) },
     { key: 'dpe', value: pct(p.pct_dpe_fg), median: pct(medians.value.pct_dpe_fg) },
+    { key: 'gp', value: num(p.gp_std), median: num(medians.value.gp_std) },
     { key: 'income', value: eur(p.median_income), median: eur(medians.value.median_income) },
   ]
 }
@@ -124,8 +141,38 @@ function figures(p) {
 
     <p v-if="loading" class="loading">{{ t('scatter.loading') }}</p>
     <template v-else>
+      <div class="filter">
+        <label for="dep-filter">{{ t('ranking.filterLabel') }}</label>
+        <select id="dep-filter" v-model="department" aria-describedby="filter-count">
+          <option value="all">{{ t('ranking.filterAll') }}</option>
+          <option v-for="d in DEPARTMENTS" :key="d" :value="d">{{ t(`methodology.dep${d}`) }}</option>
+        </select>
+        <span id="filter-count" class="filter-count" aria-live="polite">{{ filterAnnouncement }}</span>
+      </div>
+
+      <section v-if="atMax.length" class="ranking-group top-group">
+        <h2 class="group-title">{{ t('ranking.group_max_title', { n: atMax.length }) }}</h2>
+        <p class="group-desc">{{ t('ranking.group_max_desc') }}</p>
+        <ol class="ranking-list">
+          <li v-for="p in atMax" :key="p.code_iris" class="ranking-row glass">
+            <div class="row-head">
+              <span class="name">{{ p.nom_iris }}</span>
+              <span class="commune">{{ p.nom_com }}</span>
+              <span class="badge">{{ t('ranking.maxBadge') }}</span>
+            </div>
+            <ul class="figures">
+              <li v-for="f in figures(p)" :key="f.key">
+                {{ t(`ranking.fig_${f.key}`) }} <span class="fig-value">{{ f.value }}</span>
+                <span class="fig-median">{{ t('ranking.metroMedian', { value: f.median }) }}</span>
+              </li>
+            </ul>
+          </li>
+        </ol>
+      </section>
+
+      <h2 v-if="atThree.length" class="three-title">{{ t('ranking.threeTitle', { n: atThree.length }) }}</h2>
       <section v-for="g in groups" :key="g.key" class="ranking-group">
-        <h2 class="group-title">{{ t(`ranking.group_${g.key}_title`, { n: g.rows.length }) }}</h2>
+        <h3 class="group-title">{{ t(`ranking.group_${g.key}_title`, { n: g.rows.length }) }}</h3>
         <p class="group-desc">{{ t(`ranking.group_${g.key}_desc`) }}</p>
         <ol class="ranking-list">
           <li v-for="p in g.rows" :key="p.code_iris" class="ranking-row glass">
@@ -142,13 +189,52 @@ function figures(p) {
           </li>
         </ol>
       </section>
+      <p v-if="!listed.length" class="group-desc">{{ t('ranking.filterEmpty') }}</p>
     </template>
 
-    <p v-if="!loading" class="footnote">{{ t('ranking.footnote', { n: listed.length }) }}</p>
+    <p v-if="!loading" class="footnote">{{ t('ranking.footnote') }}</p>
   </div>
 </template>
 
 <style scoped>
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 8px 0 24px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.filter select {
+  background: var(--glass, rgba(255, 255, 255, 0.06));
+  color: var(--text-primary);
+  border: 1px solid var(--gridline, rgba(255, 255, 255, 0.18));
+  border-radius: 8px;
+  padding: 7px 10px;
+  font: inherit;
+}
+.filter select option {
+  color: #14161a;
+}
+.filter-count {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.three-title {
+  font-size: 20px;
+  margin: 32px 0 6px;
+}
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: #99003b;
+  color: #ffffff;
+}
 .ranking-view {
   max-width: 760px;
   margin: 0 auto;

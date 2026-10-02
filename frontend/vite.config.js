@@ -20,10 +20,10 @@ function countRankingNeighborhoods() {
   try {
     const path = fileURLToPath(new URL('./public/data/vulnerability_score_iris.geojson', import.meta.url))
     const geojson = JSON.parse(readFileSync(path, 'utf-8'))
-    // Same rule as RankingView.vue: top score (3/3), IRIS with at least 50
-    // residents (smaller ones stay on the map but not on the public list).
+    // Same rule as RankingView.vue: score 3 or 4 out of 4, IRIS with at least
+    // 50 residents (smaller ones stay on the map but not on the public list).
     return geojson.features.filter(
-      (f) => f.properties.cumulative_vulnerability_score === 3 && (f.properties.population ?? 0) >= 50
+      (f) => (f.properties.cumulative_vulnerability_score ?? 0) >= 3 && (f.properties.population ?? 0) >= 50
     ).length
   } catch {
     return 0

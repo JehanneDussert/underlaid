@@ -109,13 +109,13 @@ const QPV_COLOR = [255, 176, 32]
 const DATA_RAMP_5 = ['#efc8d7', '#e977a3', '#f11e6f', '#c9034f', '#99003b']
 // Sub-score quartiles Q1-Q4.
 const DATA_RAMP_4 = DATA_RAMP_5.slice(1)
-// Cumulative score 0-3 (access left the count at the v0 launch). Picked
-// among 4-step subsets of the same validated ramp with validate_palette.js
-// (--ordinal --mode dark --surface #080A0F): passes every ordinal check,
-// worst adjacent pair ΔE 9.0 (deutan) / 13.0 (normal) — the best of the
-// subsets tested — and keeps #99003b as the "worst" end.
-const CUMULATIVE_RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#99003b']
-const MAX_SCORE = 3
+// Cumulative score 0-4 (v0.2: heat, air/noise, housing, access to care):
+// the full 5-step ramp, re-validated on 2026-10-02 with validate_palette.js
+// (--ordinal --mode dark --surface #080A0F): lightness monotone, every
+// adjacent ΔL >= 0.06, light end 2.28:1 vs surface, hue spread 10° — all
+// checks pass. #99003b stays the "worst" end.
+const CUMULATIVE_RAMP = DATA_RAMP_5
+const MAX_SCORE = 4
 const NO_DATA_COLOR = '#3a3f4a'
 
 // Phase 8 — "Exposure × means" bivariate grid, indexed [capacity_class][exposure_class]
@@ -142,14 +142,14 @@ function hexToRgb(hex) {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
 }
 
-const cumulativeLegend = computed(() => ['0', '1', '2', t('legend.worst', { n: MAX_SCORE })])
+const cumulativeLegend = computed(() => ['0', '1', '2', '3', t('legend.worst', { n: MAX_SCORE })])
 const quartileLegend = computed(() => [t('legend.qBest'), t('legend.q', { n: 2 }), t('legend.q', { n: 3 }), t('legend.qWorst')])
 
 const METRICS = computed(() => ({
   cumulative: {
     label: t('metrics.cumulative'),
     field: 'cumulative_vulnerability_score',
-    steps: [0, 1, 2, 3],
+    steps: [0, 1, 2, 3, 4],
     ramp: CUMULATIVE_RAMP,
     legendLabels: cumulativeLegend.value,
   },
@@ -170,6 +170,13 @@ const METRICS = computed(() => ({
   housing: {
     label: t('metrics.housing'),
     field: 'subscore_housing_quartile',
+    steps: [1, 2, 3, 4],
+    ramp: DATA_RAMP_4,
+    legendLabels: quartileLegend.value,
+  },
+  accessCare: {
+    label: t('metrics.accessCare'),
+    field: 'subscore_access_care_quartile',
     steps: [1, 2, 3, 4],
     ramp: DATA_RAMP_4,
     legendLabels: quartileLegend.value,
@@ -596,6 +603,10 @@ const medians = computed(() => ({
   pct_thermosensitive: median('pct_thermosensitive'),
   pct_pmr_accessible: median('pct_pmr_accessible'),
   pct_secondary_residences: median('pct_secondary_residences'),
+  gp_std: median('gp_std'),
+  pharmacy_std: median('pharmacy_std'),
+  gp_acc_no: median('gp_acc_no'),
+  gp_gap_no: median('gp_gap_no'),
 }))
 
 // Text alternative to the map for screen-reader users, worst-first.
@@ -790,7 +801,7 @@ async function buildShareCard(feature, percentile) {
 
   ctx.font = '500 30px "Space Grotesk", sans-serif'
   ctx.fillStyle = '#8b96a6'
-  let y = drawCenteredLines(ctx, t('panel.subscoresWorstQuartile'), SHARE_CARD_WIDTH / 2, 1050, SHARE_CARD_WIDTH - 200, 40)
+  let y = drawCenteredLines(ctx, t('panel.subscoresWorstQuartile'), SHARE_CARD_WIDTH / 2, 1095, SHARE_CARD_WIDTH - 200, 40)
 
   if (percentile !== null) {
     ctx.font = '600 34px "Space Grotesk", sans-serif'
@@ -803,11 +814,12 @@ async function buildShareCard(feature, percentile) {
     { label: t('metrics.thermal'), quartile: p.subscore_thermal_quartile },
     { label: t('metrics.pollution'), quartile: p.subscore_pollution_quartile },
     { label: t('metrics.housing'), quartile: p.subscore_housing_quartile },
+    { label: t('metrics.accessCare'), quartile: p.subscore_access_care_quartile },
   ]
   const chipY = y + 60
-  const chipW = 260
+  const chipW = 228
   const chipH = 130
-  const gap = 28
+  const gap = 22
   const totalW = chipW * chipRows.length + gap * (chipRows.length - 1)
   let chipX = (SHARE_CARD_WIDTH - totalW) / 2
   for (const chip of chipRows) {
@@ -927,6 +939,7 @@ const subScoreRows = computed(() => {
     { key: 'thermal', label: t('metrics.thermal'), quartile: p.subscore_thermal_quartile, status: p.subscore_thermal_status },
     { key: 'pollution', label: t('metrics.pollution'), quartile: p.subscore_pollution_quartile, status: p.subscore_pollution_status },
     { key: 'housing', label: t('metrics.housing'), quartile: p.subscore_housing_quartile, status: p.subscore_housing_status },
+    { key: 'accessCare', label: t('metrics.accessCare'), quartile: p.subscore_access_care_quartile, status: p.subscore_access_care_status },
   ]
 })
 
@@ -1090,7 +1103,7 @@ function quartileColor(quartile) {
           <p v-if="(selectedFeature.properties.population ?? 0) < 50" class="sparse-note">{{ t('panel.sparselyPopulated') }}</p>
 
           <div class="stat-row" v-for="row in subScoreRows" :key="row.key">
-            <span>{{ row.label }} <InfoTip v-if="row.key === 'thermal'" :text="t('jargon.quartile')" /></span>
+            <span>{{ row.label }} <InfoTip v-if="row.key === 'thermal'" :text="t('jargon.quartile')" /><InfoTip v-if="row.key === 'accessCare'" :text="t('jargon.accessCare')" /></span>
             <span class="v" :style="{ color: quartileColor(row.quartile) }">{{ subScoreLabel(row) }}</span>
           </div>
 
@@ -1130,6 +1143,17 @@ function quartileColor(quartile) {
               <small class="cmp">{{ cityMedianNote('pct_thermosensitive', (v) => `${formatDecimal(v * 100, 0)}%`) }}</small></span>
           </div>
 
+          <div class="stat-row">
+            <span>{{ t('panel.gpAccess') }}</span>
+            <span class="v">{{ formatNumber(selectedFeature.properties.gp_std) }}
+              <small class="cmp">{{ cityMedianNote('gp_std', (v) => formatDecimal(v, 1)) }}</small></span>
+          </div>
+          <div class="stat-row">
+            <span>{{ t('panel.pharmacyAccess') }}</span>
+            <span class="v">{{ formatNumber(selectedFeature.properties.pharmacy_std) }}
+              <small class="cmp">{{ cityMedianNote('pharmacy_std', (v) => formatDecimal(v, 1)) }}</small></span>
+          </div>
+
           <div class="cumul-box">
             <div class="n">{{ selectedFeature.properties.cumulative_vulnerability_score ?? '—' }}/{{ MAX_SCORE }}</div>
             <div class="d">
@@ -1140,6 +1164,22 @@ function quartileColor(quartile) {
               {{ t('panel.morevulnerable', { n: selectedPercentile }) }}
             </div>
           </div>
+
+          <section class="access-context" :aria-label="t('panel.mobilityTitle')">
+            <div class="capacity-title">{{ t('panel.mobilityTitle') }} <InfoTip :text="t('jargon.mobility')" /></div>
+            <div class="stat-row">
+              <span>{{ t('panel.gpAccessible') }}</span>
+              <span class="v">{{ formatNumber(selectedFeature.properties.gp_acc_no) }}
+                <small class="cmp">{{ cityMedianNote('gp_acc_no', (v) => formatDecimal(v, 1)) }}</small></span>
+            </div>
+            <div class="stat-row">
+              <span>{{ t('panel.gapKept') }}</span>
+              <span class="v">{{ formatPercent(selectedFeature.properties.gp_gap_no) }}
+                <small class="cmp">{{ cityMedianNote('gp_gap_no', (v) => `${formatDecimal(Math.min(v, 1) * 100, 0)}%`) }}</small></span>
+            </div>
+            <p class="capacity-note">{{ t('panel.mobilityNote1') }}</p>
+            <p class="capacity-note">{{ t('panel.mobilityNote2') }}</p>
+          </section>
 
           <section class="access-context" :aria-label="t('panel.accessContextTitle')">
             <div class="capacity-title">{{ t('panel.accessContextTitle') }}</div>

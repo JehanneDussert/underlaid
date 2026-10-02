@@ -48,7 +48,12 @@ const DATA_SOURCES = [
   { name: { en: 'ANCT — priority neighborhoods (QPV)', fr: 'ANCT — quartiers prioritaires (QPV)' }, license: 'lo' },
   { name: { en: 'Ministry of the Interior — RNA', fr: "Ministère de l'Intérieur — RNA" }, license: 'lo' },
   { name: { en: 'Ville de Paris — street trees, public lighting', fr: 'Ville de Paris — arbres, éclairage public' }, license: 'odbl' },
-  { name: { en: '© OpenStreetMap contributors — footways', fr: "© les contributeurs d'OpenStreetMap — cheminements piétons" }, license: 'odbl' },
+  { name: { en: '© OpenStreetMap contributors — footways, street network', fr: "© les contributeurs d'OpenStreetMap — cheminements piétons, réseau de rues" }, license: 'odbl' },
+  { name: { en: 'ANS — RPPS directory of health professionals', fr: 'ANS — répertoire RPPS des professionnels de santé' }, license: 'lo' },
+  { name: { en: 'Ministry of Health — FINESS (pharmacies)', fr: 'Ministère de la Santé — FINESS (pharmacies)' }, license: 'lo' },
+  { name: { en: 'DREES — APL age weights and decay', fr: 'DREES — pondérations par âge et décroissance de l\'APL' }, license: 'lo' },
+  { name: { en: 'Île-de-France Mobilités — public transport timetables (GTFS)', fr: 'Île-de-France Mobilités — horaires des transports en commun (GTFS)' }, license: 'mobilites' },
+  { name: { en: 'IGN — BD TOPO (staircases)', fr: 'IGN — BD TOPO (escaliers)' }, license: 'lo' },
   { name: { en: '© CARTO, © OpenStreetMap contributors — basemap', fr: "© CARTO, © les contributeurs d'OpenStreetMap — fond de carte" }, license: 'carto' },
   { name: { en: 'IGN, DINUM — API Adresse (BAN)', fr: 'IGN, DINUM — API Adresse (BAN)' }, license: 'lo' },
 ]
@@ -57,16 +62,18 @@ const DATA_SOURCES = [
 // output) — not user data, so no fetch: this page describes the method,
 // it doesn't recompute or re-derive anything from the live GeoJSON.
 const DISTRIBUTION = [
-  { score: 0, count: 1122, share: 1122 / 2752 },
-  { score: 1, count: 1216, share: 1216 / 2752 },
-  { score: 2, count: 382, share: 382 / 2752 },
-  { score: 3, count: 32, share: 32 / 2752 },
+  { score: 0, count: 774, share: 774 / 2752 },
+  { score: 1, count: 1286, share: 1286 / 2752 },
+  { score: 2, count: 610, share: 610 / 2752 },
+  { score: 3, count: 78, share: 78 / 2752 },
+  { score: 4, count: 4, share: 4 / 2752 },
 ]
 
 const SUBSCORES = [
   { key: 'thermal' },
   { key: 'pollution' },
   { key: 'housing' },
+  { key: 'accessCare' },
 ]
 
 const LIMIT_KEYS = [
@@ -219,6 +226,13 @@ const lastUpdatedLabel = computed(() => {
       <h3 id="access-without-car">{{ t('methodology.carFreeTitle') }}</h3>
       <p>{{ t('methodology.carFreeBody1') }}</p>
       <p>{{ t('methodology.carFreeBody2') }}</p>
+      <h3 id="access-rebuilt">{{ t('methodology.accessBackTitle') }}</h3>
+      <p>{{ t('methodology.accessBack1') }}</p>
+      <p>{{ t('methodology.accessBack2') }}</p>
+      <p>{{ t('methodology.accessBack3') }}</p>
+      <h3 id="inclusive-mobility">{{ t('methodology.mobilityTitle') }}</h3>
+      <p>{{ t('methodology.mobilityBody1') }}</p>
+      <p>{{ t('methodology.mobilityBody2') }}</p>
     </section>
 
     <section class="glass">
@@ -263,7 +277,7 @@ const lastUpdatedLabel = computed(() => {
         </thead>
         <tbody>
           <tr v-for="row in distributionRows" :key="row.score">
-            <td>{{ row.score }} / 3</td>
+            <td>{{ row.score }} / 4</td>
             <td>{{ row.countLabel }}</td>
             <td>{{ row.shareLabel }}</td>
           </tr>

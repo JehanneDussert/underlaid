@@ -9,9 +9,9 @@ const DATA_URL = '/data/vulnerability_score_iris.geojson'
 // Same validated (colorblind-safe, single-hue) magenta ramp as the map's
 // choropleth — see App.vue's DATA_RAMP_5 comment for how/why it was
 // picked over the maquette's raw cyan->amber->magenta gradient.
-// Same 0-3 ramp as the map's cumulative score (HomeView.vue CUMULATIVE_RAMP).
-const RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#99003b']
-const MAX_SCORE = 3
+// Same 0-4 ramp as the map's cumulative score (HomeView.vue CUMULATIVE_RAMP).
+const RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#c9034f', '#99003b']
+const MAX_SCORE = 4
 
 const WIDTH = 720
 const HEIGHT = 440
@@ -74,7 +74,7 @@ const xTicks = computed(() => {
   return Array.from({ length: 6 }, (_, i) => Math.round(min + step * i))
 })
 
-const yTicks = [0, 1, 2, 3]
+const yTicks = [0, 1, 2, 3, 4]
 
 // Direct-label the IRIS at the highest cumulative score actually present
 // in the data (not hardcoded — the top score has moved before, and

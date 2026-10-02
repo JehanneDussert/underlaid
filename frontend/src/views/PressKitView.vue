@@ -19,13 +19,14 @@ useSeoMeta({
 
 // Same static facts as MethodologyView.vue — see SCORING.md.
 const DISTRIBUTION = [
-  { score: 0, count: 1122, share: 1122 / 2752 },
-  { score: 1, count: 1216, share: 1216 / 2752 },
-  { score: 2, count: 382, share: 382 / 2752 },
-  { score: 3, count: 32, share: 32 / 2752 },
+  { score: 0, count: 774, share: 774 / 2752 },
+  { score: 1, count: 1286, share: 1286 / 2752 },
+  { score: 2, count: 610, share: 610 / 2752 },
+  { score: 3, count: 78, share: 78 / 2752 },
+  { score: 4, count: 4, share: 4 / 2752 },
 ]
 
-const CATEGORY_LINES = ['thermalLine', 'pollutionLine', 'housingLine']
+const CATEGORY_LINES = ['thermalLine', 'pollutionLine', 'housingLine', 'accessCareLine']
 const CAVEATS = ['caveat1', 'caveat2', 'caveat3', 'caveat4']
 
 function numberLocale() {
@@ -90,7 +91,7 @@ function print() {
         <table>
           <tbody>
             <tr v-for="row in distributionRows" :key="row.score">
-              <td>{{ row.score }} / 3</td>
+              <td>{{ row.score }} / 4</td>
               <td>{{ row.count }}</td>
               <td>{{ row.shareLabel }}</td>
             </tr>
@@ -101,6 +102,7 @@ function print() {
       <footer>
         <p>{{ t('press.sourceLine') }}</p>
         <p>{{ t('press.dataSources') }}</p>
+        <p>{{ t('press.idfmNotice') }}</p>
       </footer>
     </div>
   </div>

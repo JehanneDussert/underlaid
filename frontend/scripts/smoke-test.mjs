@@ -25,15 +25,15 @@ const EXPORT_TIMEOUT_MS = 30_000
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 
 // Expected /ranking length, derived from the published data with the same
-// rule as RankingView.vue (top score, >= 50 residents) — never hardcoded.
+// rule as RankingView.vue (score 3 or 4 out of 4, >= 50 residents) — never hardcoded.
 const published = JSON.parse(readFileSync(`${ROOT}/public/data/vulnerability_score_iris.geojson`, 'utf-8'))
 const EXPECTED_RANKING_ROWS = published.features.filter(
-  (f) => f.properties.cumulative_vulnerability_score === 3 && (f.properties.population ?? 0) >= 50
+  (f) => (f.properties.cumulative_vulnerability_score ?? 0) >= 3 && (f.properties.population ?? 0) >= 50
 ).length
 
 const MAP_TIMEOUT_MS = 60_000
-// Same 0-3 ramp as HomeView.vue's CUMULATIVE_RAMP.
-const CUMULATIVE_RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#99003b']
+// Same 0-4 ramp as HomeView.vue's CUMULATIVE_RAMP (= DATA_RAMP_5).
+const CUMULATIVE_RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#c9034f', '#99003b']
 
 // Share of map pixels whose colour is close to one of the ramp colours,
 // read back from both canvases (MapLibre keeps its drawing buffer; the
@@ -91,7 +91,8 @@ try {
     check(`${path} choropleth data loaded`, loaded)
     const painted = await choroplethPixelShare(page)
     check(`${path} choropleth drawn`, painted > 0.05, `${(painted * 100).toFixed(1)}% of map pixels in the score ramp`)
-    check(`${path} 4 metric pills`, (await page.locator('.toolbar .pill').count()) === 4)
+    // Score + heat, air/noise, housing, access to care (v0.2): 5, the maximum.
+    check(`${path} 5 metric pills`, (await page.locator('.toolbar .pill').count()) === 5)
     check(`${path} html lang=${lang}`, (await page.getAttribute('html', 'lang')) === lang)
     check(`${path} data date in footer`, (await page.locator('.footer-updated').count()) === 1)
   }
@@ -105,8 +106,9 @@ try {
   } else {
     await suggestion.click()
     await page.waitForSelector('.cumul-box .n', { timeout: 10_000 })
-    check('search opens the detail panel, score out of 3', (await page.locator('.cumul-box .n').innerText()).endsWith('/3'))
-    check('panel: access context + means block', (await page.locator('.access-context').count()) === 1 && (await page.locator('.capacity-box').count()) === 1)
+    check('search opens the detail panel, score out of 4', (await page.locator('.cumul-box .n').innerText()).endsWith('/4'))
+    // Inclusive mobility (information) + other access figures, then the means block.
+    check('panel: mobility + access context + means blocks', (await page.locator('.access-context').count()) === 2 && (await page.locator('.capacity-box').count()) === 1)
     const started = Date.now()
     const card = page.waitForEvent('download', { timeout: SHARE_CARD_TIMEOUT_MS }).catch(() => null)
     // Click via the DOM: under software WebGL the main thread is busy
@@ -145,6 +147,20 @@ try {
     if (path.endsWith('ranking')) {
       const rows = await page.locator('.ranking-row').count()
       check(`${path} lists ${EXPECTED_RANKING_ROWS} neighborhoods`, rows === EXPECTED_RANKING_ROWS, `${rows} rows`)
+      // Department filter, keyboard only: focus the select, pick the 3rd
+      // option (93) with the arrow keys; the list shrinks and the live
+      // region announces the new count.
+      await page.locator('#dep-filter').focus()
+      await page.keyboard.press('ArrowDown')
+      await page.keyboard.press('ArrowDown')
+      await page.keyboard.press('ArrowDown')
+      await page.waitForTimeout(200)
+      const value = await page.locator('#dep-filter').inputValue()
+      const filtered = await page.locator('.ranking-row').count()
+      const announced = await page.locator('#filter-count').innerText()
+      const live = await page.locator('#filter-count').getAttribute('aria-live')
+      check(`${path} department filter by keyboard`, value === '93' && filtered > 0 && filtered < rows && announced.includes(String(filtered)) && live === 'polite',
+        `${value}: ${filtered} rows, "${announced}"`)
     }
     if (path.endsWith('methodology')) {
       check(`${path} access + licences sections`, (await page.locator('#access').count()) === 1 && (await page.locator('#data-licences').count()) === 1)

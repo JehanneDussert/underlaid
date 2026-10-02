@@ -19,25 +19,25 @@ import { chromium } from 'playwright'
 
 const OUT_DIR = fileURLToPath(new URL('../public/', import.meta.url))
 const README_SCREENSHOT = fileURLToPath(new URL('../../docs/screenshot.png', import.meta.url))
-// Same 0-3 ramp as the map's cumulative score (HomeView.vue CUMULATIVE_RAMP).
-const RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#99003b']
+// Same 0-4 ramp as the map's cumulative score (HomeView.vue CUMULATIVE_RAMP).
+const RAMP = ['#efc8d7', '#e977a3', '#f11e6f', '#c9034f', '#99003b']
 
 const COPY = {
   en: {
     file: 'og-image.png',
     path: '/',
     tagline: 'Where environmental exposures overlap',
-    body: 'Heat, air/noise pollution, housing — counted neighborhood by neighborhood across 2,752 IRIS in Paris & its inner suburbs, beside the means to cope.',
+    body: 'Heat, air/noise pollution, housing, access to care — counted neighborhood by neighborhood across 2,752 IRIS in Paris & its inner suburbs, beside the means to cope.',
     legend: 'Categories in their worst quartile at once',
-    worst: '3',
+    worst: '4',
   },
   fr: {
     file: 'og-image-fr.png',
     path: '/fr',
     tagline: 'Là où les expositions environnementales se superposent',
-    body: "Chaleur, pollution de l'air et bruit, logement — comptés quartier par quartier sur 2 752 IRIS à Paris et en petite couronne, en regard des moyens des habitants.",
+    body: "Chaleur, pollution de l'air et bruit, logement, accès aux soins — comptés quartier par quartier sur 2 752 IRIS à Paris et en petite couronne, en regard des moyens des habitants.",
     legend: 'Catégories simultanément dans leur pire quartile',
-    worst: '3',
+    worst: '4',
   },
 }
 

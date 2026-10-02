@@ -244,3 +244,55 @@ access sat at 29.6% in the worst quartile with 3 of 4 indicators vs
 17.6% with all 4. `test_worst_quartile_share_does_not_depend_on_indicator_count`
 now checks that grouping for every scored sub-score (max/min ratio
 < 1.5).
+
+**A pre-registered rule can't test a place it never sees.** Before
+crossing the rebuilt access measure with residents' means, the criteria
+were written down in advance: a department counts as "clearly
+unfavourable" to its lowest-means neighbourhoods if the lowest third of
+means has at least 10 points more IRIS in the worst quarter than the
+highest third, with at least 20 IRIS in each third. The thirds were the
+metro-wide ones from the means axis. Result: Seine-Saint-Denis couldn't
+be assessed at all — only one of its IRIS is in the metro's highest third
+of means — even though it is the department the hypothesis cared about
+most (48% of its lowest-third IRIS are in the worst quarter for access to
+care). The limit was accepted as it stood, without changing the rule
+after seeing the numbers. For the next pre-registrations: compare thirds
+of means computed within each department, or use an absolute share (e.g.
+"more than X% of the lowest-means IRIS in the worst quarter"), so that
+every department can be judged on its own terms.
+
+**Look at the biggest suppliers by hand before trusting a capacity
+measure.** The first GP supply for access to care counted 9,873 doctors
+in Île-de-France. Listing every address with 15 or more GPs showed
+teleconsultation platforms (their whole remote workforce registered at
+one Paris address), on-call services whose doctors are registered at
+every on-call point, and hospital emergency departments. None of them
+offers everyday consultations nearby, yet each made a few Paris blocks
+look extremely well served. An explicit, published exclusion list
+brought the count to 9,294. A name-based filter also caught a GP whose
+surname matched a platform's name; the pattern was narrowed to the
+health-centre prefix.
+
+**Two routing runs of the same trip don't give the same time.** The
+step-free scenario can only be slower than the standard one, yet a few
+neighbourhoods came out with more GPs reachable step-free. The cause was
+routing noise (departure-time sampling, slightly different networks),
+not a real gain. The accessible time is now capped at the standard time
+for each origin-destination pair, and population cells the router can't
+reach at all (the La Défense deck) are left empty rather than given a
+zero.
+
+**Two good measures can cancel each other out.** GP access and the share
+of it kept when travelling step-free move in opposite directions
+(−0.62): central Paris has the most GPs within reach and loses the most
+on a largely inaccessible metro. Averaging them into one "access"
+sub-score would have shown a flat picture and hidden both findings. They
+were kept apart, decided before any crossing with residents' means.
+
+**Write down when a decision was taken relative to the result.** The
+score on 5 was decided before crossing with means; after reading the
+result, inclusive mobility was taken out of the count (it compares two
+ways of travelling from the same place, not places with each other).
+That reasoning holds on its own, but it came after the result, so it is
+recorded as such, next to the unchanged verdicts. A reader can then
+judge the decision knowing its timing, instead of having to trust it.

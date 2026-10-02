@@ -1,7 +1,7 @@
 # Cumulative environmental exposure score — methodology
 
 Computed by `scripts/11_compute_vulnerability_score.py`, run after scripts
-01-10, 12, 15, 17, 21, 22 and 24. Output: `data/processed/vulnerability_score_iris.geojson`.
+01-10, 12, 15, 17, 21, 22, 24 and 27-32. Output: `data/processed/vulnerability_score_iris.geojson`.
 
 **Phase 5 scope note**: this file originally documented Paris intra-muros
 (992 IRIS). It now covers the full Métropole du Grand Paris "Petite
@@ -15,6 +15,16 @@ sub-scores — thermal, air/noise pollution, housing — so it ranges
 are still published as unscored context. See "Why access to services
 left the score" below. Sections further down that describe older
 corrections keep their "out of 4" figures: they're history, and say so.
+
+**v0.2 note (October 2026)**: access is back in the count, rebuilt from
+scratch as **access to care** (GPs and pharmacies reachable on foot and
+by public transport, weighted by how many people share them). The score
+counts **4** sub-scores again — thermal, air/noise pollution, housing,
+access to care — and ranges **0-4**. Inclusive mobility (what a
+wheelchair user keeps of that access) is computed and published for
+information, not counted. See "Rebuilding access to services" below.
+The old 0-4 score (until September 2026) and this one share a range but
+not a definition: the access sub-score is a different measure.
 
 ## What this score doesn't measure
 
@@ -159,7 +169,7 @@ non-standard IRIS.
 
 **Classes.** Means: tertiles of the index (lowest / middle / highest
 third of the metro area). Exposure: the cumulative score grouped as 0 /
-1 / 2+ — scores 3 and 4 together are only 2.2% of IRIS, too few for a
+1 / 2+ — scores 3 and 4 together are only 3% of IRIS, too few for a
 class of their own.
 
 **Candidates measured and rejected.** Poverty rate (Spearman −0.91 with
@@ -171,34 +181,37 @@ means). Home ownership (capacity to insulate or install shutters) was
 considered and left out: it adds little to the grid and its meaning is
 muddy in Paris, where many well-off households rent.
 
-**Distribution (3-sub-score exposure, 2,529 IRIS with an index):**
+**Distribution (exposure score on 4, v0.2, 2,529 IRIS with an index):**
 
 | | means: lowest third | middle third | highest third |
 |---|---|---|---|
-| **exposure 0** | 426 | 405 | 214 |
-| **exposure 1** | 368 | 343 | 393 |
-| **exposure 2+** | 49 | 95 | 236 |
+| **exposure 0** | 248 | 301 | 176 |
+| **exposure 1** | 404 | 378 | 392 |
+| **exposure 2+** | 191 | 164 | 275 |
 
-"2+" means 2 or 3 of the 3 sub-scores in their worst quartile.
+"2+" means 2, 3 or 4 of the 4 sub-scores in their worst quartile. With
+the 3-sub-score score of the v0 launch, the 2+ row was 49 / 95 / 236.
 
 **1. Two profiles, not one scale.** Correlation of the capacity index
-with each sub-score: housing +0.66, thermal +0.37, pollution −0.30.
-Highly exposed IRIS (2+) with the highest means are mostly in Paris (193
-of 236) and stack heat + housing (worst quartile in 92% / 94% of them) —
-dense, older building stock. Those with the lowest means (49, about
-131,000 residents) are mostly in Seine-Saint-Denis (26) and Val-de-Marne
-(14) and stack heat + air/noise pollution (88% / 86%).
+with each sub-score: housing +0.66, thermal +0.37, pollution −0.30,
+access to care −0.50. Highly exposed IRIS (2+) with the highest means
+are mostly in Paris (195 of 275) and stack housing + heat (worst
+quartile in 88% / 79% of them) — dense, older building stock. Those
+with the lowest means (191, about 541,000 residents) are mostly in
+Seine-Saint-Denis (108) and Val-de-Marne (50) and stack air/noise
+pollution + access to care (84% / 84%).
 
 **2. The link between exposure and means is weak.** Spearman(capacity
-index, exposure score) = **+0.28** — slightly positive only because of
-dense, older central Paris (+0.39 within Paris); within the inner-suburb
-departments it's near zero (92: +0.06, 93: −0.08, 94: +0.10). Always
+index, exposure score) = **+0.11** — slightly positive only because of
+dense, older central Paris (+0.37 within Paris); within the inner-suburb
+departments it's near zero (92: −0.02, 93: −0.04, 94: 0.00). Always
 state it with that explanation in public copy — never as "the well-off
-are more exposed", which the data doesn't show outside Paris.
+are more exposed", which the data doesn't show outside Paris. (Score on
+3, v0 launch: +0.28.)
 
 **3. Where high exposure and low means meet, it's concentrated.** In
-Seine-Saint-Denis, 76% of the highly exposed IRIS are in the metro
-area's lowest third of means; in Paris, 2% (92: 6%, 94: 29%).
+Seine-Saint-Denis, 79% of the highly exposed IRIS are in the metro
+area's lowest third of means; in Paris, 4% (92: 21%, 94: 39%).
 
 **How this crossing changed the exposure score itself.** The first
 version of this grid was computed with the former 4-sub-score exposure
@@ -208,7 +221,13 @@ follows household income by construction (capacity vs access: −0.52).
 That finding started the audit that took access out of the score — see
 "Why access to services left the score" below. With the 3-sub-score
 score, the cell has no such mechanical overlap: none of the three
-remaining sub-scores uses a population characteristic.
+remaining sub-scores uses a population characteristic. Access to care
+(v0.2) doesn't either — it counts GPs and pharmacies against the number
+of people who can reach them — yet it is linked to means (−0.50), mostly
+through geography: within each département the link is weak (92 and 94:
+−0.16, 93: −0.02). Its effect on the hypothesis is tested within
+départements and at equal density, not metro-wide (see "Working
+hypothesis and its test").
 
 **What this axis doesn't measure.** It measures *means*, not what
 households actually do with them: nothing here says whether a home has
@@ -239,7 +258,7 @@ with four moderately-bad ones — the two situations are not equivalent,
 but a mean treats them the same. Counting how many sub-scores land in
 their own worst quartile keeps that distinction visible.
 
-## The 3 sub-scores
+## The 4 sub-scores
 
 Every indicator below is transformed so that **higher = more exposed**
 (protective indicators — cool spots, canopy, social position — are sign-
@@ -252,17 +271,19 @@ equally.
 | **Thermal** | `hvi` (heat vulnerability index, Sat4BDNB) · `-count(cool spots within 400m of IRIS centroid) per 1,000 residents` · `-% of IRIS area covered by "cool" green space` · `% of IRIS area that's artificialized/sealed (MOS land use)` | scripts 02, 03, 04, 21, 22 |
 | **Pollution** | area-weighted mean air-noise co-exposure class (1-9 scale) | script 05 |
 | **Housing** | % of sampled DPE certificates rated F or G ("passoire thermique") · residential electrical thermosensitivity (`part_thermosensible`, Enedis) | scripts 10, 17 |
+| **Access to care** (v0.2) | `-gp_std` (GPs reachable per 10,000 age-weighted residents, E2SFCA, walking + public transport) · `-pharmacy_std` (pharmacies within a 15-min walk per 10,000 residents, E2SFCA); both rank-standardized (skewed: 1.2 and 1.8) | scripts 27-32 |
 
 Each sub-score is the **unweighted mean** of its (standardized) indicator
 z-scores, skipping indicators missing for a given IRIS. Weights are equal
 by design — there's no principled basis yet to weigh one indicator over
 another; revisit this once the tool has real user feedback.
 
-Access to services (scripts 07, 09, 12, 15 — travel time, school IPS,
-wheelchair-accessible entrances, OSM footway density) was a 4th
-sub-score until the v0 launch. Its raw figures are still in the output,
+The former access sub-score (scripts 07, 09, 12, 15 — travel time,
+school IPS, wheelchair-accessible entrances, OSM footway density) was
+counted until the v0 launch. Its raw figures are still in the output,
 shown as unscored context in the map's detail panel — see the next
-section for why.
+section for why it left, and "Rebuilding access to services" for what
+replaced it.
 
 ## Why access to services left the score
 
@@ -328,11 +349,11 @@ excluded for insufficient access data. In D, 31 IRIS leave scores 3-4
 footways, 6 via IPS), none enter, and the four former 4/4 IRIS become
 3/3.
 
-**Coming back.** Access can return once an indicator passes both the
-global and the per-indicator-count quartile checks — candidates and
-their feasibility are listed in CLAUDE.md (Phase 7, "Retour de l'accès
-dans le score"): DREES APL, a home-made 2SFCA at IRIS level, footway
-counting that includes street-tagged sidewalks.
+**Coming back.** The rule set at the time: access returns only once an
+indicator passes both the global and the per-indicator-count quartile
+checks. It came back in v0.2 as access to care, built with a 2SFCA on
+the 200 m population grid (next section); footway counting was audited
+and left out (mapping inequality, see above).
 
 Median income (`08_income_filosofi.py`) is **not** part of the score. It
 is carried through to the output for step 4 (correlation between income
@@ -341,12 +362,12 @@ make that correlation circular. It's also one of the three
 indicators of the separate adaptive-capacity axis — see "Adaptive
 capacity — a separate axis" below.
 
-## Rebuilding access to services (in progress, not scored yet)
+## Rebuilding access to services (v0.2: access to care is scored)
 
-Access to services is the project's central question, and it is being
-rebuilt from scratch (scripts 27-32). Nothing below enters the score
-until the rebuild is validated; the method is documented here as it is
-decided.
+Access to services is the project's central question. It was rebuilt
+from scratch (scripts 27-32) and, after validation, **access to care**
+entered the score in v0.2. **Inclusive mobility** is computed with the
+same method and published for information, not counted.
 
 ### Access without a car
 
@@ -366,15 +387,76 @@ the project is about:
   car travel times between communes: the two answer different questions
   and both are useful.
 
-### Planned structure (decided 2026-10-02, before any crossing with residents' means)
+### Structure, and the order in which it was decided
 
-Two separate sub-scores, not one: **access to care** (GPs and
-pharmacies) and **inclusive mobility** (the gap described below). They
-pull in opposite directions (rank correlation −0.62 across inhabited
-IRIS: central Paris has the most GPs within reach but loses the most when
-travelling step-free, since the metro is largely inaccessible), so
-averaging them would cancel two distinct phenomena. With them, the
-cumulative score would count 5 sub-scores. Not applied yet.
+1. **2026-10-02, before any crossing with residents' means**: two
+   separate measures, not one — **access to care** (GPs and pharmacies)
+   and **inclusive mobility** (the gap described below). They pull in
+   opposite directions (rank correlation −0.62 across inhabited IRIS:
+   central Paris has the most GPs within reach but loses the most when
+   travelling step-free, since the metro is largely inaccessible), so
+   averaging them would cancel two distinct phenomena. Planned then: a
+   score on 5.
+2. **Same day, before any crossing**: the test of the working hypothesis
+   was written down (next section).
+3. **After reading the result of that test**: the score counts 4
+   sub-scores; inclusive mobility is not counted. Reason given: it
+   compares two ways of travelling *from the same place* (step-free vs
+   standard), while the score compares *places with each other*; it is
+   not an exposure of the place. This decision was taken knowing the
+   result, and is recorded as such. The verdicts below are unchanged by
+   it, and the gap is still computed and published.
+
+Sub-score rules, the same as the others: both indicators required (2 of
+2); quartile thresholds on inhabited IRIS; IRIS whose population cells
+can't be routed (e.g. the La Défense deck) get `insufficient_data`.
+Completeness: 2,746 of 2,752 IRIS; 25/25/25/25 among inhabited IRIS.
+
+### Working hypothesis and its test (pre-registered)
+
+Hypothesis, written on 2026-10-01 before any result: residents of the
+neighbourhoods with the fewest means are structurally disadvantaged in
+access to services and inclusive mobility. Test fixed on 2026-10-02,
+before computing the sub-scores and before any crossing with means, for
+each measure S and each département d (inhabited IRIS; means thirds of
+the whole metropolis):
+
+- gap_d = share of S's worst quarter in the lowest third of means −
+  share in the highest third; ρ_d = Spearman(means index, S);
+- **clearly unfavourable in d** if gap_d ≥ +10 points and ρ_d ≤ −0.10;
+  a département is assessed only if each third has ≥ 20 IRIS there;
+- **supported** if clearly unfavourable in ≥ 2 départements, at least
+  one other than Seine-Saint-Denis, and the metro-wide gap ≥ +10 points;
+- **refuted** if the metro-wide gap ≤ −10 points or ≥ 2 départements are
+  clearly reversed; **qualified** otherwise;
+- for inclusive mobility, the conclusion holds only if identical with
+  unknown accessibility counted as "no" and as "yes".
+
+Results (`scripts/analysis/access_step4.py`, `access_score4.py`):
+
+- **Access to care: supported.** In Hauts-de-Seine, 41% of the
+  neighbourhoods in the lowest third of means are in the worst quarter
+  for access to care, against 24% in the highest third (+17 points);
+  Val-de-Marne, 41% against 24% (+17 points). At equal population
+  density (density fifths), the gap holds and widens: +23 points in
+  both. Paris: almost every neighbourhood has very good access, so the
+  gap is small (+4 points). Metro-wide, the gap (+29 points) mixes in
+  the difference between Paris and the inner suburbs, which is largely
+  a matter of density; the within-département and equal-density figures
+  are the ones that test the hypothesis.
+- **Seine-Saint-Denis could not be assessed** by the rule: a single IRIS
+  there is in the metro-wide highest third of means. A limit of the
+  rule, not a finding (see docs/LESSONS.md); next pre-registrations use
+  thirds computed within each département, or absolute shares.
+- **Inclusive mobility: refuted**, identical with both variants. The
+  share of GP access lost when travelling step-free is largest in
+  central Paris, where standard access relies on a largely inaccessible
+  metro, whatever the means of the neighbourhood (worst quarter: 10% in
+  the lowest third, 42% in the highest). This does not mean wheelchair
+  access is good elsewhere: in number of GPs reachable step-free, the
+  median is lower than in Paris in each inner-suburb département
+  (Paris 7.5 per 10,000; 92: 7.0; 93: 5.8; 94: 6.8) and in each third of
+  means.
 
 The consequence, stated plainly: a neighbourhood where GPs are easy to
 reach by car but far on foot or by bus scores low here. That's what the
@@ -393,6 +475,10 @@ and the Île-de-France Mobilités timetables, Tuesday 13 October 2026,
 departures 10:00-11:00 (sensitivity: 17:30-18:30), walking 4.5 km/h.
 Full parameters and their sources are in the docstrings of scripts
 29-32.
+
+Timetables: contains information from "Horaires prévus sur les lignes de
+transport en commun d'Île-de-France (GTFS Datahub)", made available by
+Île-de-France Mobilités under the terms of the "Licence Mobilités".
 
 Inclusive mobility: GP access is recomputed with step-free walking
 (OpenStreetMap steps plus paths along IGN staircases missing from
@@ -474,7 +560,8 @@ their rank instead of erroring out.
 **A sub-score is only computed if a strict majority of its indicators
 have data for that IRIS.** Concretely: `floor(n_indicators / 2) + 1` —
 **3 of 4 for thermal** (raised from 2/3 in Phase 5 when artificialization
-became its 4th indicator), 3 of 4 for access, 1 of 1 for pollution (a
+became its 4th indicator), 2 of 2 for access to care (3 of 4 for the
+former access sub-score), 1 of 1 for pollution (a
 single-indicator sub-score — can't require more than what exists), 2 of
 2 for housing (both DPE and Enedis are required, not just one — see
 "Electrical thermosensitivity" below). Below threshold, the sub-score,
@@ -843,11 +930,11 @@ narrower and more defensible claim.
 cumulative_vulnerability_score = count of sub-scores where quartile == 4
 ```
 
-Range 0-3 (0-4 before the v0 launch, when access was still counted). An
-IRIS missing data for every sub-score gets a null cumulative score
-rather than being silently treated as "not exposed".
-`n_subscores_evaluated` records how many of the 3 sub-scores had data
-for that IRIS, for transparency.
+Range 0-4 since v0.2 (0-3 at the v0 launch; 0-4 before it, with the
+former access sub-score). An IRIS missing data for every sub-score gets
+a null cumulative score rather than being silently treated as "not
+exposed". `n_subscores_evaluated` records how many of the 4 sub-scores
+had data for that IRIS, for transparency.
 
 ## Electrical thermosensitivity (housing's second indicator, Phase 3)
 
@@ -1146,41 +1233,55 @@ exactly 25/25/25/25; 34 inhabited IRIS changed score (1.3%); one enters
 
 ## Current distribution (MGP — Paris + Petite Couronne, 2,752 IRIS)
 
-3 sub-scores (thermal, air/noise pollution, housing), after access left
-the count at the v0 launch (see "Why access to services left the
-score"), quartile thresholds on inhabited IRIS (see above):
+4 sub-scores (thermal, air/noise pollution, housing, access to care,
+v0.2), quartile thresholds on inhabited IRIS (see above):
 
 | Cumulative score | IRIS count | Share |
 |---|---|---|
-| 0 | 1,122 | 40.8% |
-| 1 | 1,216 | 44.2% |
-| 2 | 382 | 13.9% |
-| 3 | 32 | 1.2% |
+| 0 | 774 | 28.1% |
+| 1 | 1,286 | 46.7% |
+| 2 | 610 | 22.2% |
+| 3 | 78 | 2.8% |
+| 4 | 4 | 0.1% |
 
-Inhabited IRIS only (≥ 50 residents, 2,690): 1,113 / 1,171 / 375 / 31.
-Before the inhabited-thresholds rule: 1,144 / 1,202 / 375 / 31. Before
-access left the count (4 sub-scores): 874 / 1,230 / 586 / 58 / 4.
+Inhabited IRIS only (≥ 50 residents, 2,690): 765 / 1,248 / 597 / 76 / 4.
+At the v0 launch (3 sub-scores, inhabited IRIS): 1,113 / 1,171 / 375 /
+31. The 31 inhabited IRIS at 3/3 all stay at 3 or more (27 at 3, 4 at
+4); 49 enter scores 3-4, all through access to care; none leaves.
 
-The 32 IRIS at 3/3: 20 in Paris (mostly dense 8th, 11th, 12th, 15th,
-16th, 17th arrondissements), 5 in Hauts-de-Seine (Neuilly-sur-Seine ×4,
-Asnières), 3 in Seine-Saint-Denis (Aulnay ×2, Drancy), 4 in
-Val-de-Marne (Villeneuve-Saint-Georges ×2, Champigny, Le Perreux). One
-of them is not inhabited (Chaussée d'Antin 2, 0 residents).
+The 4 IRIS at 4/4: Asnières-sur-Seine Flachat I, Aulnay-sous-Bois
+Nonneville 3 and Nonneville 4, Champigny-sur-Marne Quatre Cités 3. The
+80 inhabited IRIS at 3 or 4: 21 in Paris, 23 in Hauts-de-Seine, 18 in
+Seine-Saint-Denis, 18 in Val-de-Marne.
 
-**Public ranking (`/ranking`).** Lists the IRIS at 3/3 with at least
-**50 residents** — the same floor as `cool_facility_deficit`'s
+Findings with the score on 4 (inhabited IRIS): (1) at 2+/4, neighbourhoods
+in the lowest third of means mostly combine air/noise (84%) and access to
+care (84%), mainly in Seine-Saint-Denis and Val-de-Marne; those in the
+highest third mostly combine housing (88%) and heat (79%), mainly in
+Paris. (2) The link between exposure and means is weak, and slightly
+positive because of central Paris, dense and old (Spearman +0.11; Paris
++0.37, 92 −0.02, 93 −0.04, 94 0.00). (3) Share of 2+/4 neighbourhoods in
+the lowest third of means: Seine-Saint-Denis 79%, Val-de-Marne 39%,
+Hauts-de-Seine 21%, Paris 4%.
+
+Previous distributions: at the v0 launch, all IRIS, 1,122 / 1,216 / 382
+/ 32; before access left the count (old 4 sub-scores), 874 / 1,230 / 586
+/ 58 / 4.
+
+**Public ranking (`/ranking`).** Lists the IRIS at 3 or 4 out of 4 with
+at least **50 residents** — the same floor as `cool_facility_deficit`'s
 per-resident rate (`MIN_POPULATION_FOR_RATE`): below it an IRIS is a
-park, a station or a business block, not a neighborhood people live in.
-This removes 1 of the 32 (Chaussée d'Antin 2, 0 residents); such IRIS
-stay on the map, flagged "very sparsely populated" in the detail panel
-(62 IRIS in all are under 50 residents). The 31 listed IRIS are grouped
-by the means-to-cope tertile (5 lowest, 5 middle, 18 highest, 3 without
-published income), never by an implied cause, ordered by commune then
-name, and each row shows the figures behind the three categories
-(sealed ground, air/noise index, F/G-rated homes) plus median income,
-each against the metro-wide median. A paragraph above the list states
-finding 1 (same score, not the same exposures depending on means) so
-the list is never read without it.
+park, a station or a business block, not a neighborhood people live in
+(62 IRIS in all are under 50 residents; they stay on the map, flagged
+"very sparsely populated" in the detail panel). The 80 listed IRIS: the
+4 at 4/4 first, flagged; then the 76 at 3/4 grouped by the means-to-cope
+tertile (19 lowest, 19 middle, 29 highest, 9 without published income),
+never by an implied cause, ordered by commune then name. Each row shows
+one figure per category (sealed ground, air/noise index, F/G-rated
+homes, GPs within reach) plus median income, each against the
+metro-wide median. A department filter (native select, keyboard and
+screen-reader ready, count announced) narrows the list. A paragraph
+above the list states that it is not a ranking.
 
 This is a live demonstration of the score's core caveat, repeatedly now:
 it's an **estimate that shifts with every methodological correction and

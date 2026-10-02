@@ -11,6 +11,7 @@ import IncomeScatter from '../components/IncomeScatter.vue'
 import ContextBanner from '../components/ContextBanner.vue'
 import AboutBanner from '../components/AboutBanner.vue'
 import InfoTip from '../components/InfoTip.vue'
+import AddressSearch from '../components/AddressSearch.vue'
 import { useSeoMeta } from '../composables/useSeoMeta'
 import { loadStaticJson } from '../utils/loadStaticJson'
 import { loadDataDates, staleLayerDate, formatDataDate } from '../utils/dataDates'
@@ -40,8 +41,8 @@ useSeoMeta({
         : 'Underlaid — cumulative environmental exposure score, Paris & inner suburbs',
     description:
       locale === 'fr'
-        ? "Pour 2 752 quartiers (IRIS) de Paris et de la petite couronne, combien des 3 catégories suivies (thermique, pollution de l'air et bruit, logement) se retrouvent simultanément dans leur pire quartile à l'échelle régionale — un compte, jamais une moyenne lissée, construit à partir de données publiques (INSEE, IGN, Airparif/Bruitparif, Enedis, ADEME, OpenStreetMap)."
-        : 'For 2,752 neighborhoods (IRIS) across Paris and its inner suburbs, how many of 3 tracked categories (thermal, air/noise pollution, housing) land simultaneously in their region-wide worst quartile — a count, never a smoothed average, built from public data (INSEE, IGN, Airparif/Bruitparif, Enedis, ADEME, OpenStreetMap).',
+        ? "Pour 2 752 quartiers de Paris et de la petite couronne, le nombre de critères — chaleur, pollution de l'air et bruit, logement, accès aux soins — pour lesquels le quartier figure parmi le quart des plus touchés : un comptage, jamais une moyenne, construit à partir de données publiques (INSEE, IGN, Airparif et Bruitparif, Enedis, ADEME, ANS, Île-de-France Mobilités, OpenStreetMap)."
+        : 'For 2,752 neighbourhoods of Paris and its inner suburbs, the number of criteria — heat, air pollution and noise, housing, access to care — on which the neighbourhood is among the most affected quarter: a count, never an average, built from public data (INSEE, IGN, Airparif and Bruitparif, Enedis, ADEME, ANS, Île-de-France Mobilités, OpenStreetMap).',
     creator: { '@type': 'Organization', name: 'Underlaid' },
     // The published data is ODbL (share-alike inherited from the
     // OpenStreetMap and Ville de Paris inputs); the code is MIT — see
@@ -120,24 +121,26 @@ const DATA_RAMP_4 = DATA_RAMP_5.slice(1)
 // spread 3° — all checks pass.
 const CUMULATIVE_RAMP = DATA_RAMP_5
 const MAX_SCORE = 4
-const NO_DATA_COLOR = '#3a3f4a'
+// Neutral grey, distinct from both ramps' lightest steps on the light basemap.
+const NO_DATA_COLOR = '#d5d8dd'
 
 // Phase 8 — "Exposure × means" bivariate grid, indexed [capacity_class][exposure_class]
 // (capacity 0 = lowest third of the metro area, 2 = highest; exposure 0,
-// 1, 2 = "2 or more"). Pink carries exposure (the brand magenta at its
-// end, like DATA_RAMP_5), blue carries LACK of means, so the darkest cell
-// is "exposures stacked, lowest means". Found by a search over two-ink
-// multiply blends, checked with the dataviz skill's validate_palette.js
-// (--ordinal --mode dark --surface #080A0F): every row and column passes
-// lightness-monotone / adjacent-ΔL / end-contrast (darkest 2.02:1);
-// grid-neighbour ΔE >= 8.2 under protan/deutan and >= 12.1 normal — both
-// above DATA_RAMP_5's own adjacent figures (7.8 / 9.3). Nine ordered cells
-// can't reach the categorical normal-vision floor of 15, so the cell is
-// also always named in words (legend titles, detail panel, sr-only table).
+// 1, 2 = "2 or more"). Pink carries exposure, blue carries LACK of means,
+// so the darkest cell is "exposures stacked, lowest means".
+// Light redesign (October 2026): the dark-surface grid failed on a light
+// surface (lightest cell #ebebeb at 1.23:1 vs white, floor 2:1). Re-found
+// by a search over two-ink multiply blends, checked with the dataviz
+// skill's validate_palette.js on #FFFFFF and #F4F5F7: every row and
+// column passes lightness-monotone / adjacent-ΔL / light-end contrast;
+// grid-neighbour ΔE >= 7.2 under protan/deutan and >= 10.6 normal. The
+// 2:1 floor on a light surface compresses nine ordered cells, so 7.2 sits
+// in the 6-8 band that needs a second encoding: the cell is always named
+// in words (legend titles, detail panel, sr-only table).
 const BIVARIATE_GRID = [
-  ['#70a4e1', '#6f5ca3', '#6f2272'],
-  ['#aec8e6', '#ac70a7', '#ab2a75'],
-  ['#ebebeb', '#e984ab', '#e83178'],
+  ['#455e8d', '#413966', '#381646'],
+  ['#7e80b6', '#764e83', '#651e5b'],
+  ['#bba6c0', '#b0658a', '#972760'],
 ]
 const CAPACITY_URL = '/data/adaptive_capacity_iris.json'
 
@@ -387,14 +390,14 @@ function captureMapSnapshot() {
   out.height = height + headerHeight + footerHeight
   const ctx = out.getContext('2d')
 
-  ctx.fillStyle = '#080a0f'
+  ctx.fillStyle = '#ffffff'
   ctx.fillRect(0, 0, out.width, out.height)
 
-  ctx.fillStyle = '#eaf0f5'
-  ctx.font = `700 ${Math.round(26 * dpr)}px "Schibsted Grotesk", sans-serif`
-  ctx.fillText('Underlaid', Math.round(24 * dpr), Math.round(38 * dpr))
+  ctx.fillStyle = '#14161a'
+  ctx.font = `800 ${Math.round(26 * dpr)}px "Schibsted Grotesk", sans-serif`
+  ctx.fillText('underlaid', Math.round(24 * dpr), Math.round(38 * dpr))
 
-  ctx.fillStyle = '#8b96a6'
+  ctx.fillStyle = '#3d424a'
   ctx.font = `${Math.round(15 * dpr)}px "Schibsted Grotesk", sans-serif`
   const isBivariate = viewMode.value === 'bivariate'
   ctx.fillText(isBivariate ? t('view.bivariate') : selectedMetric.value.label, Math.round(24 * dpr), Math.round(58 * dpr))
@@ -432,7 +435,7 @@ function captureMapSnapshot() {
     legendText = `${labels[0]} → ${labels[labels.length - 1]}`
   }
 
-  ctx.fillStyle = '#6b7686'
+  ctx.fillStyle = '#5b616b'
   ctx.font = `${Math.round(12 * dpr)}px "Schibsted Grotesk", sans-serif`
   const caption = `${legendText}   ·   underlaid   ·   ${new Date().toISOString().slice(0, 10)}`
   ctx.fillText(caption, x + Math.round(12 * dpr), swatchY + swatchH)
@@ -696,6 +699,10 @@ const selectedPercentile = computed(() => {
   return Math.round((lower / valid.length) * 100)
 })
 
+function onAddress({ label, lon, lat }) {
+  selectSuggestion({ properties: { label }, geometry: { coordinates: [lon, lat] } })
+}
+
 function selectSuggestion(suggestion) {
   searchSuggestions.value = []
   searchQuery.value = suggestion.properties.label
@@ -758,72 +765,52 @@ async function buildShareCard(feature, percentile) {
   canvas.height = SHARE_CARD_HEIGHT
   const ctx = canvas.getContext('2d')
 
-  ctx.fillStyle = '#080a0f'
-  ctx.fillRect(0, 0, SHARE_CARD_WIDTH, SHARE_CARD_HEIGHT)
-
-  const glow1 = ctx.createRadialGradient(140, 40, 0, 140, 40, 750)
-  glow1.addColorStop(0, 'rgba(34, 230, 214, 0.20)')
-  glow1.addColorStop(1, 'rgba(34, 230, 214, 0)')
-  ctx.fillStyle = glow1
-  ctx.fillRect(0, 0, SHARE_CARD_WIDTH, SHARE_CARD_HEIGHT)
-
-  const glow2 = ctx.createRadialGradient(SHARE_CARD_WIDTH - 120, 300, 0, SHARE_CARD_WIDTH - 120, 300, 750)
-  glow2.addColorStop(0, 'rgba(255, 61, 138, 0.16)')
-  glow2.addColorStop(1, 'rgba(255, 61, 138, 0)')
-  ctx.fillStyle = glow2
+  // Light, sober card (redesign of October 2026): same palette as the site.
+  ctx.fillStyle = '#f4f5f7'
   ctx.fillRect(0, 0, SHARE_CARD_WIDTH, SHARE_CARD_HEIGHT)
 
   // wordmark
   ctx.textAlign = 'left'
-  ctx.font = '700 44px "Schibsted Grotesk", sans-serif'
-  ctx.fillStyle = '#eaf0f5'
-  ctx.fillText('Under', 64, 110)
-  const underWidth = ctx.measureText('Under').width
-  const wordGrad = ctx.createLinearGradient(64 + underWidth, 0, 64 + underWidth + 140, 0)
-  wordGrad.addColorStop(0, '#22e6d6')
-  wordGrad.addColorStop(1, '#ff3d8a')
-  ctx.fillStyle = wordGrad
-  ctx.fillText('laid', 64 + underWidth, 110)
+  ctx.font = '800 44px "Schibsted Grotesk", sans-serif'
+  ctx.fillStyle = '#14161a'
+  ctx.fillText('underlaid', 64, 110)
 
   // eyebrow
-  ctx.font = '600 26px "Schibsted Grotesk", sans-serif'
-  ctx.fillStyle = '#22e6d6'
-  ctx.fillText(t('hero.eyebrow').toUpperCase(), 64, 172)
+  ctx.font = '600 28px "Schibsted Grotesk", sans-serif'
+  ctx.fillStyle = '#b0024a'
+  ctx.fillText(t('share.eyebrow'), 64, 172)
 
-  // neighborhood name + commune
-  ctx.font = '700 66px "Schibsted Grotesk", sans-serif'
-  ctx.fillStyle = '#eaf0f5'
+  // neighbourhood name + commune
+  ctx.font = '800 66px "Schibsted Grotesk", sans-serif'
+  ctx.fillStyle = '#14161a'
   const afterName = drawCenteredLines(ctx, p.nom_iris, 64, 300, SHARE_CARD_WIDTH - 128, 76)
 
   ctx.font = '400 32px "Schibsted Grotesk", sans-serif'
-  ctx.fillStyle = '#8b96a6'
+  ctx.fillStyle = '#5b616b'
   ctx.fillText(p.nom_com, 64, afterName + 20)
 
   // big score
   ctx.textAlign = 'center'
-  const scoreGrad = ctx.createLinearGradient(SHARE_CARD_WIDTH / 2 - 220, 0, SHARE_CARD_WIDTH / 2 + 220, 0)
-  scoreGrad.addColorStop(0, '#22e6d6')
-  scoreGrad.addColorStop(1, '#ff3d8a')
-  ctx.font = '700 320px "Schibsted Grotesk", sans-serif'
-  ctx.fillStyle = scoreGrad
-  ctx.fillText(`${p.cumulative_vulnerability_score ?? '—'}/${MAX_SCORE}`, SHARE_CARD_WIDTH / 2, 980)
+  ctx.font = '800 300px "Schibsted Grotesk", sans-serif'
+  ctx.fillStyle = '#14161a'
+  ctx.fillText(`${p.cumulative_vulnerability_score ?? '—'}/${MAX_SCORE}`, SHARE_CARD_WIDTH / 2, 960)
 
-  ctx.font = '500 30px "Schibsted Grotesk", sans-serif'
-  ctx.fillStyle = '#8b96a6'
-  let y = drawCenteredLines(ctx, t('panel.subscoresWorstQuartile'), SHARE_CARD_WIDTH / 2, 1095, SHARE_CARD_WIDTH - 200, 40)
+  ctx.font = '500 32px "Schibsted Grotesk", sans-serif'
+  ctx.fillStyle = '#3d424a'
+  let y = drawCenteredLines(ctx, t('panel.subscoresWorstQuartile'), SHARE_CARD_WIDTH / 2, 1060, SHARE_CARD_WIDTH - 200, 42)
 
   if (percentile !== null) {
     ctx.font = '600 34px "Schibsted Grotesk", sans-serif'
-    ctx.fillStyle = '#22e6d6'
+    ctx.fillStyle = '#b0024a'
     y = drawCenteredLines(ctx, t('panel.morevulnerable', { n: percentile }), SHARE_CARD_WIDTH / 2, y + 30, SHARE_CARD_WIDTH - 160, 44)
   }
 
-  // 4 sub-score chips
+  // 4 categories: in the most affected quarter or not, in words.
   const chipRows = [
-    { label: t('metrics.thermal'), quartile: p.subscore_thermal_quartile },
-    { label: t('metrics.pollution'), quartile: p.subscore_pollution_quartile },
-    { label: t('metrics.housing'), quartile: p.subscore_housing_quartile },
-    { label: t('metrics.accessCare'), quartile: p.subscore_access_care_quartile },
+    { label: t('metrics.thermal'), worst: p.subscore_thermal_quartile === 4, known: p.subscore_thermal_quartile != null },
+    { label: t('metrics.pollution'), worst: p.subscore_pollution_quartile === 4, known: p.subscore_pollution_quartile != null },
+    { label: t('metrics.housing'), worst: p.subscore_housing_quartile === 4, known: p.subscore_housing_quartile != null },
+    { label: t('metrics.accessCare'), worst: p.subscore_access_care_quartile === 4, known: p.subscore_access_care_quartile != null },
   ]
   const chipY = y + 60
   const chipW = 228
@@ -832,24 +819,17 @@ async function buildShareCard(feature, percentile) {
   const totalW = chipW * chipRows.length + gap * (chipRows.length - 1)
   let chipX = (SHARE_CARD_WIDTH - totalW) / 2
   for (const chip of chipRows) {
-    const color = quartileColor(chip.quartile)
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)'
+    ctx.fillStyle = chip.worst ? '#b0024a' : '#ffffff'
     ctx.beginPath()
-    ctx.roundRect(chipX, chipY, chipW, chipH, 16)
+    ctx.roundRect(chipX, chipY, chipW, chipH, 18)
     ctx.fill()
-    ctx.fillStyle = color
-    ctx.beginPath()
-    ctx.roundRect(chipX, chipY, chipW, 8, 4)
-    ctx.fill()
-
     ctx.textAlign = 'center'
     ctx.font = '600 24px "Schibsted Grotesk", sans-serif'
-    ctx.fillStyle = '#8b96a6'
-    ctx.fillText(chip.label, chipX + chipW / 2, chipY + 50)
-    ctx.font = '700 40px "Schibsted Grotesk", sans-serif'
-    ctx.fillStyle = '#eaf0f5'
-    ctx.fillText(chip.quartile ? `Q${chip.quartile}` : '—', chipX + chipW / 2, chipY + 100)
-
+    ctx.fillStyle = chip.worst ? '#ffffff' : '#3d424a'
+    ctx.fillText(chip.label, chipX + chipW / 2, chipY + 52)
+    ctx.font = '700 30px "Schibsted Grotesk", sans-serif'
+    ctx.fillStyle = chip.worst ? '#ffffff' : '#14161a'
+    ctx.fillText(!chip.known ? '—' : chip.worst ? t('share.worst') : t('share.notWorst'), chipX + chipW / 2, chipY + 98)
     chipX += chipW + gap
   }
 
@@ -861,15 +841,14 @@ async function buildShareCard(feature, percentile) {
   const meansText = `${t('panel.capacityTitle')}${colon}${meansValue}`
   ctx.textAlign = 'center'
   ctx.font = '500 30px "Schibsted Grotesk", sans-serif'
-  ctx.fillStyle = '#b7c2cf'
+  ctx.fillStyle = '#3d424a'
   drawCenteredLines(ctx, meansText, SHARE_CARD_WIDTH / 2, chipY + chipH + 80, SHARE_CARD_WIDTH - 160, 40)
 
-  // footer tagline
+  // footer: tagline and data date
   ctx.textAlign = 'center'
   ctx.font = '500 28px "Schibsted Grotesk", sans-serif'
-  ctx.fillStyle = '#6b7686'
-  // Wrapped: on one line the tagline ran past both edges of the card.
-  drawCenteredLines(ctx, t('share.tagline'), SHARE_CARD_WIDTH / 2, SHARE_CARD_HEIGHT - 130, SHARE_CARD_WIDTH - 160, 38)
+  ctx.fillStyle = '#5b616b'
+  drawCenteredLines(ctx, t('share.tagline'), SHARE_CARD_WIDTH / 2, SHARE_CARD_HEIGHT - 150, SHARE_CARD_WIDTH - 160, 38)
 
   return canvas
 }
@@ -968,40 +947,16 @@ function quartileColor(quartile) {
   <div>
     <a class="skip-link" href="#map">{{ t('sidePanel.prompt') }}</a>
 
-    <div v-if="showHeatwaveBanner" class="heatwave-banner" role="status">
-      <span class="pulse-dot" aria-hidden="true"></span>
-      <span class="banner-text">
-        <strong>{{ t('context.heatwaveBodyStrong') }}</strong>
-        {{ t('heatwave.bannerText') }}
-      </span>
-      <button class="banner-link" @click="showContext = true">{{ t('heatwave.moreLink') }}</button>
-      <button class="banner-close" @click="showHeatwaveBanner = false" :aria-label="t('heatwave.dismiss')">&times;</button>
-    </div>
-
-    <div class="hero">
-      <div class="eyebrow">{{ t('hero.eyebrow') }}<InfoTip :text="t('jargon.cumulativeScore')" /></div>
-      <h1>{{ t('hero.prefix') }}<span class="grad">{{ t('hero.grad') }}</span>{{ t('hero.suffix') }}</h1>
-      <p>{{ t('hero.body') }}</p>
+    <div class="map-head">
+      <p class="eyebrow">{{ t('site.nav.map') }}</p>
+      <h1>{{ t('mapPage.title') }}</h1>
+      <p class="lead">{{ t('mapPage.lead') }} <InfoTip :text="t('jargon.cumulativeScore')" /></p>
     </div>
 
     <div class="layout">
       <div class="map-panel glass">
-        <div class="search-row">
-          <input
-            v-model="searchQuery"
-            type="text"
-            class="search-input"
-            :placeholder="t('search.placeholder')"
-            :aria-label="t('search.placeholder')"
-            @input="onSearchInput"
-          />
-          <ul v-if="searchSuggestions.length" class="search-suggestions">
-            <li v-for="s in searchSuggestions" :key="s.properties.id">
-              <button @click="selectSuggestion(s)">{{ s.properties.label }}</button>
-            </li>
-          </ul>
-        </div>
-        <p v-if="searchMessage" class="search-message">{{ searchMessage }}</p>
+        <AddressSearch id="map-address" :label="t('address.label')" hide-label :placeholder="t('address.placeholder')" @select="onAddress" />
+        <p v-if="searchMessage" class="search-message" role="status">{{ searchMessage }}</p>
 
         <div class="view-switch-row">
           <div class="view-switch" role="group" :aria-label="t('view.label')">
@@ -1303,204 +1258,66 @@ function quartileColor(quartile) {
   left: 0;
 }
 
-.heatwave-banner {
+.map-head {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 32px 32px 24px;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 40px;
-  background: rgba(255, 61, 138, 0.08);
-  border-bottom: 1px solid rgba(255, 61, 138, 0.25);
-  font-size: 12.5px;
-  color: var(--text-secondary);
+  flex-direction: column;
+  gap: 12px;
 }
-@media (max-width: 920px) {
-  .heatwave-banner {
-    padding: 10px 20px;
-  }
-}
-
-.pulse-dot {
-  flex-shrink: 0;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--magenta);
-  box-shadow: 0 0 0 rgba(255, 61, 138, 0.5);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 61, 138, 0.5); }
-  70% { box-shadow: 0 0 0 8px rgba(255, 61, 138, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 61, 138, 0); }
-}
-
-.banner-text {
-  flex: 1;
-  min-width: 0;
-}
-.banner-text strong {
-  color: var(--text-primary);
-}
-
-.banner-link {
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  color: var(--cyan);
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 4px 6px;
-}
-.banner-link:hover {
-  text-decoration: underline;
-}
-
-.banner-close {
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0 4px;
-}
-.banner-close:hover {
-  color: var(--text-primary);
-}
-
-.hero {
-  padding: 54px 40px 34px;
-  max-width: 740px;
-}
-
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 18px;
-  padding: 6px 12px;
-  border: 1px solid rgba(34, 230, 214, 0.3);
-  border-radius: 999px;
-  background: rgba(34, 230, 214, 0.06);
-}
-.eyebrow::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--cyan);
-  box-shadow: 0 0 8px var(--cyan);
-}
-
-h1 {
-  font-weight: 700;
-  font-size: clamp(32px, 5vw, 52px);
-  line-height: 1.03;
-  margin: 0 0 18px;
-  letter-spacing: -0.02em;
-}
-h1 .grad {
-  background: linear-gradient(100deg, var(--cyan), var(--magenta));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.hero p {
-  font-size: 15.5px;
-  line-height: 1.65;
-  color: var(--text-secondary);
-  max-width: 54ch;
+.map-head .eyebrow {
   margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+}
+.map-head h1 {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+.map-head .lead {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 760px;
 }
 
 .layout {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: 1fr 340px;
   gap: 20px;
-  padding: 0 40px 40px;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 32px 40px;
   align-items: start;
 }
 @media (max-width: 920px) {
   .layout {
     grid-template-columns: 1fr;
-    padding: 0 20px 32px;
+    padding: 0 16px 32px;
   }
-  .hero {
-    padding-left: 20px;
-    padding-right: 20px;
+  .map-head {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
 
 .map-panel {
   padding: 24px;
-}
-
-.search-row {
-  position: relative;
-  margin-bottom: 14px;
-}
-
-.search-input {
-  width: 100%;
-  font-family: inherit;
-  font-size: 13.5px;
-  padding: 11px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--panel-b);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-primary);
-}
-.search-input::placeholder {
-  color: var(--text-muted);
-}
-.search-input:focus-visible {
-  border-color: var(--cyan);
-}
-
-.search-suggestions {
-  position: absolute;
-  z-index: 10;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  background: var(--surface-3);
-  border: 1px solid var(--panel-b);
-  border-radius: 10px;
-  box-shadow: 0 12px 32px var(--panel-shadow);
-}
-.search-suggestions li button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  padding: 8px 10px;
-  font-size: 12.5px;
-  color: var(--text-secondary);
-  border-radius: 6px;
-  cursor: pointer;
-}
-.search-suggestions li button:hover,
-.search-suggestions li button:focus-visible {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .search-message {
   margin: -8px 0 14px;
   font-size: 12px;
-  color: var(--amber);
+  color: var(--accent);
 }
 
 .toolbar {
@@ -1511,7 +1328,6 @@ h1 .grad {
 }
 
 .pill {
-  font-family: var(--mono);
   font-size: 11.5px;
   padding: 8px 14px;
   border-radius: 999px;
@@ -1551,7 +1367,6 @@ h1 .grad {
   align-items: center;
   gap: 12px;
   margin-top: 16px;
-  font-family: var(--mono);
   font-size: 11px;
   color: var(--text-secondary);
 }
@@ -1578,7 +1393,6 @@ h1 .grad {
   overflow: hidden;
 }
 .view-switch button {
-  font-family: var(--mono);
   font-size: 11.5px;
   padding: 8px 14px;
   border: none;
@@ -1738,7 +1552,7 @@ h1 .grad {
   color: var(--text-primary);
 }
 .ghost-link.active {
-  border-color: var(--amber);
+  border-color: var(--accent);
   color: var(--text-primary);
   background: rgba(255, 176, 32, 0.08);
 }
@@ -1756,10 +1570,8 @@ h1 .grad {
 }
 
 .label {
-  font-family: var(--mono);
   font-size: 11px;
   color: var(--cyan);
-  text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
@@ -1793,14 +1605,12 @@ h1 .grad {
   gap: 12px;
 }
 .stat-row .v {
-  font-family: var(--mono);
   color: var(--text-primary);
   text-align: right;
   font-weight: 500;
 }
 .cmp {
   display: block;
-  font-family: var(--mono);
   font-size: 10.5px;
   color: var(--text-muted);
   font-weight: 400;
@@ -1817,7 +1627,6 @@ h1 .grad {
   font-weight: 700;
   font-size: 42px;
   line-height: 1;
-  font-family: var(--mono);
   background: linear-gradient(90deg, var(--cyan), var(--magenta));
   -webkit-background-clip: text;
   background-clip: text;
@@ -1844,7 +1653,6 @@ h1 .grad {
   padding: 12px 14px;
   border: none;
   border-radius: 10px;
-  font-family: var(--mono);
   font-size: 12.5px;
   font-weight: 600;
   background: var(--dark);

@@ -1,8 +1,8 @@
 {
   "metrics": {
     "cumulative": "Cumulative score",
-    "thermal": "Thermal",
-    "pollution": "Air / noise",
+    "thermal": "Heat",
+    "pollution": "Air and noise",
     "housing": "Housing",
     "accessCare": "Access to care"
   },
@@ -21,7 +21,7 @@
   },
   "jargon": {
     "iris": "IRIS: a small statistical neighborhood unit used by INSEE, typically ~2,000 residents — finer-grained than an arrondissement or commune.",
-    "quartile": "Quartile: splits all 2,752 IRIS into 4 equal-sized groups from best (Q1) to worst (Q4) on that indicator.",
+    "quartile": "For this criterion, the 2,752 neighbourhoods are split into 4 groups of equal size, from the least affected quarter (1) to the most affected (4).",
     "cumulativeScore": "How many of the 4 categories (heat, air/noise pollution, housing, access to care) place this neighborhood among the most affected quarter of neighborhoods — 0 to 4.",
     "secondaryResidences": "Share of housing units that are secondary residences or occasional dwellings (INSEE, 2021) — shown as context, never part of the score. A rough proxy for the ability to physically leave during a heatwave, which median income alone only captures indirectly.",
     "capacity": "Means to cope: a separate axis, never part of the exposure score. Combines median income, housing overcrowding and the share of secondary residences (INSEE, 2021), ranked across the 2,752 IRIS and split into three equal groups.",
@@ -36,10 +36,10 @@
   "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors · © CARTO",
   "footerLastUpdated": "Data last updated: {date}",
   "legend": {
-    "worst": "{n} (worst)",
-    "q": "Q{n}",
-    "qBest": "Q1 (best)",
-    "qWorst": "Q4 (worst)",
+    "worst": "{n} (least favourable)",
+    "q": "Quarter {n}",
+    "qBest": "Quarter 1 (least affected)",
+    "qWorst": "Quarter 4 (most affected)",
     "noData": "No data",
     "qpvNote": "Amber outline = official priority neighborhood (QPV, Politique de la Ville) boundary"
   },
@@ -77,7 +77,7 @@
     "maskedIncome": "masked (small IRIS)",
     "minutes": "{n} min",
     "cityMedian": "MGP median: {value}",
-    "morevulnerable": "More exposed than {n}% of MGP neighborhoods",
+    "morevulnerable": "More exposed than {n}% of the neighbourhoods of the Greater Paris metropolis",
     "artificialization": "Artificialized/sealed surface (MOS land use)",
     "population": "Population (2021 census)",
     "secondaryResidences": "Secondary residences / occasional dwellings",
@@ -103,7 +103,10 @@
   },
   "share": {
     "button": "Share this neighborhood ↓",
-    "tagline": "Cumulative environmental exposure, Paris & inner suburbs — Underlaid"
+    "tagline": "Cumulative environmental exposure, Paris & inner suburbs — Underlaid",
+    "eyebrow": "Cumulative score",
+    "worst": "Yes",
+    "notWorst": "No"
   },
   "heatwave": {
     "bannerText": "— Île-de-France, June 22–28, 2026 (last known alert; no live feed — see the methodology for why).",
@@ -776,5 +779,9 @@
         "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités; test set before any calculation (October 2026)"
       }
     }
+  },
+  "mapPage": {
+    "title": "Map of the 2,752 neighbourhoods",
+    "lead": "Each neighbourhood is shaded by the number of criteria — heat, air pollution and noise, housing, access to care — on which it is among the most affected quarter. Click a neighbourhood or enter an address."
   }
 }

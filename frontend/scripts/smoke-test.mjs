@@ -162,8 +162,8 @@ try {
   }
 
   // Address search -> detail panel -> share card (needs the BAN API)
-  await page.fill('.search-input', '1 rue Marie Louise Drancy')
-  const suggestion = page.locator('.search-suggestions button', { hasText: '93700 Drancy' }).first()
+  await page.fill('#map-address', '1 rue Marie Louise Drancy')
+  const suggestion = page.locator('#map-address-list [role="option"]', { hasText: '93700 Drancy' }).first()
   const banAnswered = await suggestion.waitFor({ timeout: 10_000 }).then(() => true, () => false)
   if (!banAnswered) {
     record('SKIP', 'address search + panel + share card', 'address API (BAN) did not answer within 10 s')

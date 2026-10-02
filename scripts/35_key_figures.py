@@ -70,6 +70,27 @@ def main():
             "highest_third_n": int(len(top)),
         }
 
+    # Same gap at equal population density (pre-registered robustness
+    # check, scripts/analysis/access_score4.py): within MGP density fifths
+    # of inhabited IRIS with a means index, weighted by the smaller third,
+    # fifths with at least 10 IRIS in both thirds only.
+    iris_area = gpd.read_file(config.IRIS_REFERENCE_PATH).to_crs(config.CRS_PROJECTED).set_index("code_iris").area / 1e6
+    dens = inhabited[inhabited["capacity_class"].notna()].copy()
+    dens["density"] = dens["population"] / dens["code_iris"].map(iris_area)
+    dens["fifth"] = pd.qcut(dens["density"], 5, labels=False)
+    dens["worst"] = dens["subscore_access_care_quartile"] == 4
+    care_gap_equal_density = {}
+    for d in ["92", "94"]:
+        y = dens[(dens.dep == d) & dens["subscore_access_care_quartile"].notna()]
+        weighted, weight = 0.0, 0
+        for _, g in y.groupby("fifth"):
+            low, top = g[g["capacity_class"] == 0], g[g["capacity_class"] == 2]
+            if len(low) >= 10 and len(top) >= 10:
+                n = min(len(low), len(top))
+                weighted += 100 * (low["worst"].mean() - top["worst"].mean()) * n
+                weight += n
+        care_gap_equal_density[d] = round(weighted / weight, 1) if weight else None
+
     wheelchair_gp_median = {d: round(float(inhabited[inhabited.dep == d]["gp_acc_no"].median()), 2) for d in DEPARTMENTS}
 
     example = df[(df["nom_com"] == "Drancy") & (df["nom_iris"] == "Économie 1")].iloc[0]
@@ -93,6 +114,7 @@ def main():
         "spearman_means_exposure": spearman,
         "worst_access_care_pct": {d: pct(worst_care[inhabited.dep == d].mean()) for d in DEPARTMENTS},
         "access_care_by_means": care_gap,
+        "access_care_gap_equal_density": care_gap_equal_density,
         "wheelchair_gp_median": wheelchair_gp_median,
         "example": example_out,
     }

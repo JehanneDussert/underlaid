@@ -726,7 +726,17 @@
     },
     "legendLabel": "Marker key",
     "legendWorse": "{name}, less favourable than the median",
-    "legendBetter": "{name}, more favourable than the median"
+    "legendBetter": "{name}, more favourable than the median",
+    "blocks": {
+      "exposure": {
+        "title": "What the neighbourhood is exposed to",
+        "intro": "Exposures measured on site, however one travels."
+      },
+      "access": {
+        "title": "What can be reached from the neighbourhood",
+        "intro": "Care and transport within reach of the neighbourhood; the results depend on the travel mode."
+      }
+    }
   },
   "quiz": {
     "progress": "Question {n} of {total}",
@@ -747,20 +757,23 @@
         "explanation": "Seine-Saint-Denis: {d93} of metro stop points marked wheelchair-accessible. Val-de-Marne: {d94}. Paris: {p}. Hauts-de-Seine: {d92}. In Seine-Saint-Denis, they are the stop points of the recent extensions of lines 11 and 14.",
         "sources": "Île-de-France Mobilités (timetables of 1 October 2026, Licence Mobilités)"
       },
-      "stations": {
-        "question": "Of the 459 train stations in Île-de-France, at how many can a wheelchair user board the train on their own, without assistance?",
-        "explanation": "{n} stations out of {total}, all on line H, in Val-d'Oise. At {booking} others, boarding requires booking in advance with the Assist'enGare service, and at {staff} asking station staff. {no} stations are not accessible.",
-        "sources": "Île-de-France Mobilités, \"Accessibilité en gare\" (updated 6 July 2026, Licence Ouverte)"
-      },
       "sidewalks": {
         "question": "In OpenStreetMap, what share of street length in Seine-Saint-Denis has pavement information?",
         "explanation": "{ssd}, against {paris} in Paris. Missing information does not mean there is no pavement: this data was left out of the calculation because areas could not be compared fairly.",
         "sources": "OpenStreetMap contributors (extract of 30 September 2026), Underlaid calculation of 1 October 2026"
       },
       "exposed": {
-        "question": "In Seine-Saint-Denis, what share of highly exposed neighbourhoods (at least 2 of the 4 criteria) is also in the metro area's third where residents have the fewest means?",
+        "question": "In Seine-Saint-Denis, among highly exposed neighbourhoods (those combining at least 2 of the 4 criteria), what share is also in the metro area's third where residents have the fewest means?",
         "explanation": "{v}. In Paris, the share is {paris}. At equal exposure, social situations differ sharply from one area to another.",
         "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME, ANS"
+      },
+      "care": {
+        "question": "In Hauts-de-Seine, at equal population density, is access to care (GPs and pharmacies) in the neighbourhoods with the fewest means better than, the same as or worse than in the best-off neighbourhoods?",
+        "better": "Better",
+        "same": "The same",
+        "worse": "Worse",
+        "explanation": "Worse. In Hauts-de-Seine, {low} of the neighbourhoods with the fewest means are among the least well-served quarter for care, against {high} of those with the most means. At equal population density, the gap reaches {gap} points: it does not come only from the contrast between dense and less dense areas.",
+        "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités; test set before any calculation (October 2026)"
       }
     }
   }

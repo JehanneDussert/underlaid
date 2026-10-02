@@ -3,7 +3,8 @@
 // phone-sized, answers that run against common assumptions. Every answer
 // comes from a dated, sourced figure (src/data/facts.js or
 // key_figures.json) and is worded with the exact definition (stop points,
-// not stations; boarding "on one's own" for the 14 train stations).
+// not stations). The train-station question (14 of 459 "on one's own")
+// was removed: it could not be cross-checked (see src/data/facts.js).
 // The verdict is announced in a live region; focus moves to the next
 // question's heading.
 import { computed, nextTick, onMounted, onServerPrefetch, ref } from 'vue'
@@ -39,7 +40,6 @@ const nf = (value) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'e
 
 const questions = computed(() => {
   const m = FACTS.metroAccessible
-  const st = FACTS.autonomousStations
   const sw = FACTS.sidewalkInfo
   const ssdExposed = Math.round(figures.value?.highly_exposed_lowest_third_pct?.['93'] ?? 79)
   return [
@@ -54,18 +54,6 @@ const questions = computed(() => {
       explanation: t('quiz.q.metro.explanation', { p: pct(m.paris, 1), d92: pct(m.hautsDeSeine, 1), d93: pct(m.seineSaintDenis), d94: pct(m.valDeMarne, 1) }),
       sources: t('quiz.q.metro.sources'),
       anchor: 'sources',
-    },
-    {
-      id: 'stations',
-      options: [
-        { id: 'a', label: nf(st.autonomous), right: true },
-        { id: 'b', label: nf(96) },
-        { id: 'c', label: nf(230) },
-      ],
-      explanation: t('quiz.q.stations.explanation', { n: nf(st.autonomous), total: nf(st.total), booking: nf(st.booking), staff: nf(st.staff), no: nf(st.notAccessible) }),
-      sources: t('quiz.q.stations.sources'),
-      anchor: 'limites',
-      ownDate: true,
     },
     {
       id: 'sidewalks',
@@ -88,6 +76,21 @@ const questions = computed(() => {
       ],
       explanation: t('quiz.q.exposed.explanation', { v: pct(ssdExposed), paris: pct(Math.round(figures.value?.highly_exposed_lowest_third_pct?.['75'] ?? 4)) }),
       sources: t('quiz.q.exposed.sources'),
+      anchor: 'calcul',
+    },
+    {
+      id: 'care',
+      options: [
+        { id: 'better', label: t('quiz.q.care.better') },
+        { id: 'same', label: t('quiz.q.care.same') },
+        { id: 'worse', label: t('quiz.q.care.worse'), right: true },
+      ],
+      explanation: t('quiz.q.care.explanation', {
+        gap: nf(Math.round(figures.value?.access_care_gap_equal_density?.['92'] ?? 23)),
+        low: pct(Math.round(figures.value?.access_care_by_means?.['92']?.lowest_third_pct ?? 41)),
+        high: pct(Math.round(figures.value?.access_care_by_means?.['92']?.highest_third_pct ?? 24)),
+      }),
+      sources: t('quiz.q.care.sources'),
       anchor: 'calcul',
     },
   ]

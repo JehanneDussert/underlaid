@@ -83,6 +83,10 @@
       "highest_third_n": 84
     }
   },
+  "access_care_gap_equal_density": {
+    "92": 22.6,
+    "94": 23.1
+  },
   "wheelchair_gp_median": {
     "75": 7.5,
     "92": 6.99,

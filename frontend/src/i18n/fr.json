@@ -726,7 +726,17 @@
     },
     "legendLabel": "Légende des repères",
     "legendWorse": "{name}, moins favorable que la médiane",
-    "legendBetter": "{name}, plus favorable que la médiane"
+    "legendBetter": "{name}, plus favorable que la médiane",
+    "blocks": {
+      "exposure": {
+        "title": "Ce que le quartier subit",
+        "intro": "Expositions mesurées sur place, quelle que soit la façon de se déplacer."
+      },
+      "access": {
+        "title": "Ce à quoi on accède depuis le quartier",
+        "intro": "Soins et transports atteignables depuis le quartier ; les résultats dépendent du mode de déplacement."
+      }
+    }
   },
   "quiz": {
     "progress": "Question {n} sur {total}",
@@ -747,20 +757,23 @@
         "explanation": "Seine-Saint-Denis : {d93} des points d'arrêt du métro signalés accessibles en fauteuil roulant. Val-de-Marne : {d94}. Paris : {p}. Hauts-de-Seine : {d92}. En Seine-Saint-Denis, ce sont les points d'arrêt des prolongements récents des lignes 11 et 14.",
         "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026, Licence Mobilités)"
       },
-      "stations": {
-        "question": "Sur les 459 gares d'Île-de-France, dans combien peut-on monter dans le train en fauteuil roulant en toute autonomie, sans assistance ?",
-        "explanation": "{n} gares sur {total}, toutes sur la ligne H, dans le Val-d'Oise. Dans {booking} autres, l'accès au train se fait sur réservation préalable auprès du service Assist'enGare, et dans {staff} sur demande auprès d'un agent en gare. {no} gares ne sont pas accessibles.",
-        "sources": "Île-de-France Mobilités, « Accessibilité en gare » (mise à jour du 6 juillet 2026, Licence Ouverte)"
-      },
       "sidewalks": {
         "question": "Dans OpenStreetMap, quelle part de la longueur des rues de Seine-Saint-Denis comporte une information sur les trottoirs ?",
         "explanation": "{ssd}, contre {paris} à Paris. Une information manquante ne signifie pas l'absence de trottoir : ces données ont été écartées du calcul, faute de pouvoir comparer les territoires.",
         "sources": "contributeurs d'OpenStreetMap (extrait du 30 septembre 2026), calcul Underlaid du 1er octobre 2026"
       },
       "exposed": {
-        "question": "En Seine-Saint-Denis, quelle part des quartiers très exposés (au moins 2 des 4 critères) se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
+        "question": "En Seine-Saint-Denis, parmi les quartiers très exposés (qui cumulent au moins 2 critères sur 4), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
         "explanation": "{v}. À Paris, cette part est de {paris}. À exposition égale, les situations sociales diffèrent fortement d'un territoire à l'autre.",
         "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME, ANS"
+      },
+      "care": {
+        "question": "Dans les Hauts-de-Seine, à densité de population égale, l'accès aux soins (médecins généralistes et pharmacies) des quartiers aux ressources les plus faibles est-il meilleur, équivalent ou moins bon que celui des quartiers les plus aisés ?",
+        "better": "Meilleur",
+        "same": "Équivalent",
+        "worse": "Moins bon",
+        "explanation": "Moins bon. Dans les Hauts-de-Seine, {low} des quartiers aux ressources les plus faibles figurent parmi le quart des moins bien desservis en soins, contre {high} des quartiers aux ressources les plus élevées. À densité de population égale, l'écart atteint {gap} points : il ne vient donc pas seulement de l'opposition entre zones denses et moins denses.",
+        "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités ; test défini avant tout calcul (octobre 2026)"
       }
     }
   }

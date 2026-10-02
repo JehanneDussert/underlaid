@@ -215,6 +215,15 @@ function positionText(position) {
 }
 
 // Information-only rows (transport) are not counted in the summary.
+// Two blocks (redesign, 2 October 2026): what the neighbourhood is exposed
+// to (independent of how one travels) and what can be reached from it
+// (depends on the travel mode, hence the mode switch inside that block).
+const EXPOSURE_KEYS = ['thermal', 'pollution', 'housing', 'cool']
+const blocks = computed(() => [
+  { key: 'exposure', rows: rows.value.filter((r) => EXPOSURE_KEYS.includes(r.key)) },
+  { key: 'access', rows: rows.value.filter((r) => !EXPOSURE_KEYS.includes(r.key)) },
+])
+
 const worseCount = computed(() => rows.value.filter((r) => !r.info && r.position !== null && r.position > 50).length)
 const ratedCount = computed(() => rows.value.filter((r) => !r.info && r.position !== null).length)
 
@@ -267,21 +276,12 @@ watch(locale, () => {
     </section>
 
     <template v-if="main">
-      <section class="controls" :aria-label="t('addressPage.controlsLabel')">
-        <p class="summary">
-          <i18n-t keypath="addressPage.summary" tag="span">
-            <template #n><strong class="accent">{{ worseCount }}</strong></template>
-            <template #total>{{ ratedCount }}</template>
-          </i18n-t>
-        </p>
-        <div class="mode">
-          <span id="mode-label" class="mode-label">{{ t('addressPage.modeLabel') }}</span>
-          <div class="segmented" role="group" aria-labelledby="mode-label">
-            <button type="button" :aria-pressed="mode === 'standard'" @click="mode = 'standard'">{{ t('addressPage.modeStandard') }}</button>
-            <button type="button" :aria-pressed="mode === 'stepFree'" @click="mode = 'stepFree'">{{ t('addressPage.modeStepFree') }}</button>
-          </div>
-        </div>
-      </section>
+      <p class="summary">
+        <i18n-t keypath="addressPage.summary" tag="span">
+          <template #n><strong class="accent">{{ worseCount }}</strong></template>
+          <template #total>{{ ratedCount }}</template>
+        </i18n-t>
+      </p>
 
       <section class="compare">
         <button v-if="!compareOpen" type="button" class="pill-btn" @click="compareOpen = true">{{ t('addressPage.compare') }}</button>
@@ -299,30 +299,46 @@ watch(locale, () => {
         <li v-if="other" class="key"><span class="dot other" aria-hidden="true"></span>{{ other.feature.properties.nom_iris }}, {{ other.feature.properties.nom_com }}</li>
       </ul>
 
-      <div class="scale-head" aria-hidden="true">
-        <span>{{ t('addressPage.moreFav') }}</span>
-        <span>{{ t('addressPage.median') }}</span>
-        <span>{{ t('addressPage.lessFav') }}</span>
-      </div>
-
-      <ul class="rows" role="list">
-        <li v-for="r in rows" :key="r.key" class="criterion-row">
-          <div class="row-text">
-            <h2>{{ r.title }}<span v-if="r.info" class="tag">{{ t('addressPage.infoTag') }}</span></h2>
-            <p>{{ r.text }}</p>
-            <p v-if="r.scope" class="scope">{{ r.scope }}</p>
+      <section v-for="block in blocks" :key="block.key" class="block" :aria-labelledby="`block-${block.key}`">
+        <div class="block-head">
+          <div>
+            <h2 :id="`block-${block.key}`">{{ t(`addressPage.blocks.${block.key}.title`) }}</h2>
+            <p class="block-intro">{{ t(`addressPage.blocks.${block.key}.intro`) }}</p>
           </div>
-          <div class="row-scale">
-            <div class="track" aria-hidden="true">
-              <span class="line"></span>
-              <span class="mid"></span>
-              <span v-if="r.otherPosition !== null && other" class="marker other" :style="markerStyle(r.otherPosition)"></span>
-              <span v-if="r.position !== null" class="marker" :class="{ bad: r.position > 50 }" :style="markerStyle(r.position)"></span>
+          <div v-if="block.key === 'access'" class="mode">
+            <span id="mode-label" class="mode-label">{{ t('addressPage.modeLabel') }}</span>
+            <div class="segmented" role="group" aria-labelledby="mode-label">
+              <button type="button" :aria-pressed="mode === 'standard'" @click="mode = 'standard'">{{ t('addressPage.modeStandard') }}</button>
+              <button type="button" :aria-pressed="mode === 'stepFree'" @click="mode = 'stepFree'">{{ t('addressPage.modeStepFree') }}</button>
             </div>
-            <p class="pos-text">{{ r.positionText }}<template v-if="other"> · {{ t('addressPage.otherPos', { name: other.feature.properties.nom_iris, text: r.otherPositionText }) }}</template></p>
           </div>
-        </li>
-      </ul>
+        </div>
+
+        <div class="scale-head" aria-hidden="true">
+          <span>{{ t('addressPage.moreFav') }}</span>
+          <span>{{ t('addressPage.median') }}</span>
+          <span>{{ t('addressPage.lessFav') }}</span>
+        </div>
+
+        <ul class="rows" role="list">
+          <li v-for="r in block.rows" :key="r.key" class="criterion-row">
+            <div class="row-text">
+              <h3>{{ r.title }}<span v-if="r.info" class="tag">{{ t('addressPage.infoTag') }}</span></h3>
+              <p>{{ r.text }}</p>
+              <p v-if="r.scope" class="scope">{{ r.scope }}</p>
+            </div>
+            <div class="row-scale">
+              <div class="track" aria-hidden="true">
+                <span class="line"></span>
+                <span class="mid"></span>
+                <span v-if="r.otherPosition !== null && other" class="marker other" :style="markerStyle(r.otherPosition)"></span>
+                <span v-if="r.position !== null" class="marker" :class="{ bad: r.position > 50 }" :style="markerStyle(r.position)"></span>
+              </div>
+              <p class="pos-text">{{ r.positionText }}<template v-if="other"> · {{ t('addressPage.otherPos', { name: other.feature.properties.nom_iris, text: r.otherPositionText }) }}</template></p>
+            </div>
+          </li>
+        </ul>
+      </section>
 
       <div class="means">
         <p>{{ means }}</p>
@@ -386,6 +402,31 @@ h1 {
   color: var(--accent);
 }
 
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.block-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px 32px;
+  flex-wrap: wrap;
+}
+.block-head h2 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+}
+.block-intro {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: var(--text-body);
+  max-width: 560px;
+}
 .controls {
   display: flex;
   justify-content: space-between;
@@ -529,7 +570,7 @@ h1 {
   flex: 1;
   min-width: 0;
 }
-.row-text h2 {
+.row-text h3 {
   margin: 0 0 4px;
   font-size: 20px;
   font-weight: 700;

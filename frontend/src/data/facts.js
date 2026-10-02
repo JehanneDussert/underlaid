@@ -25,10 +25,9 @@ export const FACTS = {
   // Ouverte 2.0, updated 6 July 2026): 14 of 459, all on Transilien
   // line H in Val-d'Oise; 174 on prior booking (Assist'enGare), 58 on
   // request to station staff, 213 not accessible. Checked on 2 October 2026.
+  // NOT SHOWN on the site: no other public source (SNCF Gares & Connexions
+  // NeTEx file: platform equipment only) confirms that level 6 is filled in
+  // evenly across lines, so "all on line H" could be an entry artefact.
   autonomousStations: { autonomous: 14, total: 459, booking: 174, staff: 58, notAccessible: 213, date: '2026-07-06' },
 
-  // Access to care, pre-registered test (step 4 of the access rebuild,
-  // 2 October 2026): the gap between the lowest and the highest third of
-  // means, at equal population density (density fifths), in points.
-  careGapEqualDensity: { hautsDeSeine: 22.6, valDeMarne: 23.1, date: '2026-10-02' },
 }

@@ -170,7 +170,7 @@ function goToAddress({ label, lon, lat }) {
               </li>
             </ul>
           </div>
-          <p class="def">{{ t('home.f3.density', { n92: fmt(FACTS.careGapEqualDensity.hautsDeSeine), n94: fmt(FACTS.careGapEqualDensity.valDeMarne) }) }}</p>
+          <p v-if="figures" class="def">{{ t('home.f3.density', { n92: fmt(figures.access_care_gap_equal_density['92']), n94: fmt(figures.access_care_gap_equal_density['94']) }) }}</p>
           <p v-if="wheelchair" class="def">{{ t('home.f3.wheelchair', { p: fmt(wheelchair['75'], 1), d92: fmt(wheelchair['92'], 1), d93: fmt(wheelchair['93'], 1), d94: fmt(wheelchair['94'], 1) }) }}</p>
           <FigureSource :sources="t('home.f3.sources')" anchor="calcul" />
         </div>

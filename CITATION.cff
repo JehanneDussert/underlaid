@@ -14,6 +14,9 @@ identifiers:
   - type: doi
     value: 10.5281/zenodo.23083313
     description: DOI of version 0.1.0
+  - type: doi
+    value: 10.5281/zenodo.23101510
+    description: DOI of version 0.2.0
 repository-code: "https://github.com/JehanneDussert/underlaid"
 url: "https://underlaid.vercel.app"
 abstract: >-

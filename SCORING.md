@@ -850,6 +850,21 @@ to what's available for humans exists at this grain.
   follow-up, not fixed in this pass — each needs its own manual audit
   before changing, per this project's own practice of auditing before
   correcting rather than patching from a summary statistic alone.
+- **DPE labels of small dwellings are already on the 2024 scale.** The
+  2021 method rated dwellings under 40 m² too harshly (fixed water-heating
+  and heating needs spread over a small surface); the order of 25 March
+  2024 changed their class thresholds from 1 July 2024. ADEME's open data
+  has no field saying whether a label was recalculated, so this was
+  checked (2026-10-02, `scripts/analysis/dpe_2024_thresholds.py` and
+  `dpe_small_surfaces.py`): every MGP certificate was reclassified from its
+  own consumption and emissions with the official thresholds. Small-dwelling
+  certificates issued **before** the reform match the 2024 rule for 99.8%
+  of them (the 2021 rule: 92.9%), and those issued after it for 99.95% —
+  the published labels have been recalculated. Applying the exact rule
+  everywhere changes 0.06% of certificates and 10 IRIS scores, so nothing
+  is applied. Small dwellings still have more F/G labels after the official
+  correction (in Paris, 27.5% under 30 m² against 7.7% over 70 m²): that
+  is in the data, not a scale artefact.
 - **Enedis thermosensitivity is a winter-heating signal, not a direct
   summer-cooling measurement** — Enedis doesn't publish one. Using it as
   a proxy for "can't compensate for heat" rests on the assumption that a

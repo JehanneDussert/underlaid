@@ -59,7 +59,7 @@ function toggle() {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 16px 20px;
+  padding: 20px 4px;
   border: none;
   background: none;
   border-radius: var(--radius);
@@ -79,7 +79,7 @@ function toggle() {
   transform: rotate(180deg);
 }
 .accordion-panel {
-  padding: 0 20px 18px;
+  padding: 0 4px 24px 34px;
   animation: accordion-open 200ms ease-out;
 }
 @keyframes accordion-open {

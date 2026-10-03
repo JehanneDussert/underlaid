@@ -25,7 +25,7 @@ import { useSeoMeta } from '../composables/useSeoMeta'
 import { MODES } from '../data/modes'
 import { NEEDS } from '../data/needs'
 import { localizedRouteName } from '../router'
-import { findNeighbourhood, loadIndex, loadNeighbourhood, rememberNeighbourhood } from '../utils/neighbourhood'
+import { findNeighbourhood, loadCommune, loadIndex, loadNeighbourhood, rememberNeighbourhood } from '../utils/neighbourhood'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -56,7 +56,8 @@ async function load(code) {
   }
   loading.value = true
   notFound.value = ''
-  const [r, i] = await Promise.all([loadNeighbourhood(code), loadIndex().catch(() => null)])
+  const [r, i, c] = await Promise.all([loadNeighbourhood(code), loadIndex().catch(() => null), loadCommune(String(code).slice(0, 5))])
+  communeIris.value = c?.iris ?? []
   loading.value = false
   record.value = r
   index.value = i
@@ -131,8 +132,27 @@ function rankCard(k) {
     subtitle: t(`nbhd.exposure.${k}.subtitle`),
     share: ok ? e.rank : null,
     inWorstQuarter: e.quarter === 4,
-    sentence: ok ? t(k === 'access_care' ? 'nbhd.rank.care' : 'nbhd.rank.exposure', { n }) : '',
+    sentence: ok ? t(k === 'access_care' ? 'nbhd.rank.care' : 'nbhd.rank.exposure', { n }, n) : '',
+    nearby: ok ? nearby(k) : null,
   }
+}
+
+// "Sur 10 quartiers, N…": which ones? The inhabited neighbourhoods of the
+// same commune (Paris: arrondissement) that are better placed, up to three
+// named, the most favourable first.
+const communeIris = ref([])
+function nearby(k) {
+  const mine = record.value.exposures[k].rank
+  const others = communeIris.value.filter((r) => r.code !== record.value.code && r.inhabited && r.exposures[k].rank !== null)
+  const better = others.filter((r) => r.exposures[k].rank < mine).sort((a, b) => a.exposures[k].rank - b.exposures[k].rank)
+  return { count: better.length, total: others.length + 1, names: better.slice(0, 3).map((r) => r.name) }
+}
+function nearbyText(card) {
+  const nb = card.nearby
+  if (!nb || nb.total < 2) return ''
+  const key = card.key === 'access_care' ? 'nbhd.nearby.care' : 'nbhd.nearby.exposure'
+  const base = t(key, { count: nb.count, total: nb.total, commune: record.value.commune }, nb.count)
+  return nb.names.length ? `${base} ${t('nbhd.nearby.names', { names: nb.names.join(', ') })}` : base
 }
 const cards = computed(() => (record.value ? EXPOSURES.map(rankCard) : []))
 const careCard = computed(() => (record.value ? rankCard('access_care') : null))
@@ -175,10 +195,9 @@ function gap(place) {
   return b - a
 }
 const openNeeds = ref({})
-function needOpen(need) {
-  if (!mode.value || compare.value) return true
-  return openNeeds.value[need.id] ?? need.id === 'care'
-}
+// Every need starts closed (decision of 3 October 2026); the visitor opens
+// the ones they want, and they stay open when the mode changes.
+const needOpen = (need) => openNeeds.value[need.id] ?? false
 const columns = computed(() => [0, 1].map((c) => NEEDS.filter((n) => n.column === c)))
 
 // Wheelchair: the nearest accessible stop against the nearest stop.
@@ -255,6 +274,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
               :right-label="t('nbhd.rank.right')"
               :sentence="c.sentence"
               :missing="t('nbhd.rank.missing')"
+              :note="nearbyText(c)"
             />
           </div>
         </section>
@@ -296,6 +316,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
               </div>
               <div class="rank-scale" aria-hidden="true" v-if="careCard.share !== null"><span>{{ t('nbhd.rank.careLeft') }}</span><span>{{ t('nbhd.rank.careRight') }}</span></div>
               <p class="care-sentence">{{ careCard.share !== null ? careCard.sentence : t('nbhd.rank.missing') }}</p>
+              <p v-if="nearbyText(careCard)" class="care-nearby">{{ nearbyText(careCard) }}</p>
             </div>
           </div>
 
@@ -315,7 +336,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
             <div v-for="(col, ci) in columns" :key="ci" class="needs-col">
               <AccordionItem
                 v-for="need in col"
-                :key="`${need.id}-${mode}-${compare}`"
+                :key="need.id"
                 class="need"
                 :open="needOpen(need)"
                 @update:open="(v) => (openNeeds[need.id] = v)"
@@ -327,17 +348,17 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
                       <span class="need-name">{{ t(`nbhd.need.${need.id}.title`) }}</span>
                       <span class="need-sub">{{ t(`nbhd.need.${need.id}.sub`) }}</span>
                     </span>
-                    <span v-if="nearest(need)" class="need-nearest"><span class="nearest-label">{{ t('nbhd.nearest') }} </span><strong>{{ nearest(need) }}</strong></span>
+                    <span v-if="nearest(need)" class="need-nearest"><span class="nearest-label">{{ t('nbhd.nearest') }}&nbsp;</span><strong>{{ nearest(need) }}</strong></span>
                   </span>
                 </template>
-                <p v-if="need.parisOnly && !PARIS" class="paris-only">{{ t('nbhd.parisOnly') }}</p>
-                <ul v-else class="places">
-                  <li v-for="place in need.places" :key="place.id" class="place">
+                <ul class="places">
+                  <li v-for="place in need.places" :key="place.id" class="place" :class="{ 'place-note': place.parisOnly && !PARIS }">
                     <span class="place-name">
                       {{ t(`nbhd.place.${place.id}`) }}
-                      <span v-if="!computedYet(place)" class="badge">{{ t('nbhd.notYet') }}</span>
+                      <span v-if="!computedYet(place) && !(place.parisOnly && !PARIS)" class="badge">{{ t('nbhd.notYet') }}</span>
                     </span>
-                    <span v-if="computedYet(place)" class="place-times">
+                    <span v-if="place.parisOnly && !PARIS" class="paris-only">{{ t('nbhd.parisOnly') }}</span>
+                    <span v-else-if="computedYet(place)" class="place-times">
                       <template v-if="!mode">
                         <span v-for="m in MODES" :key="m" class="t-item">
                           <span class="dot" :class="`dot-${m}`" aria-hidden="true"></span>
@@ -362,10 +383,18 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
 
           <aside v-if="station" class="station-note">
             <span class="dot dot-wheelchair" aria-hidden="true"></span>
-            <p>
-              {{ t('nbhd.station', { wc: fmtMin(station.wheelchair), free: fmtMin(station.free) }) }}
-              <router-link :to="{ name: localizedRouteName('methodology', locale), hash: '#limites' }">{{ t('nbhd.stationLink') }}</router-link>
-            </p>
+            <div>
+              <p>
+                {{
+                  station.wheelchair === station.free
+                    ? t('nbhd.stationSame', { wc: fmtMin(station.wheelchair) })
+                    : t('nbhd.station', { wc: fmtMin(station.wheelchair), free: fmtMin(station.free) })
+                }}
+              </p>
+              <p class="station-link">
+                <router-link :to="{ name: localizedRouteName('methodology', locale), hash: '#limites' }">{{ t('nbhd.stationLink') }}</router-link>
+              </p>
+            </div>
           </aside>
         </section>
 
@@ -422,7 +451,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   clip: rect(0, 0, 0, 0);
 }
 .nbhd-body {
-  padding-top: 24px;
+  padding-top: 32px;
 }
 .breadcrumb {
   font-size: 14px;
@@ -496,11 +525,11 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   text-decoration: none;
 }
 .part {
-  padding-top: 64px;
-  scroll-margin-top: 80px;
+  padding-top: 104px;
+  scroll-margin-top: 96px;
 }
 .part h2 {
-  margin: 0 0 6px;
+  margin: 0 0 10px;
   font-size: 30px;
 }
 .part-num {
@@ -516,7 +545,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   color: var(--line-purple);
 }
 .part-intro {
-  margin: 0 0 20px;
+  margin: 0 0 32px;
   font-size: 16px;
   color: var(--text-secondary);
   max-width: 720px;
@@ -524,7 +553,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
 .cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 28px;
 }
 .part2-head {
   display: flex;
@@ -532,6 +561,10 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   justify-content: space-between;
   align-items: flex-end;
   gap: 16px;
+  margin-bottom: 28px;
+}
+.part2-head .part-intro {
+  margin-bottom: 0;
 }
 .compare :deep(.mode-label) {
   margin: 0 0 8px;
@@ -543,8 +576,8 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
 .how {
   border: 1.5px solid var(--line);
   border-radius: var(--radius);
-  padding: 16px 22px;
-  margin-bottom: 16px;
+  padding: 20px 28px;
+  margin-bottom: 24px;
 }
 .how summary {
   cursor: pointer;
@@ -596,8 +629,8 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   align-items: center;
   border: 1.5px solid var(--line);
   border-radius: var(--radius);
-  padding: 20px 24px;
-  margin-bottom: 16px;
+  padding: 26px 28px;
+  margin-bottom: 28px;
 }
 .care-text h3 {
   margin: 0 0 6px;
@@ -644,11 +677,11 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 16px;
-  padding: 12px 16px;
+  padding: 14px 20px;
   border-radius: 12px;
   background: var(--mode-wheelchair-bg);
   font-size: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 .legend-item {
   display: inline-flex;
@@ -661,7 +694,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
 .needs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  gap: 40px;
   align-items: start;
 }
 .needs-col {
@@ -722,7 +755,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 8px 0;
+  padding: 12px 0;
   border-top: 1px solid var(--line-soft);
   font-size: 16px;
 }
@@ -764,20 +797,31 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   font-weight: 700;
 }
 .paris-only {
-  margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+.place-note {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.care-nearby {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 .station-note {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  margin-top: 28px;
-  padding: 18px 22px;
+  margin-top: 32px;
+  padding: 22px 28px;
   border-radius: var(--radius);
   background: #f2f5f9;
-  max-width: 880px;
+}
+.station-link {
+  margin-top: 8px !important;
 }
 .station-note .dot {
   margin-top: 7px;
@@ -789,7 +833,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
 .part3 {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 48px;
+  gap: 64px;
   align-items: center;
 }
 .part3-lead {

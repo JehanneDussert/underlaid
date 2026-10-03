@@ -54,15 +54,15 @@ export const NEEDS = [
       { id: 'library', source: 'places' },
     ],
   },
-  { id: 'cool', color: '#5BB318', column: 1, places: [{ id: 'park', source: 'places' }] },
   {
-    id: 'toilets',
-    color: '#5B6B7A',
+    id: 'cool',
+    color: '#5BB318',
     column: 1,
-    parisOnly: true,
     places: [
-      { id: 'toilets', source: 'paris' },
-      { id: 'drinking_water', source: 'paris' },
+      { id: 'park', source: 'places' },
+      // Drinking water here (decision of 3 October 2026), Paris only.
+      { id: 'drinking_water', source: 'paris', parisOnly: true },
     ],
   },
+  { id: 'toilets', color: '#5B6B7A', column: 1, places: [{ id: 'toilets', source: 'paris', parisOnly: true }] },
 ]

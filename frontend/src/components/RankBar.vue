@@ -20,6 +20,9 @@ const props = defineProps({
   sentence: { type: String, default: '' },
   // Shown instead of the bar when there is no value (e.g. not enough data).
   missing: { type: String, default: '' },
+  // A line under the sentence (e.g. the better-placed neighbourhoods of the
+  // same commune).
+  note: { type: String, default: '' },
 })
 
 const left = computed(() => `${Math.min(100, Math.max(0, 100 * props.share))}%`)
@@ -39,6 +42,7 @@ const left = computed(() => `${Math.min(100, Math.max(0, 100 * props.share))}%`)
         <span>{{ leftLabel }}</span><span>{{ rightLabel }}</span>
       </div>
       <p class="rank-sentence">{{ sentence }}</p>
+      <p v-if="note" class="rank-note">{{ note }}</p>
     </template>
     <p v-else class="rank-missing">{{ missing }}</p>
   </div>
@@ -48,7 +52,7 @@ const left = computed(() => `${Math.min(100, Math.max(0, 100 * props.share))}%`)
 .rank-card {
   border: 1.5px solid var(--line);
   border-radius: var(--radius);
-  padding: 22px 22px 20px;
+  padding: 26px 26px 24px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -99,6 +103,12 @@ const left = computed(() => `${Math.min(100, Math.max(0, 100 * props.share))}%`)
   margin: 0;
   font-size: 16px;
   font-weight: 700;
+}
+.rank-note {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
 }
 .rank-missing {
   margin: 0;

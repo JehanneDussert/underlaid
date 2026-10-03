@@ -13,7 +13,24 @@ defineProps({
 })
 const { t, locale } = useI18n()
 
-const date = (iso) => new Intl.DateTimeFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso))
+// French writes the first day of a month "1er".
+const date = (iso) => {
+  const text = new Intl.DateTimeFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso))
+  return locale.value === 'fr' ? text.replace(/^1 /, '1er ') : text
+}
+function controlText(h) {
+  const c = h.control2022
+  if (c.table) return t(`hypotheses.${h.id}.control`, Object.fromEntries(c.table.flatMap((r) => [[`l${r.dep}`, pct(r.lowest)], [`h${r.dep}`, pct(r.highest)]])))
+  const f = c.figures
+  const args = {}
+  for (const [k, v] of Object.entries(f)) {
+    if (Array.isArray(v)) {
+      args[`${k}l`] = pct(v[0])
+      args[`${k}h`] = pct(v[1])
+    } else args[k] = new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', { maximumFractionDigits: 1 }).format(v)
+  }
+  return t(`hypotheses.${h.id}.control`, args)
+}
 const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(v / 100)
 </script>
 
@@ -44,6 +61,10 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
         </table>
         <p v-if="h.table" class="hypothesis-result">{{ t(`hypotheses.${h.id}.after`) }}</p>
         <p v-if="h.table" class="hypothesis-caveat">{{ t(`hypotheses.${h.id}.caveat`) }}</p>
+        <p v-if="h.control2022" class="hypothesis-control">
+          <strong>{{ t('hypotheses.control.label') }} {{ t(h.control2022.confirmed ? 'hypotheses.control.confirmed' : 'hypotheses.control.notConfirmed') }}.</strong>
+          {{ controlText(h) }}
+        </p>
         <p class="hypothesis-date">{{ t('hypotheses.written', { date: date(h.written) }) }}</p>
       </li>
     </ul>
@@ -107,6 +128,14 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
   color: var(--text-secondary);
   border-left: 3px solid var(--line-strong);
   padding-left: 12px;
+}
+.hypothesis-control {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface-muted);
 }
 .hypothesis-date {
   margin: 0;

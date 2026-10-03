@@ -85,7 +85,6 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
   margin: 0;
   padding: 0;
   list-style: none;
-  max-width: 900px;
 }
 .hypothesis {
   border: 1.5px solid var(--line);

@@ -702,6 +702,22 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   flex-direction: column;
   border-top: 2px solid var(--text-primary);
 }
+/* Closed needs line up across the two columns: every header has the same
+   three lines (name, places, nearest duration) and the same height. */
+.needs-col .need :deep(.accordion-button) {
+  min-height: 112px;
+}
+@media (min-width: 761px) {
+  .need-head {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+  .need-nearest {
+    flex-basis: 100%;
+    margin-left: 30px;
+    margin-top: 2px;
+  }
+}
 .needs-col .need {
   border: none;
   border-bottom: 1px solid var(--line);
@@ -928,6 +944,9 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   }
   .need-name {
     font-size: 17px;
+  }
+  .needs-col .need :deep(.accordion-button) {
+    min-height: 64px;
   }
 }
 </style>

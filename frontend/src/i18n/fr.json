@@ -629,7 +629,7 @@
     "unavailable": "Le service de recherche d'adresse ne répond pas. Réessayez plus tard.",
     "tooShort": "Saisissez au moins 3 caractères.",
     "notFound": "Aucune adresse trouvée.",
-    "searching": "Recherche des adresses…",
+    "searching": "Recherche en cours…",
     "loadingPlace": "Chargement du quartier…"
   },
   "home": {

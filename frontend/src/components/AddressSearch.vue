@@ -36,8 +36,10 @@ let lastRequest = 0
 const listId = computed(() => `${props.id}-list`)
 const optionId = (i) => `${props.id}-opt-${i}`
 const status = computed(() => {
+  // Announced through the live status line below (the dots are visual).
+  if (props.busy) return t('address.loadingPlace')
   if (message.value) return message.value
-  if (props.busy || searching.value) return ''
+  if (searching.value) return t('address.searching')
   if (!open.value) return ''
   return suggestions.value.length ? t('address.suggestions', { n: suggestions.value.length }) : ''
 })
@@ -115,7 +117,7 @@ async function submit() {
 </script>
 
 <template>
-  <form class="address-search" role="search" @submit.prevent="submit">
+  <form class="address-search" role="search" :aria-busy="props.busy || searching ? 'true' : 'false'" @submit.prevent="submit">
     <label :for="props.id" :class="{ 'sr-only': props.hideLabel }" class="label">{{ props.label }}</label>
     <div class="row">
       <div class="field">
@@ -148,12 +150,15 @@ async function submit() {
       </div>
       <LoadingDots v-if="searching && !props.busy" class="field-loading" :label="t('address.searching')" :show-label="false" />
       <button type="submit" :aria-disabled="props.busy ? 'true' : undefined">
-        <LoadingDots v-if="props.busy" light :label="t('address.loadingPlace')" :show-label="false" />
+        <template v-if="props.busy">
+          <LoadingDots light :label="t('address.loadingPlace')" :show-label="false" />
+          <!-- The button keeps an accessible name while it shows the dots. -->
+          <span class="sr-only">{{ t('address.loadingPlace') }}</span>
+        </template>
         <template v-else>{{ t('address.submit') }}</template>
       </button>
     </div>
     <p class="status" aria-live="polite">{{ status }}</p>
-    <p v-if="props.busy" class="busy-text" aria-hidden="true">{{ t('address.loadingPlace') }}</p>
   </form>
 </template>
 
@@ -232,11 +237,6 @@ button {
 }
 .field-loading {
   flex-shrink: 0;
-}
-.busy-text {
-  margin: 0;
-  font-size: 14px;
-  color: var(--text-secondary);
 }
 .suggestions {
   position: absolute;

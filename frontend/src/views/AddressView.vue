@@ -280,6 +280,7 @@ watch(locale, () => {
       <h1 v-else>{{ t('addressPage.title') }}</h1>
       <!-- While the neighbourhoods load (5 MB until the redesign's per-
            neighbourhood files), an address in the URL shows a loading line. -->
+      <!-- Visual only: the field's live status line announces it. -->
       <LoadingDots v-if="pending" class="page-loading" :label="t('address.loadingPlace')" />
       <AddressSearch id="address-main" :busy="pending" :label="main ? t('addressPage.another') : t('address.label')" :placeholder="t('address.placeholder')" @select="(a) => locate(a, 'main')" />
       <p v-if="notFound" class="flag" role="status">{{ notFound }}</p>

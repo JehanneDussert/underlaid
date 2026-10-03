@@ -1,8 +1,10 @@
 <script setup>
-// Small loading indicator: three dots that pulse in turn, and a text that
-// a screen reader announces (role="status"). The text can be shown or kept
-// for screen readers only. With reduced motion the dots stay still (the
-// text still says it is loading).
+// Small loading indicator: three dots that pulse in turn, with an
+// optional visible text. It is visual only: the announcement to screen
+// readers is made by a live region that exists before loading starts
+// (a region inserted at the same time as its text is often not read),
+// e.g. the status line of AddressSearch.vue. With reduced motion the dots
+// stay still.
 defineProps({
   label: { type: String, required: true },
   showLabel: { type: Boolean, default: true },
@@ -12,9 +14,9 @@ defineProps({
 </script>
 
 <template>
-  <span class="loading" :class="{ light }" role="status">
-    <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>
-    <span :class="{ 'sr-only': !showLabel }">{{ label }}</span>
+  <span class="loading" :class="{ light }" aria-hidden="true">
+    <span class="dots"><span></span><span></span><span></span></span>
+    <span v-if="showLabel">{{ label }}</span>
   </span>
 </template>
 

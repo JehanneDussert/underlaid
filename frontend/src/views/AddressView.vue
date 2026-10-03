@@ -311,6 +311,7 @@ watch(locale, () => {
               <button type="button" :aria-pressed="mode === 'standard'" @click="mode = 'standard'">{{ t('addressPage.modeStandard') }}</button>
               <button type="button" :aria-pressed="mode === 'stepFree'" @click="mode = 'stepFree'">{{ t('addressPage.modeStepFree') }}</button>
             </div>
+            <p class="lower-bound">{{ t('routes.lowerBound') }}</p>
           </div>
         </div>
 
@@ -449,6 +450,13 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+.lower-bound {
+  margin: 4px 0 0;
+  max-width: 460px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
 }
 .mode-label {
   font-size: 14px;

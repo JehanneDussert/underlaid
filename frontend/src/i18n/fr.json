@@ -551,7 +551,7 @@
         },
         {
           "name": "Déplacements sans marches.",
-          "desc": "L'accessibilité des points d'arrêt est celle déclarée par Île-de-France Mobilités ; l'état des ascenseurs et des trottoirs n'est pas connu."
+          "desc": "Les durées et l'accès sans marches sont une limite basse : le calcul évite les escaliers et les arrêts déclarés non accessibles, mais ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni d'une vitesse réduite, ni de l'accessibilité du bâtiment d'arrivée."
         },
         {
           "name": "Accès aux soins.",
@@ -660,7 +660,7 @@
       "lowest": "Tiers aux ressources les plus faibles",
       "highest": "Tiers aux ressources les plus élevées",
       "density": "À densité de population égale, l'écart atteint {n92} points dans les Hauts-de-Seine et {n94} points dans le Val-de-Marne (test défini avant tout calcul, octobre 2026). En Seine-Saint-Denis, presque aucun quartier n'appartient au tiers aux ressources les plus élevées : la comparaison n'est pas possible.",
-      "wheelchair": "En fauteuil roulant, le nombre de médecins atteignables reste plus faible en petite couronne : médiane de {p} pour 10 000 habitants à Paris, {d92} dans les Hauts-de-Seine, {d93} en Seine-Saint-Denis, {d94} dans le Val-de-Marne.",
+      "wheelchair": "En fauteuil roulant, le nombre de médecins atteignables reste plus faible en petite couronne : médiane de {p} pour 10 000 habitants à Paris, {d92} dans les Hauts-de-Seine, {d93} en Seine-Saint-Denis, {d94} dans le Val-de-Marne. Il s'agit d'une limite basse : ni les ascenseurs en panne, ni l'état des trottoirs, ni une vitesse réduite ne sont pris en compte.",
       "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités, OpenStreetMap"
     },
     "f4": {
@@ -802,7 +802,7 @@
       "cpam": "CPAM",
       "employment": "France Travail",
       "post_office": "Bureau de poste",
-      "station": "Station de métro, RER, train ou tram"
+      "station": "Station du réseau lourd (métro, RER, train, tram)"
     },
     "slots": {
       "tue10": "Mardi, 10 h",
@@ -824,6 +824,11 @@
     "noValue": "Pas de résultat pour ce quartier (aucun habitant recensé dans la grille de l'INSEE).",
     "unavailable": "Les résultats sont en cours de calcul et seront publiés prochainement.",
     "note": "Durée médiane pour les habitants du quartier, porte à porte, à pied et en transports en commun, pour des départs étalés sur une heure. La destination la plus proche peut différer selon le mode de déplacement. L'accessibilité du bâtiment d'arrivée n'est pas connue. Jours de référence : mardi 13 et dimanche 11 octobre 2026.",
-    "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026, Licence Mobilités), OpenStreetMap, IGN, INSEE (BPE 2025, grille de population 2021), ANCT, annuaire de l'administration (DILA), ANS, FINESS"
+    "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026, Licence Mobilités), OpenStreetMap, IGN, INSEE (BPE 2025, grille de population 2021), ANCT, annuaire de l'administration (DILA), ANS, FINESS",
+    "slotsLimited": "Soirée, nuit et dimanche : durées affichées seulement pour les urgences. Les horaires d'ouverture des services et les gardes des médecins et pharmacies ne figurent pas dans les données.",
+    "infoOnly": "pour information",
+    "infoOnlyNote": "Pour information : le médecin et la pharmacie les plus proches sont à quelques minutes dans presque tous les quartiers ; l'accès aux soins noté tient compte du nombre de personnes qui se partagent chaque cabinet ou officine (page Par adresse).",
+    "lowerBound": "Durée sans marches : une limite basse. Le calcul évite les escaliers et les arrêts déclarés non accessibles, mais ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni d'une vitesse réduite, ni de l'accessibilité du bâtiment d'arrivée.",
+    "stationAccessible": "Sans marches : point d'arrêt accessible le plus proche"
   }
 }

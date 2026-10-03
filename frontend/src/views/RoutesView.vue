@@ -25,11 +25,19 @@ useSeoMeta({
   },
 })
 
-const TYPES = ['emergency', 'gp', 'pharmacy', 'town_hall', 'france_services', 'caf', 'cpam', 'employment', 'post_office', 'station']
+// Station first: the most telling result (nearest accessible stop point of
+// the heavy network). GP and pharmacy last, for information (crushed
+// against the floor: 43% / 37% of neighbourhoods at 2 min or less).
+const TYPES = ['station', 'emergency', 'town_hall', 'france_services', 'caf', 'cpam', 'employment', 'post_office', 'gp', 'pharmacy']
+const INFO_ONLY = new Set(['gp', 'pharmacy'])
+// Realistic combinations only (decision of 2 October 2026): evening, night
+// and Sunday for emergency departments only; stations are reached on foot,
+// whatever the hour. Opening hours and on-call GPs/pharmacies are not in
+// the data.
 const SLOTS = ['tue10', 'tue21', 'tue01', 'sun10']
 const PROFILES = ['standard', 'slow', 'step_free_no']
 
-const destination = ref('emergency')
+const destination = ref('station')
 const slot = ref('tue10')
 const place = ref(null) // { label, code, name, commune }
 const features = ref(null)
@@ -76,6 +84,10 @@ watch(slot, (s) => {
 })
 
 const isStation = computed(() => destination.value === 'station')
+const slotsApply = computed(() => destination.value === 'emergency')
+watch(destination, () => {
+  if (!slotsApply.value) slot.value = 'tue10'
+})
 
 // Values for the selected neighbourhood, destination and slot.
 const values = computed(() => {
@@ -123,15 +135,16 @@ const ratio = computed(() => {
       <div class="field">
         <label for="routes-dest" class="label">{{ t('routes.to') }}</label>
         <select id="routes-dest" v-model="destination">
-          <option v-for="ty in TYPES" :key="ty" :value="ty">{{ t(`routes.types.${ty}`) }}</option>
+          <option v-for="ty in TYPES" :key="ty" :value="ty">{{ t(`routes.types.${ty}`) }}{{ INFO_ONLY.has(ty) ? ` (${t('routes.infoOnly')})` : '' }}</option>
         </select>
       </div>
       <div class="field">
         <span id="slot-label" class="label">{{ t('routes.when') }}</span>
         <div class="segmented" role="group" aria-labelledby="slot-label">
-          <button v-for="s in SLOTS" :key="s" type="button" :aria-pressed="slot === s" :disabled="isStation" @click="slot = s">{{ t(`routes.slots.${s}`) }}</button>
+          <button v-for="s in SLOTS" :key="s" type="button" :aria-pressed="slot === s" :disabled="!slotsApply && s !== 'tue10'" @click="slot = s">{{ t(`routes.slots.${s}`) }}</button>
         </div>
         <p v-if="isStation" class="hint">{{ t('routes.stationNoSlot') }}</p>
+        <p v-else-if="!slotsApply" class="hint">{{ t('routes.slotsLimited') }}</p>
       </div>
       <p v-if="notFound" class="flag" role="status">{{ notFound }}</p>
     </section>
@@ -142,11 +155,13 @@ const ratio = computed(() => {
       <template v-else-if="values">
         <ul class="bars" role="list">
           <li v-for="p in PROFILES" :key="p">
-            <span class="bar-label"><span>{{ t(`routes.profiles.${p}`) }}</span><strong>{{ minutes(values.times[p]) }}</strong></span>
+            <span class="bar-label"><span>{{ isStation && p === 'step_free_no' ? t('routes.stationAccessible') : t(`routes.profiles.${p}`) }}</span><strong>{{ minutes(values.times[p]) }}</strong></span>
             <span class="track" aria-hidden="true"><span class="fill" :class="p" :style="{ width: barWidth(values.times[p]) }"></span></span>
           </li>
         </ul>
         <p v-if="ratio" class="ratio">{{ t('routes.ratio', { n: ratio }) }}</p>
+        <p class="lower-bound">{{ t('routes.lowerBound') }}</p>
+        <p v-if="INFO_ONLY.has(destination)" class="detail">{{ t('routes.infoOnlyNote') }}</p>
         <p v-if="values.detour && values.detour.no !== null && values.detour.no > 0" class="detail">{{ t('routes.detour', { n: values.detour.no }) }}</p>
         <p class="detail">{{ t('routes.variant', { v: minutes(values.times.step_free_yes) }) }}</p>
       </template>
@@ -300,6 +315,15 @@ select {
 }
 .fill.step_free_no {
   background: var(--accent);
+}
+.lower-bound {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-body);
 }
 .ratio {
   margin: 0;

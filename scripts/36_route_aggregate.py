@@ -44,11 +44,22 @@ N_CHUNKS = 46  # 13,752 cells / 300
 
 
 def cells_by_iris() -> pd.DataFrame:
+    """Inhabited cells per IRIS. Same rule as script 32: an IRIS that
+    contains no cell centre (small IRIS) takes the cell whose 200 m square
+    contains its representative point (that cell is an origin of script 34
+    already, through the IRIS that contains its centre)."""
     cells = gpd.read_file(ACCESS_DIR / "demand_grid_idf.geojson")[["cell_id", "pop", "geometry"]]
     iris = gpd.read_file(config.IRIS_REFERENCE_PATH)[["code_iris", "geometry"]].to_crs(cells.crs)
     inside = gpd.sjoin(cells, iris, predicate="within", how="inner")
     inside = inside[inside["pop"] > 0].drop_duplicates("cell_id")
-    return inside[["cell_id", "code_iris", "pop"]].reset_index(drop=True)
+    main = inside[["cell_id", "code_iris", "pop"]]
+    missing = iris[~iris.code_iris.isin(main.code_iris)]
+    squares = main.merge(cells[["cell_id", "geometry"]], on="cell_id")
+    squares = gpd.GeoDataFrame(squares, geometry="geometry", crs=cells.crs)
+    squares["geometry"] = squares.to_crs("EPSG:3035").buffer(100, cap_style=3).to_crs(cells.crs)
+    rep = gpd.GeoDataFrame(missing[["code_iris"]].copy(), geometry=missing.representative_point(), crs=iris.crs)
+    extra = gpd.sjoin(rep, squares[["cell_id", "pop", "geometry"]], predicate="within")[["cell_id", "code_iris", "pop"]]
+    return pd.concat([main, extra], ignore_index=True)
 
 
 def load_task(name: str) -> pd.DataFrame | None:

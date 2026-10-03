@@ -551,7 +551,7 @@
         },
         {
           "name": "Step-free travel.",
-          "desc": "Stop accessibility is as declared by Île-de-France Mobilités; the state of lifts and pavements is not known."
+          "desc": "Step-free times and access are a lower bound: the calculation avoids stairs and stops declared inaccessible, but accounts neither for lifts out of order, nor pavement condition, nor a slower speed, nor whether the destination building is accessible."
         },
         {
           "name": "Access to care.",
@@ -660,7 +660,7 @@
       "lowest": "Third with the fewest means",
       "highest": "Third with the most means",
       "density": "At equal population density, the gap reaches {n92} points in Hauts-de-Seine and {n94} points in Val-de-Marne (test set before any calculation, October 2026). In Seine-Saint-Denis, almost no neighbourhood is in the third with the most means: no comparison is possible.",
-      "wheelchair": "In a wheelchair, the number of GPs within reach remains lower in the inner suburbs: median of {p} per 10,000 residents in Paris, {d92} in Hauts-de-Seine, {d93} in Seine-Saint-Denis, {d94} in Val-de-Marne.",
+      "wheelchair": "In a wheelchair, the number of GPs within reach remains lower in the inner suburbs: median of {p} per 10,000 residents in Paris, {d92} in Hauts-de-Seine, {d93} in Seine-Saint-Denis, {d94} in Val-de-Marne. This is a lower bound: lifts out of order, pavement condition and a slower speed are not taken into account.",
       "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités, OpenStreetMap"
     },
     "f4": {
@@ -802,7 +802,7 @@
       "cpam": "CPAM (health insurance)",
       "employment": "France Travail (employment)",
       "post_office": "Post office",
-      "station": "Metro, RER, train or tram station"
+      "station": "Heavy-network station (metro, RER, train, tram)"
     },
     "slots": {
       "tue10": "Tuesday, 10 am",
@@ -824,6 +824,11 @@
     "noValue": "No result for this neighbourhood (no residents in the INSEE grid).",
     "unavailable": "The results are being computed and will be published soon.",
     "note": "Median door-to-door time for the neighbourhood's residents, on foot and by public transport, for departures spread over one hour. The nearest destination may differ by travel mode. Whether the destination building is accessible is not known. Reference days: Tuesday 13 and Sunday 11 October 2026.",
-    "sources": "Île-de-France Mobilités (timetables of 1 October 2026, Licence Mobilités), OpenStreetMap, IGN, INSEE (BPE 2025, 2021 population grid), ANCT, public administration directory (DILA), ANS, FINESS"
+    "sources": "Île-de-France Mobilités (timetables of 1 October 2026, Licence Mobilités), OpenStreetMap, IGN, INSEE (BPE 2025, 2021 population grid), ANCT, public administration directory (DILA), ANS, FINESS",
+    "slotsLimited": "Evening, night and Sunday: durations shown for emergency departments only. Services' opening hours and on-call GPs and pharmacies are not in the data.",
+    "infoOnly": "for information",
+    "infoOnlyNote": "For information: the nearest GP and pharmacy are a few minutes away in almost every neighbourhood; the scored access to care accounts for how many people share each practice or pharmacy (address page).",
+    "lowerBound": "Step-free duration: a lower bound. The calculation avoids stairs and stops declared inaccessible, but accounts neither for lifts out of order, nor pavement condition, nor a slower speed, nor whether the destination building is accessible.",
+    "stationAccessible": "Step-free: nearest accessible stop point"
   }
 }

@@ -394,11 +394,11 @@ function captureMapSnapshot() {
   ctx.fillRect(0, 0, out.width, out.height)
 
   ctx.fillStyle = '#14161a'
-  ctx.font = `800 ${Math.round(26 * dpr)}px "Schibsted Grotesk", sans-serif`
+  ctx.font = `800 ${Math.round(26 * dpr)}px "Atkinson Hyperlegible", sans-serif`
   ctx.fillText('underlaid', Math.round(24 * dpr), Math.round(38 * dpr))
 
   ctx.fillStyle = '#3d424a'
-  ctx.font = `${Math.round(15 * dpr)}px "Schibsted Grotesk", sans-serif`
+  ctx.font = `${Math.round(15 * dpr)}px "Atkinson Hyperlegible", sans-serif`
   const isBivariate = viewMode.value === 'bivariate'
   ctx.fillText(isBivariate ? t('view.bivariate') : selectedMetric.value.label, Math.round(24 * dpr), Math.round(58 * dpr))
 
@@ -436,7 +436,7 @@ function captureMapSnapshot() {
   }
 
   ctx.fillStyle = '#5b616b'
-  ctx.font = `${Math.round(12 * dpr)}px "Schibsted Grotesk", sans-serif`
+  ctx.font = `${Math.round(12 * dpr)}px "Atkinson Hyperlegible", sans-serif`
   const caption = `${legendText}   ·   underlaid   ·   ${new Date().toISOString().slice(0, 10)}`
   ctx.fillText(caption, x + Math.round(12 * dpr), swatchY + swatchH)
 
@@ -771,36 +771,36 @@ async function buildShareCard(feature, percentile) {
 
   // wordmark
   ctx.textAlign = 'left'
-  ctx.font = '800 44px "Schibsted Grotesk", sans-serif'
+  ctx.font = '800 44px "Atkinson Hyperlegible", sans-serif'
   ctx.fillStyle = '#14161a'
   ctx.fillText('underlaid', 64, 110)
 
   // eyebrow
-  ctx.font = '600 28px "Schibsted Grotesk", sans-serif'
+  ctx.font = '600 28px "Atkinson Hyperlegible", sans-serif'
   ctx.fillStyle = '#b0024a'
   ctx.fillText(t('share.eyebrow'), 64, 172)
 
   // neighbourhood name + commune
-  ctx.font = '800 66px "Schibsted Grotesk", sans-serif'
+  ctx.font = '800 66px "Atkinson Hyperlegible", sans-serif'
   ctx.fillStyle = '#14161a'
   const afterName = drawCenteredLines(ctx, p.nom_iris, 64, 300, SHARE_CARD_WIDTH - 128, 76)
 
-  ctx.font = '400 32px "Schibsted Grotesk", sans-serif'
+  ctx.font = '400 32px "Atkinson Hyperlegible", sans-serif'
   ctx.fillStyle = '#5b616b'
   ctx.fillText(p.nom_com, 64, afterName + 20)
 
   // big score
   ctx.textAlign = 'center'
-  ctx.font = '800 300px "Schibsted Grotesk", sans-serif'
+  ctx.font = '800 300px "Atkinson Hyperlegible", sans-serif'
   ctx.fillStyle = '#14161a'
   ctx.fillText(`${p.cumulative_vulnerability_score ?? '—'}/${MAX_SCORE}`, SHARE_CARD_WIDTH / 2, 960)
 
-  ctx.font = '500 32px "Schibsted Grotesk", sans-serif'
+  ctx.font = '500 32px "Atkinson Hyperlegible", sans-serif'
   ctx.fillStyle = '#3d424a'
   let y = drawCenteredLines(ctx, t('panel.subscoresWorstQuartile'), SHARE_CARD_WIDTH / 2, 1060, SHARE_CARD_WIDTH - 200, 42)
 
   if (percentile !== null) {
-    ctx.font = '600 34px "Schibsted Grotesk", sans-serif'
+    ctx.font = '600 34px "Atkinson Hyperlegible", sans-serif'
     ctx.fillStyle = '#b0024a'
     y = drawCenteredLines(ctx, t('panel.morevulnerable', { n: percentile }), SHARE_CARD_WIDTH / 2, y + 30, SHARE_CARD_WIDTH - 160, 44)
   }
@@ -824,10 +824,10 @@ async function buildShareCard(feature, percentile) {
     ctx.roundRect(chipX, chipY, chipW, chipH, 18)
     ctx.fill()
     ctx.textAlign = 'center'
-    ctx.font = '600 24px "Schibsted Grotesk", sans-serif'
+    ctx.font = '600 24px "Atkinson Hyperlegible", sans-serif'
     ctx.fillStyle = chip.worst ? '#ffffff' : '#3d424a'
     ctx.fillText(chip.label, chipX + chipW / 2, chipY + 52)
-    ctx.font = '700 30px "Schibsted Grotesk", sans-serif'
+    ctx.font = '700 30px "Atkinson Hyperlegible", sans-serif'
     ctx.fillStyle = chip.worst ? '#ffffff' : '#14161a'
     ctx.fillText(!chip.known ? '—' : chip.worst ? t('share.worst') : t('share.notWorst'), chipX + chipW / 2, chipY + 98)
     chipX += chipW + gap
@@ -840,13 +840,13 @@ async function buildShareCard(feature, percentile) {
   const meansValue = capacity && capacity.capacity_class !== null ? tierLabel(capacity.capacity_class) : t('srTable.meansMasked')
   const meansText = `${t('panel.capacityTitle')}${colon}${meansValue}`
   ctx.textAlign = 'center'
-  ctx.font = '500 30px "Schibsted Grotesk", sans-serif'
+  ctx.font = '500 30px "Atkinson Hyperlegible", sans-serif'
   ctx.fillStyle = '#3d424a'
   drawCenteredLines(ctx, meansText, SHARE_CARD_WIDTH / 2, chipY + chipH + 80, SHARE_CARD_WIDTH - 160, 40)
 
   // footer: tagline and data date
   ctx.textAlign = 'center'
-  ctx.font = '500 28px "Schibsted Grotesk", sans-serif'
+  ctx.font = '500 28px "Atkinson Hyperlegible", sans-serif'
   ctx.fillStyle = '#5b616b'
   drawCenteredLines(ctx, t('share.tagline'), SHARE_CARD_WIDTH / 2, SHARE_CARD_HEIGHT - 150, SHARE_CARD_WIDTH - 160, 38)
 
@@ -980,7 +980,8 @@ function quartileColor(quartile) {
         </div>
 
         <div class="map-frame">
-          <div id="map" role="img" :aria-label="t('srTable.caption')"></div>
+          <!-- A labelled region, not role="img": the map holds its own controls (zoom, attribution links), and an image may not contain interactive elements (axe nested-interactive). The text alternative is the table below. -->
+          <div id="map" role="region" :aria-label="t('srTable.caption')"></div>
         </div>
 
         <div v-if="viewMode === 'bivariate'" class="legend bivariate-legend">

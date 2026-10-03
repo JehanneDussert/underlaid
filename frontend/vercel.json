@@ -1,5 +1,87 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/fr",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/fr/map",
+      "destination": "/carte",
+      "permanent": true
+    },
+    {
+      "source": "/map",
+      "destination": "/en/map",
+      "permanent": true
+    },
+    {
+      "source": "/fr/methodology",
+      "destination": "/methode",
+      "permanent": true
+    },
+    {
+      "source": "/methodology",
+      "destination": "/en/method",
+      "permanent": true
+    },
+    {
+      "source": "/fr/methodology/details",
+      "destination": "/methode/detail",
+      "permanent": true
+    },
+    {
+      "source": "/methodology/details",
+      "destination": "/en/method/details",
+      "permanent": true
+    },
+    {
+      "source": "/fr/ranking",
+      "destination": "/quartiers-les-plus-exposes",
+      "permanent": true
+    },
+    {
+      "source": "/ranking",
+      "destination": "/en/most-exposed-neighbourhoods",
+      "permanent": true
+    },
+    {
+      "source": "/fr/press",
+      "destination": "/presse",
+      "permanent": true
+    },
+    {
+      "source": "/press",
+      "destination": "/en/press",
+      "permanent": true
+    },
+    {
+      "source": "/fr/address",
+      "destination": "/adresse",
+      "permanent": true
+    },
+    {
+      "source": "/address",
+      "destination": "/en/address",
+      "permanent": true
+    },
+    {
+      "source": "/fr/quiz",
+      "destination": "/quiz",
+      "permanent": true
+    },
+    {
+      "source": "/fr/routes",
+      "destination": "/itineraires",
+      "permanent": true
+    },
+    {
+      "source": "/routes",
+      "destination": "/en/routes",
+      "permanent": true
+    }
+  ]
 }

@@ -322,7 +322,7 @@
     "rnaSource": "Source: Repertoire National des Associations, Ile-de-France mirror (data.iledefrance.fr), aggregated by commune; population from INSEE Recensement 2021.",
     "layerAsOf": "Data as of {date}: the latest refresh of this source failed, so its previous version is shown."
   },
-  "footerLicense": "Code: MIT · Data: ODbL",
+  "footerLicense": "Code: MIT · Data: ODbL · Maps and visuals: CC BY 4.0",
   "footerLicenseLink": "Licenses & attribution",
   "view": {
     "label": "Map view",
@@ -362,13 +362,23 @@
       "address": "By address",
       "routes": "Routes",
       "quiz": "Quiz",
-      "map": "Map",
+      "map": "Explore the map",
       "methodology": "Method",
       "ranking": "Most exposed neighbourhoods",
-      "press": "Press"
+      "press": "Press",
+      "neighbourhood": "Your neighbourhood",
+      "neighbourhoodHint": "(enter an address first)"
     },
     "code": "Source code",
-    "cite": "Cite (DOI)"
+    "cite": "Cite (DOI)",
+    "homeLabel": "underlaid, home",
+    "openMenu": "Open the menu",
+    "closeMenu": "Close the menu",
+    "otherLanguage": "Version française",
+    "footerOpenData": "Open public data.",
+    "footerSources": "Sources and method",
+    "footerReuse": "Cite and reuse",
+    "footerContact": "Contact"
   },
   "figure": {
     "sources": "Sources: {sources}",
@@ -639,11 +649,11 @@
     },
     "f2": {
       "title": "Same exposure, opposite social situations.",
-      "body": "Among highly exposed neighbourhoods whose residents have the most means, most are in Paris and combine mainly heat and energy-inefficient housing. Among those whose residents have the fewest means, most are in Seine-Saint-Denis and Val-de-Marne, and combine mainly air pollution, noise and weaker access to care.",
+      "body": "Among highly exposed neighbourhoods whose residents have the most means, most are in Paris and combine mainly heat and energy-inefficient housing. Among those whose residents have the fewest means, most are in Seine-Saint-Denis and Val-de-Marne, and combine mainly heat, air pollution and noise.",
       "body2": "Across the metropolis, the link between exposure and means is weak (rank correlation {rho}), and slightly positive because of central Paris, dense and old.",
-      "question": "Among highly exposed neighbourhoods (at least 2 of the 4 criteria), what share is also in the metro area's third where residents have the fewest means?",
-      "definition": "The 4 criteria: heat, air pollution and noise, housing, access to care. Residents' means: median income, share of overcrowded homes, share of second homes (INSEE, 2021), measured separately from the score.",
-      "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME, ANS"
+      "question": "Among highly exposed neighbourhoods (at least 2 of the 3 exposures), what share is also in the metro area's third where residents have the fewest means?",
+      "definition": "The 3 exposures: heat, air pollution and noise, housing. Access to care is measured separately. Residents' means: median income, share of overcrowded homes, share of second homes (INSEE, 2021), measured separately from the score.",
+      "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME"
     },
     "quiz": {
       "kicker": "Question",
@@ -766,9 +776,9 @@
         "sources": "OpenStreetMap contributors (extract of 30 September 2026), Underlaid calculation of 1 October 2026"
       },
       "exposed": {
-        "question": "In Seine-Saint-Denis, among highly exposed neighbourhoods (those combining at least 2 of the 4 criteria), what share is also in the metro area's third where residents have the fewest means?",
+        "question": "In Seine-Saint-Denis, among highly exposed neighbourhoods (at least 2 of the 3 exposures: heat, air and noise, housing), what share is also in the metro area's third where residents have the fewest means?",
         "explanation": "{v}. In Paris, the share is {paris}. At equal exposure, social situations differ sharply from one area to another.",
-        "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME, ANS"
+        "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME"
       },
       "care": {
         "question": "In Hauts-de-Seine, at equal population density, is access to care (GPs and pharmacies) in the neighbourhoods with the fewest means better than, the same as or worse than in the best-off neighbourhoods?",
@@ -830,5 +840,12 @@
     "infoOnlyNote": "For information: the nearest GP and pharmacy are a few minutes away in almost every neighbourhood; the scored access to care accounts for how many people share each practice or pharmacy (address page).",
     "lowerBound": "Step-free duration: a lower bound. The calculation avoids stairs and stops declared inaccessible, but accounts neither for lifts out of order, nor pavement condition, nor a slower speed, nor whether the destination building is accessible.",
     "stationAccessible": "Step-free: nearest accessible stop point"
+  },
+  "modes": {
+    "free": "No constraint",
+    "slow": "Slow walking",
+    "wheelchair": "Wheelchair",
+    "chosen": "Mode chosen: {mode}",
+    "none": "No mode chosen"
   }
 }

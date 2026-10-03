@@ -27,7 +27,7 @@ const OG_IMAGE_HEIGHT = '630'
 
 /**
  * Per-route <head> metadata: title, description, OG/Twitter tags,
- * canonical link, and reciprocal hreflang alternates (en/fr/x-default).
+ * canonical link, and reciprocal hreflang alternates (fr/en; x-default = French).
  *
  * @param {{en: string, fr: string} | (() => {en: string, fr: string})} title
  * @param {{en: string, fr: string} | (() => {en: string, fr: string})} description
@@ -40,8 +40,9 @@ export function useSeoMeta({ title, description, image, jsonLd }) {
   const router = useRouter()
 
   const base = computed(() => baseRouteName(route.name))
-  const enPath = computed(() => router.resolve({ name: base.value }).fullPath)
-  const frPath = computed(() => router.resolve({ name: `${base.value}-fr` }).fullPath)
+  // Params kept (a neighbourhood page has the same code in both languages).
+  const frPath = computed(() => router.resolve({ name: base.value, params: route.params }).fullPath)
+  const enPath = computed(() => router.resolve({ name: `${base.value}-en`, params: route.params }).fullPath)
   const selfPath = computed(() => (locale.value === 'fr' ? frPath.value : enPath.value))
 
   const resolvedTitle = computed(() => {
@@ -86,7 +87,7 @@ export function useSeoMeta({ title, description, image, jsonLd }) {
       { rel: 'canonical', href: selfUrl },
       { rel: 'alternate', hreflang: 'en', href: computed(() => `${SITE_URL}${enPath.value}`) },
       { rel: 'alternate', hreflang: 'fr', href: computed(() => `${SITE_URL}${frPath.value}`) },
-      { rel: 'alternate', hreflang: 'x-default', href: computed(() => `${SITE_URL}${enPath.value}`) },
+      { rel: 'alternate', hreflang: 'x-default', href: computed(() => `${SITE_URL}${frPath.value}`) },
     ],
     script: jsonLd
       ? [

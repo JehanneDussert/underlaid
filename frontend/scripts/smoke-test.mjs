@@ -83,7 +83,9 @@ try {
 
   // Home page, both languages: four findings with figures from
   // key_figures.json, the metro question answered in a live region.
-  for (const [path, lang] of [['/', 'en'], ['/fr', 'fr']]) {
+  // French first: once /en is visited, a later visit to "/" returns to
+  // English (the remembered choice, router.js).
+  for (const [path, lang] of [['/', 'fr'], ['/en', 'en']]) {
     await page.goto(base + path, { waitUntil: 'networkidle' })
     const findings = await page.locator('.finding').count()
     const bars = await page.locator('.finding .bars li').count()
@@ -95,7 +97,7 @@ try {
   // Quiz, keyboard only: answer each question (Tab to an option, Enter),
   // the verdict appears in the live region, "next" moves focus to the
   // next question's heading; the last screen gives the result.
-  await page.goto(base + '/fr/quiz', { waitUntil: 'networkidle' })
+  await page.goto(base + '/quiz', { waitUntil: 'networkidle' })
   let quizOk = true
   for (let i = 0; i < 4; i++) {
     await page.locator('.option').first().focus()
@@ -111,7 +113,7 @@ try {
   check('quiz by keyboard: 4 verdicts, focus on each heading, result', quizOk && /sur 4/.test(result), result)
 
   // Home address field (combobox, keyboard only) -> map with that neighbourhood
-  await page.goto(base + '/fr', { waitUntil: 'networkidle' })
+  await page.goto(base + '/', { waitUntil: 'networkidle' })
   await page.locator('#home-address').fill('1 rue Marie Louise Drancy')
   const homeOption = await page.locator('#home-address-list [role="option"]').first().waitFor({ timeout: 10_000 }).then(() => true, () => false)
   if (!homeOption) {
@@ -120,7 +122,7 @@ try {
     await page.locator('#home-address').press('ArrowDown')
     const activeId = await page.locator('#home-address').getAttribute('aria-activedescendant')
     await page.locator('#home-address').press('Enter')
-    await page.waitForURL(/\/fr\/address\?/)
+    await page.waitForURL(/\/adresse\?/)
     const rowsShown = await page.waitForSelector('.criterion-row', { timeout: 30_000 }).then(() => true, () => false)
     const rowCount = await page.locator('.criterion-row').count()
     const scoreLine = rowsShown ? await page.locator('.score-line').innerText() : ''
@@ -146,7 +148,7 @@ try {
   }
 
   // Map, both languages
-  for (const [path, lang] of [['/map', 'en'], ['/fr/map', 'fr']]) {
+  for (const [path, lang] of [['/en/map', 'en'], ['/carte', 'fr']]) {
     await page.goto(base + path, { waitUntil: 'networkidle' })
     // Wait for the choropleth's data, then check it is actually drawn — a
     // canvas that merely exists passed this test once while the map was
@@ -195,20 +197,25 @@ try {
     check(`PNG export (${view})`, !!(await exported))
   }
 
-  // Language switch, both directions (the FR->EN bounce was a real bug)
-  await page.goto(base + '/', { waitUntil: 'networkidle' })
-  await page.locator('.lang-toggle button', { hasText: 'FR' }).click()
-  await page.waitForURL(/\/fr$/)
-  check('EN -> FR', new URL(page.url()).pathname === '/fr')
-  await page.locator('.lang-toggle button', { hasText: 'EN' }).click()
+  // Language switch, both directions (a bounce back was a real bug):
+  // French at the root, English under /en, same page in the other language.
+  await page.goto(base + '/methode', { waitUntil: 'networkidle' })
+  await page.locator('.nav-lang').click()
+  await page.waitForURL((url) => url.pathname === '/en/method')
+  check('FR -> EN (same page)', new URL(page.url()).pathname === '/en/method')
+  await page.locator('.nav-lang').click()
+  await page.waitForURL((url) => url.pathname === '/methode')
+  check('EN -> FR (same page)', new URL(page.url()).pathname === '/methode')
+  await page.goto(base + '/en', { waitUntil: 'networkidle' })
+  await page.locator('.nav-lang').click()
   await page.waitForURL((url) => url.pathname === '/')
-  check('FR -> EN', new URL(page.url()).pathname === '/')
+  check('EN home -> FR home stays in French', new URL(page.url()).pathname === '/' && (await page.getAttribute('html', 'lang')) === 'fr')
 
   // Every route by direct access
-  for (const path of ['/quiz', '/fr/quiz', '/address', '/fr/address', '/methodology', '/fr/methodology', '/methodology/details', '/fr/methodology/details', '/ranking', '/fr/ranking', '/press', '/fr/press']) {
+  for (const path of ['/en/quiz', '/quiz', '/en/address', '/adresse', '/en/method', '/methode', '/en/method/details', '/methode/detail', '/en/most-exposed-neighbourhoods', '/quartiers-les-plus-exposes', '/en/press', '/presse']) {
     const response = await page.goto(base + path, { waitUntil: 'networkidle' })
     check(`direct ${path}`, response.status() === 200 && (await page.locator('h1').count()) === 1)
-    if (path.endsWith('ranking')) {
+    if (path.endsWith('exposed-neighbourhoods') || path.endsWith('les-plus-exposes')) {
       const rows = await page.locator('.ranking-row').count()
       check(`${path} lists ${EXPECTED_RANKING_ROWS} neighborhoods`, rows === EXPECTED_RANKING_ROWS, `${rows} rows`)
       // Department filter, keyboard only: focus the select, pick the 3rd
@@ -238,16 +245,22 @@ try {
     }
   }
 
-  // Links from before the redesign: /methodology#data-licences now lives
-  // on the detailed page.
-  await page.goto(base + '/fr/methodology#data-licences', { waitUntil: 'networkidle' })
+  // Links from before the redesign: #data-licences now lives on the
+  // detailed page.
+  await page.goto(base + '/methode#data-licences', { waitUntil: 'networkidle' })
   await page.waitForTimeout(300)
-  check('old methodology anchor redirected to the detailed page', new URL(page.url()).pathname === '/fr/methodology/details' && (await page.locator('#data-licences').count()) === 1, page.url())
+  check('old methodology anchor redirected to the detailed page', new URL(page.url()).pathname === '/methode/detail' && (await page.locator('#data-licences').count()) === 1, page.url())
+
+  // The permanent redirects of the pre-redesign addresses (vercel.json)
+  // match src/routePaths.js; Vercel applies them, the local preview cannot.
+  const { legacyRedirects } = await import('../src/routePaths.js')
+  const vercel = JSON.parse(readFileSync(`${ROOT}/vercel.json`, 'utf-8'))
+  check('vercel.json redirects match routePaths.js', JSON.stringify(vercel.redirects) === JSON.stringify(legacyRedirects()))
 
   // Phone width: no sideways scroll
   const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()
   phone.on('pageerror', (e) => errors.push(`phone ${phone.url()}: ${e.message}`))
-  for (const path of ['/fr', '/fr/quiz', '/fr/address?lon=2.4431&lat=48.9248&label=Drancy', '/fr/map', '/fr/ranking', '/fr/methodology', '/fr/methodology/details']) {
+  for (const path of ['/', '/quiz', '/adresse?lon=2.4431&lat=48.9248&label=Drancy', '/carte', '/quartiers-les-plus-exposes', '/methode', '/methode/detail']) {
     await phone.goto(base + path, { waitUntil: 'networkidle' })
     const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
     check(`phone ${path}: no horizontal scroll`, overflow <= 0, overflow > 0 ? `${overflow}px` : '')

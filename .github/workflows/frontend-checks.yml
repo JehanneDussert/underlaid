@@ -1,0 +1,39 @@
+# Frontend checks on every push to the redesign branch and on pull
+# requests: production build, end-to-end smoke test, automated
+# accessibility checks (axe-core on every page at desktop and phone width,
+# keyboard). Fails on any serious or critical accessibility violation
+# (CLAUDE.md, "Refonte D4"). The manual tests (screen readers, zoom, high
+# contrast) are listed in docs/accessibilite.md and are not automated.
+name: Frontend checks
+
+on:
+  push:
+    branches: [refonte]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      # No GPU on the runner: software WebGL (see smoke-test.mjs).
+      - run: npm run test:smoke
+        env:
+          SMOKE_SOFTWARE_GL: '1'
+      - run: npm run test:a11y

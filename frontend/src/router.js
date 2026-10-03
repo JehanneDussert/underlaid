@@ -8,34 +8,32 @@ import MethodologyView from './views/MethodologyView.vue'
 import PressKitView from './views/PressKitView.vue'
 import RankingView from './views/RankingView.vue'
 import { LOCALE_STORAGE_KEY } from './i18n'
+import { ROUTE_PATHS, DEFAULT_LOCALE } from './routePaths'
 
-// Locale-prefixed routes (English unprefixed, French under /fr) rather
-// than a single URL with a client-side-only language toggle: proper
-// hreflang alternates and a clean sitemap both need each language to be
-// its own crawlable URL, not the same URL rendering different content
-// depending on localStorage. Route names get a `-fr` suffix so the
-// language toggle can jump to the equivalent page in the other language
-// (see localizedRouteName below) rather than just re-rendering in place.
-const ROUTE_DEFS = [
-  { segment: '', name: 'home', component: HomeView },
-  { segment: 'address', name: 'address', component: AddressView },
-  { segment: 'quiz', name: 'quiz', component: QuizView },
-  // Not in the navigation until its data is published (scripts 34, 36).
-  { segment: 'routes', name: 'routes', component: RoutesView },
-  { segment: 'map', name: 'map', component: MapView },
-  { segment: 'methodology', name: 'methodology', component: MethodView },
+const COMPONENTS = {
+  home: HomeView,
+  address: AddressView,
+  quiz: QuizView,
+  routes: RoutesView,
+  map: MapView,
+  methodology: MethodView,
   // The detailed methodology page (before the redesign): kept in full for
   // journalists and researchers, linked from the short "Method" page.
-  { segment: 'methodology/details', name: 'methodology-details', component: MethodologyView },
-  { segment: 'ranking', name: 'ranking', component: RankingView },
-  { segment: 'press', name: 'press', component: PressKitView },
-]
+  'methodology-details': MethodologyView,
+  ranking: RankingView,
+  press: PressKitView,
+}
 
-function buildRoutes(locale, prefix) {
-  return ROUTE_DEFS.map(({ segment, name, component }) => ({
-    path: prefix ? (segment ? `/${prefix}/${segment}` : `/${prefix}`) : segment ? `/${segment}` : '/',
-    name: prefix ? `${name}-${locale}` : name,
-    component,
+// One URL per language (French at the root, English under /en — see
+// routePaths.js) rather than one URL rendering either language: hreflang
+// and the sitemap need each language to be its own crawlable page. French
+// routes carry the base name, English ones an "-en" suffix, so the
+// language toggle can jump to the equivalent page (localizedRouteName).
+function buildRoutes(locale) {
+  return ROUTE_PATHS.map(({ name, ...paths }) => ({
+    path: paths[locale],
+    name: locale === DEFAULT_LOCALE ? name : `${name}-${locale}`,
+    component: COMPONENTS[name],
     meta: { locale },
   }))
 }
@@ -44,18 +42,17 @@ function buildRoutes(locale, prefix) {
 // its own router (once per prerendered page at build time, plus once in
 // the browser), so it needs the raw records rather than something
 // already wrapped in createRouter().
-export const routeRecords = [...buildRoutes('en', ''), ...buildRoutes('fr', 'fr')]
+export const routeRecords = [...buildRoutes('fr'), ...buildRoutes('en')]
 
-// The base (English, unprefixed) route name for a given route name —
-// strips the "-fr" suffix if present. Used by the language toggle to
-// find the equivalent page in the other language.
+// The base (French) route name for a given route name — strips the "-en"
+// suffix if present.
 export function baseRouteName(name) {
-  return typeof name === 'string' && name.endsWith('-fr') ? name.slice(0, -3) : name
+  return typeof name === 'string' && name.endsWith('-en') ? name.slice(0, -3) : name
 }
 
 export function localizedRouteName(name, locale) {
   const base = baseRouteName(name)
-  return locale === 'fr' ? `${base}-fr` : base
+  return locale === DEFAULT_LOCALE ? base : `${base}-${locale}`
 }
 
 // Attaches the locale-redirect/sync guard to whatever router instance
@@ -70,21 +67,15 @@ export function localizedRouteName(name, locale) {
 // prerendered with French content under the old singleton setup).
 export function installLocaleGuard(router, setLocale) {
   router.beforeEach((to, from) => {
-    // The bare, unprefixed "/" is unambiguous for crawlers (always
-    // English, matching this project's own "no auto-detection, English
-    // default" rule) but a returning visitor whose last explicit choice
-    // was French should still land back in French — a client-side-only
-    // redirect, never applied to any other route, so indexing of "/"
-    // itself stays stable and crawlable as English content. Guarded to
-    // the browser only: during SSG prerendering there is no localStorage
-    // and "/" must always prerender as English.
-    // Only on the first navigation of a visit (`from` has no matched
-    // route yet): applied on in-app navigations too, it bounced the EN
-    // button on /fr straight back to /fr, since visiting /fr saves "fr".
+    // "/" is always French for crawlers (no localStorage there), but a
+    // returning visitor whose last explicit choice was English lands back
+    // on the English home — browser only, and only on the first
+    // navigation of a visit: applied to in-app navigations too, it would
+    // bounce the FR button straight back to English.
     if (to.path === '/' && from.matched.length === 0 && typeof localStorage !== 'undefined') {
       const saved = localStorage.getItem(LOCALE_STORAGE_KEY)
-      if (saved === 'fr') return { name: 'home-fr' }
+      if (saved === 'en') return { name: 'home-en' }
     }
-    setLocale(to.meta.locale || 'en')
+    setLocale(to.meta.locale || DEFAULT_LOCALE)
   })
 }

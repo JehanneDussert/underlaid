@@ -12,42 +12,68 @@ body,
 }
 
 body {
-  font-family: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: light;
   background: var(--bg);
   color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Light, sober design (site redesign of October 2026, mock-ups in
-   docs/maquettes/): very light grey page, near-black text, one accent —
-   magenta, which always means "the least favourable value". Contrasts
-   checked by calculation (WCAG AA): text #14161A 16.6:1, #3D424A 9.3:1,
-   #5B616B 5.7:1 on the page; magenta #B0024A 6.5:1 on the page and 7.1:1
-   on white; control borders #868B94 3.1:1 (1.4.11 asks for 3:1).
-   The old dark-theme variable names (--ink, --cyan, --magenta, --amber…)
-   are kept as aliases so the views not yet redesigned stay readable on
-   the light background until their turn comes. */
+/* Identity "D4" (redesign of October 2026, docs/design/refonte-d4/,
+   CLAUDE.md "Refonte D4"): white page, near-black text, Atkinson
+   Hyperlegible, one blue for actions, pink only for "the quarter of
+   neighbourhoods most affected". Contrasts checked by calculation on
+   white (WCAG 2.1 AA): text #101010 19.0:1, #3C3C3C 11.0:1, #6A6A6A 5.4:1;
+   blue #0057B8 6.9:1 (white on blue 6.9:1); pink #E4007C 4.6:1, on white
+   only, never on its pale tint (4.0:1). Hairlines #D6D6D6 / #E2E2E2 are
+   decorative only (1.4:1 and 1.3:1); every field and unselected button
+   uses --control-border #8A8A8A (3.5:1, criterion 1.4.11 asks for 3:1).
+   Orange and yellow are never used for text. The mode colours are
+   identity colours: an active mode is told by a check mark and bold text
+   too, never by its colour alone (decision of 3 October 2026).
+   The old variable names are kept as aliases so the views not yet
+   redesigned stay readable until their turn comes. */
 :root {
-  --bg: #f4f5f7;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-muted: #e7e9ed;
-  --dark: #14161a;
-  --text-primary: #14161a;
-  --text-body: #3d424a;
-  --text-secondary: #5b616b;
-  --text-muted: #5b616b;
+  --surface-muted: #f4f4f4;
+  --dark: #101010;
+  --text-primary: #101010;
+  --text-body: #3c3c3c;
+  --text-secondary: #3c3c3c;
+  --text-muted: #6a6a6a;
   --text-on-dark: #ffffff;
-  --text-on-dark-secondary: #d4d7dc;
-  --accent: #b0024a;
+  --text-on-dark-secondary: #e2e2e2;
+  --primary: #0057b8;
+  --accent: #e4007c;
+  --accent-tint: #fceaf3;
   --accent-on-dark: #f28ab3;
-  --line: #dadde2;
-  --line-soft: #eef0f3;
-  --control-border: #868b94;
-  --focus: #1d4ed8;
-  --radius: 20px;
+  --line: #e2e2e2;
+  --line-strong: #d6d6d6;
+  --line-soft: #eeeeee;
+  --control-border: #8a8a8a;
+  --focus: #0057b8;
+  --radius: 18px;
   --radius-small: 12px;
-  --content-width: 1120px;
+  --content-width: 1280px;
+  --page-gutter: 64px;
   --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Travel modes (identity colours, with their pale active background). */
+  --mode-free: #00a06b;
+  --mode-free-bg: #e3f5ec;
+  --mode-slow: #ff7a00;
+  --mode-slow-bg: #ffeedd;
+  --mode-wheelchair: #0057b8;
+  --mode-wheelchair-bg: #e2ecf8;
+
+  /* Lines of the network illustration on the home page. */
+  --line-blue: #0057b8;
+  --line-pink: #e4007c;
+  --line-green: #00a06b;
+  --line-orange: #ff7a00;
+  --line-purple: #7b3fa0;
+  --line-cyan: #00a3e0;
 
   /* Aliases for the views not yet redesigned. */
   --panel: var(--surface);
@@ -63,14 +89,14 @@ body {
   --border-color: var(--line);
   --gridline: var(--line);
   --accent-strong: var(--accent);
-  --panel-shadow: rgba(20, 22, 26, 0.12);
+  --panel-shadow: rgba(16, 16, 16, 0.12);
 }
 
 a {
   color: var(--text-primary);
 }
 a:hover {
-  color: var(--accent);
+  color: var(--primary);
 }
 
 /* Page container shared by every redesigned page. */
@@ -78,8 +104,14 @@ a:hover {
   width: 100%;
   max-width: var(--content-width);
   margin: 0 auto;
-  padding-left: 32px;
-  padding-right: 32px;
+  padding-left: var(--page-gutter);
+  padding-right: var(--page-gutter);
+}
+@media (max-width: 1024px) {
+  .container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
 }
 @media (max-width: 600px) {
   .container {
@@ -120,9 +152,20 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible,
-summary:focus-visible {
+summary:focus-visible,
+[tabindex]:focus-visible {
   outline: 3px solid var(--focus);
-  outline-offset: 2px;
+  outline-offset: 3px;
+}
+/* The page title receives the focus after each page change (App.vue) so a
+   screen reader announces the new page; it is not an interactive control,
+   so no ring for a mouse user. */
+h1[tabindex='-1']:focus {
+  outline: none;
+}
+h1[tabindex='-1']:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
 }
 
 /* Printing the press kit one-pager: the app shell's topbar/footer live

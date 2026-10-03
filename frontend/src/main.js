@@ -1,10 +1,10 @@
 import { ViteSSG } from 'vite-ssg'
 // Self-hosted font (no request to a third-party font service).
-import '@fontsource/schibsted-grotesk/400.css'
-import '@fontsource/schibsted-grotesk/500.css'
-import '@fontsource/schibsted-grotesk/600.css'
-import '@fontsource/schibsted-grotesk/700.css'
-import '@fontsource/schibsted-grotesk/800.css'
+// Atkinson Hyperlegible (Braille Institute, SIL Open Font License),
+// designed for low-vision readers: regular and bold only.
+import '@fontsource/atkinson-hyperlegible/400.css'
+import '@fontsource/atkinson-hyperlegible/400-italic.css'
+import '@fontsource/atkinson-hyperlegible/700.css'
 import './style.css'
 import App from './App.vue'
 import { createI18nInstance } from './i18n'

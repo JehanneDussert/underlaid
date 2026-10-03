@@ -51,7 +51,7 @@ defineProps({
   border: 1px solid var(--border-color);
   color: var(--ink);
   font-size: 11px;
-  font-family: "Schibsted Grotesk", sans-serif;
+  font-family: "Atkinson Hyperlegible", sans-serif;
   padding: 8px 10px;
   border-radius: 8px;
   width: max-content;

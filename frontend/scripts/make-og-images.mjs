@@ -26,7 +26,7 @@ const RAMP = ['#e09ab7', '#d2668f', '#bf336a', '#980f48', '#5f002d']
 const COPY = {
   en: {
     file: 'og-image.png',
-    path: '/map',
+    path: '/en/map',
     tagline: 'Where environmental exposures overlap',
     body: 'Heat, air/noise pollution, housing, access to care — counted neighborhood by neighborhood across 2,752 IRIS in Paris & its inner suburbs, beside the means to cope.',
     legend: 'Categories in their worst quartile at once',
@@ -34,7 +34,7 @@ const COPY = {
   },
   fr: {
     file: 'og-image-fr.png',
-    path: '/fr/map',
+    path: '/carte',
     tagline: 'Là où les expositions environnementales se superposent',
     body: "Chaleur, pollution de l'air et bruit, logement, accès aux soins — comptés quartier par quartier sur 2 752 IRIS à Paris et en petite couronne, en regard des moyens des habitants.",
     legend: 'Catégories simultanément dans leur pire quartile',

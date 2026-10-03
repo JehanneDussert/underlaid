@@ -1,35 +1,76 @@
 <script setup>
-import { ref, computed, onMounted, onServerPrefetch, provide } from 'vue'
+import { ref, computed, nextTick, onMounted, onServerPrefetch, provide, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { localizedRouteName } from './router'
 import { loadStaticJson } from './utils/loadStaticJson'
 
 const { t, locale } = useI18n()
 const REPO_URL = 'https://github.com/JehanneDussert/underlaid'
+const DISCUSSIONS_URL = `${REPO_URL}/discussions`
 const DOI_URL = 'https://doi.org/10.5281/zenodo.23083312'
 const VERSION = '0.2.0'
 const route = useRoute()
-const router = useRouter()
 
-// Main navigation of the redesign (mock-ups, docs/maquettes/). Pages are
-// added here as they are built: a link never leads to a page that doesn't
-// exist yet. Five links at most (CLAUDE.md, "pas plus de 5 boutons").
+// Main navigation of the redesign (docs/design/refonte-d4/): "Votre
+// quartier", "Explorer la carte", "Méthode", then the other language.
+// "Votre quartier" stays greyed until an address has been chosen (the
+// page needs a neighbourhood). Other pages live in the footer.
 const NAV = [
-  { name: 'address', key: 'address' },
-  { name: 'quiz', key: 'quiz' },
   { name: 'map', key: 'map' },
   { name: 'methodology', key: 'methodology' },
 ]
+const otherLocale = computed(() => (locale.value === 'fr' ? 'en' : 'fr'))
+// The equivalent page in the other language, same params, query and hash.
+const otherLocaleTo = computed(() => ({
+  name: localizedRouteName(route.name, otherLocale.value),
+  params: route.params,
+  query: route.query,
+  hash: route.hash,
+}))
 
-// Switching language navigates to the equivalent page's own URL
-// (e.g. /ranking -> /fr/ranking) rather than re-rendering the same URL
-// in another language — see router.js for why (hreflang needs each
-// language to be its own crawlable page). setLocale() itself still
-// runs from the router's beforeEach guard once the navigation lands.
-function goToLocale(target) {
-  if (locale.value === target) return
-  router.push({ name: localizedRouteName(route.name, target), params: route.params, query: route.query })
+const isCurrent = (name) => route.name === localizedRouteName(name, locale.value)
+
+// Phone menu: a disclosure button (aria-expanded); Escape closes it and
+// gives the focus back to the button; a page change closes it.
+const menuOpen = ref(false)
+const menuButton = ref(null)
+function closeMenu(returnFocus = false) {
+  if (!menuOpen.value) return
+  menuOpen.value = false
+  if (returnFocus) nextTick(() => menuButton.value?.focus())
+}
+function onKeydown(event) {
+  if (event.key === 'Escape') closeMenu(true)
+}
+
+// After each page change, move the focus to the new page's h1 so a screen
+// reader announces the new page (decision of 3 October 2026). The watcher
+// does not run on the first load (no `immediate`), where the browser's own
+// focus handling applies. Anchor links keep their own target.
+watch(
+  () => route.path,
+  async () => {
+    closeMenu()
+    if (route.hash) return
+    await nextTick()
+    const h1 = document.querySelector('#main h1')
+    if (!h1) return
+    if (!h1.hasAttribute('tabindex')) h1.setAttribute('tabindex', '-1')
+    h1.focus({ preventScroll: true })
+  }
+)
+
+// Contact without the address in the page's code: the mailto link is
+// composed on click only, from parts. The address is not set yet (asked
+// to the project owner on 3 October 2026): until then the link leads to
+// the GitHub discussions.
+const CONTACT_PARTS = null
+const contactHref = CONTACT_PARTS ? '#contact' : DISCUSSIONS_URL
+function openContact(event) {
+  if (!CONTACT_PARTS) return
+  event.preventDefault()
+  window.location.href = `mailto:${CONTACT_PARTS.join('@')}`
 }
 
 // So anyone citing a specific neighbourhood knows which snapshot of the
@@ -61,26 +102,43 @@ const dataDate = computed(() => {
 // Shared with every figure's source line (components/FigureSource.vue).
 provide('dataDate', dataDate)
 const lastUpdatedLabel = computed(() => (dataDate.value ? t('footerLastUpdated', { date: dataDate.value }) : ''))
-
-const isCurrent = (name) => route.name === localizedRouteName(name, locale.value)
 </script>
 
 <template>
-  <div class="app-shell">
+  <div class="app-shell" @keydown="onKeydown">
     <a class="skip-link" href="#main">{{ t('site.skipLink') }}</a>
-    <header class="site-header container">
-      <router-link class="wordmark" :to="{ name: localizedRouteName('home', locale) }">underlaid</router-link>
-      <nav class="nav" :aria-label="t('site.navLabel')">
-        <router-link
-          v-for="item in NAV"
-          :key="item.name"
-          :to="{ name: localizedRouteName(item.name, locale) }"
-          :aria-current="isCurrent(item.name) ? 'page' : undefined"
-        >{{ t(`site.nav.${item.key}`) }}</router-link>
-        <div class="lang-toggle" role="group" :aria-label="t('site.languageLabel')">
-          <button type="button" lang="en" :aria-pressed="locale === 'en'" @click="goToLocale('en')">EN</button>
-          <button type="button" lang="fr" :aria-pressed="locale === 'fr'" @click="goToLocale('fr')">FR</button>
-        </div>
+    <header class="site-header">
+      <router-link class="wordmark" :to="{ name: localizedRouteName('home', locale) }" :aria-label="t('site.homeLabel')">underlaid</router-link>
+      <button
+        ref="menuButton"
+        type="button"
+        class="menu-button"
+        :aria-expanded="menuOpen ? 'true' : 'false'"
+        aria-controls="site-nav"
+        :aria-label="menuOpen ? t('site.closeMenu') : t('site.openMenu')"
+        @click="menuOpen = !menuOpen"
+      >
+        <svg v-if="!menuOpen" aria-hidden="true" width="18" height="14" viewBox="0 0 18 14">
+          <path d="M1 1h16M1 7h16M1 13h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <svg v-else aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
+          <path d="M2 2l12 12M14 2 2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+      <nav id="site-nav" class="nav" :class="{ open: menuOpen }" :aria-label="t('site.navLabel')">
+        <ul class="nav-list">
+          <li>
+            <!-- No neighbourhood chosen yet: greyed text, not a link (a link
+                 would lead nowhere). The page itself comes with step 2. -->
+            <span class="nav-disabled" aria-disabled="true">{{ t('site.nav.neighbourhood') }}<span class="sr-only"> {{ t('site.nav.neighbourhoodHint') }}</span></span>
+          </li>
+          <li v-for="item in NAV" :key="item.name">
+            <router-link :to="{ name: localizedRouteName(item.name, locale) }" :aria-current="isCurrent(item.name) ? 'page' : undefined">{{ t(`site.nav.${item.key}`) }}</router-link>
+          </li>
+          <li>
+            <router-link class="nav-lang" :to="otherLocaleTo" :lang="otherLocale" :hreflang="otherLocale" :aria-label="t('site.otherLanguage')">{{ otherLocale.toUpperCase() }}</router-link>
+          </li>
+        </ul>
       </nav>
     </header>
 
@@ -89,19 +147,25 @@ const isCurrent = (name) => route.name === localizedRouteName(name, locale.value
     </main>
 
     <footer id="footer-sources" class="site-footer">
-      <div class="container footer-grid">
-        <div class="footer-col">
-          <p v-if="lastUpdatedLabel" class="footer-updated">{{ lastUpdatedLabel }}</p>
-          <p>{{ t('footer') }}</p>
-        </div>
-        <div class="footer-col footer-links">
-          <router-link :to="{ name: localizedRouteName('ranking', locale) }">{{ t('site.nav.ranking') }}</router-link>
-          <router-link :to="{ name: localizedRouteName('press', locale) }">{{ t('site.nav.press') }}</router-link>
-          <router-link :to="{ name: localizedRouteName('methodology-details', locale), hash: '#data-licences' }">{{ t('footerLicenseLink') }}</router-link>
-          <a :href="REPO_URL" rel="noopener">{{ t('site.code') }}</a>
-          <a :href="DOI_URL" rel="noopener">{{ t('site.cite') }}</a>
-          <span>{{ t('footerLicense') }} · v{{ VERSION }}</span>
-        </div>
+      <div class="footer-main">
+        <p class="footer-lead">
+          {{ t('site.footerOpenData') }}
+          <router-link :to="{ name: localizedRouteName('methodology', locale) }">{{ t('site.footerSources') }}</router-link>
+        </p>
+        <ul class="footer-links">
+          <li><router-link :to="{ name: localizedRouteName('ranking', locale) }">{{ t('site.nav.ranking') }}</router-link></li>
+          <li><router-link :to="{ name: localizedRouteName('methodology-details', locale), hash: '#data-licences' }">{{ t('site.footerReuse') }}</router-link></li>
+          <li><router-link :to="{ name: localizedRouteName('press', locale) }">{{ t('site.nav.press') }}</router-link></li>
+          <li><a :href="contactHref" rel="noopener" @click="openContact">{{ t('site.footerContact') }}</a></li>
+        </ul>
+      </div>
+      <div class="footer-meta">
+        <p v-if="lastUpdatedLabel" class="footer-updated">{{ lastUpdatedLabel }}</p>
+        <p>{{ t('footer') }}</p>
+        <p>
+          {{ t('footerLicense') }} · <a :href="REPO_URL" rel="noopener">{{ t('site.code') }}</a> ·
+          <a :href="DOI_URL" rel="noopener">{{ t('site.cite') }}</a> · v{{ VERSION }}
+        </p>
       </div>
     </footer>
   </div>
@@ -128,127 +192,189 @@ main:focus {
   z-index: 100;
   padding: 10px 16px;
   border-radius: var(--radius-small);
-  background: var(--dark);
-  color: var(--text-on-dark);
-  font-weight: 600;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
   text-decoration: none;
 }
 .skip-link:focus {
   top: 12px;
 }
 
+/* Header: 88 px high, 64 px side gutters (desktop mock-up); 60 px, a
+   bottom hairline and a menu button on phones (AccueilMobileBD4). */
 .site-header {
+  height: 88px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-top: 24px;
-  padding-bottom: 24px;
+  padding: 0 var(--page-gutter);
+  position: relative;
 }
-
 .wordmark {
-  font-weight: 800;
-  font-size: 20px;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-size: 22px;
   text-decoration: none;
   color: var(--text-primary);
 }
-
-.nav {
+.nav-list {
   display: flex;
-  gap: 28px;
   align-items: center;
-  font-size: 15px;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
 }
 .nav a {
-  text-decoration: none;
   color: var(--text-primary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.nav a:hover {
+  color: var(--primary);
 }
 .nav a[aria-current='page'] {
+  font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 6px;
   text-decoration-thickness: 2px;
 }
-.nav a:hover {
-  color: var(--accent);
+.nav-disabled {
+  color: var(--text-muted);
+  cursor: default;
+}
+.nav .nav-lang {
+  color: var(--text-muted);
+}
+.menu-button {
+  display: none;
 }
 
-.lang-toggle {
-  display: flex;
-  gap: 2px;
-  padding: 3px;
-  border-radius: 999px;
-  border: 1px solid var(--control-border);
-}
-.lang-toggle button {
-  border: none;
-  background: none;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--text-primary);
-}
-.lang-toggle button[aria-pressed='true'] {
-  background: var(--dark);
-  color: var(--text-on-dark);
-}
-
-/* Phone widths: the links drop to their own line and wrap — no drawer
-   menu (CLAUDE.md: the main information never sits behind a menu). */
-@media (max-width: 720px) {
+@media (max-width: 1024px) {
   .site-header {
-    flex-wrap: wrap;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    padding: 0 32px;
+  }
+}
+
+@media (max-width: 760px) {
+  .site-header {
+    height: 60px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .wordmark {
+    font-size: 20px;
+  }
+  .menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--control-border);
+    background: var(--surface);
+    color: var(--text-primary);
+    cursor: pointer;
   }
   .nav {
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 10px 20px;
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 24px var(--panel-shadow);
   }
-  .lang-toggle {
-    margin-left: auto;
+  .nav.open {
+    display: block;
+  }
+  .nav-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px 16px 16px;
+    font-size: 18px;
+  }
+  .nav-list li {
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav-list li:last-child {
+    border-bottom: none;
+  }
+  .nav a,
+  .nav-disabled {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
   }
 }
 
 .site-footer {
-  border-top: 1px solid var(--line);
-  margin-top: 48px;
-  font-size: 13px;
+  margin: 80px var(--page-gutter) 0;
+  padding: 24px 0 40px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 14px;
   color: var(--text-secondary);
 }
-.footer-grid {
+.footer-main {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 16px 48px;
-  padding-top: 32px;
-  padding-bottom: 32px;
+  gap: 12px 24px;
 }
-.footer-col {
-  max-width: 640px;
-}
-.footer-col p {
-  margin: 0 0 6px;
-  line-height: 1.5;
+.footer-lead {
+  margin: 0;
 }
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 18px;
-  align-content: flex-start;
+  gap: 8px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.footer-links a {
-  color: var(--text-secondary);
+.site-footer a {
+  color: var(--text-primary);
 }
-.footer-links a:hover {
-  color: var(--accent);
+.site-footer a:hover {
+  color: var(--primary);
+}
+.footer-meta {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.footer-meta p {
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+.footer-meta a {
+  color: var(--text-muted);
 }
 .footer-updated {
-  color: var(--text-primary);
-  font-weight: 600;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+@media (max-width: 1024px) {
+  .site-footer {
+    margin: 64px 32px 0;
+  }
+}
+@media (max-width: 600px) {
+  .site-footer {
+    margin: 48px 16px 0;
+  }
+  .footer-links a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
 }
 </style>

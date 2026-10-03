@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { ROUTE_PATHS } from './src/routePaths.js'
 
 // Single source of truth for the production domain — shared with the
 // frontend via the `define` below (see composables/useSeoMeta.js) and
@@ -39,18 +40,6 @@ function countRankingNeighborhoods() {
   }
 }
 
-// The same 8 routes declared in src/router.js — kept as a plain literal
-// here rather than imported, since router.js pulls in Vue SFCs that
-// this Node-context config file can't (and shouldn't need to) resolve.
-const ROUTE_SEGMENTS = ['', 'address', 'quiz', 'map', 'methodology', 'methodology/details', 'ranking', 'press']
-
-function routePaths(prefix) {
-  return ROUTE_SEGMENTS.map((segment) => {
-    if (!prefix) return segment ? `/${segment}` : '/'
-    return segment ? `/${prefix}/${segment}` : `/${prefix}`
-  })
-}
-
 // Generates a standard multilingual sitemap.xml (one <url> per language
 // per route, each carrying its own reciprocal hreflang alternates) and
 // robots.txt after the production build writes its output — the same
@@ -61,19 +50,16 @@ function seoFilesPlugin() {
     name: 'underlaid-seo-files',
     apply: 'build',
     writeBundle(options) {
-      const enPaths = routePaths('')
-      const frPaths = routePaths('fr')
-      const urls = [...enPaths, ...frPaths].map((path, i) => {
-        const isEn = i < enPaths.length
-        const enPath = isEn ? path : enPaths[i - enPaths.length]
-        const frPath = isEn ? frPaths[i] : path
-        return `  <url>
+      const urls = ROUTE_PATHS.filter((r) => r.sitemap !== false).flatMap((r) =>
+        [r.fr, r.en].map(
+          (path) => `  <url>
     <loc>${SITE_URL}${path}</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}${enPath}"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="${SITE_URL}${frPath}"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}${enPath}"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="${SITE_URL}${r.fr}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}${r.en}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}${r.fr}"/>
   </url>`
-      })
+        )
+      )
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls.join('\n')}

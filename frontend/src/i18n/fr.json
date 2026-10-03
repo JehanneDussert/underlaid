@@ -322,7 +322,7 @@
     "rnaSource": "Source : Répertoire National des Associations, miroir Île-de-France (data.iledefrance.fr), agrégé par commune ; population INSEE Recensement 2021.",
     "layerAsOf": "Données au {date} : la dernière mise à jour de cette source a échoué, sa version précédente est affichée."
   },
-  "footerLicense": "Code : MIT · Données : ODbL",
+  "footerLicense": "Code : MIT · Données : ODbL · Cartes et visuels : CC BY 4.0",
   "footerLicenseLink": "Licences et attributions",
   "view": {
     "label": "Vue de la carte",
@@ -362,13 +362,23 @@
       "address": "Par adresse",
       "routes": "Itinéraires",
       "quiz": "Quiz",
-      "map": "Carte",
+      "map": "Explorer la carte",
       "methodology": "Méthode",
       "ranking": "Quartiers les plus exposés",
-      "press": "Presse"
+      "press": "Presse",
+      "neighbourhood": "Votre quartier",
+      "neighbourhoodHint": "(saisissez d'abord une adresse)"
     },
     "code": "Code source",
-    "cite": "Citer (DOI)"
+    "cite": "Citer (DOI)",
+    "homeLabel": "underlaid, accueil",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "otherLanguage": "English version",
+    "footerOpenData": "Données publiques ouvertes.",
+    "footerSources": "Sources et méthode",
+    "footerReuse": "Citer et réutiliser",
+    "footerContact": "Contact"
   },
   "figure": {
     "sources": "Sources : {sources}",
@@ -639,11 +649,11 @@
     },
     "f2": {
       "title": "À exposition égale, des situations sociales opposées.",
-      "body": "Parmi les quartiers très exposés dont les habitants ont les ressources les plus élevées, la plupart se trouvent à Paris et cumulent surtout la chaleur et des logements énergivores. Parmi ceux dont les habitants ont les ressources les plus faibles, la plupart se trouvent en Seine-Saint-Denis et dans le Val-de-Marne, et cumulent surtout la pollution de l'air, le bruit et un accès aux soins plus faible.",
+      "body": "Parmi les quartiers très exposés dont les habitants ont les ressources les plus élevées, la plupart se trouvent à Paris et cumulent surtout la chaleur et des logements énergivores. Parmi ceux dont les habitants ont les ressources les plus faibles, la plupart se trouvent en Seine-Saint-Denis et dans le Val-de-Marne, et cumulent surtout la chaleur, la pollution de l'air et le bruit.",
       "body2": "Sur l'ensemble de la métropole, le lien entre exposition et ressources est faible (corrélation de rang de {rho}), et légèrement positif à cause du centre de Paris, dense et ancien.",
-      "question": "Parmi les quartiers très exposés (au moins 2 des 4 critères), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
-      "definition": "Les 4 critères : chaleur, pollution de l'air et bruit, logement, accès aux soins. Ressources des habitants : revenu médian, part de logements surpeuplés, part de résidences secondaires (INSEE, 2021), mesurées à part du score.",
-      "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME, ANS"
+      "question": "Parmi les quartiers très exposés (au moins 2 des 3 expositions), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
+      "definition": "Les 3 expositions : chaleur, pollution de l'air et bruit, logement. L'accès aux soins est mesuré à part. Ressources des habitants : revenu médian, part de logements surpeuplés, part de résidences secondaires (INSEE, 2021), mesurées à part du score.",
+      "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME"
     },
     "quiz": {
       "kicker": "Question",
@@ -766,9 +776,9 @@
         "sources": "contributeurs d'OpenStreetMap (extrait du 30 septembre 2026), calcul Underlaid du 1er octobre 2026"
       },
       "exposed": {
-        "question": "En Seine-Saint-Denis, parmi les quartiers très exposés (qui cumulent au moins 2 critères sur 4), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
+        "question": "En Seine-Saint-Denis, parmi les quartiers très exposés (au moins 2 des 3 expositions : chaleur, air et bruit, logement), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
         "explanation": "{v}. À Paris, cette part est de {paris}. À exposition égale, les situations sociales diffèrent fortement d'un territoire à l'autre.",
-        "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME, ANS"
+        "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME"
       },
       "care": {
         "question": "Dans les Hauts-de-Seine, à densité de population égale, l'accès aux soins (médecins généralistes et pharmacies) des quartiers aux ressources les plus faibles est-il meilleur, équivalent ou moins bon que celui des quartiers les plus aisés ?",
@@ -830,5 +840,12 @@
     "infoOnlyNote": "Pour information : le médecin et la pharmacie les plus proches sont à quelques minutes dans presque tous les quartiers ; l'accès aux soins noté tient compte du nombre de personnes qui se partagent chaque cabinet ou officine (page Par adresse).",
     "lowerBound": "Durée sans marches : une limite basse. Le calcul évite les escaliers et les arrêts déclarés non accessibles, mais ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni d'une vitesse réduite, ni de l'accessibilité du bâtiment d'arrivée.",
     "stationAccessible": "Sans marches : point d'arrêt accessible le plus proche"
+  },
+  "modes": {
+    "free": "Sans contrainte",
+    "slow": "Marche lente",
+    "wheelchair": "Fauteuil roulant",
+    "chosen": "Mode choisi : {mode}",
+    "none": "Aucun mode choisi"
   }
 }

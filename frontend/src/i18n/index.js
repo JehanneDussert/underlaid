@@ -4,16 +4,16 @@ import fr from './fr.json'
 
 export const LOCALE_STORAGE_KEY = 'underlaid-locale'
 
-// English default (the project publishes mainly in English), but a
-// returning visitor's explicit choice always wins — no auto-detection
+// French default (the site is French first since the redesign of October
+// 2026), but a returning visitor's explicit choice always wins — no auto-detection
 // from browser/geolocation, deliberately: let the person choose.
 // Guarded for SSG (vite-ssg prerenders in Node, where `localStorage`
-// and `document` don't exist) — falls back to the English default
+// and `document` don't exist) — falls back to the French default
 // there, exactly like a fresh visitor would see.
 function initialLocale() {
-  if (typeof localStorage === 'undefined') return 'en'
+  if (typeof localStorage === 'undefined') return 'fr'
   const saved = localStorage.getItem(LOCALE_STORAGE_KEY)
-  return saved === 'fr' || saved === 'en' ? saved : 'en'
+  return saved === 'fr' || saved === 'en' ? saved : 'fr'
 }
 
 // A factory, not a module-level singleton: vite-ssg's build renders
@@ -28,7 +28,7 @@ export function createI18nInstance() {
   const i18n = createI18n({
     legacy: false,
     locale: initialLocale(),
-    fallbackLocale: 'en',
+    fallbackLocale: 'fr',
     messages: { en, fr },
   })
 

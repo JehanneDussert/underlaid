@@ -39,6 +39,8 @@ import pandas as pd
 import config
 
 RP22 = config.DATA_RAW / "rp2022"
+# The 2021-based outputs, kept when the pipeline switched to the 2022 census.
+SNAP21 = config.DATA_INTERIM / "rp2021_snapshot"
 OUT = config.DATA_INTERIM / "analysis" / "rp2022_sensitivity.txt"
 EXPOSURES = ["thermal", "pollution", "housing"]
 lines = []
@@ -65,10 +67,10 @@ def means_thirds(inc, over, sec):
 
 
 def main():
-    pop21 = gpd.read_file(config.DATA_PROCESSED / "population_iris.geojson").set_index("code_iris").population
+    pop21 = gpd.read_file(SNAP21 / "population_iris.geojson").set_index("code_iris").population
     pop22 = read_insee(RP22 / "base-ic-evol-struct-pop-2022_csv.zip", "base-ic-evol-struct-pop-2022.CSV", ["P22_POP"]).P22_POP
     log22 = read_insee(RP22 / "base-ic-logement-2022_csv.zip", "base-ic-logement-2022.CSV",
-                       ["P22_LOG", "P22_RP", "P22_RSECOCC", "C22_RP_SUROCC_MOD", "C22_RP_SUROCC_ACC"])
+                       ["P22_LOG", "P22_RP", "P22_RSECOCC", "C22_RP_NORME", "C22_RP_SOUSOCC_MOD", "C22_RP_SOUSOCC_ACC", "C22_RP_SOUSOCC_TACC", "C22_RP_SUROCC_MOD", "C22_RP_SUROCC_ACC"])
 
     s11 = importlib.import_module("11_compute_vulnerability_score")
     base = s11.build_dataset()
@@ -109,13 +111,15 @@ def main():
         say(f"   {k:12s} quarter changes: {moved.sum()} IRIS ({moved.mean():.1%})")
 
     say("\n== Means axis (income 2021 kept; overcrowding and second homes 2021 -> 2022)")
-    cap = pd.DataFrame(json.load(open(config.DATA_PROCESSED / "adaptive_capacity_iris.json", encoding="utf-8"))["iris"]).set_index("code_iris")
+    cap = pd.DataFrame(json.load(open(SNAP21 / "adaptive_capacity_iris.json", encoding="utf-8"))["iris"]).set_index("code_iris")
     inc = gpd.read_file(config.DATA_PROCESSED / "income_iris.geojson").set_index("code_iris").median_income
-    sec21 = gpd.read_file(config.DATA_PROCESSED / "secondary_residences_iris.geojson").set_index("code_iris").pct_secondary_residences
+    sec21 = gpd.read_file(SNAP21 / "secondary_residences_iris.geojson").set_index("code_iris").pct_secondary_residences
     over21 = cap.pct_overcrowded
-    floor = log22.P22_LOG >= 20
-    sec22 = (log22.P22_RSECOCC / log22.P22_LOG).where(floor)
-    over22 = ((log22.C22_RP_SUROCC_MOD + log22.C22_RP_SUROCC_ACC) / log22.P22_RP).where(floor)
+    # Same rules as scripts 24 and 25 (floor of 20 on each denominator;
+    # overcrowding over all occupation categories of the complementary count).
+    sec22 = (log22.P22_RSECOCC / log22.P22_LOG).where(log22.P22_LOG >= 20)
+    occ = log22[["C22_RP_NORME", "C22_RP_SOUSOCC_MOD", "C22_RP_SOUSOCC_ACC", "C22_RP_SOUSOCC_TACC", "C22_RP_SUROCC_MOD", "C22_RP_SUROCC_ACC"]].sum(axis=1)
+    over22 = ((log22.C22_RP_SUROCC_MOD + log22.C22_RP_SUROCC_ACC) / occ).where(occ >= 20)
     say(f"  overcrowding median {over21.median():.3f} -> {over22.reindex(over21.index).median():.3f} (definition changes); "
         f"second homes median {sec21.median():.3f} -> {sec22.reindex(sec21.index).median():.3f}")
     t21 = means_thirds(inc, over21, sec21)

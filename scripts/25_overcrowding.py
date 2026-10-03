@@ -11,11 +11,18 @@ overcrowded dwelling leaves no room to get away from the heat inside
 one's own home: a direct limit on the means to cope, independent of how
 exposed the neighborhood is.
 
-Uses INSEE's own overcrowding definition (the "exploitation
-complémentaire" variable C21_RP_HSTU1P_SUROCC): main residences, studios
-occupied by one person excluded, with fewer rooms than the household's
-"normal" need. Denominator C21_RP_HSTU1P is the same restricted set, so
-the rate is exactly INSEE's published one.
+Census 2022 since 3 October 2026. INSEE changed the definition with that
+edition: the 2021 variable (C21_RP_HSTU1P_SUROCC, main residences
+excluding studios occupied by one person) no longer exists; the 2022 base
+gives moderate and severe overcrowding over all main residences
+(C22_RP_SUROCC_MOD + C22_RP_SUROCC_ACC). Both come from INSEE's
+complementary (sample-based) count, so the denominator is the sum of all
+occupation categories of that same count (C22_RP_NORME, _SOUSOCC_MOD,
+_ACC, _TACC, _SUROCC_MOD, _ACC): dividing by the main count P22_RP gave a
+rate above 1 in one neighbourhood. The median
+rate goes from 13.5% to 24.4% because of this change of definition, not of
+a real change (published in the method as part of the 2021/2022
+sensitivity check).
 """
 import importlib.util
 import sys
@@ -30,8 +37,8 @@ import config
 from utils.geo import check_unmatched_codes, load_iris_reference
 from utils.io import save_geojson
 
-OVERCROWDED_FIELD = "C21_RP_HSTU1P_SUROCC"
-DENOMINATOR_FIELD = "C21_RP_HSTU1P"
+OVERCROWDED_FIELDS = ["C22_RP_SUROCC_MOD", "C22_RP_SUROCC_ACC"]
+DENOMINATOR_FIELDS = ["C22_RP_NORME", "C22_RP_SOUSOCC_MOD", "C22_RP_SOUSOCC_ACC", "C22_RP_SOUSOCC_TACC", *OVERCROWDED_FIELDS]
 # Same floor as pct_secondary_residences (script 24): below 20 dwellings a
 # rate is a handful of households, not a neighborhood figure.
 MIN_DWELLINGS_FOR_RATE = 20
@@ -51,7 +58,7 @@ def normalize(df: pd.DataFrame, iris_code_candidates) -> pd.DataFrame:
     iris_col = next((c for c in iris_code_candidates if c in df.columns), None)
     if iris_col is None:
         raise RuntimeError(f"Could not find an IRIS code column among {list(df.columns)}.")
-    missing = [c for c in (OVERCROWDED_FIELD, DENOMINATOR_FIELD) if c not in df.columns]
+    missing = [c for c in DENOMINATOR_FIELDS if c not in df.columns]
     if missing:
         raise RuntimeError(f"Columns {missing} not found — INSEE may have renamed them for a new vintage.")
 
@@ -59,8 +66,8 @@ def normalize(df: pd.DataFrame, iris_code_candidates) -> pd.DataFrame:
     df[config.IRIS_JOIN_COLUMN] = df[iris_col].astype(str)
     df = df[df[config.IRIS_JOIN_COLUMN].str[:2].isin(config.MGP_DEP_CODES)]
 
-    overcrowded = pd.to_numeric(df[OVERCROWDED_FIELD], errors="coerce")
-    dwellings = pd.to_numeric(df[DENOMINATOR_FIELD], errors="coerce")
+    overcrowded = sum(pd.to_numeric(df[f], errors="coerce") for f in OVERCROWDED_FIELDS)
+    dwellings = sum(pd.to_numeric(df[f], errors="coerce") for f in DENOMINATOR_FIELDS)
     denom = dwellings.where(dwellings >= MIN_DWELLINGS_FOR_RATE)
     # 0-1 fraction, like every other pct_* field in this pipeline. np.nan
     # (never 0) where the floor isn't met.

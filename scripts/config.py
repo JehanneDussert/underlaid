@@ -117,7 +117,7 @@ RNA_DATASET_ID = "repertoire-national-des-associations-ile-de-france"  # data.il
 # INSEE only exposes the current "base infra-communale" (population by
 # IRIS) edition through a statistics page whose direct file URL changes
 # every edition, same pattern as Filosofi above.
-POPULATION_IRIS_PAGE = "https://www.insee.fr/fr/statistiques/8268806"
+POPULATION_IRIS_PAGE = "https://www.insee.fr/fr/statistiques/8647014"  # RP 2022 (reference since 3 October 2026)
 
 # IDF's own land-use survey (MOS), used as an artificialization proxy —
 # see script 22's docstring for why this replaces IGN's OCS GE (no

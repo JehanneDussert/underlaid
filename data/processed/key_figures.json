@@ -3,16 +3,16 @@
   "n_inhabited": 2690,
   "distribution": {
     "0": 774,
-    "1": 1286,
-    "2": 610,
-    "3": 78,
+    "1": 1287,
+    "2": 608,
+    "3": 79,
     "4": 4
   },
   "distribution_inhabited": {
     "0": 765,
-    "1": 1248,
-    "2": 597,
-    "3": 76,
+    "1": 1249,
+    "2": 595,
+    "3": 77,
     "4": 4
   },
   "at_max": [
@@ -37,20 +37,20 @@
       "commune": "Champigny-sur-Marne"
     }
   ],
-  "n_three_plus_inhabited": 80,
+  "n_three_plus_inhabited": 81,
   "three_plus_by_department": {
-    "75": 21,
+    "75": 22,
     "92": 23,
     "93": 18,
     "94": 18
   },
   "highly_exposed_lowest_third_pct": {
-    "75": 2.4,
-    "92": 5.8,
-    "93": 76.5,
-    "94": 28.6
+    "75": 4.5,
+    "92": 1.9,
+    "93": 61.8,
+    "94": 24.5
   },
-  "spearman_means_exposure": 0.11,
+  "spearman_means_exposure": 0.09,
   "worst_access_care_pct": {
     "75": 2.2,
     "92": 28.4,
@@ -59,42 +59,42 @@
   },
   "access_care_by_means": {
     "75": {
-      "lowest_third_pct": 4.9,
-      "highest_third_pct": 0.8,
-      "lowest_third_n": 102,
-      "highest_third_n": 482
+      "lowest_third_pct": 3.9,
+      "highest_third_pct": 0.7,
+      "lowest_third_n": 153,
+      "highest_third_n": 420
     },
     "92": {
-      "lowest_third_pct": 41.1,
-      "highest_third_pct": 23.9,
-      "lowest_third_n": 112,
-      "highest_third_n": 276
+      "lowest_third_pct": 39.3,
+      "highest_third_pct": 24.0,
+      "lowest_third_n": 107,
+      "highest_third_n": 304
     },
     "93": {
-      "lowest_third_pct": 48.0,
-      "highest_third_pct": 0.0,
-      "lowest_third_n": 429,
-      "highest_third_n": 1
+      "lowest_third_pct": 46.8,
+      "highest_third_pct": 75.0,
+      "lowest_third_n": 395,
+      "highest_third_n": 8
     },
     "94": {
-      "lowest_third_pct": 40.5,
-      "highest_third_pct": 23.8,
-      "lowest_third_n": 200,
-      "highest_third_n": 84
+      "lowest_third_pct": 38.8,
+      "highest_third_pct": 27.9,
+      "lowest_third_n": 188,
+      "highest_third_n": 111
     }
   },
   "access_care_gap_equal_density": {
-    "92": 22.6,
-    "94": 23.1
+    "92": 20.7,
+    "94": 17.3
   },
   "access_care_shares_equal_density": {
     "92": {
-      "lowest_third_pct": 41.1,
-      "highest_third_pct": 18.4
+      "lowest_third_pct": 39.8,
+      "highest_third_pct": 19.1
     },
     "94": {
-      "lowest_third_pct": 47.1,
-      "highest_third_pct": 24.0
+      "lowest_third_pct": 44.6,
+      "highest_third_pct": 27.4
     }
   },
   "wheelchair_gp_median": {

@@ -15,7 +15,7 @@ median income only captures indirectly. Kept alongside median_income in
 11_compute_vulnerability_score.py's output as unscored context, in the
 same spot and for the same reason.
 
-P21_RSECOCC counts "résidences secondaires et logements occasionnels"
+P22_RSECOCC (P21_ before 3 October 2026) counts "résidences secondaires et logements occasionnels"
 together — INSEE doesn't publish a IRIS-level breakdown that isolates
 pure secondary residences from occasional/seasonal dwellings, so the
 rate below is a proxy for both combined, not secondary residences alone.
@@ -33,18 +33,18 @@ from utils.geo import check_unmatched_codes, load_iris_reference
 from utils.io import save_geojson
 
 RAW_DIR = config.DATA_RAW / "secondary_residences_iris"
-SECONDARY_RESIDENCES_PAGE = "https://www.insee.fr/fr/statistiques/8268838"
+SECONDARY_RESIDENCES_PAGE = "https://www.insee.fr/fr/statistiques/8647012"  # RP 2022
 
 # Field names confirmed from the 2021 "base-ic-logement" data dictionary:
-# IRIS (full 9-digit code), P21_LOG (total housing units), P21_RSECOCC
+# IRIS (full 9-digit code), P22_LOG (total housing units), P21_RSECOCC
 # (secondary residences + occasional dwellings).
 IRIS_CODE_FIELD_CANDIDATES = ("IRIS", "iris")
-TOTAL_HOUSING_FIELD_PATTERN = "P21_LOG"
-SECONDARY_RESIDENCES_FIELD_PATTERN = "P21_RSECOCC"
+TOTAL_HOUSING_FIELD_PATTERN = "P22_LOG"
+SECONDARY_RESIDENCES_FIELD_PATTERN = "P22_RSECOCC"
 
 
 def download() -> Path:
-    file_url = find_download_link(SECONDARY_RESIDENCES_PAGE, r"base-ic-logement-2021_csv\.zip")
+    file_url = find_download_link(SECONDARY_RESIDENCES_PAGE, r"base-ic-logement-2022_csv\.zip")
     dest = RAW_DIR / Path(file_url).name
     downloaded = download_file(file_url, dest)
 

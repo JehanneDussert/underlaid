@@ -28,13 +28,15 @@ from utils.io import save_geojson
 RAW_DIR = config.DATA_RAW / "population_iris"
 
 # Field names confirmed from the 2021 "base-ic-evol-struct-pop" file:
-# IRIS (full 9-digit code), P21_POP (total population).
+# IRIS (full 9-digit code), P22_POP (total population). Census 2022 since
+# 3 October 2026 (2021 before; the differences are published as a
+# sensitivity check, scripts/analysis/rp2022_sensitivity.py).
 IRIS_CODE_FIELD_CANDIDATES = ("IRIS", "iris")
-POPULATION_FIELD_PATTERN = "P21_POP"
+POPULATION_FIELD_PATTERN = "P22_POP"
 
 
 def download() -> Path:
-    file_url = find_download_link(config.POPULATION_IRIS_PAGE, r"base-ic-evol-struct-pop-2021_csv\.zip")
+    file_url = find_download_link(config.POPULATION_IRIS_PAGE, r"base-ic-evol-struct-pop-2022_csv\.zip")
     dest = RAW_DIR / Path(file_url).name
     downloaded = download_file(file_url, dest)
 
@@ -47,7 +49,9 @@ def download() -> Path:
 
 
 def load_raw(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path, sep=";")
+    # IRIS codes as text: read as numbers, codes with a leading zero (Ariège,
+    # "09...") lose it and some start with "92", like the bug fixed in script 24.
+    return pd.read_csv(path, sep=";", dtype={"IRIS": str, "COM": str}, low_memory=False)
 
 
 def normalize(df: pd.DataFrame):

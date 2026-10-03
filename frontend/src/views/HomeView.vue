@@ -62,7 +62,9 @@ function onPhoneModesKeydown(event) {
 
 // Until the neighbourhood page exists (step 2 of the redesign), an address
 // leads to the current address page, with the chosen mode.
+const leaving = ref(false)
 function goToAddress({ label, lon, lat }) {
+  leaving.value = true
   router.push({ name: localizedRouteName('address', locale.value), query: { lon, lat, label, ...(mode.value ? { mode: mode.value } : {}) } })
 }
 
@@ -75,12 +77,13 @@ const strip = computed(() => {
 
 <template>
   <div class="home">
+    <div class="first-screen">
     <section class="hero">
       <div class="hero-text">
         <h1 class="hero-title">{{ t('landing.title') }}</h1>
         <p class="hero-lead">{{ t('landing.lead') }}</p>
         <div class="hero-form">
-          <AddressSearch id="home-address" :label="t('landing.addressLabel')" hide-label :placeholder="t('landing.addressPlaceholder')" @select="goToAddress" />
+          <AddressSearch id="home-address" :busy="leaving" :label="t('landing.addressLabel')" hide-label :placeholder="t('landing.addressPlaceholder')" @select="goToAddress" />
 
           <div class="modes-desktop">
             <ModeToggle v-model="mode" :label="t('landing.modesLabel')" />
@@ -134,17 +137,29 @@ const strip = computed(() => {
       </p>
       <span class="strip-note">{{ t('landing.planNote') }}</span>
     </div>
+    </div>
 
     <RandomQuestion :figures="figures" :routes="routes" />
   </div>
 </template>
 
 <style scoped>
+/* The first screen: hero then strip, exactly the height left under the
+   header (88 px), whatever the strip's height (it wraps on narrow
+   screens). */
+.first-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - 88px);
+}
 .hero {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
-  min-height: 640px;
+  /* Header (88 px) + hero + strip fill the screen exactly (.first-screen
+     below); the hero only grows taller when its text needs it. */
+  flex: 1 0 auto;
+  min-height: 480px;
   padding: 0 0 0 var(--page-gutter);
   /* The lines of the plan run off the right edge and stop at the strip. */
   overflow: hidden;
@@ -189,10 +204,17 @@ const strip = computed(() => {
 .hero-hint a {
   color: var(--text-secondary);
 }
+/* The plan takes the largest size that fits both the width and the
+   height of its column (container query units), so the lines never run
+   below the screen. Centred in the space right of the text, so that on
+   wide screens the blank is shared on both sides. */
 .hero-plan {
   position: relative;
-  align-self: start;
   margin-left: -40px;
+  container-type: size;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 .all-places {
   position: absolute;
@@ -276,6 +298,20 @@ const strip = computed(() => {
     font-size: 46px;
   }
 }
+/* Short screens (laptops of 720-800 px): tighter text so the first
+   screen still holds the form and the strip. */
+@media (min-width: 901px) and (max-height: 800px) {
+  .hero-text {
+    padding-top: 24px;
+    gap: 20px;
+  }
+  .hero-title {
+    font-size: 46px;
+  }
+  .hero-form {
+    gap: 14px;
+  }
+}
 @media (max-width: 1024px) {
   .hero {
     padding-left: 32px;
@@ -292,9 +328,13 @@ const strip = computed(() => {
 /* Phone and narrow tablet (AccueilMobileBD4): one column, compact mode
    selector, vertical line. */
 @media (max-width: 900px) {
+  .first-screen {
+    min-height: 0;
+  }
   .hero {
     grid-template-columns: 1fr;
     min-height: 0;
+    overflow: visible;
     padding: 24px 16px 0;
   }
   .hero-text {
@@ -343,6 +383,8 @@ const strip = computed(() => {
   }
   .hero-plan {
     margin: 32px 0 0;
+    container-type: normal;
+    display: block;
   }
   .phone-plan-head {
     display: flex;

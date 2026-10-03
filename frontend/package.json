@@ -8,7 +8,8 @@
     "build": "vite-ssg build",
     "preview": "vite preview",
     "test:smoke": "node scripts/smoke-test.mjs",
-    "test:a11y": "node scripts/a11y-test.mjs"
+    "test:a11y": "node scripts/a11y-test.mjs",
+    "test:fit": "node scripts/check-home-fit.mjs"
   },
   "dependencies": {
     "@deck.gl/core": "^9.3.6",

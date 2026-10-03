@@ -6,6 +6,7 @@
 // Used on the home page and on the address page.
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import LoadingDots from './LoadingDots.vue'
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -13,6 +14,8 @@ const props = defineProps({
   // Visually hide the label (it stays available to screen readers).
   hideLabel: { type: Boolean, default: false },
   placeholder: { type: String, default: '' },
+  // Set by the page while it loads what the chosen address leads to.
+  busy: { type: Boolean, default: false },
 })
 const emit = defineEmits(['select'])
 const { t } = useI18n()
@@ -25,6 +28,8 @@ const suggestions = ref([])
 const active = ref(-1)
 const open = ref(false)
 const message = ref('')
+// Waiting for the address API (suggestions), shown in the field.
+const searching = ref(false)
 let debounce = null
 let lastRequest = 0
 
@@ -32,12 +37,14 @@ const listId = computed(() => `${props.id}-list`)
 const optionId = (i) => `${props.id}-opt-${i}`
 const status = computed(() => {
   if (message.value) return message.value
+  if (props.busy || searching.value) return ''
   if (!open.value) return ''
   return suggestions.value.length ? t('address.suggestions', { n: suggestions.value.length }) : ''
 })
 
 async function fetchSuggestions(q) {
   const request = ++lastRequest
+  searching.value = true
   try {
     const url = `${GEOCODE_URL}?q=${encodeURIComponent(q)}&lat=${MGP_CENTER[1]}&lon=${MGP_CENTER[0]}&limit=5`
     const data = await (await fetch(url)).json()
@@ -51,6 +58,8 @@ async function fetchSuggestions(q) {
     suggestions.value = []
     open.value = false
     return []
+  } finally {
+    if (request === lastRequest) searching.value = false
   }
 }
 
@@ -92,6 +101,7 @@ function onKeydown(event) {
 // The button (or Enter without a highlighted suggestion) takes the
 // highlighted suggestion, else the first one, fetching it if needed.
 async function submit() {
+  if (props.busy) return
   if (open.value && active.value >= 0) return pick(suggestions.value[active.value])
   const q = query.value.trim()
   if (q.length < 3) {
@@ -136,9 +146,14 @@ async function submit() {
           >{{ s.properties.label }}</li>
         </ul>
       </div>
-      <button type="submit">{{ t('address.submit') }}</button>
+      <LoadingDots v-if="searching && !props.busy" class="field-loading" :label="t('address.searching')" :show-label="false" />
+      <button type="submit" :aria-disabled="props.busy ? 'true' : undefined">
+        <LoadingDots v-if="props.busy" light :label="t('address.loadingPlace')" :show-label="false" />
+        <template v-else>{{ t('address.submit') }}</template>
+      </button>
     </div>
     <p class="status" aria-live="polite">{{ status }}</p>
+    <p v-if="props.busy" class="busy-text" aria-hidden="true">{{ t('address.loadingPlace') }}</p>
   </form>
 </template>
 
@@ -208,6 +223,20 @@ button {
 }
 button:hover {
   background: #00469a;
+}
+button {
+  min-width: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.field-loading {
+  flex-shrink: 0;
+}
+.busy-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 .suggestions {
   position: absolute;

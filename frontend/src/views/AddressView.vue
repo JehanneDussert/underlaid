@@ -14,6 +14,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import AddressSearch from '../components/AddressSearch.vue'
+import LoadingDots from '../components/LoadingDots.vue'
 import FigureSource from '../components/FigureSource.vue'
 import { useSeoMeta } from '../composables/useSeoMeta'
 import { localizedRouteName } from '../router'
@@ -42,6 +43,8 @@ const main = ref(null) // { label, feature }
 const other = ref(null)
 const compareOpen = ref(false)
 const notFound = ref('')
+// An address is in the URL but the neighbourhoods are not loaded yet.
+const pending = computed(() => !features.value && !loadError.value && !!route.query.lon)
 
 onMounted(async () => {
   try {
@@ -67,6 +70,11 @@ function findFeature(lon, lat) {
 }
 
 function locate({ label, lon, lat }, which = 'main', updateUrl = true) {
+  if (!features.value) {
+    // Chosen before the neighbourhoods are loaded: keep it for onMounted.
+    if (which === 'main') router.replace({ query: { ...route.query, lon, lat, label } })
+    return
+  }
   const feature = findFeature(lon, lat)
   if (which === 'main') {
     notFound.value = feature ? '' : t('addressPage.outside')
@@ -270,7 +278,10 @@ watch(locale, () => {
         <p v-if="sparse" class="flag">{{ t('panel.sparselyPopulated') }}</p>
       </template>
       <h1 v-else>{{ t('addressPage.title') }}</h1>
-      <AddressSearch id="address-main" :label="main ? t('addressPage.another') : t('address.label')" :placeholder="t('address.placeholder')" @select="(a) => locate(a, 'main')" />
+      <!-- While the neighbourhoods load (5 MB until the redesign's per-
+           neighbourhood files), an address in the URL shows a loading line. -->
+      <LoadingDots v-if="pending" class="page-loading" :label="t('address.loadingPlace')" />
+      <AddressSearch id="address-main" :busy="pending" :label="main ? t('addressPage.another') : t('address.label')" :placeholder="t('address.placeholder')" @select="(a) => locate(a, 'main')" />
       <p v-if="notFound" class="flag" role="status">{{ notFound }}</p>
       <p v-if="loadError" class="flag" role="status">{{ t('addressPage.loadError') }}</p>
     </section>
@@ -356,6 +367,10 @@ watch(locale, () => {
 </template>
 
 <style scoped>
+.page-loading {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
 .address-page {
   padding-top: 32px;
   padding-bottom: 48px;

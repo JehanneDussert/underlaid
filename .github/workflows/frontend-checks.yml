@@ -37,3 +37,4 @@ jobs:
         env:
           SMOKE_SOFTWARE_GL: '1'
       - run: npm run test:a11y
+      - run: npm run test:fit

@@ -4,6 +4,7 @@
 // /methodology/details (MethodologyView.vue) and in SCORING.md.
 import { computed, onMounted, onServerPrefetch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import HypothesesResults from '../components/HypothesesResults.vue'
 import { useRoute, useRouter } from 'vue-router'
 import FigureSource from '../components/FigureSource.vue'
 import { useSeoMeta } from '../composables/useSeoMeta'
@@ -76,8 +77,9 @@ const distribution = computed(() => {
       <nav class="toc" :aria-label="t('method.tocLabel')">
         <a href="#sources">1. {{ t('method.sources.short') }}</a>
         <a href="#calcul">2. {{ t('method.calc.short') }}</a>
-        <a href="#limites">3. {{ t('method.limits.short') }}</a>
-        <a href="#corrections">4. {{ t('method.fixes.short') }}</a>
+        <a href="#hypotheses">3. {{ t('method.hyp.short') }}</a>
+        <a href="#limites">4. {{ t('method.limits.short') }}</a>
+        <a href="#corrections">5. {{ t('method.fixes.short') }}</a>
       </nav>
     </section>
 
@@ -174,9 +176,16 @@ const distribution = computed(() => {
       </div>
     </section>
 
+    <section id="hypotheses" class="band" aria-labelledby="hyp-title">
+      <div class="container stack">
+        <h2 id="hyp-title">3. {{ t('method.hyp.title') }}</h2>
+        <HypothesesResults />
+      </div>
+    </section>
+
     <section id="limites" class="band" aria-labelledby="limits-title">
       <div class="container stack">
-        <h2 id="limits-title">3. {{ t('method.limits.title') }}</h2>
+        <h2 id="limits-title">4. {{ t('method.limits.title') }}</h2>
         <ul class="limits" role="list">
           <li v-for="l in limits" :key="l.name" class="card limit"><strong>{{ l.name }}</strong> {{ l.desc }}</li>
         </ul>
@@ -185,7 +194,7 @@ const distribution = computed(() => {
 
     <section id="corrections" class="band" aria-labelledby="fixes-title">
       <div class="container stack">
-        <h2 id="fixes-title">4. {{ t('method.fixes.title') }}</h2>
+        <h2 id="fixes-title">5. {{ t('method.fixes.title') }}</h2>
         <p class="body">{{ t('method.fixes.intro') }}</p>
         <ol class="fixes" role="list">
           <li v-for="f in fixes" :key="f.what" class="card fix">

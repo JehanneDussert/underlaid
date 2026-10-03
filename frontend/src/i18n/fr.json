@@ -613,6 +613,10 @@
       "scoring": "Formules (SCORING.md)",
       "code": "Code source",
       "cite": "Citer (DOI)"
+    },
+    "hyp": {
+      "short": "Hypothèses",
+      "title": "Hypothèses et résultats"
     }
   },
   "address": {
@@ -624,7 +628,9 @@
     "listLabel": "Adresses proposées",
     "unavailable": "Le service de recherche d'adresse ne répond pas. Réessayez plus tard.",
     "tooShort": "Saisissez au moins 3 caractères.",
-    "notFound": "Aucune adresse trouvée."
+    "notFound": "Aucune adresse trouvée.",
+    "searching": "Recherche des adresses…",
+    "loadingPlace": "Chargement du quartier…"
   },
   "home": {
     "eyebrow": "Paris et petite couronne · 2 752 quartiers",
@@ -908,7 +914,7 @@
     },
     "exposed": {
       "question": "En Seine-Saint-Denis, parmi les quartiers très exposés (au moins 2 des 3 expositions : chaleur, air et bruit, logement), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
-      "explanation": "{v}. À Paris, cette part est de {paris}. À exposition égale, les situations sociales diffèrent fortement d'un territoire à l'autre.",
+      "explanation": "{v}. Le tiers est calculé sur l'ensemble de la métropole, pas département par département. À Paris, cette part est de {paris}. Les quartiers très exposés n'abritent pas partout les mêmes habitants.",
       "note": "Ressources des habitants : revenu médian, logements surpeuplés, résidences secondaires (INSEE, 2021).",
       "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME"
     },
@@ -917,7 +923,7 @@
       "more": "Oui, plus souvent",
       "same": "Non, aussi souvent",
       "less": "Non, moins souvent",
-      "explanation": "Oui. Environ {a} quartiers sur 10 aux ressources les plus faibles font partie du quart où l'accès aux médecins et aux pharmacies est le plus difficile, contre environ {b} sur 10 parmi les quartiers aux ressources les plus élevées ({low} contre {high}).",
+      "explanation": "Oui. À densité de population comparable, environ {a} quartiers sur 10 aux ressources les plus faibles font partie du quart où l'accès aux médecins et aux pharmacies est le plus difficile, contre environ {b} sur 10 parmi les quartiers aux ressources les plus élevées ({low} contre {high}, écart mesuré à densité comparable).",
       "note": "Comparaison faite entre quartiers de densité de population comparable.",
       "sources": "ANS (RPPS), FINESS, DREES, INSEE, Île-de-France Mobilités"
     },
@@ -928,6 +934,39 @@
       "explanation": "{paris} des quartiers à Paris, {inner} en petite couronne. Durée médiane, à pied et en transports en commun : {mp} minutes à Paris, {mi} minutes en petite couronne.",
       "note": "Urgences générales ; urgences pédiatriques et spécialisées non comptées. Départ entre 1 h et 2 h, mardi 13 octobre 2026.",
       "sources": "INSEE (BPE 2025), Île-de-France Mobilités, OpenStreetMap"
+    }
+  },
+  "hypotheses": {
+    "intro": "Avant de regarder les résultats, les hypothèses à tester ont été écrites et datées, avec la règle qui décide du verdict. Cela évite de chercher, après coup, l'histoire que les chiffres semblent raconter.",
+    "verdict": {
+      "supported": "Soutenue",
+      "refuted": "Infirmée",
+      "reversed": "Infirmée, et inversée"
+    },
+    "written": "Hypothèse écrite le {date}",
+    "department": "Département",
+    "lowestThird": "Ressources les plus faibles",
+    "highestThird": "Ressources les plus élevées",
+    "dep": {
+      "75": "Paris",
+      "92": "Hauts-de-Seine",
+      "93": "Seine-Saint-Denis",
+      "94": "Val-de-Marne"
+    },
+    "care": {
+      "statement": "Les quartiers où les habitants ont le moins de ressources ont un accès aux soins plus difficile.",
+      "result": "Vrai dans les Hauts-de-Seine et le Val-de-Marne, y compris à densité comparable. La règle fixée à l'avance ne permet pas de conclure en Seine-Saint-Denis, où presque aucun quartier ne fait partie du tiers de la métropole aux ressources les plus élevées."
+    },
+    "wheelchair": {
+      "statement": "Les quartiers où les habitants ont le moins de ressources perdent davantage d'accès aux soins en fauteuil roulant.",
+      "result": "Non : la perte d'accès en fauteuil roulant se concentre à Paris, où le métro compte peu de points d'arrêt accessibles, quel que soit le niveau de ressources du quartier. En nombre de médecins atteignables, l'accès en fauteuil roulant reste plus faible en petite couronne."
+    },
+    "publicServices": {
+      "statement": "Les quartiers où les habitants ont le moins de ressources sont plus souvent loin des services publics (mairie, France Services, CAF, CPAM, France Travail, bureau de poste).",
+      "result": "C'est l'inverse dans les Hauts-de-Seine, la Seine-Saint-Denis et le Val-de-Marne, et le résultat est le même en fauteuil roulant.",
+      "tableCaption": "Part des quartiers dans le quart le plus éloigné des services publics (à pied et en transports en commun, mardi 10 h), selon les ressources des habitants. Tiers de ressources calculés dans chaque département.",
+      "after": "Les quartiers aux ressources les plus élevées sont plus souvent loin des services publics, y compris à densité comparable dans les Hauts-de-Seine et le Val-de-Marne. Les données ne permettent pas d'en établir la cause.",
+      "caveat": "Cet indicateur mesure le temps de trajet à pied et en transports en commun. Il ne tient compte ni du besoin de recourir à ces services, ni de l'usage de la voiture ou des démarches en ligne."
     }
   }
 }

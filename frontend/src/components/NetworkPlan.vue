@@ -68,13 +68,21 @@ const phoneItems = computed(() => PHONE_ORDER.map((type, i) => ({ type, color: P
             <stop offset="0" stop-color="#fff" stop-opacity="0" />
             <stop offset="1" stop-color="#fff" stop-opacity="1" />
           </linearGradient>
-          <mask id="plan-mask">
+          <linearGradient id="plan-fade-out" x1="0" x2="1">
+            <stop offset="0" stop-color="#fff" stop-opacity="1" />
+            <stop offset="1" stop-color="#fff" stop-opacity="0" />
+          </linearGradient>
+          <!-- Lines fade in on the left (behind the text) and out on the
+               right, so that on wide screens, where the plan does not
+               reach the edge of the page, they never stop abruptly. -->
+          <mask id="plan-mask" maskUnits="userSpaceOnUse" x="500" y="0" width="900" height="900">
             <rect x="560" y="0" width="160" height="900" fill="url(#plan-fade)" />
-            <rect x="720" y="0" width="620" height="900" fill="#fff" />
+            <rect x="720" y="0" width="480" height="900" fill="#fff" />
+            <rect x="1200" y="0" width="120" height="900" fill="url(#plan-fade-out)" />
           </mask>
         </defs>
         <g fill="none" stroke-linecap="round" stroke-width="14" mask="url(#plan-mask)">
-          <path v-for="line in LINES" :key="line.d" class="plan-line" :d="line.d" :stroke="line.color" :style="{ animationDelay: `${line.delay}ms` }" />
+          <path v-for="line in LINES" :key="line.d" class="plan-line" :d="line.d" pathLength="1000" :stroke="line.color" :style="{ animationDelay: `${line.delay}ms` }" />
         </g>
         <g fill="#fff" stroke="#101010" stroke-width="5">
           <circle
@@ -130,7 +138,9 @@ const phoneItems = computed(() => PHONE_ORDER.map((type, i) => ({ type, color: P
 <style scoped>
 .plan-desktop {
   position: relative;
-  width: 100%;
+  /* Fits the parent's size container (HomeView .hero-plan): as wide as
+     the column, as tall as the hero, whichever is smaller. */
+  width: min(100cqw, 100cqh * 720 / 712);
   aspect-ratio: 720 / 712;
 }
 .plan-svg {
@@ -141,7 +151,7 @@ const phoneItems = computed(() => PHONE_ORDER.map((type, i) => ({ type, color: P
   overflow: visible;
 }
 .plan-line {
-  stroke-dasharray: 1600;
+  stroke-dasharray: 1000;
   animation: plan-draw 2000ms ease-out both;
 }
 .plan-station {
@@ -263,7 +273,7 @@ const phoneItems = computed(() => PHONE_ORDER.map((type, i) => ({ type, color: P
 
 @keyframes plan-draw {
   from {
-    stroke-dashoffset: 1600;
+    stroke-dashoffset: 1000;
   }
   to {
     stroke-dashoffset: 0;

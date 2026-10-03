@@ -613,6 +613,10 @@
       "scoring": "Formulas (SCORING.md)",
       "code": "Source code",
       "cite": "Cite (DOI)"
+    },
+    "hyp": {
+      "short": "Hypotheses",
+      "title": "Hypotheses and results"
     }
   },
   "address": {
@@ -624,7 +628,9 @@
     "listLabel": "Suggested addresses",
     "unavailable": "The address search service is not responding. Please try again later.",
     "tooShort": "Type at least 3 characters.",
-    "notFound": "No address found."
+    "notFound": "No address found.",
+    "searching": "Looking up addresses…",
+    "loadingPlace": "Loading the neighbourhood…"
   },
   "home": {
     "eyebrow": "Paris and its inner suburbs · 2,752 neighbourhoods",
@@ -908,7 +914,7 @@
     },
     "exposed": {
       "question": "In Seine-Saint-Denis, among highly exposed neighbourhoods (at least 2 of the 3 exposures: heat, air and noise, housing), what share is also in the metropolis's third where residents have the fewest means?",
-      "explanation": "{v}. In Paris, this share is {paris}. With equal exposure, social situations differ sharply from one area to another.",
+      "explanation": "{v}. The third is computed over the whole metropolis, not département by département. In Paris, this share is {paris}. Highly exposed neighbourhoods are not home to the same residents everywhere.",
       "note": "Residents' means: median income, overcrowded homes, second homes (INSEE, 2021).",
       "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME"
     },
@@ -917,7 +923,7 @@
       "more": "Yes, more often",
       "same": "No, just as often",
       "less": "No, less often",
-      "explanation": "Yes. About {a} in 10 neighbourhoods with the fewest means are in the quarter where access to GPs and pharmacies is most difficult, against about {b} in 10 among those with the most means ({low} against {high}).",
+      "explanation": "Yes. At comparable population density, about {a} in 10 neighbourhoods with the fewest means are in the quarter where access to GPs and pharmacies is most difficult, against about {b} in 10 among those with the most means ({low} against {high}, gap measured at comparable density).",
       "note": "Comparison between neighbourhoods of comparable population density.",
       "sources": "ANS (RPPS), FINESS, DREES, INSEE, Île-de-France Mobilités"
     },
@@ -928,6 +934,39 @@
       "explanation": "{paris} of neighbourhoods in Paris, {inner} in the inner suburbs. Median duration, on foot and by public transport: {mp} minutes in Paris, {mi} minutes in the inner suburbs.",
       "note": "General emergency departments; paediatric and specialised ones not counted. Departure between 1:00 and 2:00, Tuesday 13 October 2026.",
       "sources": "INSEE (BPE 2025), Île-de-France Mobilités, OpenStreetMap"
+    }
+  },
+  "hypotheses": {
+    "intro": "Before looking at the results, the hypotheses to test were written down and dated, with the rule that decides the verdict. This avoids looking, after the fact, for the story the figures seem to tell.",
+    "verdict": {
+      "supported": "Supported",
+      "refuted": "Refuted",
+      "reversed": "Refuted, and reversed"
+    },
+    "written": "Hypothesis written on {date}",
+    "department": "Département",
+    "lowestThird": "Fewest means",
+    "highestThird": "Most means",
+    "dep": {
+      "75": "Paris",
+      "92": "Hauts-de-Seine",
+      "93": "Seine-Saint-Denis",
+      "94": "Val-de-Marne"
+    },
+    "care": {
+      "statement": "Neighbourhoods whose residents have the fewest means have more difficult access to care.",
+      "result": "True in Hauts-de-Seine and Val-de-Marne, including at comparable density. The rule fixed in advance does not allow a conclusion in Seine-Saint-Denis, where almost no neighbourhood is in the metropolis's third with the most means."
+    },
+    "wheelchair": {
+      "statement": "Neighbourhoods whose residents have the fewest means lose more access to care in a wheelchair.",
+      "result": "No: the loss of access in a wheelchair is concentrated in Paris, where few metro stop points are accessible, whatever the neighbourhood's means. In number of reachable GPs, wheelchair access remains lower in the inner suburbs."
+    },
+    "publicServices": {
+      "statement": "Neighbourhoods whose residents have the fewest means are more often far from public services (town hall, France Services, CAF, CPAM, France Travail, post office).",
+      "result": "The reverse holds in Hauts-de-Seine, Seine-Saint-Denis and Val-de-Marne, and the result is the same in a wheelchair.",
+      "tableCaption": "Share of neighbourhoods in the quarter farthest from public services (on foot and by public transport, Tuesday 10:00), by residents' means. Thirds of means computed within each département.",
+      "after": "Neighbourhoods with the most means are more often far from public services, including at comparable density in Hauts-de-Seine and Val-de-Marne. The data do not establish why.",
+      "caveat": "This indicator measures travel time on foot and by public transport. It does not take into account the need to use these services, car use or online procedures."
     }
   }
 }

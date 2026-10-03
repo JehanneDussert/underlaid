@@ -566,6 +566,10 @@
         {
           "name": "Access to care.",
           "desc": "Each GP counts as one, whatever their working hours: each practitioner's actual activity is not public."
+        },
+        {
+          "name": "Public toilets and water points.",
+          "desc": "Only the City of Paris publishes a complete list (toilets and fountains). In the inner suburbs, partial lists exist but cover only a few communes: Grand Paris Seine Ouest (173 fountains and 33 toilets, for 7 communes), Sceaux (21 fountains), Montreuil (22 fountains, 2019 list); Seine-Saint-Denis publishes an OpenStreetMap extract (271 water points) of unknown completeness. These places are therefore shown for Paris neighbourhoods only."
         }
       ]
     },
@@ -1135,7 +1139,7 @@
       "toilets": "Public toilets",
       "drinking_water": "Drinking fountain"
     },
-    "parisOnly": "The inner-suburb communes do not publish an open list of their public toilets and water points.",
+    "parisOnly": "Most inner-suburb communes do not publish an open list of their public toilets and water points.",
     "station": "In a wheelchair, much of the difference is at the entrance to the network: from your neighbourhood, the nearest accessible stop (metro, RER, train or tram) is {wc} away on foot, against {free} for the nearest stop. These durations do not account for pavements, slopes or broken lifts: reality is often longer.",
     "stationLink": "What the calculation does not see",
     "part3": {

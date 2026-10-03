@@ -566,6 +566,10 @@
         {
           "name": "Accès aux soins.",
           "desc": "Un médecin compte pour un, quel que soit son temps de travail : l'activité réelle de chaque praticien n'est pas publique."
+        },
+        {
+          "name": "Toilettes publiques et points d'eau.",
+          "desc": "Seule la Ville de Paris publie une liste complète (toilettes et fontaines). En petite couronne, des listes partielles existent mais ne couvrent que quelques communes : Grand Paris Seine Ouest (173 fontaines et 33 toilettes, pour 7 communes), Sceaux (21 fontaines), Montreuil (22 fontaines, liste de 2019) ; la Seine-Saint-Denis publie un extrait d'OpenStreetMap (271 points d'eau), dont la complétude n'est pas connue. Ces lieux ne sont donc affichés que pour les quartiers de Paris."
         }
       ]
     },
@@ -1135,7 +1139,7 @@
       "toilets": "Toilettes publiques",
       "drinking_water": "Fontaine d'eau potable"
     },
-    "parisOnly": "Les communes de petite couronne ne publient pas de liste ouverte de leurs toilettes publiques et points d'eau.",
+    "parisOnly": "La plupart des communes de petite couronne ne publient pas de liste ouverte de leurs toilettes publiques et points d'eau.",
     "station": "En fauteuil roulant, une grande partie de l'écart se joue à l'entrée du réseau : depuis votre quartier, l'arrêt accessible le plus proche (métro, RER, train ou tram) est à {wc} à pied, contre {free} pour l'arrêt le plus proche. Ces durées ne tiennent pas compte des trottoirs, des pentes ni des pannes d'ascenseur : la réalité est souvent plus longue.",
     "stationLink": "Ce que le calcul ne voit pas",
     "part3": {

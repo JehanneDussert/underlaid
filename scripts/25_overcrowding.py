@@ -20,7 +20,7 @@ complementary (sample-based) count, so the denominator is the sum of all
 occupation categories of that same count (C22_RP_NORME, _SOUSOCC_MOD,
 _ACC, _TACC, _SUROCC_MOD, _ACC): dividing by the main count P22_RP gave a
 rate above 1 in one neighbourhood. The median
-rate goes from 13.5% to 24.4% because of this change of definition, not of
+rate goes from 13.5% to 24.6% because of this change of definition, not of
 a real change (published in the method as part of the 2021/2022
 sensitivity check).
 """

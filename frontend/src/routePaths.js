@@ -10,6 +10,16 @@
 // home page) — still reachable, not advertised to search engines.
 export const ROUTE_PATHS = [
   { name: 'home', fr: '/', en: '/en', old: { en: '/', fr: '/fr' } },
+  // One page per neighbourhood, by its INSEE code (never an address in the
+  // URL). Prerendered once as a shell (/quartier), served for every code by
+  // a rewrite (vercel.json); not in the sitemap.
+  {
+    name: 'neighbourhood',
+    fr: '/quartier/:code?',
+    en: '/en/neighbourhood/:code?',
+    sample: { fr: '/quartier/930290101', en: '/en/neighbourhood/930290101' },
+    sitemap: false,
+  },
   { name: 'map', fr: '/carte', en: '/en/map', old: { en: '/map', fr: '/fr/map' } },
   { name: 'methodology', fr: '/methode', en: '/en/method', old: { en: '/methodology', fr: '/fr/methodology' } },
   {
@@ -31,6 +41,17 @@ export const ROUTE_PATHS = [
 ]
 
 export const LOCALES = ['fr', 'en']
+
+// Address of a page without its optional parameter (the prerendered shell).
+export const shellPath = (path) => path.replace(/\/:[^/]+\?$/, '')
+
+// Rewrites for pages with a parameter: every /quartier/<code> is served the
+// prerendered shell, which reads the code from the URL.
+export function paramRewrites() {
+  return ROUTE_PATHS.filter((r) => r.sample).flatMap((r) =>
+    LOCALES.map((l) => ({ source: r[l].replace(/\?$/, ''), destination: shellPath(r[l]) }))
+  )
+}
 export const DEFAULT_LOCALE = 'fr'
 
 // Permanent redirects from the pre-redesign addresses. A source that is

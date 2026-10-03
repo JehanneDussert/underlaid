@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { ROUTE_PATHS } from './src/routePaths.js'
+import { ROUTE_PATHS, paramRewrites, shellPath } from './src/routePaths.js'
 
 // Single source of truth for the production domain — shared with the
 // frontend via the `define` below (see composables/useSeoMeta.js) and
@@ -77,9 +77,29 @@ Sitemap: ${SITE_URL}/sitemap.xml
   }
 }
 
+// The local preview (smoke and accessibility tests) applies the same
+// rewrites as vercel.json: /quartier/<code> -> the prerendered shell.
+function previewRewritesPlugin() {
+  const rules = paramRewrites().map((r) => ({ prefix: r.source.replace(/:[^/]+$/, ''), to: `${r.destination}.html` }))
+  return {
+    name: 'underlaid-preview-rewrites',
+    configurePreviewServer(server) {
+      server.middlewares.use((req, _res, next) => {
+        const rule = rules.find((r) => req.url.startsWith(r.prefix) && req.url.length > r.prefix.length)
+        if (rule) req.url = rule.to
+        next()
+      })
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), seoFilesPlugin()],
+  plugins: [vue(), seoFilesPlugin(), previewRewritesPlugin()],
+  ssgOptions: {
+    // Pages with an optional parameter are prerendered once, as a shell.
+    includedRoutes: (paths) => paths.map((p) => shellPath(p)),
+  },
   define: {
     __RANKING_COUNT__: JSON.stringify(countRankingNeighborhoods()),
     __SITE_URL__: JSON.stringify(SITE_URL),

@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { localizedRouteName } from './router'
 import { loadStaticJson } from './utils/loadStaticJson'
+import { lastNeighbourhood, restoreNeighbourhood } from './utils/neighbourhood'
 
 const { t, locale } = useI18n()
 const REPO_URL = 'https://github.com/JehanneDussert/underlaid'
@@ -88,7 +89,10 @@ async function loadLastUpdated() {
 }
 
 onServerPrefetch(loadLastUpdated)
-onMounted(loadLastUpdated)
+onMounted(() => {
+  loadLastUpdated()
+  restoreNeighbourhood()
+})
 
 const dataDate = computed(() => {
   if (!lastUpdated.value) return ''
@@ -127,9 +131,14 @@ const lastUpdatedLabel = computed(() => (dataDate.value ? t('footerLastUpdated',
       <nav id="site-nav" class="nav" :class="{ open: menuOpen }" :aria-label="t('site.navLabel')">
         <ul class="nav-list">
           <li>
-            <!-- No neighbourhood chosen yet: greyed text, not a link (a link
-                 would lead nowhere). The page itself comes with step 2. -->
-            <span class="nav-disabled" aria-disabled="true">{{ t('site.nav.neighbourhood') }}<span class="sr-only"> {{ t('site.nav.neighbourhoodHint') }}</span></span>
+            <!-- Greyed text until a neighbourhood has been seen in this tab
+                 (a link would lead nowhere), then a link back to it. -->
+            <router-link
+              v-if="lastNeighbourhood"
+              :to="{ name: localizedRouteName('neighbourhood', locale), params: { code: lastNeighbourhood } }"
+              :aria-current="isCurrent('neighbourhood') ? 'page' : undefined"
+            >{{ t('site.nav.neighbourhood') }}</router-link>
+            <span v-else class="nav-disabled" aria-disabled="true">{{ t('site.nav.neighbourhood') }}<span class="sr-only"> {{ t('site.nav.neighbourhoodHint') }}</span></span>
           </li>
           <li v-for="item in NAV" :key="item.name">
             <router-link :to="{ name: localizedRouteName(item.name, locale) }" :aria-current="isCurrent(item.name) ? 'page' : undefined">{{ t(`site.nav.${item.key}`) }}</router-link>

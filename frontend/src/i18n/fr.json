@@ -630,7 +630,8 @@
     "tooShort": "Saisissez au moins 3 caractères.",
     "notFound": "Aucune adresse trouvée.",
     "searching": "Recherche en cours…",
-    "loadingPlace": "Chargement du quartier…"
+    "loadingPlace": "Chargement du quartier…",
+    "clear": "Effacer l'adresse"
   },
   "home": {
     "eyebrow": "Paris et petite couronne · 2 752 quartiers",
@@ -967,6 +968,182 @@
       "tableCaption": "Part des quartiers dans le quart le plus éloigné des services publics (à pied et en transports en commun, mardi 10 h), selon les ressources des habitants. Tiers de ressources calculés dans chaque département.",
       "after": "Les quartiers aux ressources les plus élevées sont plus souvent loin des services publics, y compris à densité comparable dans les Hauts-de-Seine et le Val-de-Marne. Les données ne permettent pas d'en établir la cause.",
       "caveat": "Cet indicateur mesure le temps de trajet à pied et en transports en commun. Il ne tient compte ni du besoin de recourir à ces services, ni de l'usage de la voiture ou des démarches en ligne."
+    }
+  },
+  "nbhd": {
+    "fieldPlaceholder": "{name}, {commune}",
+    "breadcrumb": "Fil d'Ariane",
+    "home": "Accueil",
+    "modesLabel": "Mode de déplacement",
+    "compareLabel": "Comparer avec",
+    "unknownCode": "Ce quartier est introuvable.",
+    "outside": "Cette adresse est hors de Paris et de la petite couronne, ou n'a pas pu être située.",
+    "empty": "Saisissez une adresse pour voir la situation de votre quartier.",
+    "title": {
+      "none": "Un quartier qui ne fait pas partie des plus exposés.",
+      "noneCare": "Un quartier hors des plus exposés, où l'accès aux soins est parmi les plus difficiles.",
+      "one": {
+        "thermal": "Un quartier parmi les plus exposés à la chaleur.",
+        "thermalCare": "Un quartier parmi les plus exposés à la chaleur, où l'accès aux soins est aussi parmi les plus difficiles.",
+        "pollution": "Un quartier parmi les plus exposés à la pollution de l'air et au bruit.",
+        "pollutionCare": "Un quartier parmi les plus exposés à la pollution de l'air et au bruit, où l'accès aux soins est aussi parmi les plus difficiles.",
+        "housing": "Un quartier parmi ceux où les logements sont les plus énergivores.",
+        "housingCare": "Un quartier parmi ceux où les logements sont les plus énergivores, où l'accès aux soins est aussi parmi les plus difficiles."
+      },
+      "two": "Un quartier très exposé : {what}.",
+      "twoCare": "Un quartier très exposé, où l'accès aux soins est aussi parmi les plus difficiles.",
+      "three": "Un quartier exposé sur les trois plans : chaleur, air et bruit, logement.",
+      "threeCare": "Un quartier exposé sur les trois plans, où l'accès aux soins est aussi parmi les plus difficiles.",
+      "short": {
+        "thermal": "chaleur",
+        "pollution": "air et bruit",
+        "housing": "logements énergivores"
+      },
+      "and": " et "
+    },
+    "pill": {
+      "thermal": "Chaleur",
+      "pollution": "Air et bruit",
+      "housing": "Logements énergivores",
+      "access_care": "Accès aux soins"
+    },
+    "pillsNote": ": dans le quart le plus touché des {n} quartiers",
+    "fewResidents": "Quartier très peu habité : chiffres à lire avec prudence.",
+    "insufficient": "Données insuffisantes pour : {what}.",
+    "lead": "Cette page suit une question : les quartiers les plus exposés sont-ils aussi ceux où l'on accède le moins à ce dont on a besoin ?",
+    "part1": {
+      "title": "Le cadre de vie de votre quartier",
+      "intro": "Chaleur, air et bruit, logement, comparés aux {n} quartiers de Paris et de la petite couronne."
+    },
+    "exposure": {
+      "thermal": {
+        "title": "Chaleur",
+        "subtitle": "Exposition aux fortes chaleurs"
+      },
+      "pollution": {
+        "title": "Air et bruit",
+        "subtitle": "Qualité de l'air, bruit"
+      },
+      "housing": {
+        "title": "Logement",
+        "subtitle": "Performance énergétique des logements"
+      },
+      "access_care": {
+        "title": "Accès aux soins",
+        "subtitle": "Médecins généralistes et pharmacies accessibles, en tenant compte de leur nombre et du nombre d'habitants qui y ont recours."
+      }
+    },
+    "rank": {
+      "exposure": "Sur 10 quartiers, {n} sont moins exposés que le vôtre",
+      "care": "Sur 10 quartiers, {n} ont un accès aux soins plus facile que le vôtre",
+      "left": "moins exposé",
+      "right": "le quart le plus exposé",
+      "careLeft": "accès plus facile",
+      "careRight": "le quart le plus difficile",
+      "missing": "Données insuffisantes pour ce quartier."
+    },
+    "part2": {
+      "title": "Ce qui est à portée",
+      "intro": "Le lieu le plus proche pour chaque besoin, à pied et en transports en commun, un mardi à 10 h. Cliquez sur un besoin pour voir le détail."
+    },
+    "how": {
+      "title": "Comment sont calculées ces durées ?",
+      "free": "Marche à 4,5 km/h, sur tout le réseau de transports en commun.",
+      "slow": "Même réseau, mais marche à 3,4 km/h sur toutes les portions à pied : depuis chez vous, jusqu'à l'arrêt, dans les correspondances et jusqu'au lieu d'arrivée. C'est la vitesse de marche habituelle mesurée chez les personnes de 80 ans et plus (Bohannon et Andrews, 2011). Ce profil peut aussi donner une idée du trajet avec une douleur, en fin de grossesse ou avec un jeune enfant qui marche à côté.",
+      "wheelchair": "Seuls les arrêts et stations déclarés accessibles sans marches sont utilisés. Le calcul ne voit ni les trottoirs, ni les pentes, ni les pannes d'ascenseur, ni l'aide parfois nécessaire pour monter dans le train : les durées réelles sont souvent plus longues.",
+      "all": "Toutes les durées : départ un mardi à 10 h (la nuit : à 1 h), horaires réels des transports, valeur médiane sur le créneau.",
+      "link": "Méthode détaillée"
+    },
+    "noMode": "Aucun mode choisi : les trois durées sont affichées",
+    "noModeHint": "Choisissez un mode en haut pour n'en garder qu'un.",
+    "gapLegend": "écart en minutes",
+    "nearest": "le plus proche :",
+    "range": "{lo} à {hi} min",
+    "over90": "plus de 90 min",
+    "notYet": "pas encore calculé",
+    "same": "identique",
+    "gap": "{n} min",
+    "need": {
+      "care": {
+        "title": "Se soigner",
+        "sub": "Médecin généraliste, pharmacie, urgences"
+      },
+      "admin": {
+        "title": "Faire ses démarches administratives",
+        "sub": "Mairie, France Services, CAF, CPAM, France Travail"
+      },
+      "food": {
+        "title": "Se nourrir",
+        "sub": "Supérette ou supermarché"
+      },
+      "children": {
+        "title": "Faire garder et scolariser ses enfants",
+        "sub": "Crèche (publique ou privée), école maternelle publique"
+      },
+      "post": {
+        "title": "Courrier et argent",
+        "sub": "Bureau de poste"
+      },
+      "police": {
+        "title": "Porter plainte, signaler",
+        "sub": "Commissariat"
+      },
+      "social": {
+        "title": "Voir du monde",
+        "sub": "Centre social, bibliothèque"
+      },
+      "cool": {
+        "title": "Se rafraîchir",
+        "sub": "Parc ou jardin ouvert au public"
+      },
+      "toilets": {
+        "title": "Toilettes et eau potable",
+        "sub": "Toilettes publiques, fontaines (Paris)"
+      }
+    },
+    "place": {
+      "gp": "Médecin généraliste",
+      "pharmacy": "Pharmacie",
+      "emergency": "Urgences",
+      "emergencyNight": "Urgences, la nuit (1 h, à pied et en transports en commun)",
+      "town_hall": "Mairie",
+      "france_services": "France Services",
+      "caf": "CAF",
+      "cpam": "CPAM",
+      "employment": "France Travail",
+      "food_store": "Supérette ou supermarché",
+      "creche": "Crèche (publique ou privée)",
+      "nursery_school": "École maternelle publique",
+      "post_office": "Bureau de poste",
+      "police": "Commissariat",
+      "social_centre": "Centre social",
+      "library": "Bibliothèque",
+      "park": "Parc ou jardin ouvert au public",
+      "toilets": "Toilettes publiques",
+      "drinking_water": "Fontaine d'eau potable"
+    },
+    "parisOnly": "Les communes de petite couronne ne publient pas de liste ouverte de leurs toilettes publiques et points d'eau.",
+    "station": "En fauteuil roulant, une grande partie de l'écart se joue à l'entrée du réseau : depuis votre quartier, l'arrêt accessible le plus proche (métro, RER, train ou tram) est à {wc} à pied, contre {free} pour l'arrêt le plus proche. Ces durées ne tiennent pas compte des trottoirs, des pentes ni des pannes d'ascenseur : la réalité est souvent plus longue.",
+    "stationLink": "Ce que le calcul ne voit pas",
+    "part3": {
+      "title": "Les deux à la fois",
+      "both": "Votre quartier est à la fois parmi les plus exposés et parmi ceux où l'accès aux soins est le plus difficile.",
+      "count": " {n} quartiers sont dans ce cas.",
+      "exposedOnly": "Votre quartier est parmi les plus exposés, mais pas parmi ceux où l'accès aux soins est le plus difficile.",
+      "careOnly": "Votre quartier n'est pas parmi les plus exposés, mais l'accès aux soins y est parmi les plus difficiles.",
+      "neither": "Votre quartier n'est ni parmi les plus exposés, ni parmi ceux où l'accès aux soins est le plus difficile.",
+      "definition": "Très exposé : au moins 2 des 3 expositions (chaleur, air et bruit, logement) dans le quart le plus touché. Accès aux soins le plus difficile : le quart des quartiers où il est le plus difficile.",
+      "hypothesis": "Ce que montre l'hypothèse testée : les quartiers où les habitants ont le moins de ressources ont plus souvent un accès aux soins difficile, dans les Hauts-de-Seine et le Val-de-Marne, y compris à densité comparable.",
+      "hypothesisLink": "Lire le résultat dans la méthode",
+      "map": "Voir ces quartiers sur la carte"
+    },
+    "scatter": {
+      "alt": "Nuage de points : chaque quartier habité selon son nombre d'expositions et son accès aux soins ; votre quartier est marqué.",
+      "zone": "très exposés, soins difficiles",
+      "xAxis": "nombre d'expositions (chaleur, air et bruit, logement) →",
+      "yAxis": "accès aux soins plus facile →",
+      "you": "vous",
+      "caption": "Chaque point est un quartier habité. Ce nuage décrit la situation ; il ne teste aucune hypothèse."
     }
   }
 }

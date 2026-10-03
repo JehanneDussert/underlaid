@@ -45,7 +45,7 @@ try {
     const page = await context.newPage()
     for (const route of ROUTE_PATHS) {
       for (const locale of ['fr', 'en']) {
-        const path = route[locale]
+        const path = route.sample ? route.sample[locale] : route[locale]
         await page.goto(base + path, { waitUntil: 'networkidle' })
         const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
         for (const v of result.violations) {

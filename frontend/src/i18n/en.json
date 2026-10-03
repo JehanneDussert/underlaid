@@ -630,7 +630,8 @@
     "tooShort": "Type at least 3 characters.",
     "notFound": "No address found.",
     "searching": "Searching…",
-    "loadingPlace": "Loading the neighbourhood…"
+    "loadingPlace": "Loading the neighbourhood…",
+    "clear": "Clear the address"
   },
   "home": {
     "eyebrow": "Paris and its inner suburbs · 2,752 neighbourhoods",
@@ -967,6 +968,182 @@
       "tableCaption": "Share of neighbourhoods in the quarter farthest from public services (on foot and by public transport, Tuesday 10:00), by residents' means. Thirds of means computed within each département.",
       "after": "Neighbourhoods with the most means are more often far from public services, including at comparable density in Hauts-de-Seine and Val-de-Marne. The data do not establish why.",
       "caveat": "This indicator measures travel time on foot and by public transport. It does not take into account the need to use these services, car use or online procedures."
+    }
+  },
+  "nbhd": {
+    "fieldPlaceholder": "{name}, {commune}",
+    "breadcrumb": "Breadcrumb",
+    "home": "Home",
+    "modesLabel": "Travel mode",
+    "compareLabel": "Compare with",
+    "unknownCode": "This neighbourhood cannot be found.",
+    "outside": "This address is outside Paris and its inner suburbs, or could not be located.",
+    "empty": "Enter an address to see the situation of your neighbourhood.",
+    "title": {
+      "none": "A neighbourhood that is not among the most exposed.",
+      "noneCare": "A neighbourhood outside the most exposed, where access to care is among the most difficult.",
+      "one": {
+        "thermal": "A neighbourhood among the most exposed to heat.",
+        "thermalCare": "A neighbourhood among the most exposed to heat, where access to care is also among the most difficult.",
+        "pollution": "A neighbourhood among the most exposed to air pollution and noise.",
+        "pollutionCare": "A neighbourhood among the most exposed to air pollution and noise, where access to care is also among the most difficult.",
+        "housing": "A neighbourhood among those with the most energy-inefficient homes.",
+        "housingCare": "A neighbourhood among those with the most energy-inefficient homes, where access to care is also among the most difficult."
+      },
+      "two": "A highly exposed neighbourhood: {what}.",
+      "twoCare": "A highly exposed neighbourhood, where access to care is also among the most difficult.",
+      "three": "A neighbourhood exposed on all three counts: heat, air and noise, housing.",
+      "threeCare": "A neighbourhood exposed on all three counts, where access to care is also among the most difficult.",
+      "short": {
+        "thermal": "heat",
+        "pollution": "air and noise",
+        "housing": "energy-inefficient homes"
+      },
+      "and": " and "
+    },
+    "pill": {
+      "thermal": "Heat",
+      "pollution": "Air and noise",
+      "housing": "Energy-inefficient homes",
+      "access_care": "Access to care"
+    },
+    "pillsNote": ": in the most affected quarter of the {n} neighbourhoods",
+    "fewResidents": "Very sparsely inhabited neighbourhood: read the figures with caution.",
+    "insufficient": "Insufficient data for: {what}.",
+    "lead": "This page follows one question: are the most exposed neighbourhoods also those with the least access to what people need?",
+    "part1": {
+      "title": "Your neighbourhood's living conditions",
+      "intro": "Heat, air and noise, housing, compared with the {n} neighbourhoods of Paris and its inner suburbs."
+    },
+    "exposure": {
+      "thermal": {
+        "title": "Heat",
+        "subtitle": "Exposure to high heat"
+      },
+      "pollution": {
+        "title": "Air and noise",
+        "subtitle": "Air quality, noise"
+      },
+      "housing": {
+        "title": "Housing",
+        "subtitle": "Energy performance of homes"
+      },
+      "access_care": {
+        "title": "Access to care",
+        "subtitle": "GPs and pharmacies within reach, taking into account their number and the number of residents who use them."
+      }
+    },
+    "rank": {
+      "exposure": "Out of 10 neighbourhoods, {n} are less exposed than yours",
+      "care": "Out of 10 neighbourhoods, {n} have easier access to care than yours",
+      "left": "less exposed",
+      "right": "most exposed quarter",
+      "careLeft": "easier access",
+      "careRight": "most difficult quarter",
+      "missing": "Insufficient data for this neighbourhood."
+    },
+    "part2": {
+      "title": "What is within reach",
+      "intro": "The nearest place for each need, on foot and by public transport, on a Tuesday at 10:00. Click a need to see the detail."
+    },
+    "how": {
+      "title": "How are these durations computed?",
+      "free": "Walking at 4.5 km/h, on the whole public transport network.",
+      "slow": "Same network, but walking at 3.4 km/h on every walking part: from home, to the stop, in connections and to the destination. It is the usual walking speed measured in people aged 80 and over (Bohannon and Andrews, 2011). This profile can also give an idea of a trip with pain, late in pregnancy or with a young child walking alongside.",
+      "wheelchair": "Only stops and stations declared step-free are used. The calculation sees neither pavements, slopes, broken lifts nor the help sometimes needed to board a train: real durations are often longer.",
+      "all": "All durations: departure on a Tuesday at 10:00 (at night: 1:00), real timetables, median over the time window.",
+      "link": "Detailed method"
+    },
+    "noMode": "No mode chosen: all three durations are shown",
+    "noModeHint": "Choose a mode at the top to keep only one.",
+    "gapLegend": "difference in minutes",
+    "nearest": "nearest:",
+    "range": "{lo} to {hi} min",
+    "over90": "over 90 min",
+    "notYet": "not computed yet",
+    "same": "same",
+    "gap": "{n} min",
+    "need": {
+      "care": {
+        "title": "Healthcare",
+        "sub": "GP, pharmacy, emergency department"
+      },
+      "admin": {
+        "title": "Paperwork and public services",
+        "sub": "Town hall, France Services, CAF, CPAM, France Travail"
+      },
+      "food": {
+        "title": "Food shopping",
+        "sub": "Convenience store or supermarket"
+      },
+      "children": {
+        "title": "Childcare and school",
+        "sub": "Crèche (public or private), public nursery school"
+      },
+      "post": {
+        "title": "Post and money",
+        "sub": "Post office"
+      },
+      "police": {
+        "title": "Reporting a crime",
+        "sub": "Police station"
+      },
+      "social": {
+        "title": "Meeting people",
+        "sub": "Social centre, library"
+      },
+      "cool": {
+        "title": "Cooling off",
+        "sub": "Park or garden open to the public"
+      },
+      "toilets": {
+        "title": "Toilets and drinking water",
+        "sub": "Public toilets, fountains (Paris)"
+      }
+    },
+    "place": {
+      "gp": "GP",
+      "pharmacy": "Pharmacy",
+      "emergency": "Emergency department",
+      "emergencyNight": "Emergency department at night (1:00, on foot and by public transport)",
+      "town_hall": "Town hall",
+      "france_services": "France Services",
+      "caf": "CAF (family benefits)",
+      "cpam": "CPAM (health insurance)",
+      "employment": "France Travail",
+      "food_store": "Convenience store or supermarket",
+      "creche": "Crèche (public or private)",
+      "nursery_school": "Public nursery school",
+      "post_office": "Post office",
+      "police": "Police station",
+      "social_centre": "Social centre",
+      "library": "Library",
+      "park": "Park or garden open to the public",
+      "toilets": "Public toilets",
+      "drinking_water": "Drinking fountain"
+    },
+    "parisOnly": "The inner-suburb communes do not publish an open list of their public toilets and water points.",
+    "station": "In a wheelchair, much of the difference is at the entrance to the network: from your neighbourhood, the nearest accessible stop (metro, RER, train or tram) is {wc} away on foot, against {free} for the nearest stop. These durations do not account for pavements, slopes or broken lifts: reality is often longer.",
+    "stationLink": "What the calculation does not see",
+    "part3": {
+      "title": "Both at once",
+      "both": "Your neighbourhood is both among the most exposed and among those where access to care is most difficult.",
+      "count": " {n} neighbourhoods are in this case.",
+      "exposedOnly": "Your neighbourhood is among the most exposed, but not among those where access to care is most difficult.",
+      "careOnly": "Your neighbourhood is not among the most exposed, but access to care is among the most difficult.",
+      "neither": "Your neighbourhood is neither among the most exposed nor among those where access to care is most difficult.",
+      "definition": "Highly exposed: at least 2 of the 3 exposures (heat, air and noise, housing) in the most affected quarter. Most difficult access to care: the quarter of neighbourhoods where it is most difficult.",
+      "hypothesis": "What the tested hypothesis shows: neighbourhoods whose residents have the fewest means more often have difficult access to care, in Hauts-de-Seine and Val-de-Marne, including at comparable density.",
+      "hypothesisLink": "Read the result in the method",
+      "map": "See these neighbourhoods on the map"
+    },
+    "scatter": {
+      "alt": "Scatter plot: each inhabited neighbourhood by its number of exposures and its access to care; your neighbourhood is marked.",
+      "zone": "highly exposed, difficult care",
+      "xAxis": "number of exposures (heat, air and noise, housing) →",
+      "yAxis": "easier access to care →",
+      "you": "you",
+      "caption": "Each dot is an inhabited neighbourhood. This plot describes the situation; it tests no hypothesis."
     }
   }
 }

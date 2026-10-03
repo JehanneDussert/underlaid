@@ -16,6 +16,11 @@ const props = defineProps({
   placeholder: { type: String, default: '' },
   // Set by the page while it loads what the chosen address leads to.
   busy: { type: Boolean, default: false },
+  // Text shown in the field at first (e.g. the address that led here).
+  initial: { type: String, default: '' },
+  // Compact pill with a location mark and a clear button (sticky bar of
+  // the neighbourhood page).
+  compact: { type: Boolean, default: false },
 })
 const emit = defineEmits(['select'])
 const { t } = useI18n()
@@ -23,7 +28,14 @@ const { t } = useI18n()
 const GEOCODE_URL = 'https://api-adresse.data.gouv.fr/search/'
 const MGP_CENTER = [2.35, 48.86]
 
-const query = ref('')
+const query = ref(props.initial)
+const input = ref(null)
+function clear() {
+  query.value = ''
+  suggestions.value = []
+  open.value = false
+  input.value?.focus()
+}
 const suggestions = ref([])
 const active = ref(-1)
 const open = ref(false)
@@ -82,7 +94,7 @@ function pick(feature) {
   query.value = feature.properties.label
   open.value = false
   suggestions.value = []
-  emit('select', { label: feature.properties.label, lon, lat })
+  emit('select', { label: feature.properties.label, lon, lat, citycode: feature.properties.citycode })
 }
 
 function onKeydown(event) {
@@ -117,11 +129,13 @@ async function submit() {
 </script>
 
 <template>
-  <form class="address-search" role="search" :aria-busy="props.busy || searching ? 'true' : 'false'" @submit.prevent="submit">
+  <form class="address-search" :class="{ compact: props.compact }" role="search" :aria-busy="props.busy || searching ? 'true' : 'false'" @submit.prevent="submit">
     <label :for="props.id" :class="{ 'sr-only': props.hideLabel }" class="label">{{ props.label }}</label>
     <div class="row">
+      <svg v-if="props.compact" class="here-mark" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="#fff" stroke="currentColor" stroke-width="2.4" /><circle cx="9" cy="9" r="3" fill="currentColor" /></svg>
       <div class="field">
         <input
+          ref="input"
           :id="props.id"
           v-model="query"
           type="text"
@@ -148,8 +162,11 @@ async function submit() {
           >{{ s.properties.label }}</li>
         </ul>
       </div>
+      <button v-if="props.compact && query" type="button" class="clear" :aria-label="t('address.clear')" @click="clear">
+        <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+      </button>
       <LoadingDots v-if="searching && !props.busy" class="field-loading" :label="t('address.searching')" :show-label="false" />
-      <button type="submit" :aria-disabled="props.busy ? 'true' : undefined">
+      <button type="submit" class="submit" :class="{ 'sr-only-submit': props.compact }" :aria-disabled="props.busy ? 'true' : undefined">
         <template v-if="props.busy">
           <LoadingDots light :label="t('address.loadingPlace')" :show-label="false" />
           <!-- The button keeps an accessible name while it shows the dots. -->
@@ -213,7 +230,7 @@ input:focus-visible {
 input::placeholder {
   color: var(--text-muted);
 }
-button {
+.submit {
   flex-shrink: 0;
   height: 44px;
   padding: 0 20px;
@@ -226,10 +243,10 @@ button {
   font-size: 16px;
   cursor: pointer;
 }
-button:hover {
+.submit:hover {
   background: #00469a;
 }
-button {
+.submit {
   min-width: 72px;
   display: inline-flex;
   align-items: center;
@@ -267,6 +284,46 @@ button {
   min-height: 1em;
   font-size: 14px;
   color: var(--text-secondary);
+}
+/* Compact variant (sticky bar): 48 px, location mark, clear button; the
+   submit button is kept for keyboard users but visually hidden (Enter
+   submits; the suggestions do the rest). */
+.compact .row {
+  height: 48px;
+  padding: 0 6px 0 14px;
+  gap: 10px;
+}
+.compact input {
+  font-size: 16px;
+}
+.here-mark {
+  flex-shrink: 0;
+  color: var(--text-primary);
+}
+.clear {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--control-border);
+  background: var(--surface);
+  color: var(--text-primary);
+}
+.clear:hover {
+  background: var(--surface-muted);
+}
+.sr-only-submit {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.compact .status:empty {
+  display: none;
 }
 @media (max-width: 600px) {
   .row {

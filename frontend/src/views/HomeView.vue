@@ -16,6 +16,7 @@ import RandomQuestion from '../components/RandomQuestion.vue'
 import { useSeoMeta } from '../composables/useSeoMeta'
 import { localizedRouteName } from '../router'
 import { loadStaticJson } from '../utils/loadStaticJson'
+import { findNeighbourhood } from '../utils/neighbourhood'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -60,12 +61,26 @@ function onPhoneModesKeydown(event) {
   }
 }
 
-// Until the neighbourhood page exists (step 2 of the redesign), an address
-// leads to the current address page, with the chosen mode.
+// An address leads to its neighbourhood's page (/quartier/<code>), with
+// the chosen mode; the typed address travels in the history state only,
+// never in the URL.
 const leaving = ref(false)
-function goToAddress({ label, lon, lat }) {
+const outside = ref('')
+async function goToAddress(a) {
   leaving.value = true
-  router.push({ name: localizedRouteName('address', locale.value), query: { lon, lat, label, ...(mode.value ? { mode: mode.value } : {}) } })
+  outside.value = ''
+  const r = await findNeighbourhood(a)
+  if (!r) {
+    leaving.value = false
+    outside.value = t('nbhd.outside')
+    return
+  }
+  router.push({
+    name: localizedRouteName('neighbourhood', locale.value),
+    params: { code: r.code },
+    query: mode.value ? { mode: mode.value } : {},
+    state: { label: a.label },
+  })
 }
 
 const strip = computed(() => {
@@ -84,6 +99,7 @@ const strip = computed(() => {
         <p class="hero-lead">{{ t('landing.lead') }}</p>
         <div class="hero-form">
           <AddressSearch id="home-address" :busy="leaving" :label="t('landing.addressLabel')" hide-label :placeholder="t('landing.addressPlaceholder')" @select="goToAddress" />
+          <p v-if="outside" class="outside" role="alert">{{ outside }}</p>
 
           <div class="modes-desktop">
             <ModeToggle v-model="mode" :label="t('landing.modesLabel')" />
@@ -193,6 +209,11 @@ const strip = computed(() => {
   gap: 20px;
   max-width: 540px;
   animation: rise 700ms 300ms ease-out both;
+}
+.outside {
+  margin: -8px 0 0;
+  font-size: 15px;
+  color: var(--text-primary);
 }
 .hero-hint {
   margin: 0;

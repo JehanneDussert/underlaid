@@ -83,5 +83,15 @@
       "destination": "/en/routes",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/quartier/:code",
+      "destination": "/quartier"
+    },
+    {
+      "source": "/en/neighbourhood/:code",
+      "destination": "/en/neighbourhood"
+    }
   ]
 }

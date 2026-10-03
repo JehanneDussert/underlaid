@@ -127,7 +127,8 @@ try {
   const result = await page.locator('h1').innerText()
   check('quiz by keyboard: 4 verdicts, focus on each heading, result', quizOk && /sur 4/.test(result), result)
 
-  // Home address field (combobox, keyboard only) -> map with that neighbourhood
+  // Home address field (combobox, keyboard only) -> the neighbourhood page,
+  // by its code only: no address or coordinates in the URL.
   await page.goto(base + '/', { waitUntil: 'networkidle' })
   await page.locator('#home-address').fill('1 rue Marie Louise Drancy')
   const homeOption = await page.locator('#home-address-list [role="option"]').first().waitFor({ timeout: 10_000 }).then(() => true, () => false)
@@ -137,30 +138,33 @@ try {
     await page.locator('#home-address').press('ArrowDown')
     const activeId = await page.locator('#home-address').getAttribute('aria-activedescendant')
     await page.locator('#home-address').press('Enter')
-    await page.waitForURL(/\/adresse\?/)
-    const rowsShown = await page.waitForSelector('.criterion-row', { timeout: 30_000 }).then(() => true, () => false)
-    const rowCount = await page.locator('.criterion-row').count()
-    const scoreLine = rowsShown ? await page.locator('.score-line').innerText() : ''
-    check('home address -> address page: score line and 6 rows', !!activeId && rowCount === 6 && /sur 4/.test(scoreLine), `${rowCount} rows, "${scoreLine.slice(0, 60)}"`)
-    // Travel mode: only access to care and transport change.
-    const before = await page.locator('.criterion-row').allInnerTexts()
-    await page.locator('.segmented button').nth(1).click()
-    const after = await page.locator('.criterion-row').allInnerTexts()
-    const changed = before.map((txt, i) => txt !== after[i])
-    check('address page: step-free mode changes access to care only among scored rows', changed[4] && !changed[0] && !changed[1] && !changed[2] && !changed[3], JSON.stringify(changed))
-    // Comparison with a second address.
-    await page.locator('.compare .pill-btn').click()
-    await page.locator('#address-other').fill('10 rue de Rivoli Paris')
-    const otherOption = await page.locator('#address-other-list [role="option"]').first().waitFor({ timeout: 10_000 }).then(() => true, () => false)
-    if (otherOption) {
-      await page.locator('#address-other').press('ArrowDown')
-      await page.locator('#address-other').press('Enter')
-      await page.waitForTimeout(300)
-      check('address page: comparison marker on every row with data', (await page.locator('.marker.other').count()) >= 5 && /cmp_lon/.test(page.url()))
-    } else {
-      record('SKIP', 'address page comparison', 'address API (BAN) did not answer within 10 s')
-    }
+    await page.waitForURL(/\/quartier\/\d{9}/, { timeout: 15_000 })
+    const url = new URL(page.url())
+    check('home address -> /quartier/<code>, no address in the URL', !!activeId && !/lon|lat|label|rue/i.test(url.search + url.pathname), url.pathname + url.search)
+    // The menu now links back to this neighbourhood (once it is loaded).
+    await page.waitForSelector('.cards', { timeout: 15_000 })
+    check('menu: "Votre quartier" is a link once a neighbourhood is seen', (await page.locator('#site-nav a', { hasText: 'Votre quartier' }).count()) === 1)
   }
+
+  // Neighbourhood page by direct access (Drancy, Économie 1): title, three
+  // rank cards, nine needs; no mode = three durations per place; one mode =
+  // one duration; compare = a gap; mode in the URL.
+  await page.goto(base + '/quartier/930290101', { waitUntil: 'networkidle' })
+  await page.waitForSelector('.cards', { timeout: 15_000 })
+  const cards = await page.locator('.cards .rank-card').count()
+  const needs = await page.locator('.needs .need').count()
+  const threeTimes = await page.locator('.place').first().locator('.t-item').count()
+  check('neighbourhood page: title, 3 cards, 9 needs, 3 durations per place without a mode', (await page.locator('h1').count()) === 1 && cards === 3 && needs === 9 && threeTimes === 3, `${cards} cards, ${needs} needs, ${threeTimes} durations`)
+  await page.locator('.sticky-modes .mode-slow').click()
+  await page.waitForURL(/mode=slow/)
+  const oneTime = await page.locator('.place').first().locator('.t-item').count()
+  await page.locator('.compare .mode-wheelchair').click()
+  await page.waitForURL(/compare=wheelchair/)
+  const gaps = await page.locator('.place .gap').count()
+  check('neighbourhood page: one mode, then a comparison with gaps', oneTime === 0 && gaps >= 5, `${oneTime} / ${gaps} gaps`)
+  const unknown = await page.goto(base + '/quartier/000000000', { waitUntil: 'networkidle' })
+  await page.waitForTimeout(500)
+  check('neighbourhood page: unknown code says so', unknown.status() === 200 && (await page.locator('.flag').count()) >= 1)
 
   // Map, both languages
   for (const [path, lang] of [['/en/map', 'en'], ['/carte', 'fr']]) {

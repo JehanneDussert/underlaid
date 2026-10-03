@@ -22,7 +22,7 @@ const base = server.resolvedUrls.local[0].replace(/\/$/, '')
 const browser = await chromium.launch()
 try {
   for (const s of specs) {
-    const context = await browser.newContext({ viewport: { width: s.width, height: s.height }, deviceScaleFactor: 2, reducedMotion: s.reducedMotion ? 'reduce' : 'no-preference' })
+    const context = await browser.newContext({ viewport: { width: s.width, height: s.height }, deviceScaleFactor: s.scale ?? (s.fullPage ? 1 : 2), reducedMotion: s.reducedMotion ? 'reduce' : 'no-preference' })
     const page = await context.newPage()
     await page.goto(base + s.path, { waitUntil: 'networkidle' })
     await page.evaluate(() => document.fonts.ready)

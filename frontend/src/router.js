@@ -1,4 +1,5 @@
 import HomeView from './views/HomeView.vue'
+import NeighbourhoodView from './views/NeighbourhoodView.vue'
 import MapView from './views/MapView.vue'
 import AddressView from './views/AddressView.vue'
 import QuizView from './views/QuizView.vue'
@@ -12,6 +13,7 @@ import { ROUTE_PATHS, DEFAULT_LOCALE } from './routePaths'
 
 const COMPONENTS = {
   home: HomeView,
+  neighbourhood: NeighbourhoodView,
   address: AddressView,
   quiz: QuizView,
   routes: RoutesView,

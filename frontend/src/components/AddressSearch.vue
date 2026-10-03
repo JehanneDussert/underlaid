@@ -143,75 +143,95 @@ async function submit() {
 </template>
 
 <style scoped>
+/* Pill field of the redesign (IdentiteD4): the input and the blue "Voir"
+   button inside one 2 px black outline; the focus ring goes around the
+   whole pill. */
 .address-search {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   max-width: 640px;
 }
 .label {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
 }
 .row {
+  position: relative;
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+  padding: 0 8px 0 22px;
+  border: 2px solid var(--text-primary);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.row:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
 }
 .field {
-  position: relative;
   flex: 1;
   min-width: 0;
 }
 input {
   width: 100%;
-  height: 56px;
-  padding: 0 18px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   font: inherit;
-  font-size: 17px;
-  border: 1.5px solid var(--dark);
-  border-radius: var(--radius-small);
-  background: var(--surface);
+  font-size: 18px;
   color: var(--text-primary);
 }
+input:focus,
+input:focus-visible {
+  outline: none;
+}
 input::placeholder {
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 button {
-  height: 56px;
-  padding: 0 24px;
+  flex-shrink: 0;
+  height: 44px;
+  padding: 0 20px;
   border: none;
-  border-radius: var(--radius-small);
-  background: var(--dark);
-  color: var(--text-on-dark);
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
   font: inherit;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 16px;
   cursor: pointer;
 }
+button:hover {
+  background: #00469a;
+}
 .suggestions {
   position: absolute;
-  z-index: 20;
-  top: calc(100% + 6px);
+  z-index: 30;
+  top: calc(100% + 8px);
   left: 0;
   right: 0;
   margin: 0;
   padding: 6px;
   list-style: none;
   background: var(--surface);
-  border: 1.5px solid var(--dark);
-  border-radius: var(--radius-small);
-  box-shadow: 0 8px 24px rgba(20, 22, 26, 0.12);
+  border: 2px solid var(--text-primary);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(16, 16, 16, 0.12);
 }
 .suggestions li {
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
 }
 .suggestions li.active,
 .suggestions li:hover {
-  background: var(--surface-muted);
+  background: var(--mode-wheelchair-bg);
 }
 .status {
   margin: 0;
@@ -219,9 +239,13 @@ button {
   font-size: 14px;
   color: var(--text-secondary);
 }
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .row {
-    flex-direction: column;
+    height: 56px;
+    padding-left: 18px;
+  }
+  input {
+    font-size: 17px;
   }
 }
 </style>

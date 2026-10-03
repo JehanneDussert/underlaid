@@ -61,6 +61,26 @@ try {
     await context.close()
   }
 
+  // 1b. axe on interactive states of the home page.
+  for (const [vpName, viewport] of Object.entries(VIEWPORTS)) {
+    const context = await browser.newContext({ viewport, reducedMotion: 'reduce' })
+    const page = await context.newPage()
+    await page.goto(base + '/', { waitUntil: 'networkidle' })
+    if (vpName === 'desktop') {
+      await page.locator('.modes-desktop .mode-wheelchair').click()
+    } else {
+      await page.locator('.phone-modes-button').click()
+    }
+    await page.locator('.question-option').first().click()
+    const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
+    for (const v of result.violations) {
+      const line = `${vpName} / (mode chosen, question answered): [${v.impact}] ${v.id} — ${v.help} (${v.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(' | ')})`
+      ;(BLOCKING.has(v.impact) ? failures : notes).push(line)
+    }
+    console.log(`axe ${vpName} / interactive states: ${result.violations.length} violation(s)`)
+    await context.close()
+  }
+
   // 2. Keyboard, desktop.
   {
     const context = await browser.newContext({ viewport: VIEWPORTS.desktop })
@@ -79,6 +99,18 @@ try {
       })
       if (!(ring.width >= 2 && ring.style !== 'none')) failures.push(`keyboard: no visible focus ring on "${ring.text}"`)
     }
+    // Home: a mode and an answer chosen with the keyboard only.
+    await page.goto(base + '/', { waitUntil: 'networkidle' })
+    await page.locator('.modes-desktop .mode-slow').focus()
+    await page.keyboard.press('Enter')
+    if ((await page.locator('.modes-desktop .mode-slow').getAttribute('aria-pressed')) !== 'true') failures.push('keyboard: Enter does not choose a travel mode')
+    await page.locator('.question-option').nth(1).focus()
+    await page.keyboard.press('Space')
+    if ((await page.locator('.question-verdict').count()) !== 1) failures.push('keyboard: Space does not answer the question')
+    await page.locator('.question-actions .pill-button').focus()
+    await page.keyboard.press('Enter')
+    await page.waitForTimeout(100)
+    if (!(await page.evaluate(() => document.activeElement?.classList.contains('question-text')))) failures.push('keyboard: after "another question" the focus is not on the new question')
     // After a page change, the focus is on the new page's h1.
     await page.goto(base + '/', { waitUntil: 'networkidle' })
     await page.locator('#site-nav a', { hasText: 'Méthode' }).click()

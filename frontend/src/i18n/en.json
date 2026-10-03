@@ -619,7 +619,7 @@
     "label": "Address",
     "placeholder": "Number, street, town",
     "placeholderShort": "Address",
-    "submit": "Look up",
+    "submit": "Show",
     "suggestions": "{n} addresses suggested. Use the up and down arrows to choose.",
     "listLabel": "Suggested addresses",
     "unavailable": "The address search service is not responding. Please try again later.",
@@ -847,5 +847,87 @@
     "wheelchair": "Wheelchair",
     "chosen": "Mode chosen: {mode}",
     "none": "No mode chosen"
+  },
+  "landing": {
+    "title": "One city, unequal living conditions.",
+    "lead": "Heat, pollution, housing, access to care and services: the situation of your neighbourhood, depending on how you get around.",
+    "addressLabel": "Your address",
+    "addressPlaceholder": "Where do you live?",
+    "modesLabel": "How do you get around? (optional)",
+    "phoneModes": "I get around:",
+    "phoneModesNone": "not specified",
+    "hint": "Choose a mode to see durations on the plan: medians of the metropolis's neighbourhoods, on foot and by public transport, Tuesday 13 October 2026 at 10:00.",
+    "hintLink": "What do these three modes cover?",
+    "phoneHint": "Choose a mode to see durations.",
+    "allPlaces": "All everyday places",
+    "allPlacesShort": "All places",
+    "strip": "In Paris, it takes a median {wc} on foot to reach an accessible metro, RER, train or tram stop, against {free} without constraint.",
+    "stripMinutes": "{n} minutes",
+    "planNote": "Plan: illustration"
+  },
+  "plan": {
+    "listLabel": "Everyday places on the plan",
+    "listLabelMode": "Median duration from a neighbourhood of the metropolis, mode \"{mode}\"",
+    "fromNeighbourhood": "From a neighbourhood",
+    "here": "You are here",
+    "minutes": "{n} min",
+    "over90": "over 90 min",
+    "dest": {
+      "emergency": "Emergency department",
+      "town_hall": "Town hall",
+      "post_office": "Post office",
+      "france_services": "France Services",
+      "caf": "CAF (family benefits)",
+      "employment": "France Travail"
+    }
+  },
+  "question": {
+    "kicker": "A question at random",
+    "title": "Would you have guessed?",
+    "lead": "A different question at each visit, drawn from the site's figures.",
+    "minutes": "{n} minutes",
+    "right": "Correct answer.",
+    "wrong": "Incorrect answer.",
+    "rightTag": "correct answer",
+    "yourAnswer": "your answer",
+    "another": "Another question",
+    "seeMap": "See on the map",
+    "station": {
+      "question": "In Paris, how many minutes does it take, as a median and on foot, to reach a wheelchair-accessible metro, RER, train or tram stop?",
+      "explanation": "{wc} minutes, against {free} minutes to reach the nearest stop, accessible or not. In Paris, few metro stop points are wheelchair-accessible.",
+      "note": "Median of Paris neighbourhoods, on foot, Tuesday 13 October 2026.",
+      "sources": "Île-de-France Mobilités (timetables of 1 October 2026), OpenStreetMap, INSEE"
+    },
+    "metro": {
+      "question": "What share of metro stop points (platforms) is marked wheelchair-accessible by Île-de-France Mobilités, in Paris and in Seine-Saint-Denis?",
+      "pair": "Paris {paris} · Seine-Saint-Denis {ssd}",
+      "same": "About 15% in both",
+      "explanation": "{paris} in Paris, {ssd} in Seine-Saint-Denis, home to the recent extensions of lines 11 and 14. Hauts-de-Seine: {d92}; Val-de-Marne: {d94}.",
+      "note": "Metro only, stop points in service, timetables of 1 October 2026.",
+      "sources": "Île-de-France Mobilités"
+    },
+    "exposed": {
+      "question": "In Seine-Saint-Denis, among highly exposed neighbourhoods (at least 2 of the 3 exposures: heat, air and noise, housing), what share is also in the metropolis's third where residents have the fewest means?",
+      "explanation": "{v}. In Paris, this share is {paris}. With equal exposure, social situations differ sharply from one area to another.",
+      "note": "Residents' means: median income, overcrowded homes, second homes (INSEE, 2021).",
+      "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME"
+    },
+    "care": {
+      "question": "In Hauts-de-Seine, among neighbourhoods of comparable density, is access to care more often difficult where residents have the fewest means?",
+      "more": "Yes, more often",
+      "same": "No, just as often",
+      "less": "No, less often",
+      "explanation": "Yes. About {a} in 10 neighbourhoods with the fewest means are in the quarter where access to GPs and pharmacies is most difficult, against about {b} in 10 among those with the most means ({low} against {high}).",
+      "note": "Comparison between neighbourhoods of comparable population density.",
+      "sources": "ANS (RPPS), FINESS, DREES, INSEE, Île-de-France Mobilités"
+    },
+    "night": {
+      "question": "At night (Tuesday, 1:00), on foot and by public transport, what share of neighbourhoods is more than 30 minutes from the nearest emergency department, in Paris and in the inner suburbs?",
+      "pair": "Paris {paris} · inner suburbs {inner}",
+      "same": "About 25% in both",
+      "explanation": "{paris} of neighbourhoods in Paris, {inner} in the inner suburbs. Median duration, on foot and by public transport: {mp} minutes in Paris, {mi} minutes in the inner suburbs.",
+      "note": "General emergency departments; paediatric and specialised ones not counted. Departure between 1:00 and 2:00, Tuesday 13 October 2026.",
+      "sources": "INSEE (BPE 2025), Île-de-France Mobilités, OpenStreetMap"
+    }
   }
 }

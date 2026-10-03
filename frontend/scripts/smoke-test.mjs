@@ -81,17 +81,32 @@ try {
   page.on('pageerror', (e) => errors.push(`${page.url()}: ${e.message}`))
   page.on('console', (m) => m.type() === 'error' && errors.push(`${page.url()}: ${m.text()}`))
 
-  // Home page, both languages: four findings with figures from
-  // key_figures.json, the metro question answered in a live region.
+  // Home page, both languages (redesign D4): no duration on the plan
+  // until a mode is chosen; a mode shows the six durations of
+  // routes_summary.json; a second click on it hides them again; the
+  // question at random is answered and its verdict written out.
   // French first: once /en is visited, a later visit to "/" returns to
   // English (the remembered choice, router.js).
+  const routesSummary = JSON.parse(readFileSync(`${ROOT}/public/data/routes_summary.json`, 'utf-8'))
   for (const [path, lang] of [['/', 'fr'], ['/en', 'en']]) {
     await page.goto(base + path, { waitUntil: 'networkidle' })
-    const findings = await page.locator('.finding').count()
-    const bars = await page.locator('.finding .bars li').count()
-    check(`${path} home: 4 findings, 8 bars, html lang=${lang}`, findings === 4 && bars === 8 && (await page.getAttribute('html', 'lang')) === lang, `${findings} findings, ${bars} bars`)
-    await page.locator('.choices button').nth(1).click()
-    check(`${path} home: question answered`, (await page.locator('.verdict').count()) === 1)
+    const before = await page.locator('.plan-desktop .plan-time').count()
+    const wheelchair = page.locator('.modes-desktop .mode-wheelchair')
+    await wheelchair.click()
+    await page.waitForTimeout(400)
+    const times = await page.locator('.plan-desktop .plan-time').allInnerTexts()
+    const townHall = routesSummary.day_metropolis_median.wheelchair.town_hall
+    const pressed = await wheelchair.getAttribute('aria-pressed')
+    await wheelchair.click()
+    await page.waitForTimeout(400)
+    const after = await page.locator('.plan-desktop .plan-time').count()
+    check(
+      `${path} home: no duration without a mode, 6 with "wheelchair" (town hall ${townHall} min), none after a second click, html lang=${lang}`,
+      before === 0 && times.length === 6 && times.some((x) => x.startsWith(`${townHall} `)) && pressed === 'true' && after === 0 && (await page.getAttribute('html', 'lang')) === lang,
+      `${before} / ${times.join(', ')} / ${after}`
+    )
+    await page.locator('.question-option').first().click()
+    check(`${path} home: question answered, verdict written`, (await page.locator('.question-verdict').count()) === 1)
   }
 
   // Quiz, keyboard only: answer each question (Tab to an option, Enter),

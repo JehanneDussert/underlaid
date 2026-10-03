@@ -619,7 +619,7 @@
     "label": "Adresse",
     "placeholder": "Numéro, rue, commune",
     "placeholderShort": "Adresse",
-    "submit": "Consulter",
+    "submit": "Voir",
     "suggestions": "{n} adresses proposées. Utilisez les flèches haut et bas pour choisir.",
     "listLabel": "Adresses proposées",
     "unavailable": "Le service de recherche d'adresse ne répond pas. Réessayez plus tard.",
@@ -847,5 +847,87 @@
     "wheelchair": "Fauteuil roulant",
     "chosen": "Mode choisi : {mode}",
     "none": "Aucun mode choisi"
+  },
+  "landing": {
+    "title": "Une même ville, des conditions de vie inégales.",
+    "lead": "Chaleur, pollution, logement, accès aux soins et aux services : la situation de votre quartier, selon votre façon de vous déplacer.",
+    "addressLabel": "Votre adresse",
+    "addressPlaceholder": "Où habitez-vous ?",
+    "modesLabel": "Comment vous déplacez-vous ? (facultatif)",
+    "phoneModes": "Je me déplace :",
+    "phoneModesNone": "à préciser",
+    "hint": "Choisissez un mode pour voir les durées sur le plan : médianes des quartiers de la métropole, à pied et en transports en commun, mardi 13 octobre 2026 à 10 h.",
+    "hintLink": "Que recouvrent ces trois modes ?",
+    "phoneHint": "Choisissez un mode pour voir les durées.",
+    "allPlaces": "Tous les lieux du quotidien",
+    "allPlacesShort": "Tous les lieux",
+    "strip": "À Paris, il faut en médiane {wc} à pied pour rejoindre un arrêt accessible du métro, du RER, du train ou du tram, contre {free} sans contrainte.",
+    "stripMinutes": "{n} minutes",
+    "planNote": "Plan : illustration"
+  },
+  "plan": {
+    "listLabel": "Lieux du quotidien sur le plan",
+    "listLabelMode": "Durée médiane depuis un quartier de la métropole, mode « {mode} »",
+    "fromNeighbourhood": "Depuis un quartier",
+    "here": "Vous êtes ici",
+    "minutes": "{n} min",
+    "over90": "plus de 90 min",
+    "dest": {
+      "emergency": "Urgences",
+      "town_hall": "Mairie",
+      "post_office": "Bureau de poste",
+      "france_services": "France Services",
+      "caf": "CAF",
+      "employment": "France Travail"
+    }
+  },
+  "question": {
+    "kicker": "Une question au hasard",
+    "title": "Auriez-vous deviné ?",
+    "lead": "Une question différente à chaque visite, tirée des chiffres du site.",
+    "minutes": "{n} minutes",
+    "right": "Réponse exacte.",
+    "wrong": "Réponse inexacte.",
+    "rightTag": "réponse exacte",
+    "yourAnswer": "votre réponse",
+    "another": "Une autre question",
+    "seeMap": "Voir sur la carte",
+    "station": {
+      "question": "À Paris, combien de minutes faut-il en médiane, à pied, pour rejoindre un arrêt du métro, du RER, du train ou du tram accessible en fauteuil roulant ?",
+      "explanation": "{wc} minutes, contre {free} minutes pour rejoindre l'arrêt le plus proche, accessible ou non. À Paris, peu de points d'arrêt du métro sont accessibles en fauteuil roulant.",
+      "note": "Médiane des quartiers parisiens, à pied, mardi 13 octobre 2026.",
+      "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026), OpenStreetMap, INSEE"
+    },
+    "metro": {
+      "question": "Quelle part des points d'arrêt (quais) du métro est signalée accessible en fauteuil roulant par Île-de-France Mobilités, à Paris et en Seine-Saint-Denis ?",
+      "pair": "Paris {paris} · Seine-Saint-Denis {ssd}",
+      "same": "Environ 15 % dans les deux",
+      "explanation": "{paris} à Paris, {ssd} en Seine-Saint-Denis, où se trouvent les prolongements récents des lignes 11 et 14. Hauts-de-Seine : {d92} ; Val-de-Marne : {d94}.",
+      "note": "Métro seulement, points d'arrêt desservis, horaires du 1er octobre 2026.",
+      "sources": "Île-de-France Mobilités"
+    },
+    "exposed": {
+      "question": "En Seine-Saint-Denis, parmi les quartiers très exposés (au moins 2 des 3 expositions : chaleur, air et bruit, logement), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
+      "explanation": "{v}. À Paris, cette part est de {paris}. À exposition égale, les situations sociales diffèrent fortement d'un territoire à l'autre.",
+      "note": "Ressources des habitants : revenu médian, logements surpeuplés, résidences secondaires (INSEE, 2021).",
+      "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME"
+    },
+    "care": {
+      "question": "Dans les Hauts-de-Seine, entre quartiers de densité comparable, l'accès aux soins est-il plus souvent difficile là où les habitants ont le moins de ressources ?",
+      "more": "Oui, plus souvent",
+      "same": "Non, aussi souvent",
+      "less": "Non, moins souvent",
+      "explanation": "Oui. Environ {a} quartiers sur 10 aux ressources les plus faibles font partie du quart où l'accès aux médecins et aux pharmacies est le plus difficile, contre environ {b} sur 10 parmi les quartiers aux ressources les plus élevées ({low} contre {high}).",
+      "note": "Comparaison faite entre quartiers de densité de population comparable.",
+      "sources": "ANS (RPPS), FINESS, DREES, INSEE, Île-de-France Mobilités"
+    },
+    "night": {
+      "question": "La nuit (mardi, 1 h), à pied et en transports en commun, quelle part des quartiers se trouve à plus de 30 minutes des urgences les plus proches, à Paris et en petite couronne ?",
+      "pair": "Paris {paris} · petite couronne {inner}",
+      "same": "Environ 25 % dans les deux",
+      "explanation": "{paris} des quartiers à Paris, {inner} en petite couronne. Durée médiane, à pied et en transports en commun : {mp} minutes à Paris, {mi} minutes en petite couronne.",
+      "note": "Urgences générales ; urgences pédiatriques et spécialisées non comptées. Départ entre 1 h et 2 h, mardi 13 octobre 2026.",
+      "sources": "INSEE (BPE 2025), Île-de-France Mobilités, OpenStreetMap"
+    }
   }
 }

@@ -194,6 +194,9 @@ h1[tabindex='-1']:focus-visible {
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    /* Delays too: an element that appears after a delay (fill-mode
+       "both") would otherwise stay hidden for that long. */
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;

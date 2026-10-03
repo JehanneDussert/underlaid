@@ -66,6 +66,9 @@ SCRIPTS: dict[str, tuple[str, tuple[Layer, ...]]] = {
     "11_compute_vulnerability_score.py": ("score", (Layer("vulnerability_score_iris.geojson", ("code_iris", "cumulative_vulnerability_score")),)),
     "26_adaptive_capacity.py": ("means", (Layer("adaptive_capacity_iris.json", (), iris_grain=False),)),
     "35_key_figures.py": ("means", (Layer("key_figures.json", (), iris_grain=False),)),
+    # Home-page travel times: medians of the routes files (script 36, run by
+    # hand), recomputed each quarter because "inhabited" follows the score.
+    "38_routes_summary.py": ("means", (Layer("routes_summary.json", (), iris_grain=False),)),
     "16_school_ac_context.py": ("context", (Layer("school_ac_context_arrondissement.geojson", ("insee_com",), iris_grain=False),)),
     "18_tree_age_context.py": ("context", (Layer("tree_age_context_arrondissement.geojson", ("insee_com",), iris_grain=False),)),
     "20_associational_density_context.py": ("context", (Layer("associational_density_context_commune.geojson", ("insee_com",), iris_grain=False),)),

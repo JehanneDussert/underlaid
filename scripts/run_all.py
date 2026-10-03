@@ -66,6 +66,7 @@ SCRIPT_ORDER = [
     "11_compute_vulnerability_score.py",
     "26_adaptive_capacity.py",
     "35_key_figures.py",
+    "38_routes_summary.py",
     "16_school_ac_context.py",
     "18_tree_age_context.py",
     "20_associational_density_context.py",

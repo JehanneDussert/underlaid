@@ -1,0 +1,102 @@
+{
+  "reference": "Tuesday 13 October 2026, 10:00 (night: 1:00)",
+  "day_metropolis_median": {
+    "free": {
+      "emergency": 18,
+      "gp": 3,
+      "pharmacy": 3,
+      "town_hall": 12,
+      "france_services": 16,
+      "caf": 24,
+      "cpam": 19,
+      "employment": 16,
+      "post_office": 7
+    },
+    "slow": {
+      "emergency": 22,
+      "gp": 4,
+      "pharmacy": 4,
+      "town_hall": 15,
+      "france_services": 19,
+      "caf": 27,
+      "cpam": 22,
+      "employment": 19,
+      "post_office": 9
+    },
+    "wheelchair": {
+      "emergency": 21,
+      "gp": 3,
+      "pharmacy": 3,
+      "town_hall": 14,
+      "france_services": 18,
+      "caf": 29,
+      "cpam": 21,
+      "employment": 18,
+      "post_office": 7
+    }
+  },
+  "station_median_by_department": {
+    "free": {
+      "75": 3,
+      "92": 8,
+      "93": 10,
+      "94": 12
+    },
+    "slow": {
+      "75": 5,
+      "92": 11,
+      "93": 14,
+      "94": 16
+    },
+    "wheelchair": {
+      "75": 11,
+      "92": 11,
+      "93": 13,
+      "94": 15
+    }
+  },
+  "night_emergency": {
+    "free": {
+      "75": {
+        "median": 19,
+        "over30_pct": 13.5,
+        "over45_pct": 1.4,
+        "n": 938
+      },
+      "inner_suburbs": {
+        "median": 27,
+        "over30_pct": 40.8,
+        "over45_pct": 13.3,
+        "n": 1750
+      }
+    },
+    "slow": {
+      "75": {
+        "median": 24,
+        "over30_pct": 30.7,
+        "over45_pct": 6.9,
+        "n": 938
+      },
+      "inner_suburbs": {
+        "median": 35,
+        "over30_pct": 61.4,
+        "over45_pct": 29.1,
+        "n": 1750
+      }
+    },
+    "wheelchair": {
+      "75": {
+        "median": 19,
+        "over30_pct": 13.8,
+        "over45_pct": 1.5,
+        "n": 938
+      },
+      "inner_suburbs": {
+        "median": 28,
+        "over30_pct": 43.4,
+        "over45_pct": 16.3,
+        "n": 1750
+      }
+    }
+  }
+}

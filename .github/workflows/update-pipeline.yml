@@ -25,6 +25,7 @@ env:
     vulnerability_score_iris.geojson
     adaptive_capacity_iris.json
     key_figures.json
+    routes_summary.json
     qpv_boundaries_mgp.geojson
     associational_density_context_commune.geojson
     school_ac_context_arrondissement.geojson

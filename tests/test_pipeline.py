@@ -457,3 +457,23 @@ def test_key_figures_match_the_published_score():
     exposures = sum((df[f"subscore_{k}_quartile"] == 4).astype(int) for k in ["thermal", "pollution", "housing"])
     high93 = df[(exposures >= 2) & (df["code_iris"].str[:2] == "93")]
     assert figures["highly_exposed_lowest_third_pct"]["93"] == round(100 * float((high93["capacity_class"] == 0).mean()), 1)
+
+
+def test_routes_summary_matches_the_routes_files():
+    """The travel times quoted on the home page (script 38) are the medians
+    of the published routes files, not hand-typed copies."""
+    path = config.DATA_PROCESSED / "routes_summary.json"
+    if not path.exists():
+        pytest.skip("routes not computed")
+    summary = json.loads(path.read_text(encoding="utf-8"))
+    day = json.loads((config.DATA_PROCESSED / "routes_iris_tue10.json").read_text(encoding="utf-8"))
+    score = load("vulnerability_score_iris.geojson")
+    inhabited = set(score.loc[score["population"] >= 50, "code_iris"])
+    blocks, types = day["layout"]["blocks"], day["layout"]["types"]
+    for mode, profile in {"free": "standard", "slow": "slow", "wheelchair": "step_free_no"}.items():
+        i = blocks.index(f"time:{profile}") * len(types) + types.index("town_hall")
+        values = [np.inf if r[i] is None else r[i] for c, r in day["iris"].items() if c in inhabited]
+        assert summary["day_metropolis_median"][mode]["town_hall"] == int(round(float(np.median(values))))
+    # The accessible stop is never closer than the nearest stop.
+    for d in ["75", "92", "93", "94"]:
+        assert summary["station_median_by_department"]["wheelchair"][d] >= summary["station_median_by_department"]["free"][d]

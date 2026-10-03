@@ -87,6 +87,16 @@
     "92": 22.6,
     "94": 23.1
   },
+  "access_care_shares_equal_density": {
+    "92": {
+      "lowest_third_pct": 41.1,
+      "highest_third_pct": 18.4
+    },
+    "94": {
+      "lowest_third_pct": 47.1,
+      "highest_third_pct": 24.0
+    }
+  },
   "wheelchair_gp_median": {
     "75": 7.5,
     "92": 6.99,

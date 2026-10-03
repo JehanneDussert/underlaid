@@ -62,13 +62,12 @@ watch(
 )
 
 // Contact without the address in the page's code: the mailto link is
-// composed on click only, from parts. The address is not set yet (asked
-// to the project owner on 3 October 2026): until then the link leads to
-// the GitHub discussions.
-const CONTACT_PARTS = null
-const contactHref = CONTACT_PARTS ? '#contact' : DISCUSSIONS_URL
+// composed on click only, from parts (address given by the project owner
+// on 3 October 2026). Without JavaScript, the link leads to the GitHub
+// discussions, the other contact channel.
+const CONTACT_PARTS = ['research.jehannedussert', 'gmail.com']
+const contactHref = DISCUSSIONS_URL
 function openContact(event) {
-  if (!CONTACT_PARTS) return
   event.preventDefault()
   window.location.href = `mailto:${CONTACT_PARTS.join('@')}`
 }

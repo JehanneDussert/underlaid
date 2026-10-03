@@ -50,9 +50,16 @@ import config
 
 ACCESS_DIR = config.DATA_PROCESSED / "access"
 WORK_DIR = config.DATA_INTERIM / "access"
-OUT_DIR = WORK_DIR / "routes_ttm"
-PROGRESS = WORK_DIR / "routes_progress.txt"
-CHUNK = 300
+# ROUTES_SET=neighbourhood: second run for the "Your neighbourhood" page
+# (script 37 destinations, Tuesday 10:00 only, no station task), validated
+# on 2026-10-03; smaller origin chunks because there are about twice as
+# many destinations.
+ROUTES_SET = os.environ.get("ROUTES_SET", "routes")
+NEIGHBOURHOOD = ROUTES_SET == "neighbourhood"
+OUT_DIR = WORK_DIR / ("routes_ttm_neighbourhood" if NEIGHBOURHOOD else "routes_ttm")
+PROGRESS = WORK_DIR / ("routes_neighbourhood_progress.txt" if NEIGHBOURHOOD else "routes_progress.txt")
+DEST_FILE = "neighbourhood_destinations_idf.geojson" if NEIGHBOURHOOD else "route_destinations_idf.geojson"
+CHUNK = 150 if NEIGHBOURHOOD else 300
 MAX_MINUTES = 90
 WINDOW = dt.timedelta(minutes=60)
 WORKER = int(os.environ.get("WORKER", "0"))
@@ -86,8 +93,11 @@ class Task:
     departure: dt.datetime
 
 
-TASKS = [Task(f"{p}_{s}", p, True, d) for p in PROFILES for s, d in SLOTS.items()]
-TASKS += [Task(f"{p}_stations_walk", p, False, SLOTS["tue10"]) for p in PROFILES]
+if NEIGHBOURHOOD:
+    TASKS = [Task(f"{p}_tue10", p, True, SLOTS["tue10"]) for p in PROFILES]
+else:
+    TASKS = [Task(f"{p}_{s}", p, True, d) for p in PROFILES for s, d in SLOTS.items()]
+    TASKS += [Task(f"{p}_stations_walk", p, False, SLOTS["tue10"]) for p in PROFILES]
 
 
 def origins() -> gpd.GeoDataFrame:
@@ -128,8 +138,8 @@ def main():
     import r5py
 
     orig = origins()
-    dest = gpd.read_file(ACCESS_DIR / "route_destinations_idf.geojson")
-    dest["wheelchair"] = dest["wheelchair"].fillna("").astype(str)
+    dest = gpd.read_file(ACCESS_DIR / DEST_FILE)
+    dest["wheelchair"] = dest["wheelchair"].fillna("").astype(str) if "wheelchair" in dest else ""
     dest_type = dest.set_index("dest_id")["type"]
     print(f"{len(orig)} origin cells, {len(dest)} destinations", flush=True)
 

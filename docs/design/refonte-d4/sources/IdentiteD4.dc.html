@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Identité D4 — Accueil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#101010}a:hover{color:#0057B8}
+input::placeholder{color:#6A6A6A}
+@keyframes d4-draw{from{stroke-dashoffset:1600}to{stroke-dashoffset:0}}
+@keyframes d4-draw2{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+@keyframes d4-pop{0%{transform:scale(0)}80%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes d4-pulse{0%{r:10;opacity:.55}100%{r:38;opacity:0}}
+@keyframes d4-dot{0%{r:5;opacity:.7}100%{r:14;opacity:0}}
+@keyframes d4-fade{from{opacity:0}to{opacity:1}}
+@keyframes d4-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div style="width: 1280px; height: 860px; box-sizing: border-box; background: #FFFFFF; color: #101010; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; position: relative; overflow: hidden">
+<svg aria-hidden="true" viewBox="0 0 1280 860" width="1280" height="860" style="position: absolute; inset: 0">
+<defs><linearGradient id="d4-fadeL" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"></stop><stop offset="1" stop-color="#fff" stop-opacity="1"></stop></linearGradient><mask id="d4-m"><rect x="560" y="0" width="160" height="860" fill="url(#d4-fadeL)"></rect><rect x="720" y="0" width="560" height="860" fill="#fff"></rect></mask></defs>
+<g fill="none" stroke-linecap="round" stroke-width="14" mask="url(#d4-m)">
+<path d="M580 220 C 780 200, 860 260, 940 380 C 1020 500, 1120 640, 1320 620" stroke="#0057B8" stroke-dasharray="1600" style="animation: d4-draw 2000ms 0ms ease-out both"></path>
+<path d="M700 820 C 780 660, 860 560, 980 520 C 1100 480, 1200 470, 1320 380" stroke="#E4007C" stroke-dasharray="1600" style="animation: d4-draw 2000ms 200ms ease-out both"></path>
+<path d="M1160 40 C 1140 200, 1080 300, 980 400 C 880 500, 780 560, 620 520" stroke="#00A06B" stroke-dasharray="1600" style="animation: d4-draw 2000ms 400ms ease-out both"></path>
+<path d="M820 30 C 840 180, 920 260, 1030 290 C 1140 320, 1240 300, 1320 250" stroke="#FF7A00" stroke-dasharray="1600" style="animation: d4-draw 2000ms 600ms ease-out both"></path>
+<path d="M590 620 C 740 640, 860 700, 940 760 C 1020 820, 1080 860, 1120 860" stroke="#7B3FA0" stroke-dasharray="1600" style="animation: d4-draw 2000ms 800ms ease-out both"></path>
+</g>
+<g fill="#FFFFFF" stroke="#101010" stroke-width="5">
+<circle cx="1167" cy="463" r="13" style="transform-origin: 1167px 463px; animation: d4-pop 400ms 2000ms both"></circle>
+<circle cx="881" cy="192" r="13" style="transform-origin: 881px 192px; animation: d4-pop 400ms 2120ms both"></circle>
+<circle cx="1172" cy="302" r="13" style="transform-origin: 1172px 302px; animation: d4-pop 400ms 2240ms both"></circle>
+<circle cx="1103" cy="566" r="13" style="transform-origin: 1103px 566px; animation: d4-pop 400ms 2360ms both"></circle>
+<circle cx="736" cy="654" r="13" style="transform-origin: 736px 654px; animation: d4-pop 400ms 2480ms both"></circle>
+<circle cx="787" cy="524" r="13" style="transform-origin: 787px 524px; animation: d4-pop 400ms 2600ms both"></circle>
+</g>
+<circle cx="975" cy="430" r="10" fill="#101010" style="animation: d4-pulse 2000ms 2600ms ease-out infinite"></circle>
+<circle cx="975" cy="430" r="12" fill="#FFFFFF" stroke="#101010" stroke-width="4"></circle>
+<circle cx="975" cy="430" r="5" fill="#101010"></circle>
+</svg>
+<div aria-label="Exemple de durées depuis un quartier" style="position: absolute; inset: 0">
+<sc-for list="{{ labels }}" as="l" hint-placeholder-count="6">
+<div style="{{ l.style }}"><span style="{{ l.dot }}"></span><span>{{ l.name }}</span><strong style="font-size: 16px">{{ l.time }}</strong></div>
+</sc-for>
+</div>
+<header style="position: relative; height: 88px; display: flex; align-items: center; justify-content: space-between; padding: 0 64px">
+<a href="#" aria-label="underlaid, accueil" style="text-decoration: none; font-weight: 700; font-size: 22px">underlaid</a>
+<nav style="display: flex; gap: 32px; font-size: 15px; background: rgba(255,255,255,0.92); padding: 8px 12px; border-radius: 999px">
+<a href="#" style="text-decoration: none; color: #6A6A6A" aria-disabled="true" title="Saisissez une adresse">Votre quartier</a>
+<a href="#" style="text-decoration: none">Explorer la carte</a>
+<a href="#" style="text-decoration: none">Méthode</a>
+<a href="#" style="text-decoration: none; color: #6A6A6A">EN</a>
+</nav>
+</header>
+<div style="position: relative; width: 600px; padding: 48px 0 0 64px; display: flex; flex-direction: column; gap: 28px">
+<h1 style="margin: 0; font-size: 56px; line-height: 1.04; letter-spacing: -0.02em; font-weight: 700; animation: d4-rise 700ms ease-out both">Une même ville, des conditions de vie inégales.</h1>
+<p style="margin: 0; font-size: 18px; line-height: 1.5; color: #3C3C3C; max-width: 520px; animation: d4-rise 700ms 150ms ease-out both">Chaleur, pollution, logement, accès aux soins et aux services : la situation de votre quartier, selon votre façon de vous déplacer.</p>
+<form style="display: flex; flex-direction: column; gap: 14px; animation: d4-rise 700ms 300ms ease-out both">
+<div style="display: flex; align-items: center; gap: 12px; border: 2px solid #101010; border-radius: 999px; padding: 0 8px 0 22px; height: 60px; background: #FFFFFF; max-width: 540px">
+<label for="d4-adr" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Où habitez-vous ?</label>
+<input id="d4-adr" type="text" placeholder="Où habitez-vous ?" style="flex-grow: 1; border: 0; font-family: inherit; font-size: 18px; background: transparent; color: #101010; height: 44px">
+<button type="button" style="height: 44px; padding: 0 20px; border-radius: 999px; border: 0; background: #0057B8; color: #FFFFFF; font-family: inherit; font-weight: 700; font-size: 15px">Voir</button>
+</div>
+<span style="font-size: 14px; color: #3C3C3C; margin-top: 6px">Comment vous déplacez-vous ? <span style="color: #6A6A6A">(facultatif)</span></span>
+<div role="group" aria-label="Comment vous déplacez-vous ?" style="display: flex; gap: 8px; flex-wrap: nowrap">
+<sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
+<button type="button" onClick="{{ m.pick }}" aria-pressed="{{ m.pressed }}" aria-label="{{ m.aria }}" style="{{ m.style }}"><span style="{{ m.dot }}"></span>{{ m.label }}</button>
+</sc-for>
+</div>
+</form>
+<p style="margin: 0; font-size: 13px; color: #6A6A6A; animation: d4-rise 700ms 2400ms ease-out both">Choisissez un mode pour voir les durées sur le plan (médianes de la métropole, mardi 10 h, données provisoires). <a href="#" style="color: #3C3C3C">Que recouvrent ces trois modes ?</a></p>
+</div>
+<a href="#" style="position: absolute; right: 64px; bottom: 92px; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px; border: 2px solid #101010; background: #FFFFFF; color: #101010; text-decoration: none; font-weight: 700; font-size: 15px; animation: d4-rise 600ms 2900ms ease-out both">Tous les lieux du quotidien →</a>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 60px; display: flex; align-items: center; gap: 14px; padding: 0 64px; border-top: 1px solid #E6E6E6; background: #FFFFFF; font-size: 15px">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="5" fill="#E4007C" style="animation: d4-dot 1600ms ease-out infinite"></circle><circle cx="10" cy="10" r="5" fill="#E4007C"></circle></svg>
+<span>À Paris, il faut en médiane <strong>11 minutes</strong> à pied pour rejoindre un arrêt accessible du métro, du RER ou du tram, contre <strong>3 minutes</strong> sans contrainte.</span>
+<span style="margin-left: auto; font-size: 12px; color: #6A6A6A; white-space: nowrap">Plan : illustration</span>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280}}'>
+const DESTS = [["Urgences", "#E4007C", 1167, 463, "t", [19, 22, 21], 2200], ["Mairie", "#FF7A00", 881, 192, "l", [13, 15, 14], 2320], ["Bureau de poste", "#FF7A00", 1172, 302, "l", [7, 9, 7], 2440], ["France Services", "#0057B8", 1103, 566, "b", [16, 19, 18], 2560], ["CAF", "#7B3FA0", 736, 654, "b", [24, 28, 29], 2680], ["France Travail", "#00A06B", 787, 524, "b", [17, 20, 18], 2800]];
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mode: null }; }
+  renderVals() {
+    const mode = this.state.mode;
+    const defs = [
+      { id: 'pied', label: 'Sans contrainte', aria: 'Sans contrainte', color: '#00A06B', tint: '#E3F5EC' },
+      { id: 'lente', label: 'Marche lente', aria: 'Marche lente', color: '#FF7A00', tint: '#FFEEDD' },
+      { id: 'sans', label: 'Fauteuil roulant', aria: 'Fauteuil roulant', color: '#0057B8', tint: '#E2ECF8' }
+    ];
+    const modes = defs.map((d) => ({
+      label: d.label, aria: d.aria,
+      pressed: d.id === mode ? 'true' : 'false',
+      dot: 'width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: ' + d.color + ';',
+      style: 'height: 44px; padding: 0 14px 0 12px; border-radius: 999px; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 8px; color: #101010; ' + (d.id === mode ? 'border: 2px solid ' + d.color + '; background: ' + d.tint + ';' : 'border: 2px solid #D6D6D6; background: #FFFFFF;'),
+      pick: () => this.setState({ mode: this.state.mode === d.id ? null : d.id })
+    }));
+    const idx = mode === null ? -1 : (mode === 'pied' ? 0 : (mode === 'lente' ? 1 : 2));
+    const tr = { r: 'translate(0, -50%)', l: 'translate(-100%, -50%)', t: 'translate(-50%, -100%)', b: 'translate(-50%, 0)' };
+    const off = { r: [20, 0], l: [-20, 0], t: [0, -20], b: [0, 20] };
+    const labels = DESTS.map((d) => ({
+      name: d[0], time: idx < 0 ? '' : d[5][idx] + ' min',
+      dot: 'width: 12px; height: 12px; border-radius: 50%; background: #FFFFFF; border: 3px solid ' + d[1] + ';',
+      style: 'position: absolute; left: ' + (d[2] + off[d[4]][0]) + 'px; top: ' + (d[3] + off[d[4]][1]) + 'px; transform: ' + tr[d[4]] + '; display: flex; align-items: center; gap: 8px; white-space: nowrap; background: #FFFFFF; border: 1.5px solid #E2E2E2; border-radius: 999px; padding: 6px 12px 6px 10px; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); animation: d4-fade 500ms ' + d[6] + 'ms ease-out both;'
+    }));
+
+    return { modes: modes, labels: labels };
+  }
+}
+</script>
+</body>
+</html>

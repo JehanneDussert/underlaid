@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Votre quartier — téléphone, comparer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#101010}
+@keyframes mb-draw{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+@keyframes mb-pulse{0%{r:8;opacity:.6}100%{r:24;opacity:0}}
+@keyframes mb-dot{0%{r:4;opacity:.7}100%{r:11;opacity:0}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+</helmet>
+<div style="width: 390px; background: #FFFFFF; color: #101010; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; padding: 20px 16px 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 22px"><span style="color: #0057B8; margin-right: 8px">2.</span>Ce qui est à portée</h2>
+<div style="display: flex; flex-direction: column; gap: 8px; background: #F4F7FC; border-radius: 16px; padding: 12px 14px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 14px; font-weight: 700">Comparer avec</span><button type="button" aria-label="Arrêter la comparaison" style="font-family: inherit; font-size: 13px; border: 0; background: transparent; text-decoration: underline">Arrêter</button></div>
+<div style="display: flex; gap: 6px"><button type="button" aria-pressed="false" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 1.5px solid #D6D6D6; background: #FFFFFF; font-family: inherit; font-size: 14px">Marche lente</button><button type="button" aria-pressed="true" style="height: 36px; padding: 0 12px; border-radius: 999px; border: 2px solid #0057B8; background: #E2ECF8; font-family: inherit; font-size: 14px; font-weight: 700">Fauteuil roulant</button></div>
+<p style="margin: 0; font-size: 13px; line-height: 1.45">L’écart se joue surtout à l’entrée du réseau : arrêt accessible le plus proche à <strong>[11] min</strong>, contre <strong>[3] min</strong>. <a href="#">Ce que le calcul ne voit pas</a></p>
+</div>
+<div style="border-top: 1.5px solid #101010">
+<div style="border-bottom: 1px solid #E2E2E2">
+<div style="display: grid; grid-template-columns: 18px 1fr auto 18px; align-items: center; gap: 10px; padding: 14px 0"><span style="width: 14px; height: 14px; border-radius: 50%; border: 4px solid #00A3E0; box-sizing: border-box"></span><span style="font-size: 16px; font-weight: 700; line-height: 1.25">Se soigner</span><strong style="font-size: 16px">[6] min</strong><span style="font-size: 18px; transform: rotate(180deg)">⌄</span></div>
+<div style="display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0 9px 28px; border-top: 1px solid #F0F0F0">
+<span style="font-size: 15px">Urgences</span><strong style="font-size: 16px; text-align: right">19 min</strong>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #3C3C3C"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0057B8"></span>en fauteuil : 21 min</span><span style="text-align: right"><span style="font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #F1F1F1; color: #3C3C3C">+2 min</span></span>
+</div><div style="display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0 9px 28px; border-top: 1px solid #F0F0F0">
+<span style="font-size: 15px">Médecin généraliste</span><strong style="font-size: 16px; text-align: right">[9] min</strong>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #3C3C3C"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0057B8"></span>en fauteuil : –</span><span style="text-align: right"></span>
+</div><div style="display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0 9px 28px; border-top: 1px solid #F0F0F0">
+<span style="font-size: 15px">Pharmacie</span><strong style="font-size: 16px; text-align: right">[6] min</strong>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #3C3C3C"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0057B8"></span>en fauteuil : –</span><span style="text-align: right"></span>
+</div><div style="height: 6px"></div></div>
+<div style="border-bottom: 1px solid #E2E2E2">
+<div style="display: grid; grid-template-columns: 18px 1fr auto 18px; align-items: center; gap: 10px; padding: 14px 0"><span style="width: 14px; height: 14px; border-radius: 50%; border: 4px solid #0057B8; box-sizing: border-box"></span><span style="font-size: 16px; font-weight: 700; line-height: 1.25">Faire ses démarches administratives</span><strong style="font-size: 16px">13 min</strong><span style="font-size: 18px; transform: rotate(180deg)">⌄</span></div>
+<div style="display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0 9px 28px; border-top: 1px solid #F0F0F0">
+<span style="font-size: 15px">Mairie</span><strong style="font-size: 16px; text-align: right">13 min</strong>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #3C3C3C"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0057B8"></span>en fauteuil : 14 min</span><span style="text-align: right"><span style="font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #F1F1F1; color: #3C3C3C">+1 min</span></span>
+</div><div style="display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0 9px 28px; border-top: 1px solid #F0F0F0">
+<span style="font-size: 15px">France Services</span><strong style="font-size: 16px; text-align: right">16 min</strong>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #3C3C3C"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0057B8"></span>en fauteuil : 18 min</span><span style="text-align: right"><span style="font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #F1F1F1; color: #3C3C3C">+2 min</span></span>
+</div><div style="display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0 9px 28px; border-top: 1px solid #F0F0F0">
+<span style="font-size: 15px">CAF</span><strong style="font-size: 16px; text-align: right">24 min</strong>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #3C3C3C"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0057B8"></span>en fauteuil : 29 min</span><span style="text-align: right"><span style="font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #FDE7F1; color: #9A0E58">+5 min</span></span>
+</div><div style="display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0 9px 28px; border-top: 1px solid #F0F0F0">
+<span style="font-size: 15px">CPAM</span><strong style="font-size: 16px; text-align: right">19 min</strong>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #3C3C3C"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0057B8"></span>en fauteuil : 21 min</span><span style="text-align: right"><span style="font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #F1F1F1; color: #3C3C3C">+2 min</span></span>
+</div><div style="display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 9px 0 9px 28px; border-top: 1px solid #F0F0F0">
+<span style="font-size: 15px">France Travail</span><strong style="font-size: 16px; text-align: right">17 min</strong>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; color: #3C3C3C"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0057B8"></span>en fauteuil : 18 min</span><span style="text-align: right"><span style="font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #F1F1F1; color: #3C3C3C">+1 min</span></span>
+</div><div style="height: 6px"></div></div>
+</div>
+<span style="font-size: 13px; color: #6A6A6A">En mode comparaison, tous les besoins sont dépliés.</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

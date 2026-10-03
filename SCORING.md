@@ -630,6 +630,75 @@ the E2SFCA). Every excluded record is written, with its reason, to
 | GP, pharmacy | scripts 27 and 28 | the cleaned supply of access to care |
 | Station | IDFM GTFS | heavy-network stop points (metro, RER, Transilien, tram), reached **on foot only**; for step-free profiles, accessible stop points only |
 
+### Excluded destinations (full list)
+
+The 62 records set aside by the rules above, as written by script 33 (`data/processed/access/route_destinations_excluded.csv`, run of 2 October 2026). INSEE commune code given for each.
+
+| Type | Name | Commune | Reason |
+|---|---|---|---|
+| Emergency department | CENTRE NATIONAL D OPHTALMOLOGIE DES QUINZE VINGTS DE PARIS | 75112 | ophthalmology only |
+| Emergency department | GHU APHP SORBONNE UNIVERSITE SITE TROUSSEAU | 75112 | children only |
+| Emergency department | GHU APHP CENTRE UNIVERSITE PARIS CITE NECKER ENFANTS MALADES | 75115 | children only |
+| Emergency department | GHU APHP NORD UNIVERSITE PARIS CITE SITE ROBERT DEBRE | 75119 | children only |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil CSAPA 110 Les Halles | 75102 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil ESI Famille Bonne Nouvelle - CASP | 75102 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - accueil de Saint-Martin-Armée du Salut | 75103 | office hosted by a partner or reserved to one group |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - accueil Mairie du 9ème | 75109 | office hosted by a partner or reserved to one group |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Amicale du Nid | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Boy Zelensky - Restos du Coeur | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil CAFDA | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil La salle de consommation à moindre risque | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil PASTT | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - accueil La Maison dans la rue - CASP | 75110 | office hosted by a partner or reserved to one group |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Emmaüs Solidarité - Agora | 75111 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Gaïa Paris CSAPA | 75111 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Les Petits Frères des Pauvres | 75111 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris -  Point d'accueil SAMU Social | 75112 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Boutique Solidarité - La Maison dans la Rue - Emmaüs Solidarité | 75112 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Mairie du 12ème | 75112 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil PSA Bastille | 75112 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Service des Relations Internationales | 75112 | specialised service |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Service des risques professionnels | 75112 | specialised service |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Association Charonne | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Aurore | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil La Mie de Pain | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Les Olympiades | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Plateforme AGATE SAMU Social | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil SPIP | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Cité Universitaire | 75114 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil La halle Saint Didier | 75116 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil PSA Gauthey | 75117 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil ESI Championnet | 75118 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Permanence CPAM - CSAPA EGO | 75118 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Pôle santé Goutte d'Or | 75118 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Sleep In | 75118 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Maison du Partage | 75119 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Relais du Coeur | 75119 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Service installation et accompagnement des PS | 75119 | specialised service |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Espace solidarité - Halte aux femmes battues | 75120 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Les Amis du Bus des femmes | 75120 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil PSA Belleville | 75120 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - accueil Les Hauts de Belleville AME | 75120 | office hosted by a partner or reserved to one group |
+| France Travail | APES AGENCE SPECTACLE DF DROM MED | 75115 | specialised agency |
+| France Travail | APES AVS PLACEMENT ARTISTES | 75115 | specialised agency |
+| France Travail | APES CINÉMA SPECTACLE PARIS | 75115 | specialised agency |
+| France Travail | APES CINÉMA SPECTACLE OUEST ET NORD | 92025 | specialised agency |
+| France Travail | APES AVS TECHNICIEN & JOURNALISTE | 93066 | specialised agency |
+| France Travail | APES AÉROPORTUAIRE ROISSY CDG | 95527 | specialised agency |
+| France Services | Bus France services Plaines et Monts de France | 77153 | mobile bus, no fixed location |
+| France Services | Bus France services Pimms Médiation Nemours | 77333 | mobile bus, no fixed location |
+| France Services | Bus France services de la Communauté de communes des 2 Vallées | 91405 | mobile bus, no fixed location |
+| France Services | Bus France services Prox e-Bus de Morangis, Wissous et Savigny-sur-Orge | 91432 | mobile bus, no fixed location |
+| France Services | Bus France services d'Aulnay-sous-Bois | 93005 | mobile bus, no fixed location |
+| France Services | Bus France services Solibus | 93014 | mobile bus, no fixed location |
+| France Services | Bus France services La Courneuve | 93027 | mobile bus, no fixed location |
+| France Services | Bus France services Pimms Médiation - Noisy Le Grand | 93051 | mobile bus, no fixed location |
+| France Services | Bus France services de Noisy-le-Sec | 93053 | mobile bus, no fixed location |
+| France Services | Bus France services de Saint Denis | 93066 | mobile bus, no fixed location |
+| France Services | Bus France services Pimms Médiation Sevran | 93071 | mobile bus, no fixed location |
+| France Services | Bus France services départemental du Val d'Oise | 95127 | mobile bus, no fixed location |
+| France Services | Bus France services CIAS de la Communauté de communes Carnelle Pays-de-France | 95352 | mobile bus, no fixed location |
+
 The accessibility of the destination building itself is unknown.
 
 ### Profiles, time slots, aggregation (scripts 34, 36)

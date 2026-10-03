@@ -802,8 +802,8 @@ September 2026, not assumed:
 |---|---|---|---|
 | IRIS contours 2024 (data.iledefrance.fr) | IGN & INSEE | Neighborhood boundaries | Licence Ouverte 2.0 |
 | BPE 2025, Filosofi 2021, Recensement 2022 (population, housing), access-time 200m grid | INSEE | Services, cool facilities, route destinations, income, population, secondary residences, overcrowding, access time | Licence Ouverte 2.0 — "Source : Insee" |
-| France Services sites (checked October 2026) | ANCT | Route destinations | Licence Ouverte 2.0 |
-| Directory of public administration, CAF and CPAM offices (checked October 2026) | DILA (service-public.fr) | Route destinations | Licence Ouverte |
+| [France Services sites](https://www.data.gouv.fr/datasets/liste-des-structures-labellisees-france-services) (licence checked on the publisher's data.gouv.fr page, 3 October 2026) | ANCT | Route destinations | Licence Ouverte 2.0 |
+| [Directory of public administration](https://www.data.gouv.fr/datasets/service-public-gouv-fr-annuaire-de-ladministration-base-de-donnees-locales), CAF and CPAM offices (licence checked on the publisher's data.gouv.fr page, 3 October 2026) | DILA, published under Premier ministre (service-public.gouv.fr) | Route destinations | Licence Ouverte (version 1.0) |
 | Urban heat island indicators (Sat4BDNB, data.gouv.fr) | CSTB | Thermal | Licence Ouverte 2.0 |
 | Open green & wooded spaces; MOS land use 2021 (data.iledefrance.fr) | L'Institut Paris Region | Thermal | Licence Ouverte 2.0 |
 | Air-noise co-exposure map 2024 | Airparif & Bruitparif | Pollution | Published as open data with no formal license named; the publisher requires this citation: *"Source des données : Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr"* |

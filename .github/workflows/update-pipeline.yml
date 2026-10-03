@@ -122,6 +122,10 @@ jobs:
           for f in $PUBLISHED_FILES; do
             cp "data/processed/$f" "frontend/public/data/$f"
           done
+          # Per-commune files of the neighbourhood page (script 39): a
+          # directory, replaced whole so that no stale commune file remains.
+          rm -rf frontend/public/data/quartiers
+          cp -r data/processed/quartiers frontend/public/data/quartiers
           # Coordinate precision only (6 decimals, ~11 cm) — shapes are never
           # simplified: the address search relies on exact IRIS outlines. See
           # README, "Geometry: precision reduced, shapes not simplified".

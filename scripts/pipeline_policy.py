@@ -69,6 +69,8 @@ SCRIPTS: dict[str, tuple[str, tuple[Layer, ...]]] = {
     # Home-page travel times: medians of the routes files (script 36, run by
     # hand), recomputed each quarter because "inhabited" follows the score.
     "38_routes_summary.py": ("means", (Layer("routes_summary.json", (), iris_grain=False),)),
+    # Per-commune files of the neighbourhood page, rebuilt from the score.
+    "39_neighbourhood_files.py": ("means", (Layer("quartiers/index.json", (), iris_grain=False),)),
     "16_school_ac_context.py": ("context", (Layer("school_ac_context_arrondissement.geojson", ("insee_com",), iris_grain=False),)),
     "18_tree_age_context.py": ("context", (Layer("tree_age_context_arrondissement.geojson", ("insee_com",), iris_grain=False),)),
     "20_associational_density_context.py": ("context", (Layer("associational_density_context_commune.geojson", ("insee_com",), iris_grain=False),)),

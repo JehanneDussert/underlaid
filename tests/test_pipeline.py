@@ -477,3 +477,26 @@ def test_routes_summary_matches_the_routes_files():
     # The accessible stop is never closer than the nearest stop.
     for d in ["75", "92", "93", "94"]:
         assert summary["station_median_by_department"]["wheelchair"][d] >= summary["station_median_by_department"]["free"][d]
+
+
+def test_neighbourhood_files_cover_every_neighbourhood():
+    """The per-commune files of the neighbourhood page (script 39) hold every
+    IRIS of the published score once, with ranks between 0 and 1 and the
+    same quarter as the score."""
+    folder = config.DATA_PROCESSED / "quartiers"
+    if not folder.exists():
+        pytest.skip("neighbourhood files not built")
+    score = load("vulnerability_score_iris.geojson").set_index("code_iris")
+    seen = {}
+    for path in folder.glob("*.json"):
+        if path.name == "index.json":
+            continue
+        for rec in json.loads(path.read_text(encoding="utf-8"))["iris"]:
+            assert rec["code"] not in seen
+            seen[rec["code"]] = rec
+    assert set(seen) == set(score.index)
+    for code, rec in list(seen.items())[:500]:
+        for k, e in rec["exposures"].items():
+            assert e["rank"] is None or 0 <= e["rank"] <= 1
+            q = score.loc[code, f"subscore_{k}_quartile"]
+            assert (e["quarter"] is None and pd.isna(q)) or e["quarter"] == int(q)

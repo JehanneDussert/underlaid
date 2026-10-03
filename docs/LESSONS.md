@@ -296,3 +296,49 @@ ways of travelling from the same place, not places with each other).
 That reasoning holds on its own, but it came after the result, so it is
 recorded as such, next to the unchanged verdicts. A reader can then
 judge the decision knowing its timing, instead of having to trust it.
+
+**A census update can change what a variable means.** Moving population,
+secondary residences and overcrowding from the 2021 to the 2022 census
+looked like a routine refresh. It wasn't for overcrowding: INSEE dropped
+the 2021 variable (one-person studios excluded) and now publishes
+moderate and severe overcrowding over all main residences. The median
+rate went from 13.5% to 24.6% with no change in how people live. The
+switch was decided before seeing any result, the 2021 verdicts were kept
+as the official ones, and every published crossing was redone with 2022
+as a control (all three confirmed). The differences are published, not
+smoothed over: a reader comparing two snapshots should know the jump is
+a definition, not a trend.
+
+**Numerator and denominator must come from the same count.** INSEE's
+housing file mixes two counts: the main (exhaustive) one and the
+complementary (sample-based) one, which is where overcrowding lives.
+Dividing complementary-count overcrowding by the main count of main
+residences gave a rate above 1 in one neighbourhood. The denominator is
+now the sum of all occupation categories of the complementary count. A
+rate above 1 is impossible, so it was caught at once; a rate that is
+only slightly off would not have been.
+
+**A dependency used indirectly still has to be declared.** The key
+figures (script 35) compute Spearman correlations with pandas'
+`.corr(method="spearman")`, which needs scipy — an optional pandas
+dependency, so nothing complains at import time. scipy was missing from
+`requirements.txt`, so the quarterly run, in a clean Docker image, would
+have failed on that script. It is now
+declared, with a comment saying why.
+
+**Apply the lesson in the next pre-registration, not just in this
+file.** After Seine-Saint-Denis couldn't be assessed in the access test
+(see above), the public-services test of the routes was pre-registered
+with thirds of means computed **within each département**. Every
+département could then be judged on its own terms, Seine-Saint-Denis
+included — and the result, refuted and reversed (neighbourhoods with the
+most means are more often far from public services, on foot and by
+public transport), was reported as it came.
+
+**"Reduced motion" must also cancel animation delays.** The global
+`prefers-reduced-motion` rule zeroed animation and transition durations.
+But the redesigned home page brings elements in after a delay, with
+`animation-fill-mode: both`: with a zero duration and the delay intact,
+those elements stayed invisible for the length of the delay, precisely
+for the people who asked for less motion. The rule now also sets
+`animation-delay: 0s` (`frontend/src/style.css`).

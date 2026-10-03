@@ -23,42 +23,62 @@ data; every formula documented.
 **What it measures / doesn't**
 - ✅ **Exposure**: a count (0-4) of categories in their metro-wide worst quartile — never a smoothed average.
 - ✅ **Access to care**, measured without a car: GPs and pharmacies reachable on foot and by public transport, shared among everyone who can reach them (E2SFCA). **Inclusive mobility** (what a wheelchair user keeps of that access) is shown for information, not counted.
-- ✅ **Means to cope**, on a *separate* axis: median income, overcrowded homes, secondary residences (INSEE 2021) — crossed with exposure on the map, never added to the score.
-- ❌ Not sensitivity (age, health), not what households actually do (air conditioning, time off), not flood, soil or industrial risk (yet), not access to public services other than care (yet).
+- ✅ **Means to cope**, on a *separate* axis: median income (INSEE Filosofi 2021), overcrowded homes and secondary residences (2022 census) — crossed with exposure on the map, never added to the score.
+- ✅ **Travel times to everyday destinations** (public services, emergency departments, GP, pharmacy, nearest station), on foot and by public transport, for three ways of travelling (no constraint, slow walking, wheelchair) — shown for information, never scored.
+- ❌ Not sensitivity (age, health), not what households actually do (air conditioning, time off, car use, online procedures), not flood, soil or industrial risk (yet).
 - ❌ Not an accusation: it shows where exposures stack up, not why, and names no one as the cause.
 
-**Key figures** (2,752 IRIS, v0.2, data snapshot of October 1, 2026 —
-the score moves with every pipeline run):
+**Key figures** (2,752 IRIS, v0.2; population, overcrowding and
+secondary residences from the 2022 census since October 3, 2026 — the
+score moves with every pipeline run):
 
 | Score | 0 | 1 | 2 | 3 | 4 |
 |---|---|---|---|---|---|
-| IRIS | 774 (28.1%) | 1,286 (46.7%) | 610 (22.2%) | 78 (2.8%) | 4 (0.1%) |
+| IRIS | 774 (28.1%) | 1,287 (46.8%) | 608 (22.1%) | 79 (2.9%) | 4 (0.1%) |
 
 **What crossing exposure with means shows** (2,529 IRIS with published
-income):
-- **Not the same exposures.** Highly exposed neighborhoods (2 or more of
-  4) with the *highest* means are mostly in Paris (195 of 275) and stack
-  **old, inefficient housing and heat** (worst quartile in 88% and 79% of
-  them). Those with the *lowest* means are mostly in Seine-Saint-Denis
-  and Val-de-Marne and stack **air/noise pollution and weak access to
-  care** (84% each).
+income; "highly exposed" = 2 or more of the 3 exposures — heat, air and
+noise, housing — in their worst quartile; access to care is a separate
+axis and doesn't count here):
+- **Not the same exposures.** Highly exposed neighborhoods with the
+  *highest* means are mostly in Paris and stack **heat and old,
+  energy-inefficient housing**. Those with the *lowest* means are mostly
+  in Seine-Saint-Denis and Val-de-Marne and stack mainly **heat, air
+  pollution and noise**.
 - **Overall, the link between exposure and means is weak** (Spearman
-  +0.11), and slightly positive only because of dense, older central
-  Paris (+0.37 within Paris); in the three inner-suburb departments
+  +0.09 with the score on 4), and slightly positive only because of
+  dense, older central Paris; in the three inner-suburb departments
   there's almost no link.
 - **Where high exposure and low means meet, it's concentrated**: in
-  Seine-Saint-Denis, 79% of the highly exposed neighborhoods are in the
-  metro area's lowest third of means; in Paris, 4%.
+  Seine-Saint-Denis, 61.8% of the highly exposed neighborhoods are in the
+  metro area's lowest third of means; in Paris, 4.5% (Hauts-de-Seine
+  1.9%, Val-de-Marne 24.5%).
 
-**Access to care and residents' means** (pre-registered test, see
-[SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered)):
-within Hauts-de-Seine and within Val-de-Marne, neighborhoods with the
-fewest means are more often among those with the weakest access to care
-(41% against 24% for those with the most means); at equal population
-density the gap widens to 23 points. For step-free travel, the
-inaccessibility of the metro weighs mostly on wheelchair trips within
-Paris, whatever the neighborhood's means; in number of GPs reachable,
-wheelchair access remains lower in the inner suburbs.
+**Three pre-registered tests** (hypotheses written and dated before any
+crossing with residents' means; see
+[SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered)).
+The verdicts were computed with the 2021 census and remain the official
+results; each was redone with the 2022 census and **confirmed**. Figures
+below are the 2022 ones.
+- **Access to care — supported.** Within Hauts-de-Seine and within
+  Val-de-Marne, neighborhoods with the fewest means are more often among
+  those with the weakest access to care (Hauts-de-Seine 39.3% against
+  24.0% for those with the most means; Val-de-Marne 38.8% against 27.9%).
+  At equal population density the gap remains: 20.7 points in
+  Hauts-de-Seine, 17.3 in Val-de-Marne.
+- **Inclusive mobility — refuted.** The inaccessibility of the metro
+  weighs mostly on wheelchair trips within Paris, whatever the
+  neighborhood's means; in number of GPs reachable, wheelchair access
+  remains lower in the inner suburbs.
+- **Public services — refuted, and reversed.** With thirds of means
+  computed within each département, neighborhoods with the *most* means
+  are more often in the quarter farthest from public services (town hall,
+  France Services, CAF, CPAM, France Travail, post office) in
+  Hauts-de-Seine, Seine-Saint-Denis and Val-de-Marne, and in all four
+  départements for step-free travel. This measures travel time on foot
+  and by public transport only: it doesn't account for the need to use
+  these services, car use or online procedures, and the data don't
+  establish why.
 
 ---
 
@@ -146,10 +166,10 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
 | `18_tree_age_context.py` | `tree_age_context_arrondissement.geojson` | opendata.paris.fr — average street-tree trunk circumference (age proxy, no planting-date field exists) and young-tree share, Paris arrondissement grain only, context only, not scored |
 | `19_street_lighting_context.py` | `street_lighting_context_arrondissement.geojson` | opendata.paris.fr — street lamp density per km² (area-weighted), Paris arrondissement grain only, context only, not scored |
 | `20_associational_density_context.py` | `associational_density_context_commune.geojson` | data.iledefrance.fr — active-association density (RNA), per km² and per 1,000 residents, MGP-wide **commune** grain (143 communes, widened from 20 Paris arrondissements in Phase 5), context only, not scored |
-| `21_population_iris.py` | `population_iris.geojson` | INSEE Recensement de la population 2021 — municipal population per IRIS, same vintage as Filosofi; used to normalize raw counts into per-1,000-resident rates |
+| `21_population_iris.py` | `population_iris.geojson` | INSEE Recensement de la population 2022 (`P22_POP`; 2021 until October 3, 2026) — municipal population per IRIS; used to normalize raw counts into per-1,000-resident rates |
 | `22_artificialization_mos.py` | `artificialization_iris.geojson` | data.iledefrance.fr — MOS (Mode d'Occupation du Sol) land use, % of IRIS area artificialized/sealed; 4th thermal sub-score indicator, substituted for IGN's OCS GE (no accessible vector API — see SCORING.md) |
-| `24_secondary_residences.py` | `secondary_residences_iris.geojson` | INSEE Recensement de la population 2021 ("base infra-communale logement") — share of housing units that are secondary residences or occasional dwellings, same vintage as Filosofi/population; one of the 3 indicators of the separate adaptive-capacity axis (script 26), never part of the exposure score — see SCORING.md |
-| `25_overcrowding.py` | `overcrowding_iris.geojson` | INSEE Recensement 2021 ("base infra-communale logement", same file as script 24) — share of overcrowded main residences, INSEE definition (`C21_RP_HSTU1P_SUROCC`); adaptive-capacity indicator, never scored |
+| `24_secondary_residences.py` | `secondary_residences_iris.geojson` | INSEE Recensement de la population 2022 ("base infra-communale logement", `P22_RSECOCC / P22_LOG`; 2021 until October 3, 2026) — share of housing units that are secondary residences or occasional dwellings; one of the 3 indicators of the separate adaptive-capacity axis (script 26), never part of the exposure score — see SCORING.md |
+| `25_overcrowding.py` | `overcrowding_iris.geojson` | INSEE Recensement 2022 ("base infra-communale logement", same file as script 24) — share of main residences in moderate or severe overcrowding (`C22_RP_SUROCC_MOD + C22_RP_SUROCC_ACC`), over all occupation categories of the same complementary count. INSEE changed the definition in 2022 (the 2021 variable excluded one-person studios): the median rate goes from 13.5% to 24.6% with no real change behind it. Adaptive-capacity indicator, never scored |
 | `26_adaptive_capacity.py` | `adaptive_capacity_iris.json` | Derived — adaptive-capacity index (mean percentile rank of median income, overcrowding, secondary residences), its tertile, and the exposure × means bivariate class. **Separate file, never an input to the exposure score** — see SCORING.md "Adaptive capacity — a separate axis" |
 | `27_gp_supply.py` | `access/gp_sites_idf.geojson` | Access to care (v0.2) — RPPS (Annuaire Santé) GP practice sites in Île-de-France, liberal and health-centre GPs, minus an explicit list of teleconsultation, on-call, emergency and restricted services (listed in SCORING.md) |
 | `28_pharmacy_supply.py` | `access/pharmacy_sites_idf.geojson` | Access rebuild — FINESS community pharmacies, Île-de-France |
@@ -157,6 +177,13 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
 | `30_access_networks.py` | working files (`data/interim/access`) | Access rebuild — standard and accessible networks: OSM without steps (plus IGN BD TOPO staircases), Île-de-France Mobilités GTFS restricted to accessible stops and trips |
 | `31_access_travel_times.py` | working files | Access rebuild — R5 (r5py) travel times, walking and public transport, several hours; runs in `Dockerfile.access` |
 | `32_access_e2sfca.py` | `access_e2sfca_iris.csv` | Access to care — E2SFCA indicators per IRIS (GPs, pharmacies, inclusive-mobility gap) and sensitivity runs; read by script 11 |
+| `33_route_destinations.py` | `access/route_destinations_idf.geojson` (+ `route_destinations_excluded.csv`) | Routes — key destinations in Île-de-France: general emergency departments, town halls, local France Travail agencies, post offices (BPE 2025); France Services (ANCT, fixed sites); CAF and CPAM offices open to all (DILA directory); GPs and pharmacies (scripts 27-28); heavy-network stop points (IDFM GTFS). Same inclusion rule in all four départements; every excluded record listed with its reason |
+| `34_route_travel_times.py` | working files (`data/interim/access/routes_ttm*`) | Routes — R5 travel times from every inhabited 200 m cell to the nearest destination of each type, 4 profiles × 4 time slots; `ROUTES_SET=neighbourhood` for the everyday places of script 37. Runs for hours in `Dockerfile.access` |
+| `35_key_figures.py` | `key_figures.json` | Derived — the figures quoted in the site's sentences (distribution, "highly exposed" by département, access-to-care gaps), computed from the published files, never typed by hand |
+| `36_route_aggregate.py` | `routes_iris_<slot>.json`, `routes_stations_iris.json` | Routes — per-IRIS population-weighted median of the cell times, "more than 90 min" flag, imposed step-free detour |
+| `37_neighbourhood_destinations.py` | `access/neighbourhood_destinations_idf.geojson` | Everyday places for the "Votre quartier" page: crèches, food stores, public nursery schools, police, social centres, libraries (BPE 2025), parks (regional open-space inventory); information only |
+| `38_routes_summary.py` | `routes_summary.json` | Derived — the travel times quoted on the home page (metro-wide medians by profile, nearest station by département, emergency departments at night) |
+| `39_neighbourhood_files.py` | `quartiers/<insee_com>.json`, `quartiers/index.json` | Derived — one small file per commune (per arrondissement in Paris) for the "Votre quartier" page: outlines, exposures and rank shares, means, travel times |
 
 Scripts 27-32 are not part of `run_all.py`: the travel-time step takes
 several hours and needs the access image (`docker build -f
@@ -168,6 +195,15 @@ access by hand when the GP directory, the pharmacies or the timetables
 change materially. Timetables: Île-de-France Mobilités GTFS, under the
 "Licence Mobilités". One-off audits and validation analyses live in
 `scripts/analysis/`.
+
+The routes scripts follow the same pattern: 33, 34, 36 and 37 run by
+hand in the access image (the travel-time run of script 34 takes about
+a day with 3 processes), and their per-IRIS results
+(`data/processed/routes_iris_<slot>.json`, `routes_stations_iris.json`)
+are versioned. Scripts 35, 38 and 39 are part of `run_all.py`: they
+only read published files, so the quarterly run refreshes the site's
+key figures, the routes summary and the per-commune neighbourhood files
+along with the score.
 
 ### Things worth knowing before re-running these scripts
 
@@ -200,8 +236,11 @@ change materially. Timetables: Île-de-France Mobilités GTFS, under the
   if finer coverage is wanted.
 - **`21_population_iris.py`**: same INSEE-scrape pattern as script 08
   (find the current download link on the INSEE statistics page rather
-  than hardcoding a versioned URL), same 2021 vintage as Filosofi for
-  consistency. Used to turn raw BPE-derived counts into per-1,000-
+  than hardcoding a versioned URL). 2022 census since October 3, 2026
+  (2021 before, to match Filosofi; Filosofi has no IRIS vintage after
+  2021, so income stays 2021 — see SCORING.md, "Census 2022"). IRIS codes
+  are read as text, so the leading zero of codes like `09…` can't be
+  lost. Used to turn raw BPE-derived counts into per-1,000-
   resident rates — most directly the cool-facility deficit indicator in
   the thermal sub-score, and retroactively the RNA associational-density
   context layer (script 20).
@@ -369,9 +408,9 @@ Run it after `run_all.py` (or `make run`, which already includes it):
 make run-11_compute_vulnerability_score
 ```
 
-Current distribution across the full MGP's 2,752 IRIS: 28.1% score 0,
-46.7% score 1, 22.2% score 2, 2.8% (78 IRIS) score 3, 0.1% (4 IRIS)
-score 4 — quartile thresholds are computed on IRIS with at least 50
+Current distribution across the full MGP's 2,752 IRIS (2022 census):
+28.1% score 0, 46.8% score 1, 22.1% score 2, 2.9% (79 IRIS) score 3,
+0.1% (4 IRIS) score 4 — quartile thresholds are computed on IRIS with at least 50
 residents only (see SCORING.md, "Quartile thresholds: inhabited IRIS
 only", and the correction sections before it for everything that moved
 this distribution). The four IRIS at 4/4: Flachat I in
@@ -424,6 +463,15 @@ never recomputes anything client-side.
   file (`frontend/public/data/adaptive_capacity_iris.json`); the detail
   panel shows the two axes separately.
 - Basemap: CARTO Positron via MapLibre GL, no API key required.
+- "Votre quartier" (neighborhood page, redesign): loads only the
+  per-commune file of the address (`frontend/public/data/quartiers/
+  <insee_com>.json`, script 39) instead of the whole score. Travel-time
+  display rules (3 October 2026): public services, GP and pharmacy are
+  information only, never a sub-score; at night only emergency
+  departments and stations are shown; every night-time duration says "on
+  foot and by public transport"; the step-free profile is presented as a
+  lower bound (no lift outages, pavement condition or accessibility of
+  the destination building).
 
 ```bash
 cd frontend
@@ -708,14 +756,22 @@ a car and weighted by how many people share each GP and pharmacy
 transport) shown for information; the pre-registered hypothesis tested
 and its verdicts published (SCORING.md).
 
+**Routes to key destinations** (October 2026, scripts 33-39) —
+precomputed travel times from each neighborhood to the nearest emergency
+department, GP, pharmacy, town hall, France Services, CAF, CPAM, France
+Travail agency, post office and heavy-network station, for several
+travel profiles and times of day; the pre-registered public-services
+hypothesis tested (refuted, and reversed); the census moved to 2022
+(sensitivity check published). Shown on the redesigned site ("Votre
+quartier").
+
 Next, in order:
-1. **Routes to key destinations** — precomputed travel times from each
-   neighborhood to key destinations (public services: town halls, France
-   Services, CAF, CPAM, France Travail, post offices; hospitals), for
-   several travel profiles (standard, wheelchair) and times of day.
-   Possible additions: sidewalk widths (Paris only, from the City's
-   street plan) and public toilets — each only if its data is even
-   across departments.
+1. **Everyday places** on the neighborhood page (crèches, food stores,
+   public nursery schools, police, social centres, libraries, parks:
+   destinations ready, second routing run), then public toilets and
+   drinking fountains in Paris only, from the City's official lists (the
+   inner-suburb communes publish no open list). Each for information,
+   never scored.
 2. **New indicators** (Phase 7): **flood risk** (Seine/Marne PPRI — a
    possible next layer, not measured today), soil and water pollution,
    aircraft noise, industrial risk, digital divide. Each goes through the
@@ -745,7 +801,9 @@ September 2026, not assumed:
 | Source | Publisher | Used for | License |
 |---|---|---|---|
 | IRIS contours 2024 (data.iledefrance.fr) | IGN & INSEE | Neighborhood boundaries | Licence Ouverte 2.0 |
-| BPE 2025, Filosofi 2021, Recensement 2021 (population, housing), access-time 200m grid | INSEE | Services, cool facilities, income, population, secondary residences, access time | Licence Ouverte 2.0 — "Source : Insee" |
+| BPE 2025, Filosofi 2021, Recensement 2022 (population, housing), access-time 200m grid | INSEE | Services, cool facilities, route destinations, income, population, secondary residences, overcrowding, access time | Licence Ouverte 2.0 — "Source : Insee" |
+| [France Services sites](https://www.data.gouv.fr/datasets/liste-des-structures-labellisees-france-services) (licence checked on the publisher's data.gouv.fr page, 3 October 2026) | ANCT | Route destinations | Licence Ouverte 2.0 |
+| [Directory of public administration](https://www.data.gouv.fr/datasets/service-public-gouv-fr-annuaire-de-ladministration-base-de-donnees-locales), CAF and CPAM offices (licence checked on the publisher's data.gouv.fr page, 3 October 2026) | DILA, published under Premier ministre (service-public.gouv.fr) | Route destinations | Licence Ouverte (version 1.0) |
 | Urban heat island indicators (Sat4BDNB, data.gouv.fr) | CSTB | Thermal | Licence Ouverte 2.0 |
 | Open green & wooded spaces; MOS land use 2021 (data.iledefrance.fr) | L'Institut Paris Region | Thermal | Licence Ouverte 2.0 |
 | Air-noise co-exposure map 2024 | Airparif & Bruitparif | Pollution | Published as open data with no formal license named; the publisher requires this citation: *"Source des données : Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr"* |
@@ -761,7 +819,7 @@ September 2026, not assumed:
 | FINESS (pharmacies) | Ministère de la Santé | Access to care (pharmacies) | Licence Ouverte 2.0 |
 | APL age weights and distance decay | DREES | Access to care (method parameters) | Licence Ouverte 2.0 |
 | Filosofi 2021 200 m population grid | INSEE | Access to care (demand) | Licence Ouverte 2.0 — "Source : Insee" |
-| Public transport timetables (GTFS) | Île-de-France Mobilités | Access to care and inclusive mobility (travel times) | **Licence Mobilités** — "Contient des informations de « Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub) », mises à disposition par Île-de-France Mobilités aux conditions de la « Licence Mobilités »." |
+| Public transport timetables (GTFS) | Île-de-France Mobilités | Access to care, inclusive mobility and routes (travel times) | **Licence Mobilités** — "Contient des informations de « Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub) », mises à disposition par Île-de-France Mobilités aux conditions de la « Licence Mobilités »." |
 | BD TOPO (staircases) | IGN | Inclusive mobility (step-free walking) | Licence Ouverte 2.0 |
 | Basemap tiles (Positron) | © CARTO, © OpenStreetMap contributors | Web map background | CARTO basemap terms; OSM data ODbL |
 | Address search (API Adresse / BAN) | IGN, DINUM | Web map search | Licence Ouverte 2.0 |

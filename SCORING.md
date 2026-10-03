@@ -2,6 +2,8 @@
 
 Computed by `scripts/11_compute_vulnerability_score.py`, run after scripts
 01-10, 12, 15, 17, 21, 22, 24 and 27-32. Output: `data/processed/vulnerability_score_iris.geojson`.
+Travel times to key destinations (scripts 33-39) are information only,
+never part of the score: see "Routes to key destinations".
 
 **Phase 5 scope note**: this file originally documented Paris intra-muros
 (992 IRIS). It now covers the full Métropole du Grand Paris "Petite
@@ -25,6 +27,22 @@ wheelchair user keeps of that access) is computed and published for
 information, not counted. See "Rebuilding access to services" below.
 The old 0-4 score (until September 2026) and this one share a range but
 not a definition: the access sub-score is a different measure.
+
+**Census 2022 note (3 October 2026)**: population, overcrowding and
+secondary residences now come from the 2022 census; income stays
+Filosofi 2021, the latest vintage published at IRIS level. Decided
+before seeing any result, whatever the result. The pre-registered
+verdicts, computed with 2021, remain the official results; each was
+redone with 2022 and confirmed. See "Census 2022: reference and
+sensitivity check" below. Unless stated otherwise, figures in this file
+that predate 3 October 2026 are 2021-census figures.
+
+**"Highly exposed" (3 October 2026)**: 2 or more of the **3 exposures**
+— thermal, air/noise pollution, housing — in their worst quartile.
+Access to care is a separate axis and is never counted in "highly
+exposed" (it is still one of the 4 sub-scores of the cumulative score).
+Some findings below were first computed with "2+ of the 4 sub-scores";
+they say so.
 
 ## What this score doesn't measure
 
@@ -94,7 +112,8 @@ have private air conditioning or the means to leave for a second home
 during a heatwave.
 
 That last possibility is partly measurable: `pct_secondary_residences`
-(INSEE, 2021, `scripts/24_secondary_residences.py`) is the share of each
+(INSEE, 2022 census since 3 October 2026, 2021 before,
+`scripts/24_secondary_residences.py`) is the share of each
 IRIS's housing stock that's a secondary residence or occasional
 dwelling — a direct proxy for the capacity to physically leave during a
 heatwave, unlike median income, which only captures that possibility
@@ -103,8 +122,8 @@ indirectly. Shown in the map's IRIS detail panel next to median income,
 is one of the three indicators of the separate adaptive-capacity axis
 (see below) — adding it as a scored indicator
 would just relabel the same "vulnerability, not exposure" conflation
-this whole section exists to avoid. `P21_RSECOCC` (the INSEE source
-variable) counts secondary residences and occasional/seasonal dwellings
+this whole section exists to avoid. `P22_RSECOCC` (the INSEE source
+variable; `P21_RSECOCC` before) counts secondary residences and occasional/seasonal dwellings
 together; IRIS-level data doesn't separate the two, so treat the figure
 as a proxy for both combined, not secondary residences alone. Rates are
 suppressed (shown as no data) below 20 total housing units, the same
@@ -139,21 +158,33 @@ this scale: Kasten et al., Strasbourg, *Climatologie* 20 (2023), an
 exposure/sensitivity/adaptation index at IRIS level from INSEE proxies;
 PACTES Chaleur (2023, commune level).
 
-**Indicators** (INSEE 2021 — the same vintage as Filosofi and the
-population counts — all at IRIS level):
+**Indicators** (all at IRIS level; income from Filosofi 2021, the
+latest IRIS vintage; the two housing indicators from the 2022 census
+since 3 October 2026, 2021 before):
 
 | Indicator | Source variable | Direction | Masked (of 2,752) |
 |---|---|---|---|
 | Median disposable income | Filosofi `DISP_MED21` | higher = more means | 223 (8.1%) |
-| Overcrowded homes (INSEE definition, one-person studios excluded) | RP logement `C21_RP_HSTU1P_SUROCC / C21_RP_HSTU1P` | higher = fewer means | 72 (2.6%) |
-| Secondary residences & occasional dwellings | RP logement `P21_RSECOCC / P21_LOG` | higher = more means (option to leave) | 64 (2.3%) |
+| Overcrowded homes (INSEE definition, moderate + severe) | RP 2022 logement `(C22_RP_SUROCC_MOD + C22_RP_SUROCC_ACC) /` sum of all occupation categories of the complementary count | higher = fewer means | 72 (2.6%) with the 2021 variable |
+| Secondary residences & occasional dwellings | RP 2022 logement `P22_RSECOCC / P22_LOG` | higher = more means (option to leave) | 64 (2.3%) with 2021 |
 
 Rates are suppressed below 20 dwellings (same floor as elsewhere).
 
+**Overcrowding changed definition at INSEE in 2022.** The 2021 variable
+(`C21_RP_HSTU1P_SUROCC / C21_RP_HSTU1P`) excluded studios occupied by one
+person; it no longer exists. The 2022 base gives moderate and severe
+overcrowding over all main residences. Both come from INSEE's
+complementary (sample-based) count, so the denominator is the sum of all
+occupation categories of that same count — dividing by the main count of
+main residences gave a rate above 1 in one neighbourhood. The median
+rate goes from 13.5% to 24.6%: a change of definition, not a change in
+how people live.
+
 **Construction.** Each indicator is turned into a percentile rank (0-1,
 oriented so higher = more means); the index is their plain mean. Ranks,
-not z-scores, because two of the three are heavily skewed (overcrowding:
-skew 1.7, max |z| 11; secondary residences: skew 4.1, max |z| 14) — the
+not z-scores, because two of the three are heavily skewed (2021 census:
+overcrowding skew 1.7, max |z| 11; secondary residences skew 4.1, max
+|z| 14) — the
 same sparse-data signature that distorted `access_time` and
 `cool_facility_deficit`; a rank can't let one extreme value drag the
 index. The index is computed only where median income is published (the
@@ -181,7 +212,8 @@ means). Home ownership (capacity to insulate or install shutters) was
 considered and left out: it adds little to the grid and its meaning is
 muddy in Paris, where many well-off households rent.
 
-**Distribution (exposure score on 4, v0.2, 2,529 IRIS with an index):**
+**Distribution (exposure score on 4, v0.2 release, 2021 census, 2,529
+IRIS with an index; not republished here for 2022):**
 
 | | means: lowest third | middle third | highest third |
 |---|---|---|---|
@@ -192,26 +224,33 @@ muddy in Paris, where many well-off households rent.
 "2+" means 2, 3 or 4 of the 4 sub-scores in their worst quartile. With
 the 3-sub-score score of the v0 launch, the 2+ row was 49 / 95 / 236.
 
-**1. Two profiles, not one scale.** Correlation of the capacity index
-with each sub-score: housing +0.66, thermal +0.37, pollution −0.30,
-access to care −0.50. Highly exposed IRIS (2+) with the highest means
-are mostly in Paris (195 of 275) and stack housing + heat (worst
-quartile in 88% / 79% of them) — dense, older building stock. Those
-with the lowest means (191, about 541,000 residents) are mostly in
-Seine-Saint-Denis (108) and Val-de-Marne (50) and stack air/noise
-pollution + access to care (84% / 84%).
+**1. Two profiles, not one scale.** Highly exposed IRIS (2 or more of
+the 3 exposures) with the highest means are mostly in Paris and stack
+heat and old, energy-inefficient housing — dense, older building stock.
+Those with the lowest means are mostly in Seine-Saint-Denis and
+Val-de-Marne and stack mainly heat, air pollution and noise. (With the
+2021 census and "2+ of the 4 sub-scores", v0.2 release: correlation of
+the capacity index with housing +0.66, thermal +0.37, pollution −0.30,
+access to care −0.50; 195 of the 275 highly exposed IRIS with the
+highest means were in Paris.)
 
-**2. The link between exposure and means is weak.** Spearman(capacity
-index, exposure score) = **+0.11** — slightly positive only because of
-dense, older central Paris (+0.37 within Paris); within the inner-suburb
-departments it's near zero (92: −0.02, 93: −0.04, 94: 0.00). Always
-state it with that explanation in public copy — never as "the well-off
-are more exposed", which the data doesn't show outside Paris. (Score on
-3, v0 launch: +0.28.)
+**2. The link between exposure and means is weak**, and slightly
+positive because of dense, older central Paris. Spearman(capacity
+index, exposure score on 4) = **+0.09** with the 2022 census (+0.11 with
+2021; +0.28 with the score on 3 at the v0 launch). Within the
+inner-suburb départements it's near zero. Always state it with that
+explanation in public copy — never as "the well-off are more exposed",
+which the data doesn't show outside Paris.
 
-**3. Where high exposure and low means meet, it's concentrated.** In
-Seine-Saint-Denis, 79% of the highly exposed IRIS are in the metro
-area's lowest third of means; in Paris, 4% (92: 21%, 94: 39%).
+**3. Where high exposure and low means meet, it's concentrated.** Share
+of the highly exposed IRIS (2 or more of the 3 exposures) that are in
+the metro area's lowest third of means, 2022 census: Seine-Saint-Denis
+**61.8%**, Val-de-Marne 24.5%, Paris 4.5%, Hauts-de-Seine 1.9%. With
+the 2021 census and the same definition: 76.5%, 28.6%, 2.4%, 5.8%. The
+figure long quoted for Seine-Saint-Denis, 79%, was "2+ of the 4
+sub-scores" with 2021. Between the two censuses, 474 of the 2,529 IRIS
+with a means index change third, always to a neighbouring one, while
+overcrowding changed definition (see "Census 2022" below).
 
 **How this crossing changed the exposure score itself.** The first
 version of this grid was computed with the former 4-sub-score exposure
@@ -224,9 +263,10 @@ That finding started the audit that took access out of the score — see
 score, the cell has no such mechanical overlap: none of the three
 remaining sub-scores uses a population characteristic. Access to care
 (v0.2) doesn't either — it counts GPs and pharmacies against the number
-of people who can reach them — yet it is linked to means (−0.50), mostly
-through geography: within each département the link is weak (92 and 94:
-−0.16, 93: −0.02). Its effect on the hypothesis is tested within
+of people who can reach them — yet it is linked to means (Spearman −0.50
+with the 2021 census, −0.39 with 2022), mostly through geography: within
+each département the link is weak (2021: 92 and 94 −0.16, 93 −0.02;
+2022: 92 −0.13, 94 −0.15, 93 +0.04). Its effect on the hypothesis is tested within
 départements and at equal density, not metro-wide (see "Working
 hypothesis and its test").
 
@@ -433,7 +473,8 @@ the whole metropolis):
 - for inclusive mobility, the conclusion holds only if identical with
   unknown accessibility counted as "no" and as "yes".
 
-Results (`scripts/analysis/access_step4.py`, `access_score4.py`):
+Results (`scripts/analysis/access_step4.py`, `access_score4.py`; 2021
+census — the official results):
 
 - **Access to care: supported.** In Hauts-de-Seine, 41% of the
   neighbourhoods in the lowest third of means are in the worst quarter
@@ -458,6 +499,21 @@ Results (`scripts/analysis/access_step4.py`, `access_score4.py`):
   median is lower than in Paris in each inner-suburb département
   (Paris 7.5 per 10,000; 92: 7.0; 93: 5.8; 94: 6.8) and in each third of
   means.
+
+**Check with the 2022 census (3 October 2026): both verdicts confirmed.**
+The same test, same rule, redone after the census change (rule fixed
+before the results: the 2021 verdicts stay official; a verdict not
+confirmed would be said plainly, not replaced). Access to care:
+Hauts-de-Seine 39.3% against 24.0% (+15.2 points), Val-de-Marne 38.8%
+against 27.9% (+10.9), both clearly unfavourable; metro-wide gap +22.9
+points (+29.4 with 2021); at equal density, 20.7 points in
+Hauts-de-Seine and 17.3 in Val-de-Marne; Paris +3.2. Seine-Saint-Denis
+still can't be assessed (8 of its IRIS in the metro-wide highest third,
+fewer than the 20 required). Inclusive mobility: Paris still clearly
+reversed (52.3% in the lowest third against 66.2% in the highest), 13.2%
+against 35.0% metro-wide, identical with both variants. Outputs:
+`data/interim/analysis/access_step4_rp2021.txt` and
+`access_step4_rp2022.txt` (git-ignored working files).
 
 The consequence, stated plainly: a neighbourhood where GPs are easy to
 reach by car but far on foot or by bus scores low here. That's what the
@@ -546,6 +602,264 @@ Known limits of the supply: one GP counts 1 whatever their working time
 (actual activity per GP, used by the APL, isn't public), so health
 centres with many part-time GPs weigh more here than in the APL;
 pharmacies all count the same.
+
+## Routes to key destinations (October 2026, information only)
+
+Scripts 33-39. Travel times from each neighbourhood to the **nearest**
+destination of each type, on foot and by public transport, for several
+ways of travelling and times of day. Everything in this section was
+pre-registered on 2026-10-02, before any of these times was computed
+(destinations, inclusion rules, profiles, time slots, aggregation,
+controls and the test below). **None of it enters the score.**
+
+### Destinations and inclusion rules (script 33)
+
+Same kind of service in all four départements, decided before computing
+anything; supply covers the whole of Île-de-France (same edge rule as
+the E2SFCA). Every excluded record is written, with its reason, to
+`data/processed/access/route_destinations_excluded.csv`.
+
+| Type | Source | Rule |
+|---|---|---|
+| Emergency department | BPE 2025 `D106` | general emergency departments only; units reserved to one specialty or to children excluded by name (Quinze-Vingts, Trousseau, Necker, Robert-Debré). Children's access to paediatric emergencies is therefore not measured |
+| Town hall | BPE 2025 `A129` | one per commune (per arrondissement in Paris), duplicates at the same point counted once; town-hall annexes are not in the BPE and are not counted (a limit that can penalise large suburban communes that have them) |
+| France Travail | BPE 2025 `A122` | local agencies ("APE") only; specialised agencies ("APES": performing arts, airport) excluded |
+| Post office | BPE 2025 `A206` | post-office counters; relay points and communal postal agencies left out (partial services) |
+| France Services | ANCT list | fixed sites and antennas; mobile buses excluded (no fixed location) |
+| CAF, CPAM | DILA public-administration directory | the fund's own offices open to all ("accueil de …", "siège de …", "accueil national"); excluded: "Point d'accueil" sessions hosted by partner organisations and reserved to specific groups, specialised services, four offices hosted by a partner or reserved to one group |
+| GP, pharmacy | scripts 27 and 28 | the cleaned supply of access to care |
+| Station | IDFM GTFS | heavy-network stop points (metro, RER, Transilien, tram), reached **on foot only**; for step-free profiles, accessible stop points only |
+
+### Excluded destinations (full list)
+
+The 62 records set aside by the rules above, as written by script 33 (`data/processed/access/route_destinations_excluded.csv`, run of 2 October 2026). INSEE commune code given for each.
+
+| Type | Name | Commune | Reason |
+|---|---|---|---|
+| Emergency department | CENTRE NATIONAL D OPHTALMOLOGIE DES QUINZE VINGTS DE PARIS | 75112 | ophthalmology only |
+| Emergency department | GHU APHP SORBONNE UNIVERSITE SITE TROUSSEAU | 75112 | children only |
+| Emergency department | GHU APHP CENTRE UNIVERSITE PARIS CITE NECKER ENFANTS MALADES | 75115 | children only |
+| Emergency department | GHU APHP NORD UNIVERSITE PARIS CITE SITE ROBERT DEBRE | 75119 | children only |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil CSAPA 110 Les Halles | 75102 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil ESI Famille Bonne Nouvelle - CASP | 75102 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - accueil de Saint-Martin-Armée du Salut | 75103 | office hosted by a partner or reserved to one group |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - accueil Mairie du 9ème | 75109 | office hosted by a partner or reserved to one group |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Amicale du Nid | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Boy Zelensky - Restos du Coeur | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil CAFDA | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil La salle de consommation à moindre risque | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil PASTT | 75110 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - accueil La Maison dans la rue - CASP | 75110 | office hosted by a partner or reserved to one group |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Emmaüs Solidarité - Agora | 75111 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Gaïa Paris CSAPA | 75111 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Les Petits Frères des Pauvres | 75111 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris -  Point d'accueil SAMU Social | 75112 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Boutique Solidarité - La Maison dans la Rue - Emmaüs Solidarité | 75112 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Mairie du 12ème | 75112 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil PSA Bastille | 75112 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Service des Relations Internationales | 75112 | specialised service |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Service des risques professionnels | 75112 | specialised service |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Association Charonne | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Aurore | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil La Mie de Pain | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Les Olympiades | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Plateforme AGATE SAMU Social | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil SPIP | 75113 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Cité Universitaire | 75114 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil La halle Saint Didier | 75116 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil PSA Gauthey | 75117 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil ESI Championnet | 75118 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Permanence CPAM - CSAPA EGO | 75118 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Pôle santé Goutte d'Or | 75118 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Sleep In | 75118 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Maison du Partage | 75119 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Relais du Coeur | 75119 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Service installation et accompagnement des PS | 75119 | specialised service |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Espace solidarité - Halte aux femmes battues | 75120 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil Les Amis du Bus des femmes | 75120 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - Point d'accueil PSA Belleville | 75120 | session hosted by a partner organisation, reserved to specific groups |
+| CPAM | Caisse primaire d'assurance maladie (CPAM) de Paris - accueil Les Hauts de Belleville AME | 75120 | office hosted by a partner or reserved to one group |
+| France Travail | APES AGENCE SPECTACLE DF DROM MED | 75115 | specialised agency |
+| France Travail | APES AVS PLACEMENT ARTISTES | 75115 | specialised agency |
+| France Travail | APES CINÉMA SPECTACLE PARIS | 75115 | specialised agency |
+| France Travail | APES CINÉMA SPECTACLE OUEST ET NORD | 92025 | specialised agency |
+| France Travail | APES AVS TECHNICIEN & JOURNALISTE | 93066 | specialised agency |
+| France Travail | APES AÉROPORTUAIRE ROISSY CDG | 95527 | specialised agency |
+| France Services | Bus France services Plaines et Monts de France | 77153 | mobile bus, no fixed location |
+| France Services | Bus France services Pimms Médiation Nemours | 77333 | mobile bus, no fixed location |
+| France Services | Bus France services de la Communauté de communes des 2 Vallées | 91405 | mobile bus, no fixed location |
+| France Services | Bus France services Prox e-Bus de Morangis, Wissous et Savigny-sur-Orge | 91432 | mobile bus, no fixed location |
+| France Services | Bus France services d'Aulnay-sous-Bois | 93005 | mobile bus, no fixed location |
+| France Services | Bus France services Solibus | 93014 | mobile bus, no fixed location |
+| France Services | Bus France services La Courneuve | 93027 | mobile bus, no fixed location |
+| France Services | Bus France services Pimms Médiation - Noisy Le Grand | 93051 | mobile bus, no fixed location |
+| France Services | Bus France services de Noisy-le-Sec | 93053 | mobile bus, no fixed location |
+| France Services | Bus France services de Saint Denis | 93066 | mobile bus, no fixed location |
+| France Services | Bus France services Pimms Médiation Sevran | 93071 | mobile bus, no fixed location |
+| France Services | Bus France services départemental du Val d'Oise | 95127 | mobile bus, no fixed location |
+| France Services | Bus France services CIAS de la Communauté de communes Carnelle Pays-de-France | 95352 | mobile bus, no fixed location |
+
+The accessibility of the destination building itself is unknown.
+
+### Profiles, time slots, aggregation (scripts 34, 36)
+
+- **No constraint**: full OpenStreetMap network and full IDFM timetables,
+  walking 4.5 km/h.
+- **Slow walking**: same networks, **3.4 km/h** (0.943 m/s, women aged
+  80-99, Bohannon & Andrews 2011, *Physiotherapy* 97(3):182-189; the
+  lower of the women's and men's values).
+- **Step-free** (wheelchair, pushchair): network without stairs (script
+  30) and timetables restricted to accessible stops and trips, walking
+  4.5 km/h, in two variants: unknown accessibility counted as "no" (shown
+  on the site as "wheelchair") and as "yes". A conclusion on this profile
+  holds only if identical in both. One profile for both uses, because the
+  data don't distinguish them (the timetables only code wheelchair
+  accessibility; no open history of lift outages). Presented everywhere
+  as a **lower bound**: no lift outages, pavement condition, reduced
+  speed or accessibility of the destination building.
+- **Time slots**: Tuesday 13 October 2026 at 10:00 (main), 21:00 and
+  1:00 (night, Noctilien included); Sunday 11 October 2026 at 10:00.
+  Departures over 60 minutes, R5 median time. Rule for later runs: the
+  first Tuesday / Sunday at least 7 days after the timetable download,
+  outside school holidays (zone C) and public holidays.
+- **Origins**: every inhabited 200 m cell of the MGP (Filosofi 2021
+  grid). Maximum 90 minutes; a cell that doesn't reach a type counts as
+  +∞ (never 0, never dropped). Value of a neighbourhood = population-
+  weighted median of its cells; if more than half its population doesn't
+  reach the type, it is "more than 90 min". Imposed detour = step-free
+  time − standard time, per cell, then the same median.
+
+### Controls (pre-registered, before any crossing)
+
+`scripts/analysis/routes_controls.py` (output
+`data/interim/analysis/routes_controls.txt`), Tuesday 10:00, 2,688
+inhabited neighbourhoods with a value:
+- **Floor**: the nearest GP and pharmacy are 2 minutes or less for 44.1%
+  and 38.3% of neighbourhoods (no constraint) — the same
+  squashed-against-the-floor signature as the old `access_time`. Public
+  services don't have it (1.6% or less at 2 minutes; post office 6.8%).
+- **Completeness**: population not reaching a type within 90 min, no
+  constraint: 0.1% for every type.
+- **Step-free vs no constraint**: median ratio 1.00 for most types; CAF
+  1.09 (Paris 1.22), CPAM 1.03 (Paris 1.14). The nearest destinations
+  are mostly reached on foot and by bus, largely accessible according to
+  the timetables; only trips that rely on the metro get longer.
+- **Stability of the two step-free variants**: Spearman 0.993 to 1.000
+  by type; 2.3% of neighbourhoods change quarter on the public-services
+  indicator.
+
+**Decision of 3 October 2026, before any crossing with means, for a
+reason of method**: travel times to public services stay
+**information, not a scored sub-score**. They measure distance to the
+nearest office, with no capacity data, whereas access to care is scored
+because it accounts for shared capacity (E2SFCA). GP and pharmacy
+times are information only too (floor effect above).
+
+### Selected results (script 38, `routes_summary.json`)
+
+Median of the neighbourhoods, Tuesday 10:00, minutes:
+
+| Destination | No constraint | Slow walking | Wheelchair |
+|---|---|---|---|
+| Emergency department | 18 | 22 | 21 |
+| GP | 3 | 4 | 3 |
+| Pharmacy | 3 | 4 | 3 |
+| Town hall | 12 | 15 | 14 |
+| France Services | 16 | 19 | 18 |
+| CAF | 24 | 27 | 29 |
+| CPAM | 19 | 22 | 21 |
+| France Travail | 16 | 19 | 18 |
+| Post office | 7 | 9 | 7 |
+
+Nearest station on foot, median by département (Paris / 92 / 93 / 94):
+no constraint 3 / 8 / 10 / 12 min; slow walking 5 / 11 / 14 / 16;
+nearest **accessible** stop point (wheelchair) 11 / 11 / 13 / 15.
+
+Emergency department at night (Tuesday 1:00, on foot and by public
+transport, no constraint): median 19 min in Paris, 13.5% of
+neighbourhoods over 30 min and 1.4% over 45; inner suburbs median 27
+min, 40.8% over 30 and 13.3% over 45.
+
+**Display rules (3 October 2026).** Public services, GP and pharmacy:
+information, never a sub-score. At night, only emergency departments and
+stations are shown — never the CAF, the town hall or other offices,
+whose opening hours aren't in the data. Every night-time duration says
+"on foot and by public transport". Evening, night and Sunday are shown
+for emergency departments and stations only.
+
+### Public services and residents' means (pre-registered test)
+
+Hypothesis (2026-10-02, before any time was computed): neighbourhoods
+whose residents have the fewest means are more often far from public
+services. Indicator: mean percentile rank of the times to the town hall,
+France Services, CAF, CPAM, France Travail and post office, Tuesday
+10:00, (a) no constraint and (b) step-free (conclusion held only if
+identical in both variants). Worst quarter defined on the inhabited
+neighbourhoods of the MGP. Learning from the Seine-Saint-Denis lesson
+(see "Working hypothesis and its test" and docs/LESSONS.md), **thirds of
+means are computed within each département**. For each département d:
+gap_d = share in the worst quarter among the lowest third − share among
+the highest third; ρ_d = Spearman(means index, indicator, higher =
+farther). **Supported** if gap_d ≥ +10 points and ρ_d ≤ −0.10 in at
+least 2 départements, at least one other than Seine-Saint-Denis;
+**refuted** if at least 2 départements are clearly reversed (gap_d ≤
+−10 and ρ_d ≥ +0.10); qualified otherwise. Complementary check reported
+without changing the verdict: the same at equal density (density
+fifths).
+
+**Result (3 October 2026, `scripts/analysis/routes_means.py`; 2021
+census, the official result): refuted, and reversed.** Share of
+neighbourhoods in the farthest quarter, (a) no constraint:
+
+| Département | Lowest third of means | Highest third | Gap (points) | ρ |
+|---|---|---|---|---|
+| Paris | 1.7% | 3.8% | −2.1 | +0.24 |
+| Hauts-de-Seine | 27.2% | 48.2% | −21.0 | +0.28 |
+| Seine-Saint-Denis | 25.4% | 45.5% | −20.1 | +0.22 |
+| Val-de-Marne | 25.1% | 46.2% | −21.1 | +0.18 |
+
+Clearly reversed in Hauts-de-Seine, Seine-Saint-Denis and Val-de-Marne;
+at equal density the gap stays negative (−13.0, −3.7 and −13.6 points;
+Paris −1.6). (b) Step-free: clearly reversed in all four départements,
+in both variants (unknown = no: gaps −14.9 / −27.2 / −19.6 / −21.1
+points for Paris / 92 / 93 / 94). No indicator, profile, time slot or
+destination was changed after this crossing.
+
+**What it does and doesn't say.** Neighbourhoods with the most means are
+more often far from public services. The indicator measures travel time
+on foot and by public transport only: it doesn't account for the need to
+use these services, car use or online procedures, and the data don't
+establish why.
+
+**Check with the 2022 census: confirmed.** (a) no constraint: Paris 1.7%
+against 6.2%, Hauts-de-Seine 26.7% against 48.2%, Seine-Saint-Denis
+22.2% against 49.7%, Val-de-Marne 25.1% against 45.3%; reversed in 92,
+93 and 94. (b) step-free: reversed in all four, both variants. Outputs:
+`data/interim/analysis/routes_means_rp2021.txt` and
+`routes_means_rp2022.txt` (git-ignored working files).
+
+### Everyday places and per-commune files (scripts 37, 39)
+
+Script 37 prepares seven everyday places for the "Votre quartier" page,
+pre-registered and validated on 2026-10-03, all for information: crèches
+(BPE `D502`, establishments receiving a CAF service grant — mostly
+crèches charging the CAF income-based rate; micro-crèches with free
+pricing are largely absent; the BPE lags about two years), food stores
+(BPE `B104`, `B105`, `B201`; groceries under 120 m² excluded; the
+supermarket category includes non-food shops of the same size), public
+nursery schools (`C107`, `C108`, public sector; the nearest school is
+not necessarily the assigned one), national police stations open to the
+public (`A140`), social centres (`D506`), local-authority libraries
+(`F307`) and parks (regional inventory of open green spaces, points
+every 100 m along each outline since entrances are unknown). Markets were
+dropped: OpenStreetMap is the only source and it isn't mapped evenly
+across départements. Same method as the routes, Tuesday 10:00, the four
+profiles; no crossing with means is pre-registered for them.
+
+Script 39 writes one small file per commune (per arrondissement in
+Paris) with everything the page shows about each neighbourhood —
+exposures, rank shares, means, travel times — so the page no longer
+loads the whole 5 MB score to find one address.
 
 ## From sub-score to quartile
 
@@ -965,8 +1279,8 @@ a raw count would make a bigger or denser IRIS look better-served purely
 by having more people nearby — not because it actually has more cool
 facilities *per resident*. It's now **a rate per 1,000 residents**,
 using `population_iris.geojson` (script 21, INSEE Recensement de la
-population 2021 — same vintage as Filosofi's income data, for
-consistency). IRIS with zero population (non-residential — a park, a
+population — 2021 at first, to match Filosofi's income data; 2022 since
+3 October 2026, see "Census 2022"). IRIS with zero population (non-residential — a park, a
 transport interchange) get a null rate rather than a division-by-zero
 or a misleading 0, the same `insufficient_data`-not-fabricated principle
 used everywhere else in this pipeline.
@@ -1232,38 +1546,96 @@ Effect: among the 2,690 inhabited IRIS, each sub-score is now split into
 exactly 25/25/25/25; 34 inhabited IRIS changed score (1.3%); one enters
 3/3 (Folie Méricourt 6, Paris 11e), none leaves.
 
+## Census 2022: reference and sensitivity check
+
+**Decision (3 October 2026, before seeing any result, whatever the
+result).** The 2022 census becomes the reference for population
+(script 21), secondary residences (script 24) and overcrowding (script
+25). Income stays Filosofi 2021: there is no later IRIS vintage
+(Filosofi 2022 was never produced; the 2023 edition is published down to
+the commune only, with a changed method). The 200 m population grid used
+for access to care and the routes is also Filosofi 2021 (no later grid).
+The differences with 2021 are published as a sensitivity check; the
+verdicts of the pre-registered tests, computed with 2021, remain the
+official results.
+
+**Step 1 — differences with 2021, no crossing with means**
+(`scripts/analysis/rp2022_sensitivity.py`, output
+`data/interim/analysis/rp2022_sensitivity.txt`):
+- population 6,852,439 → 6,862,396; inhabited IRIS 2,690 → 2,690;
+- score on 4, inhabited IRIS: 765 / 1,248 / 597 / 76 / 4 → 765 / 1,249 /
+  595 / 77 / 4; 16 IRIS change score, all by one point; IRIS at 3 or 4:
+  80 → 81 (none leaves; Javel 21, Paris 15e, enters at 3); the same four
+  IRIS at 4/4;
+- highly exposed (2 of the 3 exposures): 406 → 407 (5 leave, 6 enter);
+  access to care in the worst quarter: 672 → 672 (1 leaves, 1 enters);
+  quarter changes: thermal 34 IRIS (1.2%), air/noise 3, housing 3,
+  access to care 0;
+- means axis: overcrowding median 13.5% → 24.6% (definition change, see
+  "Adaptive capacity"), secondary residences median 2.4% → 2.5%; 474 of
+  the 2,529 IRIS with an index change third (18.7%), always to a
+  neighbouring third (none goes from lowest to highest or back); by
+  département: Paris 21.2%, 92 19.7%, 93 12.9%, 94 20.1%.
+
+**Step 2 — the published crossings redone with 2022, as a control**
+(rule fixed before the results: each verdict gets a line "confirmed /
+not confirmed" with its figures; a verdict not confirmed would be said
+plainly, not replaced). All three are **confirmed**:
+- access to care, supported — metro-wide gap +22.9 points (+29.4 with
+  2021); Hauts-de-Seine 39.3% against 24.0%, Val-de-Marne 38.8% against
+  27.9%;
+- inclusive mobility, refuted — Paris still clearly reversed (52.3%
+  against 66.2%); metro-wide 13.2% against 35.0%;
+- public services, refuted and reversed — reversed in 92, 93 and 94 with
+  no constraint, in all four step-free.
+
+Details under each test above. The site's key figures (script 35) now
+use 2022: 81 inhabited IRIS at 3 or 4; in Seine-Saint-Denis, 61.8% of
+the highly exposed IRIS are in the lowest third of means (76.5% with
+2021); Spearman(means, score) +0.09 (+0.11).
+
+To revisit when INSEE publishes the 2023 census at IRIS level, or an
+IRIS or grid version of the new Filosofi.
+
 ## Current distribution (MGP — Paris + Petite Couronne, 2,752 IRIS)
 
 4 sub-scores (thermal, air/noise pollution, housing, access to care,
-v0.2), quartile thresholds on inhabited IRIS (see above):
+v0.2), quartile thresholds on inhabited IRIS (see above), 2022 census
+(`data/processed/key_figures.json`):
 
 | Cumulative score | IRIS count | Share |
 |---|---|---|
 | 0 | 774 | 28.1% |
-| 1 | 1,286 | 46.7% |
-| 2 | 610 | 22.2% |
-| 3 | 78 | 2.8% |
+| 1 | 1,287 | 46.8% |
+| 2 | 608 | 22.1% |
+| 3 | 79 | 2.9% |
 | 4 | 4 | 0.1% |
 
-Inhabited IRIS only (≥ 50 residents, 2,690): 765 / 1,248 / 597 / 76 / 4.
-At the v0 launch (3 sub-scores, inhabited IRIS): 1,113 / 1,171 / 375 /
-31. The 31 inhabited IRIS at 3/3 all stay at 3 or more (27 at 3, 4 at
-4); 49 enter scores 3-4, all through access to care; none leaves.
+Inhabited IRIS only (≥ 50 residents, 2,690): 765 / 1,249 / 595 / 77 / 4
+(2021 census: 765 / 1,248 / 597 / 76 / 4). With the 2021 census, all
+IRIS: 774 / 1,286 / 610 / 78 / 4. At the v0 launch (3 sub-scores,
+inhabited IRIS): 1,113 / 1,171 / 375 / 31; the 31 inhabited IRIS at 3/3
+all stayed at 3 or more with the score on 4, and the 49 that entered
+scores 3-4 all did so through access to care (2021 census).
 
 The 4 IRIS at 4/4: Asnières-sur-Seine Flachat I, Aulnay-sous-Bois
-Nonneville 3 and Nonneville 4, Champigny-sur-Marne Quatre Cités 3. The
-80 inhabited IRIS at 3 or 4: 21 in Paris, 23 in Hauts-de-Seine, 18 in
-Seine-Saint-Denis, 18 in Val-de-Marne.
+Nonneville 3 and Nonneville 4, Champigny-sur-Marne Quatre Cités 3
+(unchanged by the census switch). The 81 inhabited IRIS at 3 or 4: 22 in
+Paris, 23 in Hauts-de-Seine, 18 in Seine-Saint-Denis, 18 in Val-de-Marne
+(2021: 80, with 21 in Paris).
 
-Findings with the score on 4 (inhabited IRIS): (1) at 2+/4, neighbourhoods
-in the lowest third of means mostly combine air/noise (84%) and access to
-care (84%), mainly in Seine-Saint-Denis and Val-de-Marne; those in the
-highest third mostly combine housing (88%) and heat (79%), mainly in
-Paris. (2) The link between exposure and means is weak, and slightly
-positive because of central Paris, dense and old (Spearman +0.11; Paris
-+0.37, 92 −0.02, 93 −0.04, 94 0.00). (3) Share of 2+/4 neighbourhoods in
-the lowest third of means: Seine-Saint-Denis 79%, Val-de-Marne 39%,
-Hauts-de-Seine 21%, Paris 4%.
+Findings, 2022 census ("highly exposed" = 2 or more of the 3 exposures;
+see "Adaptive capacity" for the detail): (1) highly exposed
+neighbourhoods with the lowest means are mostly in Seine-Saint-Denis and
+Val-de-Marne and combine mainly heat, air pollution and noise; those
+with the highest means are mostly in Paris and combine mainly heat and
+energy-inefficient housing. (2) The link between exposure and means is
+weak, and slightly positive because of dense, older central Paris
+(Spearman +0.09; +0.11 with 2021). (3) Share of the highly exposed in
+the lowest third of means: Seine-Saint-Denis 61.8%, Val-de-Marne 24.5%,
+Paris 4.5%, Hauts-de-Seine 1.9%. Access to care, separately: share of
+inhabited IRIS in its worst quarter, Paris 2.2%, Hauts-de-Seine 28.4%,
+Seine-Saint-Denis 50.0%, Val-de-Marne 32.5%.
 
 Previous distributions: at the v0 launch, all IRIS, 1,122 / 1,216 / 382
 / 32; before access left the count (old 4 sub-scores), 874 / 1,230 / 586
@@ -1274,10 +1646,10 @@ at least **50 residents** — the same floor as `cool_facility_deficit`'s
 per-resident rate (`MIN_POPULATION_FOR_RATE`): below it an IRIS is a
 park, a station or a business block, not a neighborhood people live in
 (62 IRIS in all are under 50 residents; they stay on the map, flagged
-"very sparsely populated" in the detail panel). The 80 listed IRIS: the
-4 at 4/4 first, flagged; then the 76 at 3/4 grouped by the means-to-cope
-tertile (19 lowest, 19 middle, 29 highest, 9 without published income),
-never by an implied cause, ordered by commune then name. Each row shows
+"very sparsely populated" in the detail panel). The 81 listed IRIS (80
+with the 2021 census): the 4 at 4/4 first, flagged; then the others at
+3/4 grouped by the means-to-cope tertile (lowest, middle, highest,
+without published income), never by an implied cause, ordered by commune then name. Each row shows
 one figure per category (sealed ground, air/noise index, F/G-rated
 homes, GPs within reach) plus median income, each against the
 metro-wide median. A department filter (native select, keyboard and

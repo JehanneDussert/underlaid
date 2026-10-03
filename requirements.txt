@@ -5,6 +5,8 @@ shapely>=2.0
 pyarrow>=15.0
 openpyxl>=3.1
 fiona>=1.9
+# Spearman correlations (script 35, key figures).
+scipy>=1.11
 
 # Makes `requests` trust the Windows OS certificate store, needed on
 # machines where a corporate/AV proxy does TLS inspection with a root

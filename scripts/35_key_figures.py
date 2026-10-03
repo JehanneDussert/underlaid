@@ -1,14 +1,16 @@
 """Key figures shown on the site, computed from the published data.
 
 The redesigned pages (home, method, address) quote figures in sentences:
-"4 neighbourhoods combine all four", "79% in Seine-Saint-Denis", etc.
+"4 neighbourhoods combine all four", "77% in Seine-Saint-Denis", etc.
 They are computed here from the very files the site publishes, never typed
 by hand, so a quarterly pipeline run updates the text along with the map.
 tests/test_pipeline.py checks this file against the published data.
 
 Definitions (same as SCORING.md):
 - inhabited neighbourhood: IRIS with at least 50 residents;
-- "highly exposed": 2 or more of the 4 categories in their worst quarter;
+- "highly exposed": 2 or more of the 3 exposures (heat, air and noise,
+  housing) in their worst quarter (decision of 3 October 2026: access to
+  care is a separate axis, never counted in "highly exposed");
 - thirds of means: tertiles of the adaptive-capacity index over the whole
   metropolis (capacity_class 0 = lowest third), script 26;
 - access-to-care gap by département: share of the worst quarter for
@@ -53,7 +55,8 @@ def main():
     at_three_plus = inhabited[inhabited["cumulative_vulnerability_score"] >= 3]
 
     with_means = df[df["capacity_class"].notna()]
-    high = with_means[with_means["cumulative_vulnerability_score"] >= 2]
+    exposures = sum((with_means[f"subscore_{k}_quartile"] == 4).astype(int) for k in ["thermal", "pollution", "housing"])
+    high = with_means[exposures >= 2]
     highly_exposed_lowest_third = {d: pct((high[high.dep == d]["capacity_class"] == 0).mean()) for d in DEPARTMENTS}
     spearman = round(with_means["capacity_index"].corr(with_means["cumulative_vulnerability_score"], method="spearman"), 2)
 

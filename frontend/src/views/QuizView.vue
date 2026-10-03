@@ -41,7 +41,7 @@ const nf = (value) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'e
 const questions = computed(() => {
   const m = FACTS.metroAccessible
   const sw = FACTS.sidewalkInfo
-  const ssdExposed = Math.round(figures.value?.highly_exposed_lowest_third_pct?.['93'] ?? 79)
+  const ssdExposed = Math.round(figures.value?.highly_exposed_lowest_third_pct?.['93'] ?? 0)
   return [
     {
       id: 'metro',
@@ -74,7 +74,7 @@ const questions = computed(() => {
         { id: 'b', label: pct(52) },
         { id: 'c', label: pct(ssdExposed), right: true },
       ],
-      explanation: t('quiz.q.exposed.explanation', { v: pct(ssdExposed), paris: pct(Math.round(figures.value?.highly_exposed_lowest_third_pct?.['75'] ?? 4)) }),
+      explanation: t('quiz.q.exposed.explanation', { v: pct(ssdExposed), paris: pct(Math.round(figures.value?.highly_exposed_lowest_third_pct?.['75'] ?? 0)) }),
       sources: t('quiz.q.exposed.sources'),
       anchor: 'calcul',
     },

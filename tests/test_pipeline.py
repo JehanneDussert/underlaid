@@ -449,3 +449,11 @@ def test_key_figures_match_the_published_score():
     assert sum(figures["three_plus_by_department"].values()) == figures["n_three_plus_inhabited"]
     example = score[score["code_iris"] == figures["example"]["code_iris"]].iloc[0]
     assert figures["example"]["score"] == int(example["cumulative_vulnerability_score"])
+    # "Highly exposed" = 2 or more of the 3 exposures, access to care never
+    # counted (decision of 3 October 2026).
+    cap = pd.DataFrame(json.loads((config.DATA_PROCESSED / "adaptive_capacity_iris.json").read_text(encoding="utf-8"))["iris"])
+    df = score.merge(cap[["code_iris", "capacity_class"]], on="code_iris")
+    df = df[df["capacity_class"].notna()]
+    exposures = sum((df[f"subscore_{k}_quartile"] == 4).astype(int) for k in ["thermal", "pollution", "housing"])
+    high93 = df[(exposures >= 2) & (df["code_iris"].str[:2] == "93")]
+    assert figures["highly_exposed_lowest_third_pct"]["93"] == round(100 * float((high93["capacity_class"] == 0).mean()), 1)

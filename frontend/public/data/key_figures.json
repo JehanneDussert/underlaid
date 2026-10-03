@@ -45,10 +45,10 @@
     "94": 18
   },
   "highly_exposed_lowest_third_pct": {
-    "75": 3.6,
-    "92": 21.2,
-    "93": 79.4,
-    "94": 38.8
+    "75": 2.4,
+    "92": 5.8,
+    "93": 76.5,
+    "94": 28.6
   },
   "spearman_means_exposure": 0.11,
   "worst_access_care_pct": {

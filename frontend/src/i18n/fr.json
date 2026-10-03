@@ -1107,11 +1107,11 @@
       },
       "cool": {
         "title": "Se rafraîchir",
-        "sub": "Parc ou jardin ouvert au public"
+        "sub": "Parc ou jardin ouvert au public, fontaine d'eau potable (Paris)"
       },
       "toilets": {
-        "title": "Toilettes et eau potable",
-        "sub": "Toilettes publiques, fontaines (Paris)"
+        "title": "Toilettes publiques",
+        "sub": "Toilettes publiques (Paris)"
       }
     },
     "place": {

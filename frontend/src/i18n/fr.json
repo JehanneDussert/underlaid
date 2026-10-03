@@ -1168,5 +1168,132 @@
       "names": "Les mieux placés : {names}."
     },
     "stationSame": "En fauteuil roulant : l'arrêt le plus proche de votre quartier (métro, RER, train ou tram) est accessible, à {wc} à pied. Ces durées ne tiennent pas compte des trottoirs, des pentes ni des pannes d'ascenseur : la réalité est souvent plus longue."
+  },
+  "explore": {
+    "title": "Explorer la carte",
+    "panelLabel": "Choix de la carte",
+    "addressPlaceholder": "Aller à une adresse",
+    "what": "Que voulez-vous voir ?",
+    "theme": {
+      "cumul": {
+        "name": "Cumul des expositions",
+        "desc": "Nombre de thèmes où le quartier est dans le quart le plus touché, sur 4",
+        "short": "Cumul"
+      },
+      "thermal": {
+        "name": "Chaleur",
+        "desc": "Exposition aux fortes chaleurs",
+        "short": "Chaleur"
+      },
+      "pollution": {
+        "name": "Air et bruit",
+        "desc": "Qualité de l'air, bruit",
+        "short": "Air et bruit"
+      },
+      "housing": {
+        "name": "Logement",
+        "desc": "Performance énergétique des logements",
+        "short": "Logement"
+      },
+      "access_care": {
+        "name": "Accès aux soins",
+        "desc": "Médecins et pharmacies, selon la demande",
+        "short": "Accès aux soins"
+      },
+      "resources": {
+        "name": "Ressources des habitants",
+        "desc": "Pour information, hors du cumul",
+        "short": "Ressources"
+      }
+    },
+    "showOnly": "Montrer seulement les quartiers…",
+    "filter": {
+      "exposed": "très exposés (au moins 2 des 3 expositions : chaleur, air et bruit, logement)",
+      "resources": "aux ressources les plus faibles (le tiers de la métropole)",
+      "care": "à l'accès aux soins le plus difficile (le quart de la métropole)"
+    },
+    "filters": "Filtres",
+    "filtersN": "Filtres ({n})",
+    "noFilter": "Aucun filtre",
+    "count": "{n} quartiers sur {total}",
+    "definitions": "Définitions",
+    "mapLabel": "Carte des quartiers",
+    "mapRegion": "Carte des 2 752 quartiers de Paris et de la petite couronne. Pour une version textuelle, utilisez la liste des quartiers.",
+    "loading": "Chargement de la carte…",
+    "hint": "Cliquez sur un quartier",
+    "legendNote": "Quartiers de 50 habitants ou plus. Gris très clair : quartiers très peu habités ; gris : données insuffisantes.",
+    "legend": {
+      "cumul": {
+        "0": "0",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4 sur 4"
+      },
+      "thermal": {
+        "0": "quart le moins exposé",
+        "1": "2e quart",
+        "2": "3e quart",
+        "3": "quart le plus exposé"
+      },
+      "pollution": {
+        "0": "quart le moins exposé",
+        "1": "2e quart",
+        "2": "3e quart",
+        "3": "quart le plus exposé"
+      },
+      "housing": {
+        "0": "quart le moins exposé",
+        "1": "2e quart",
+        "2": "3e quart",
+        "3": "quart le plus exposé"
+      },
+      "access_care": {
+        "0": "accès le plus facile",
+        "1": "2e quart",
+        "2": "3e quart",
+        "3": "quart le plus difficile"
+      },
+      "resources": {
+        "0": "tiers aux ressources les plus élevées",
+        "1": "tiers médian",
+        "2": "tiers aux ressources les plus faibles"
+      }
+    },
+    "card": {
+      "kicker": "Quartier sélectionné",
+      "close": "Fermer la fiche du quartier",
+      "expand": "Afficher tout le détail",
+      "collapse": "Réduire le détail",
+      "announce": "Quartier sélectionné : {name}, {commune}",
+      "cumul": "Cumul",
+      "outOf4": "{n} sur 4",
+      "exposure": "Sur 10 quartiers, aucun moins exposé | Sur 10 quartiers, 1 moins exposé | Sur 10 quartiers, {n} moins exposés",
+      "care": "Sur 10 quartiers, aucun mieux doté | Sur 10 quartiers, 1 mieux doté | Sur 10 quartiers, {n} mieux dotés",
+      "open": "Voir la page du quartier",
+      "swipe": "Touchez la barre pour le détail"
+    },
+    "list": {
+      "show": "Voir la liste des quartiers",
+      "hide": "Masquer la liste des quartiers",
+      "title": "Liste des quartiers",
+      "intro": "{n} quartiers habités, avec le thème et les filtres choisis. Triez en cliquant sur un titre de colonne.",
+      "worst": "quart le plus touché",
+      "quarter": "{q}e quart",
+      "third0": "tiers le plus faible",
+      "third1": "tiers médian",
+      "third2": "tiers le plus élevé",
+      "more": "Afficher {n} quartiers de plus",
+      "col": {
+        "name": "Quartier",
+        "commune": "Commune",
+        "score": "Cumul",
+        "thermal": "Chaleur",
+        "pollution": "Air et bruit",
+        "housing": "Logement",
+        "access_care": "Accès aux soins",
+        "third": "Ressources"
+      }
+    }
   }
 }

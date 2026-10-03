@@ -1,6 +1,6 @@
 import HomeView from './views/HomeView.vue'
 import NeighbourhoodView from './views/NeighbourhoodView.vue'
-import MapView from './views/MapView.vue'
+import ExploreView from './views/ExploreView.vue'
 import AddressView from './views/AddressView.vue'
 import QuizView from './views/QuizView.vue'
 import RoutesView from './views/RoutesView.vue'
@@ -17,7 +17,7 @@ const COMPONENTS = {
   address: AddressView,
   quiz: QuizView,
   routes: RoutesView,
-  map: MapView,
+  map: ExploreView,
   methodology: MethodView,
   // The detailed methodology page (before the redesign): kept in full for
   // journalists and researchers, linked from the short "Method" page.

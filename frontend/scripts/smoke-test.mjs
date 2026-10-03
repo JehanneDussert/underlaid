@@ -33,7 +33,7 @@ const EXPECTED_RANKING_ROWS = published.features.filter(
 
 const MAP_TIMEOUT_MS = 60_000
 // Same 0-4 ramp as MapView.vue's CUMULATIVE_RAMP (= DATA_RAMP_5).
-const CUMULATIVE_RAMP = ['#e09ab7', '#d2668f', '#bf336a', '#980f48', '#5f002d']
+const CUMULATIVE_RAMP = ['#f9c2e0', '#ee61ae', '#e4007c', '#b90066', '#8e0050']
 
 // Share of map pixels whose colour is close to one of the ramp colours,
 // read back from both canvases (MapLibre keeps its drawing buffer; the
@@ -41,7 +41,7 @@ const CUMULATIVE_RAMP = ['#e09ab7', '#d2668f', '#bf336a', '#980f48', '#5f002d']
 async function choroplethPixelShare(page) {
   return page.evaluate(async (ramp) => {
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
-    const canvases = [...document.querySelectorAll('#map canvas')]
+    const canvases = [...document.querySelectorAll('.map canvas')]
     const w = 200
     const h = 150
     const out = document.createElement('canvas')
@@ -166,54 +166,57 @@ try {
   await page.waitForTimeout(500)
   check('neighbourhood page: unknown code says so', unknown.status() === 200 && (await page.locator('.flag').count()) >= 1)
 
-  // Map, both languages
+  // Explorer la carte (redesign D4), both languages: the map is drawn in
+  // the theme's ramp, six themes, filters combined with AND (the count must
+  // equal the one recomputed here from the published data), the card opens
+  // from an address and closes with Escape, the list is the text
+  // alternative with sortable columns.
+  const capacity = JSON.parse(readFileSync(`${ROOT}/public/data/adaptive_capacity_iris.json`, 'utf-8'))
+  const lowThird = new Set(capacity.iris.filter((r) => r.capacity_class === 0).map((r) => r.code_iris))
+  const expectedFiltered = published.features.filter((f) => {
+    const p = f.properties
+    if ((p.population ?? 0) < 50) return false
+    const n = ['thermal', 'pollution', 'housing'].filter((k) => p[`subscore_${k}_quartile`] === 4).length
+    return n >= 2 && lowThird.has(p.code_iris)
+  }).length
   for (const [path, lang] of [['/en/map', 'en'], ['/carte', 'fr']]) {
     await page.goto(base + path, { waitUntil: 'networkidle' })
-    // Wait for the choropleth's data, then check it is actually drawn — a
-    // canvas that merely exists passed this test once while the map was
-    // blank under hardware WebGL.
-    const loaded = await page.waitForSelector('#map[data-choropleth-loaded="true"]', { timeout: MAP_TIMEOUT_MS }).then(() => true, () => false)
-    check(`${path} choropleth data loaded`, loaded)
+    const loaded = await page.waitForFunction(() => !document.querySelector('.map-loading') && document.querySelector('.map canvas'), null, { timeout: MAP_TIMEOUT_MS }).then(() => true, () => false)
+    await page.waitForTimeout(1500)
+    check(`${path} map loaded`, loaded)
     const painted = await choroplethPixelShare(page)
-    check(`${path} choropleth drawn`, painted > 0.05, `${(painted * 100).toFixed(1)}% of map pixels in the score ramp`)
-    // Score + heat, air/noise, housing, access to care (v0.2): 5, the maximum.
-    check(`${path} 5 metric pills`, (await page.locator('.toolbar .pill').count()) === 5)
-    check(`${path} html lang=${lang}`, (await page.getAttribute('html', 'lang')) === lang)
+    check(`${path} map drawn in the cumul ramp`, painted > 0.05, `${(painted * 100).toFixed(1)}% of map pixels`)
+    check(`${path} six themes, html lang=${lang}`, (await page.locator('.themes input[type=radio]').count()) === 6 && (await page.getAttribute('html', 'lang')) === lang)
     check(`${path} data date in footer`, (await page.locator('.footer-updated').count()) === 1)
   }
+  await page.locator('.theme', { hasText: 'Chaleur' }).click()
+  await page.waitForURL(/theme=thermal/)
+  check('explore: theme in the URL, legend follows', (await page.locator('.legend-title').innerText()) === 'Chaleur')
+  await page.locator('.filter input').nth(0).check()
+  await page.locator('.filter input').nth(1).check()
+  await page.waitForURL(/f=exposed%2Cresources|f=exposed,resources/)
+  const countText = await page.locator('.count').innerText()
+  check(`explore: filters combined, count = ${expectedFiltered}`, countText.replace(/\s/g, '').startsWith(String(expectedFiltered)), countText)
+  await page.locator('.list-toggle').click()
+  const listRows = await page.locator('#explore-list tbody tr').count()
+  await page.locator('#explore-list thead button').first().click()
+  const sorted = await page.locator('#explore-list thead th').first().getAttribute('aria-sort')
+  check('explore: list of the filtered neighbourhoods, sortable', listRows === Math.min(50, expectedFiltered) && sorted === 'ascending', `${listRows} rows, ${sorted}`)
 
-  // Address search -> detail panel -> share card (needs the BAN API)
-  await page.fill('#map-address', '1 rue Marie Louise Drancy')
-  const suggestion = page.locator('#map-address-list [role="option"]', { hasText: '93700 Drancy' }).first()
+  // Address -> card (needs the BAN API); Escape closes it.
+  await page.goto(base + '/carte', { waitUntil: 'networkidle' })
+  await page.fill('#explore-address', '1 rue Marie Louise Drancy')
+  const suggestion = page.locator('#explore-address-list [role="option"]', { hasText: '93700 Drancy' }).first()
   const banAnswered = await suggestion.waitFor({ timeout: 10_000 }).then(() => true, () => false)
   if (!banAnswered) {
-    record('SKIP', 'address search + panel + share card', 'address API (BAN) did not answer within 10 s')
+    record('SKIP', 'explore: address -> card', 'address API (BAN) did not answer within 10 s')
   } else {
     await suggestion.click()
-    await page.waitForSelector('.cumul-box .n', { timeout: 10_000 })
-    check('search opens the detail panel, score out of 4', (await page.locator('.cumul-box .n').innerText()).endsWith('/4'))
-    // Inclusive mobility (information) + other access figures, then the means block.
-    check('panel: mobility + access context + means blocks', (await page.locator('.access-context').count()) === 2 && (await page.locator('.capacity-box').count()) === 1)
-    const started = Date.now()
-    const card = page.waitForEvent('download', { timeout: SHARE_CARD_TIMEOUT_MS }).catch(() => null)
-    // Click via the DOM: under software WebGL the main thread is busy
-    // repainting the map, and Playwright's actionability wait would itself
-    // time out before the click is even dispatched.
-    await page.evaluate(() => document.querySelector('.share-btn').click())
-    const download = await card
-    check('share card generated', !!download, download ? `${Date.now() - started} ms` : `none within ${SHARE_CARD_TIMEOUT_MS} ms`)
-  }
-
-  // PNG export, both map views
-  for (const view of ['exposure', 'bivariate']) {
-    if (view === 'bivariate') {
-      await page.locator('.view-switch button').nth(1).click()
-      await page.waitForSelector('.bv-cell')
-      check('bivariate view: 3x3 legend, pills hidden', (await page.locator('.bv-cell').count()) === 9 && (await page.locator('.toolbar .pill').count()) === 0)
-    }
-    const exported = page.waitForEvent('download', { timeout: EXPORT_TIMEOUT_MS }).catch(() => null)
-    await page.evaluate(() => [...document.querySelectorAll('.ghost-link')][0].click())
-    check(`PNG export (${view})`, !!(await exported))
+    const opened = await page.waitForSelector('.card .card-title', { timeout: 10_000 }).then(() => true, () => false)
+    const title = opened ? await page.locator('.card .card-title').innerText() : ''
+    await page.keyboard.press('Escape')
+    await page.waitForTimeout(300)
+    check('explore: address opens the card, Escape closes it', /Drancy/.test(title) && (await page.locator('.card').count()) === 0, title)
   }
 
   // Language switch, both directions (a bounce back was a real bug):

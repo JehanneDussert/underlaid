@@ -411,7 +411,9 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
               {{ t('nbhd.part3.hypothesis') }}
               <router-link :to="{ name: localizedRouteName('methodology', locale), hash: '#hypotheses' }">{{ t('nbhd.part3.hypothesisLink') }}</router-link>
             </p>
-            <router-link class="primary-button" :to="{ name: localizedRouteName('map', locale) }">{{ t('nbhd.part3.map') }}</router-link>
+            <!-- Opens the map with the same cases ticked: highly exposed and the
+                 most difficult access to care, this neighbourhood selected. -->
+            <router-link class="primary-button" :to="{ name: localizedRouteName('map', locale), query: { f: 'exposed,care', q: record.code } }">{{ t('nbhd.part3.map') }}</router-link>
           </div>
           <NeighbourhoodScatter v-if="index" :points="index.points" :current="record.code" />
         </section>

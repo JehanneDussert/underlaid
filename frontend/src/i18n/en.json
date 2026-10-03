@@ -1168,5 +1168,132 @@
       "names": "Best placed: {names}."
     },
     "stationSame": "In a wheelchair: the nearest stop to your neighbourhood (metro, RER, train or tram) is accessible, {wc} away on foot. These durations do not account for pavements, slopes or broken lifts: reality is often longer."
+  },
+  "explore": {
+    "title": "Explore the map",
+    "panelLabel": "Map options",
+    "addressPlaceholder": "Go to an address",
+    "what": "What do you want to see?",
+    "theme": {
+      "cumul": {
+        "name": "Combined exposures",
+        "desc": "Number of themes in which the neighbourhood is in the most affected quarter, out of 4",
+        "short": "Combined"
+      },
+      "thermal": {
+        "name": "Heat",
+        "desc": "Exposure to high heat",
+        "short": "Heat"
+      },
+      "pollution": {
+        "name": "Air and noise",
+        "desc": "Air quality, noise",
+        "short": "Air and noise"
+      },
+      "housing": {
+        "name": "Housing",
+        "desc": "Energy performance of homes",
+        "short": "Housing"
+      },
+      "access_care": {
+        "name": "Access to care",
+        "desc": "GPs and pharmacies, given the demand",
+        "short": "Access to care"
+      },
+      "resources": {
+        "name": "Residents' resources",
+        "desc": "For information, not in the combined score",
+        "short": "Resources"
+      }
+    },
+    "showOnly": "Show only neighbourhoods…",
+    "filter": {
+      "exposed": "highly exposed (at least 2 of the 3 exposures: heat, air and noise, housing)",
+      "resources": "with the fewest resources (the metropolis's lowest third)",
+      "care": "with the most difficult access to care (the metropolis's worst quarter)"
+    },
+    "filters": "Filters",
+    "filtersN": "Filters ({n})",
+    "noFilter": "No filter",
+    "count": "{n} neighbourhoods out of {total}",
+    "definitions": "Definitions",
+    "mapLabel": "Map of the neighbourhoods",
+    "mapRegion": "Map of the 2,752 neighbourhoods of Paris and its inner suburbs. For a text version, use the list of neighbourhoods.",
+    "loading": "Loading the map…",
+    "hint": "Click a neighbourhood",
+    "legendNote": "Neighbourhoods with 50 residents or more. Very light grey: very sparsely inhabited; grey: insufficient data.",
+    "legend": {
+      "cumul": {
+        "0": "0",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4 of 4"
+      },
+      "thermal": {
+        "0": "least exposed quarter",
+        "1": "2nd quarter",
+        "2": "3rd quarter",
+        "3": "most exposed quarter"
+      },
+      "pollution": {
+        "0": "least exposed quarter",
+        "1": "2nd quarter",
+        "2": "3rd quarter",
+        "3": "most exposed quarter"
+      },
+      "housing": {
+        "0": "least exposed quarter",
+        "1": "2nd quarter",
+        "2": "3rd quarter",
+        "3": "most exposed quarter"
+      },
+      "access_care": {
+        "0": "easiest access",
+        "1": "2nd quarter",
+        "2": "3rd quarter",
+        "3": "most difficult quarter"
+      },
+      "resources": {
+        "0": "third with the most resources",
+        "1": "middle third",
+        "2": "third with the fewest resources"
+      }
+    },
+    "card": {
+      "kicker": "Selected neighbourhood",
+      "close": "Close the neighbourhood card",
+      "expand": "Show all the detail",
+      "collapse": "Reduce the detail",
+      "announce": "Selected neighbourhood: {name}, {commune}",
+      "cumul": "Combined",
+      "outOf4": "{n} of 4",
+      "exposure": "Out of 10, none less exposed | Out of 10, 1 less exposed | Out of 10, {n} less exposed",
+      "care": "Out of 10, none better served | Out of 10, 1 better served | Out of 10, {n} better served",
+      "open": "See the neighbourhood page",
+      "swipe": "Tap the bar for the detail"
+    },
+    "list": {
+      "show": "See the list of neighbourhoods",
+      "hide": "Hide the list of neighbourhoods",
+      "title": "List of neighbourhoods",
+      "intro": "{n} inhabited neighbourhoods, with the chosen theme and filters. Sort by clicking a column heading.",
+      "worst": "most affected quarter",
+      "quarter": "quarter {q}",
+      "third0": "lowest third",
+      "third1": "middle third",
+      "third2": "highest third",
+      "more": "Show {n} more neighbourhoods",
+      "col": {
+        "name": "Neighbourhood",
+        "commune": "Commune",
+        "score": "Combined",
+        "thermal": "Heat",
+        "pollution": "Air and noise",
+        "housing": "Housing",
+        "access_care": "Access to care",
+        "third": "Resources"
+      }
+    }
   }
 }

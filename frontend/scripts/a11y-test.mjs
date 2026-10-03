@@ -81,6 +81,28 @@ try {
     await context.close()
   }
 
+  // 1c. axe on the explorer with a card and the list open, and the
+  // neighbourhood page with a mode, a comparison and every need open.
+  for (const [vpName, viewport] of Object.entries(VIEWPORTS)) {
+    const context = await browser.newContext({ viewport, reducedMotion: 'reduce' })
+    const page = await context.newPage()
+    for (const [label, path, prep] of [
+      ['explorer, card + list', '/carte?q=930290101&f=exposed', async () => { await page.locator('.list-toggle').click() }],
+      ['neighbourhood, compare + all open', '/quartier/930290101?mode=free&compare=wheelchair', async () => { for (const b of await page.locator('.need .accordion-button').all()) await b.click() }],
+    ]) {
+      await page.goto(base + path, { waitUntil: 'networkidle' })
+      await page.waitForTimeout(1500)
+      await prep()
+      const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
+      for (const v of result.violations) {
+        const line = `${vpName} ${label}: [${v.impact}] ${v.id} — ${v.help} (${v.nodes.map((x) => x.target.join(' ')).slice(0, 3).join(' | ')})`
+        ;(BLOCKING.has(v.impact) ? failures : notes).push(line)
+      }
+      console.log(`axe ${vpName} ${label}: ${result.violations.length} violation(s)`)
+    }
+    await context.close()
+  }
+
   // 2. Keyboard, desktop.
   {
     const context = await browser.newContext({ viewport: VIEWPORTS.desktop })

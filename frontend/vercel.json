@@ -4,6 +4,17 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "underlaid.vercel.app"
+        }
+      ],
+      "destination": "https://underlaid.fr/:path*",
+      "permanent": true
+    },
+    {
       "source": "/fr",
       "destination": "/",
       "permanent": true

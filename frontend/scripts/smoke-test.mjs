@@ -2,7 +2,7 @@
 // before every release, now versioned so they can't drift or be skipped.
 //
 //   cd frontend && npm run build && npm run test:smoke
-//   SMOKE_BASE_URL=https://underlaid.vercel.app npm run test:smoke   # live site
+//   SMOKE_BASE_URL=https://underlaid.fr npm run test:smoke   # live site
 //   SMOKE_SOFTWARE_GL=1 npm run test:smoke   # force software WebGL, as on a GPU-less CI runner
 //
 // Exits non-zero on any FAIL or browser console error. Checks that depend
@@ -276,9 +276,9 @@ try {
 
   // The permanent redirects of the pre-redesign addresses (vercel.json)
   // match src/routePaths.js; Vercel applies them, the local preview cannot.
-  const { legacyRedirects } = await import('../src/routePaths.js')
+  const { vercelRedirects } = await import('../src/routePaths.js')
   const vercel = JSON.parse(readFileSync(`${ROOT}/vercel.json`, 'utf-8'))
-  check('vercel.json redirects match routePaths.js', JSON.stringify(vercel.redirects) === JSON.stringify(legacyRedirects()))
+  check('vercel.json redirects match routePaths.js', JSON.stringify(vercel.redirects) === JSON.stringify(vercelRedirects()))
 
   // Phone width: no sideways scroll
   const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()

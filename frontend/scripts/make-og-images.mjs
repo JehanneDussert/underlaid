@@ -85,7 +85,7 @@ function cardHtml(copy, mapPngBase64) {
   </div>
   <div class="map">
     <img src="data:image/png;base64,${mapPngBase64}">
-    <span class="url">underlaid.vercel.app</span>
+    <span class="url">underlaid.fr</span>
     <span class="attr">INSEE, IGN · © OpenStreetMap</span>
   </div>
 </body></html>`

@@ -4,11 +4,11 @@
 // build time: run `node scripts/sync-redirects.mjs` after changing a page
 // address; the smoke test fails if the two disagree (`--check`).
 import { readFileSync, writeFileSync } from 'fs'
-import { legacyRedirects, paramRewrites } from '../src/routePaths.js'
+import { paramRewrites, vercelRedirects } from '../src/routePaths.js'
 
 const path = new URL('../vercel.json', import.meta.url)
 const config = JSON.parse(readFileSync(path, 'utf-8'))
-const expected = legacyRedirects()
+const expected = vercelRedirects()
 const rewrites = paramRewrites()
 if (process.argv.includes('--check')) {
   const same = JSON.stringify(config.redirects || []) === JSON.stringify(expected) && JSON.stringify(config.rewrites || []) === JSON.stringify(rewrites)

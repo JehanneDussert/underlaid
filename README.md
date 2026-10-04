@@ -12,13 +12,12 @@ data; every formula documented.
 
 ![Underlaid map: cumulative environmental exposure score across Paris and the inner suburbs](docs/screenshot.png)
 
-**[Open the site](https://underlaid.vercel.app)** ·
-[Map](https://underlaid.vercel.app/map) ·
-[Look up an address](https://underlaid.vercel.app/address) ·
-[Methodology](https://underlaid.vercel.app/methodology) ·
-[Ranking](https://underlaid.vercel.app/ranking) ·
-[Press kit](https://underlaid.vercel.app/press) ·
-[Version française](https://underlaid.vercel.app/fr)
+**[Open the site](https://underlaid.fr/en)** ·
+[Map](https://underlaid.fr/en/map) ·
+[Method](https://underlaid.fr/en/method) ·
+[Most exposed neighbourhoods](https://underlaid.fr/en/most-exposed-neighbourhoods) ·
+[Press](https://underlaid.fr/en/press) ·
+[Version française](https://underlaid.fr)
 
 **What it measures / doesn't**
 - ✅ **Exposure**: a count (0-4) of categories in their metro-wide worst quartile — never a smoothed average.

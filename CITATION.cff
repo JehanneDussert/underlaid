@@ -18,7 +18,7 @@ identifiers:
     value: 10.5281/zenodo.23101510
     description: DOI of version 0.2.0
 repository-code: "https://github.com/JehanneDussert/underlaid"
-url: "https://underlaid.vercel.app"
+url: "https://underlaid.fr"
 abstract: >-
   For 2,752 IRIS neighborhoods across Paris, Hauts-de-Seine,
   Seine-Saint-Denis and Val-de-Marne, counts how many of four categories

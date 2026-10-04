@@ -3,14 +3,15 @@ import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { ROUTE_PATHS, paramRewrites, shellPath } from './src/routePaths.js'
+import { DEFAULT_SITE_URL } from './src/siteUrl.js'
 
 // Single source of truth for the production domain — shared with the
 // frontend via the `define` below (see composables/useSeoMeta.js) and
 // with the sitemap/robots generator in the seoFilesPlugin below, so
 // there's never a second copy to fall out of sync. Override with
-// SITE_URL=... at build time (e.g. a fork deployed elsewhere, or a
-// custom domain later) — no trailing slash.
-const SITE_URL = (process.env.SITE_URL || 'https://underlaid.vercel.app').replace(/\/+$/, '')
+// SITE_URL=... at build time (e.g. a fork deployed elsewhere) — no
+// trailing slash. The default lives in src/siteUrl.js.
+const SITE_URL = (process.env.SITE_URL || DEFAULT_SITE_URL).replace(/\/+$/, '')
 
 // Only the production deployment may be indexed. On Vercel, preview
 // deployments (any branch other than master, e.g. the redesign branch)

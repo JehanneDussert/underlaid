@@ -8,6 +8,7 @@
 // `sitemap: false`: transitional pages, replaced during the redesign
 // (address and routes by "Votre quartier", quiz by the question on the
 // home page) — still reachable, not advertised to search engines.
+import { DEFAULT_SITE_URL, LEGACY_HOST } from './siteUrl.js'
 export const ROUTE_PATHS = [
   { name: 'home', fr: '/', en: '/en', old: { en: '/', fr: '/fr' } },
   // One page per neighbourhood, by its INSEE code (never an address in the
@@ -81,3 +82,15 @@ export function legacyRedirects() {
   for (const [source, destination] of RETIRED) if (!current.has(source)) out.push({ source, destination, permanent: true })
   return out
 }
+
+// All the redirects of vercel.json. First, the former Vercel address sends
+// every path to the same path on the site's own domain (permanent); the
+// redesign redirects then apply there. Conditioned on the host, so preview
+// deployments are not touched.
+export function vercelRedirects() {
+  return [
+    { source: '/:path*', has: [{ type: 'host', value: LEGACY_HOST }], destination: `${DEFAULT_SITE_URL}/:path*`, permanent: true },
+    ...legacyRedirects(),
+  ]
+}
+

@@ -62,7 +62,7 @@ width, and zero browser console errors.
 
 ```bash
 npm run build && npm run test:smoke                  # local build
-SMOKE_BASE_URL=https://underlaid.vercel.app npm run test:smoke   # live site
+SMOKE_BASE_URL=https://underlaid.fr npm run test:smoke   # live site
 SMOKE_SOFTWARE_GL=1 npm run test:smoke               # force software WebGL (GPU-less CI)
 ```
 

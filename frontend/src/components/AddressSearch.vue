@@ -67,7 +67,9 @@ async function fetchSuggestions(q) {
     // More results than shown, so that addresses of the zone are not
     // crowded out by homonyms elsewhere in France.
     const url = `${GEOCODE_URL}?q=${encodeURIComponent(q)}&lat=${MGP_CENTER[1]}&lon=${MGP_CENTER[0]}&limit=20`
-    const data = await (await fetch(url)).json()
+    // Never wait forever on the address service (the field would stay on
+    // "Recherche en cours…").
+    const data = await (await fetch(url, { signal: AbortSignal.timeout(8000) })).json()
     if (request !== lastRequest) return []
     const all = data.features ?? []
     suggestions.value = all.filter(inZone).slice(0, 5)
@@ -85,7 +87,12 @@ async function fetchSuggestions(q) {
   }
 }
 
-function onInput() {
+// Read the field on every input event, not through v-model: v-model waits
+// for the end of a keyboard "composition", and phone keyboards (Android,
+// iOS predictive text) compose a whole word until the space bar, so the
+// search used to start only after a space.
+function onInput(event) {
+  if (event?.target) query.value = event.target.value
   message.value = ''
   clearTimeout(debounce)
   const q = query.value.trim()
@@ -145,7 +152,7 @@ async function submit() {
         <input
           ref="input"
           :id="props.id"
-          v-model="query"
+          :value="query"
           type="text"
           role="combobox"
           autocomplete="off"

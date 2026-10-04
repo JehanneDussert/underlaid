@@ -203,6 +203,15 @@ tbody th {
   th,
   td {
     font-size: 15px;
+    padding-right: 8px;
+  }
+  /* Three mode columns fit a phone screen once their headings wrap. */
+  thead th {
+    white-space: normal;
+    vertical-align: bottom;
+  }
+  td {
+    white-space: normal;
   }
 }
 </style>

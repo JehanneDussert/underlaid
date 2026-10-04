@@ -565,10 +565,10 @@
     "dest": {
       "emergency": "Emergency department",
       "town_hall": "Town hall",
-      "post_office": "Post office",
-      "france_services": "France Services",
       "caf": "CAF (family benefits)",
-      "employment": "France Travail"
+      "food_store": "Supermarket",
+      "social_centre": "Social centre",
+      "police": "Police station"
     }
   },
   "question": {

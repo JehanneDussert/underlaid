@@ -22,8 +22,7 @@ useSeoMeta({
 const REPO_URL = 'https://github.com/JehanneDussert/underlaid'
 const PERSONAL_SITE = 'https://jehannedussert.com'
 const GITHUB_PROFILE = 'https://github.com/JehanneDussert'
-// To fill in: the LinkedIn profile address (not shown while empty).
-const LINKEDIN_URL = ''
+const LINKEDIN_URL = 'https://www.linkedin.com/in/jehanne-dussert'
 const VERSION = '0.2.0'
 const VERSION_DOI = '10.5281/zenodo.23101510'
 const CONCEPT_DOI_URL = 'https://doi.org/10.5281/zenodo.23083312'
@@ -96,9 +95,9 @@ function writeTo(e) {
           </p>
           <p>{{ t('about.projet.p4') }}</p>
           <ul class="person-links">
-            <li><a :href="PERSONAL_SITE" rel="noopener">jehannedussert.com</a></li>
+            <li><a :href="PERSONAL_SITE" rel="noopener">{{ t('about.projet.personalSite') }}</a></li>
             <li><a :href="GITHUB_PROFILE" rel="noopener">GitHub</a></li>
-            <li v-if="LINKEDIN_URL"><a :href="LINKEDIN_URL" rel="noopener">LinkedIn</a></li>
+            <li><a :href="LINKEDIN_URL" rel="noopener">LinkedIn</a></li>
           </ul>
         </section>
 

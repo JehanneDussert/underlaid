@@ -53,11 +53,11 @@ def main():
     origins = []
     for _, w in worst.iterrows():
         c = cells_l93.loc[w.cell_id].geometry.centroid
-        origins.append((f"{w.cell_id}|centre", w.cell_id, w.type, c))
+        origins.append((f"{w.cell_id}|{w.type}|centre", w.cell_id, w.type, c))
         for r in (20, 40):
             for k in range(8):
                 a = 2 * math.pi * k / 8
-                origins.append((f"{w.cell_id}|{r}m{k}", w.cell_id, w.type, Point(c.x + r * math.cos(a), c.y + r * math.sin(a))))
+                origins.append((f"{w.cell_id}|{w.type}|{r}m{k}", w.cell_id, w.type, Point(c.x + r * math.cos(a), c.y + r * math.sin(a))))
     og = gpd.GeoDataFrame(pd.DataFrame(origins, columns=["id", "cell_id", "type", "geometry"]), geometry="geometry", crs="EPSG:2154").to_crs(config.CRS_LATLON)
     dests = dest[dest["type"].isin(TYPES)][["dest_id", "type", "geometry"]].rename(columns={"dest_id": "id"})
 
@@ -79,10 +79,11 @@ def main():
 
     both = pd.DataFrame(results)
     both["cell_id"] = both.index.str.split("|").str[0].astype(worst.cell_id.dtype)
-    both["where"] = both.index.str.split("|").str[1]
+    both["type"] = both.index.str.split("|").str[1]
+    both["where"] = both.index.str.split("|").str[2]
     cleared = 0
     for _, w in worst.iterrows():
-        b = both[both.cell_id == w.cell_id]
+        b = both[(both.cell_id == w.cell_id) & (both["type"] == w.type)]
         c = b[b["where"] == "centre"]
         ring = b[b["where"] != "centre"]
         inv_ring = (ring.sf < ring["std"]).mean() * 100 if len(ring) else float("nan")

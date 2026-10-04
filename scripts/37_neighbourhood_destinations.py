@@ -13,6 +13,13 @@ Types and sources:
   120-400 m²); groceries under 120 m² (B202) excluded;
 - nursery_school: BPE 2025 C107 (nursery school) and C108 (primary school
   with at least one nursery class), public sector only (SECTEUR = 1);
+- schools (added 2026-10-04, same run as the corrected attachment of
+  points): elementary (C108 primary, C109 elementary), lower secondary
+  (C201 collège), upper secondary (C301 general and technological, C302
+  vocational lycée); public (SECTEUR = 1) and private under contract with
+  the State (SECTEUR = 3) as separate types; private without contract
+  (SECTEUR = 2) excluded. Codes 2 and 3 read from establishment names
+  (2: Montessori, private tutoring schools; 3: Massillon, Francs-Bourgeois);
 - police: BPE 2025 A140 (national police open to the public);
 - social_centre: BPE 2025 D506 (social centres, CNAF);
 - library: BPE 2025 F307 (local-authority libraries);
@@ -54,6 +61,15 @@ BPE_TYPES = {
     "social_centre": ["D506"],
     "library": ["F307"],
 }
+# Schools: (BPE codes, SECTEUR) per type.
+SCHOOL_TYPES = {
+    "elementary_public": (["C108", "C109"], "1"),
+    "elementary_private": (["C108", "C109"], "3"),
+    "college_public": (["C201"], "1"),
+    "college_private": (["C201"], "3"),
+    "lycee_public": (["C301", "C302"], "1"),
+    "lycee_private": (["C301", "C302"], "3"),
+}
 
 
 def bpe_points() -> gpd.GeoDataFrame:
@@ -65,6 +81,8 @@ def bpe_points() -> gpd.GeoDataFrame:
         if kind == "nursery_school":
             x = x[x.SECTEUR == "1"]
         parts.append(x.assign(type=kind))
+    for kind, (codes, sector) in SCHOOL_TYPES.items():
+        parts.append(b[b.TYPEQU.isin(codes) & (b.SECTEUR == sector)].assign(type=kind))
     df = pd.concat(parts).rename(columns={"NOMRS": "name", "DEPCOM": "insee_com"})
     return gpd.GeoDataFrame(df[["type", "name", "insee_com"]],
                             geometry=gpd.points_from_xy(df.LONGITUDE.astype(float), df.LATITUDE.astype(float)), crs=config.CRS_LATLON)

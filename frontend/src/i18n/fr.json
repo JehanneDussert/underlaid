@@ -454,6 +454,10 @@
           "desc": "Les durées et l'accès sans marches sont une limite basse : le calcul évite les escaliers et les arrêts déclarés non accessibles, mais ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni d'une vitesse réduite, ni de l'accessibilité du bâtiment d'arrivée."
         },
         {
+          "name": "Point de départ des trajets.",
+          "desc": "Dans 0,8 % des cas, la durée affichée en fauteuil roulant est inférieure de 1 à 8 minutes à la durée sans contrainte. La cause est le point du réseau de rues où le calcul rattache chaque départ et chaque arrivée : dans le réseau complet, c'est parfois un escalier ou un chemin qui impose un détour. Pour la même raison, certaines durées sans contrainte sont surestimées. Ce sera corrigé au prochain calcul, avec les mêmes points de départ et d'arrivée pour tous les modes."
+        },
+        {
           "name": "Accès aux soins.",
           "desc": "Un médecin compte pour un, quel que soit son temps de travail : l'activité réelle de chaque praticien n'est pas publique."
         },
@@ -838,7 +842,15 @@
       "care": "Dans {commune}, aucun autre quartier n'a un accès aux soins plus facile. | Dans {commune}, 1 quartier sur {total} a un accès aux soins plus facile. | Dans {commune}, {count} quartiers sur {total} ont un accès aux soins plus facile.",
       "names": "Les mieux placés : {names}."
     },
-    "stationSame": "En fauteuil roulant : l'arrêt le plus proche de votre quartier (métro, RER, train ou tram) est accessible, à {wc} à pied. Ces durées ne tiennent pas compte des trottoirs, des pentes ni des pannes d'ascenseur : la réalité est souvent plus longue."
+    "stationSame": "En fauteuil roulant : l'arrêt le plus proche de votre quartier (métro, RER, train ou tram) est accessible, à {wc} à pied. Ces durées ne tiennent pas compte des trottoirs, des pentes ni des pannes d'ascenseur : la réalité est souvent plus longue.",
+    "needRank": {
+      "left": "plus près",
+      "right": "le quart le plus loin",
+      "sentence": "Sur 10 quartiers, aucun n'est plus près de ces services | Sur 10 quartiers, 1 est plus près de ces services | Sur 10 quartiers, {n} sont plus près de ces services",
+      "sentenceParis": "Sur 10 quartiers parisiens, aucun n'est plus près de ces services | Sur 10 quartiers parisiens, 1 est plus près de ces services | Sur 10 quartiers parisiens, {n} sont plus près de ces services",
+      "careNote": "Position calculée sur les urgences seulement : le médecin et la pharmacie sont à quelques minutes de presque tous les quartiers.",
+      "noMode": "Choisissez un mode de déplacement pour situer votre quartier."
+    }
   },
   "explore": {
     "title": "Explorer la carte",

@@ -138,7 +138,8 @@ const pills = computed(() => [...worst.value, ...(careWorst.value ? ['access_car
 function rankCard(k) {
   const e = record.value.exposures[k]
   const ok = e.status !== 'insufficient_data' && e.rank !== null
-  const n = ok ? Math.min(10, Math.max(0, Math.round(e.rank * 10))) : null
+  // At most 9 of 10: the neighbourhood itself is one of the ten.
+  const n = ok ? Math.min(9, Math.max(0, Math.round(e.rank * 10))) : null
   return {
     key: k,
     title: t(`nbhd.exposure.${k}.title`),
@@ -188,6 +189,21 @@ function minutes(place, m) {
 // undefined = not computed yet; null = more than 90 min.
 const computedYet = (place) => minutes(place, 'free') !== undefined
 const fmtMin = (v) => (v === null ? t('nbhd.over90') : t('plan.minutes', { n: v }))
+
+// Part 2: position per need (script 39 "needs"), share of inhabited
+// neighbourhoods closer to these services; Paris-only needs are ranked among
+// Paris neighbourhoods.
+function needShare(need) {
+  const v = record.value?.needs?.[mode.value]?.[need.id]
+  return typeof v === 'number' ? v : null
+}
+function needSentence(need) {
+  const v = needShare(need)
+  if (v === null) return ''
+  const n = Math.min(9, Math.max(0, Math.round(v * 10)))
+  const paris = record.value?.needs_paris?.includes(need.id)
+  return t(paris ? 'nbhd.needRank.sentenceParis' : 'nbhd.needRank.sentence', { n }, n)
+}
 
 function nearest(need) {
   const day = need.places.filter((p) => !p.night && computedYet(p))
@@ -369,6 +385,21 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
                     <span v-if="nearest(need)" class="need-nearest"><span class="nearest-label">{{ t('nbhd.nearest') }}&nbsp;</span><strong>{{ nearest(need) }}</strong></span>
                   </span>
                 </template>
+                <!-- Position of the neighbourhood for this need (mean of the
+                     ranks of its places; decided 2026-10-04). No mode: no bar. -->
+                <div class="need-rank">
+                  <RankBar
+                    v-if="mode && needShare(need) !== null"
+                    compact
+                    :share="needShare(need)"
+                    :in-worst-quarter="needShare(need) >= 0.75"
+                    :left-label="t('nbhd.needRank.left')"
+                    :right-label="t('nbhd.needRank.right')"
+                    :sentence="needSentence(need)"
+                    :note="need.id === 'care' ? t('nbhd.needRank.careNote') : ''"
+                  />
+                  <p v-else-if="!mode" class="need-rank-none">{{ t('nbhd.needRank.noMode') }}</p>
+                </div>
                 <ul class="places">
                   <li v-for="place in need.places" :key="place.id" class="place" :class="{ 'place-note': place.parisOnly && !PARIS }">
                     <span class="place-name">
@@ -780,6 +811,14 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
 .need-nearest strong {
   color: var(--text-primary);
   font-size: 16px;
+}
+.need-rank {
+  margin-bottom: 8px;
+}
+.need-rank-none {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: var(--text-secondary);
 }
 .places {
   margin: 0;

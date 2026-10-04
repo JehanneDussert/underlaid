@@ -454,6 +454,10 @@
           "desc": "Step-free times and access are a lower bound: the calculation avoids stairs and stops declared inaccessible, but accounts neither for lifts out of order, nor pavement condition, nor a slower speed, nor whether the destination building is accessible."
         },
         {
+          "name": "Starting point of journeys.",
+          "desc": "In 0.8% of cases, the wheelchair duration shown is 1 to 8 minutes shorter than the duration without constraint. The cause is the point of the street network to which the calculation attaches each start and end: in the full network, it is sometimes a stairway or a path that forces a detour. For the same reason, some durations without constraint are overestimated. This will be fixed in the next calculation, with the same start and end points for every mode."
+        },
+        {
           "name": "Access to care.",
           "desc": "Each GP counts as one, whatever their working hours: each practitioner's actual activity is not public."
         },
@@ -838,7 +842,15 @@
       "care": "In {commune}, no other neighbourhood has easier access to care. | In {commune}, 1 neighbourhood out of {total} has easier access to care. | In {commune}, {count} neighbourhoods out of {total} have easier access to care.",
       "names": "Best placed: {names}."
     },
-    "stationSame": "In a wheelchair: the nearest stop to your neighbourhood (metro, RER, train or tram) is accessible, {wc} away on foot. These durations do not account for pavements, slopes or broken lifts: reality is often longer."
+    "stationSame": "In a wheelchair: the nearest stop to your neighbourhood (metro, RER, train or tram) is accessible, {wc} away on foot. These durations do not account for pavements, slopes or broken lifts: reality is often longer.",
+    "needRank": {
+      "left": "closer",
+      "right": "the farthest quarter",
+      "sentence": "Out of 10 neighbourhoods, none is closer to these services | Out of 10 neighbourhoods, 1 is closer to these services | Out of 10 neighbourhoods, {n} are closer to these services",
+      "sentenceParis": "Out of 10 Paris neighbourhoods, none is closer to these services | Out of 10 Paris neighbourhoods, 1 is closer to these services | Out of 10 Paris neighbourhoods, {n} are closer to these services",
+      "careNote": "Position based on the emergency department only: a GP and a pharmacy are a few minutes from almost every neighbourhood.",
+      "noMode": "Choose a way of getting around to place your neighbourhood."
+    }
   },
   "explore": {
     "title": "Explore the map",

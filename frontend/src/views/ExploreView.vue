@@ -323,7 +323,7 @@ const addressError = ref('')
 function rankLine(r, k) {
   const share = r.rank[k]
   if (share === null || r.quarter[k] === null) return t('nbhd.rank.missing')
-  const n = Math.min(10, Math.max(0, Math.round(share * 10)))
+  const n = Math.min(9, Math.max(0, Math.round(share * 10)))
   return k === 'access_care' ? t('explore.card.care', { n }, n) : t('explore.card.exposure', { n }, n)
 }
 const cardRows = computed(() => {

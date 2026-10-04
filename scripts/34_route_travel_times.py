@@ -28,6 +28,13 @@ cell_id, type, minutes. Long-running (about 21 h with 3 processes);
 resumable and shareable between processes like script 31 (env WORKER /
 WORKERS); progress in data/interim/access/routes_progress.txt.
 
+ROUTES_VERSION=2 (decided 2026-10-04, see CLAUDE.md): origins and
+destinations are first moved onto the common attachment points of script
+42, the same for the four profiles (fixes durations shorter step-free than
+without constraint); outputs go to *_v2 directories, the first run is kept
+for comparison. ROUTES_PILOT=<file of cell ids>: only those origins, output
+in *_pilot (checks before the full run).
+
 Runs in the access Docker image (Dockerfile.access).
 """
 import os
@@ -60,8 +67,12 @@ WORK_DIR = config.DATA_INTERIM / "access"
 ROUTES_SET = os.environ.get("ROUTES_SET", "routes")
 NEIGHBOURHOOD = ROUTES_SET == "neighbourhood"
 PARIS = ROUTES_SET == "paris"
-OUT_DIR = WORK_DIR / {"neighbourhood": "routes_ttm_neighbourhood", "paris": "routes_ttm_paris"}.get(ROUTES_SET, "routes_ttm")
-PROGRESS = WORK_DIR / {"neighbourhood": "routes_neighbourhood_progress.txt", "paris": "routes_paris_progress.txt"}.get(ROUTES_SET, "routes_progress.txt")
+VERSION = os.environ.get("ROUTES_VERSION", "1")
+PILOT = os.environ.get("ROUTES_PILOT")
+SUFFIX = "_pilot" if PILOT else ("_v2" if VERSION == "2" else "")
+OUT_DIR = WORK_DIR / ({"neighbourhood": "routes_ttm_neighbourhood", "paris": "routes_ttm_paris"}.get(ROUTES_SET, "routes_ttm") + SUFFIX)
+PROGRESS = WORK_DIR / {"neighbourhood": "routes_neighbourhood_progress.txt", "paris": "routes_paris_progress.txt"}.get(ROUTES_SET, "routes_progress.txt").replace(".txt", f"{SUFFIX}.txt")
+SNAPPED = ACCESS_DIR / "snapped_points.csv"
 DEST_FILE = {"neighbourhood": "neighbourhood_destinations_idf.geojson", "paris": "paris_amenities_idf.geojson"}.get(ROUTES_SET, "route_destinations_idf.geojson")
 CHUNK = 150 if NEIGHBOURHOOD else 300
 MAX_MINUTES = 90
@@ -112,7 +123,26 @@ def origins() -> gpd.GeoDataFrame:
     inside = inside[inside["pop"] > 0].drop_duplicates("cell_id")
     if PARIS:
         inside = inside[inside["code_iris"].astype(str).str.startswith("75")]
-    return inside[["cell_id", "geometry"]].rename(columns={"cell_id": "id"}).to_crs(config.CRS_LATLON).reset_index(drop=True)
+    out = inside[["cell_id", "geometry"]].rename(columns={"cell_id": "id"}).to_crs(config.CRS_LATLON).reset_index(drop=True)
+    if PILOT:
+        keep = set(Path(PILOT).read_text().split())
+        out = out[out["id"].astype(str).isin(keep)].reset_index(drop=True)
+    return snapped(out, "origin")
+
+
+def snapped(points: gpd.GeoDataFrame, point_set: str) -> gpd.GeoDataFrame:
+    """Version 2: replace each point by its common attachment point (script 42)."""
+    if VERSION != "2":
+        return points
+    s = pd.read_csv(SNAPPED, dtype={"id": str})
+    s = s[s["set"] == point_set].set_index("id")
+    ids = points["id"].astype(str)
+    missing = ~ids.isin(s.index)
+    if missing.any():
+        raise SystemExit(f"{missing.sum()} {point_set} points without an attachment point: run script 42 again")
+    out = points.copy()
+    out["geometry"] = gpd.points_from_xy(s.loc[ids, "lon"].to_numpy(), s.loc[ids, "lat"].to_numpy())
+    return out.set_crs(config.CRS_LATLON, allow_override=True)
 
 
 def destinations(task: Task, dest: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -123,7 +153,7 @@ def destinations(task: Task, dest: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         d = dest[dest["type"] == "station"]
         if keep is not None:
             d = d[d["wheelchair"].isin(keep)]
-    return d[["dest_id", "geometry"]].rename(columns={"dest_id": "id"})
+    return snapped(d[["dest_id", "geometry"]].rename(columns={"dest_id": "id"}), {"neighbourhood": "neighbourhood", "paris": "paris"}.get(ROUTES_SET, "key"))
 
 
 def write_progress(started, done_at_start, total, current):

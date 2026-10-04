@@ -9,7 +9,7 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  title: { type: String, required: true },
+  title: { type: String, default: '' },
   subtitle: { type: String, default: '' },
   // Share of neighbourhoods less affected than this one, 0-1 (rank / n).
   share: { type: Number, default: null },
@@ -23,14 +23,16 @@ const props = defineProps({
   // A line under the sentence (e.g. the better-placed neighbourhoods of the
   // same commune).
   note: { type: String, default: '' },
+  // Compact variant inside a need of part 2 (no card, title optional).
+  compact: { type: Boolean, default: false },
 })
 
 const left = computed(() => `${Math.min(100, Math.max(0, 100 * props.share))}%`)
 </script>
 
 <template>
-  <div class="rank-card">
-    <div class="rank-head">
+  <div class="rank-card" :class="{ compact }">
+    <div v-if="title" class="rank-head">
       <h3 class="rank-title">{{ title }}</h3>
       <p v-if="subtitle" class="rank-subtitle">{{ subtitle }}</p>
     </div>
@@ -113,5 +115,14 @@ const left = computed(() => `${Math.min(100, Math.max(0, 100 * props.share))}%`)
 .rank-missing {
   margin: 0;
   color: var(--text-secondary);
+}
+.rank-card.compact {
+  border: none;
+  padding: 4px 0 8px;
+  gap: 8px;
+  background: transparent;
+}
+.rank-card.compact .rank-sentence {
+  font-size: 15px;
 }
 </style>

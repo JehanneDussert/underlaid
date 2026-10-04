@@ -20,6 +20,18 @@ address) and everything the page shows about each of them:
   neighbourhoods, public toilets (all, wheelchair-accessible, open 24 h)
   and drinking fountains (script 41).
 
+- need positions (decided 2026-10-04): for each need of the page and each
+  mode, the share of inhabited neighbourhoods closer to its services
+  ("Sur 10 quartiers, N sont plus près de ces services"). The places of a
+  need are combined by the mean of their ranks (each place ranked among
+  inhabited neighbourhoods, "more than 90 min" last), so that one distant
+  place does not outweigh the others; GP and pharmacy excluded (crushed at
+  the floor), night excluded, so "Se soigner" rests on the emergency
+  department alone. Paris-only places (toilets, fountains) are ranked among
+  Paris neighbourhoods: "toilets" for Paris only, "cool" = park + fountain
+  in Paris (ranked among Paris), park alone elsewhere (ranked among the
+  metropolis); `needs_paris` lists the needs ranked among Paris.
+
 Plus index.json: for part 3 of the page ("Les deux à la fois"), each
 inhabited neighbourhood's number of exposures in the worst quarter (0-3)
 and its access-to-care rank, and the count of neighbourhoods both highly
@@ -46,6 +58,70 @@ OUT = config.DATA_PROCESSED / "quartiers"
 SUBSCORES = ["thermal", "pollution", "housing", "access_care"]
 EXPOSURES = ["thermal", "pollution", "housing"]
 MODES = {"free": "standard", "slow": "slow", "wheelchair": "step_free_no"}
+# Need -> places (record group, place id; wheelchair variant where it differs).
+NEED_PLACES = {
+    "care": [("times", "emergency")],
+    "admin": [("times", "town_hall"), ("times", "france_services"), ("times", "caf"), ("times", "cpam"), ("times", "employment")],
+    "food": [("places", "food_store")],
+    "children": [("places", "creche"), ("places", "nursery_school")],
+    "post": [("times", "post_office")],
+    "police": [("places", "police")],
+    "social": [("places", "social_centre"), ("places", "library")],
+    "cool": [("places", "park"), ("paris_places", "drinking_water")],
+    "toilets": [("paris_places", "toilets"), ("paris_places", "toilets_24h")],
+}
+WHEELCHAIR_ID = {"toilets": "toilets_pmr"}
+
+
+def need_positions(records: dict, inhabited: set) -> None:
+    """Adds rec["needs"] = {mode: {need: share closer}} (and needs_paris)."""
+    import pandas as pd
+
+    paris = {c for c in inhabited if c.startswith("75")}
+    for mode in MODES:
+        for need, places in NEED_PLACES.items():
+            for scope in ("metro", "paris"):
+                use = places
+                if scope == "metro":
+                    use = [pl for pl in places if pl[0] != "paris_places"]
+                    ref = inhabited
+                else:
+                    if not any(pl[0] == "paris_places" for pl in places):
+                        continue
+                    ref = paris
+                if not use:
+                    continue
+                rows = {}
+                for code, rec in records.items():
+                    vals = []
+                    for group, pid in use:
+                        pid = WHEELCHAIR_ID.get(pid, pid) if mode == "wheelchair" else pid
+                        g = (rec.get(group) or {}).get(mode)
+                        if g is None or pid not in g:
+                            vals = None
+                            break
+                        vals.append(np.inf if g[pid] is None else g[pid])
+                    if vals is not None:
+                        rows[code] = vals
+                if not rows:
+                    continue
+                df = pd.DataFrame.from_dict(rows, orient="index")
+                reference = df[df.index.isin(ref)]
+                # Rank of each place among the reference, then mean of ranks.
+                ranked = pd.DataFrame({c: np.searchsorted(np.sort(reference[c].to_numpy()), df[c].to_numpy(), side="left")
+                                       / len(reference) for c in df.columns}, index=df.index)
+                combined = ranked.mean(axis=1)
+                ref_comb = np.sort(combined[combined.index.isin(ref)].to_numpy())
+                share = np.searchsorted(ref_comb, combined.to_numpy(), side="left") / len(ref_comb)
+                for code, v in zip(df.index, share):
+                    if scope == "paris" and not code.startswith("75"):
+                        continue
+                    if scope == "metro" and code.startswith("75") and any(pl[0] == "paris_places" for pl in places):
+                        continue
+                    rec = records[code]
+                    rec.setdefault("needs", {}).setdefault(mode, {})[need] = round(float(v), 3)
+                    if scope == "paris" and need not in rec.setdefault("needs_paris", []):
+                        rec["needs_paris"].append(need)
 
 
 def round_coords(obj, digits=6):
@@ -145,6 +221,8 @@ def main():
             index_points.append([code, n_exp, ranks["access_care"][code]])
             if n_exp >= 2 and quarters["access_care"] == 4:
                 both += 1
+
+    need_positions({r["code"]: r for recs in by_commune.values() for r in recs}, inhabited)
 
     if OUT.exists():
         shutil.rmtree(OUT)

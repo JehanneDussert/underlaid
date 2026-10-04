@@ -500,3 +500,28 @@ def test_neighbourhood_files_cover_every_neighbourhood():
             assert e["rank"] is None or 0 <= e["rank"] <= 1
             q = score.loc[code, f"subscore_{k}_quartile"]
             assert (e["quarter"] is None and pd.isna(q)) or e["quarter"] == int(q)
+
+
+def test_need_positions_cover_inhabited_neighbourhoods():
+    """Need positions of the neighbourhood page (script 39, decided on
+    2026-10-04): every inhabited neighbourhood with travel times has a share
+    between 0 and 1 for each need and mode; toilets only in Paris, and
+    needs ranked among Paris neighbourhoods are listed as such."""
+    folder = config.DATA_PROCESSED / "quartiers"
+    if not folder.exists():
+        pytest.skip("neighbourhood files not built")
+    checked = 0
+    for path in folder.glob("[0-9]*.json"):
+        for rec in json.loads(path.read_text(encoding="utf-8"))["iris"]:
+            if not rec.get("inhabited") or "times" not in rec or "places" not in rec:
+                continue
+            needs = rec.get("needs")
+            assert needs, rec["code"]
+            for mode in ("free", "slow", "wheelchair"):
+                for need in ("care", "admin", "food", "children", "post", "police", "social", "cool"):
+                    v = needs[mode].get(need)
+                    assert v is None or 0 <= v <= 1
+                assert ("toilets" in needs[mode]) == rec["code"].startswith("75") or "paris_places" not in rec
+            assert set(rec.get("needs_paris", [])) <= {"cool", "toilets"}
+            checked += 1
+    assert checked > 2_500

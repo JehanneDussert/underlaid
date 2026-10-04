@@ -36,7 +36,7 @@ useSeoMeta({
 // Mirrors README "License & data attribution" — each license checked
 // against the publisher's own metadata, not assumed. Keep both in sync.
 const DATA_SOURCES = [
-  { name: { en: 'INSEE — BPE, Filosofi, 2021 census', fr: 'INSEE — BPE, Filosofi, Recensement 2021' }, license: 'lo' },
+  { name: { en: 'INSEE — BPE, Filosofi 2021, 2022 census', fr: 'INSEE — BPE, Filosofi 2021, Recensement 2022' }, license: 'lo' },
   { name: { en: 'IGN & INSEE — IRIS boundaries', fr: 'IGN & INSEE — contours IRIS' }, license: 'lo' },
   { name: { en: 'CSTB — Sat4BDNB (urban heat islands)', fr: 'CSTB — Sat4BDNB (îlots de chaleur)' }, license: 'lo' },
   { name: { en: "L'Institut Paris Region — green spaces, MOS land use", fr: "L'Institut Paris Region — espaces verts, MOS" }, license: 'lo' },
@@ -161,7 +161,7 @@ const lastUpdatedLabel = computed(() => {
 
 <template>
   <div class="methodology">
-    <router-link class="back-link" :to="{ name: localizedRouteName('map', locale) }">{{ t('methodology.backLink') }}</router-link>
+    <router-link class="back-link" :to="{ name: localizedRouteName('methodology', locale) }">{{ t('methodology.backLink') }}</router-link>
 
     <h1>{{ t('methodology.title') }}</h1>
     <p class="intro">{{ t('methodology.intro') }}</p>
@@ -204,7 +204,7 @@ const lastUpdatedLabel = computed(() => {
       <h3 id="osm-sidewalks">{{ t('methodology.sidewalkTitle') }}</h3>
       <p>{{ t('methodology.sidewalkBody1') }}</p>
       <p id="sidewalk-caption" class="table-caption">{{ t('methodology.sidewalkCaption') }}</p>
-      <div class="table-scroll">
+      <div class="table-scroll" tabindex="0" role="region" :aria-label="t('site.tableRegion')">
         <table class="dist-table sidewalk-table" aria-labelledby="sidewalk-caption">
           <thead>
             <tr>
@@ -318,12 +318,12 @@ const lastUpdatedLabel = computed(() => {
 .back-link {
   display: inline-block;
   margin-bottom: 24px;
-  font-size: 12.5px;
+  font-size: 15px;
   color: var(--text-secondary);
   text-decoration: none;
 }
 .back-link:hover {
-  color: var(--accent);
+  color: var(--primary);
 }
 
 h1 {
@@ -335,7 +335,7 @@ h1 {
 }
 
 .intro {
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.65;
   color: var(--text-secondary);
   margin: 0 0 32px;
@@ -353,7 +353,7 @@ h2 {
 }
 
 section p {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.65;
   color: var(--text-secondary);
   margin: 0 0 12px;
@@ -381,20 +381,20 @@ section p:last-child {
   background: var(--surface);
 }
 .subscore-card h3 {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   margin: 0 0 6px;
   color: var(--text-primary);
 }
 .subscore-card p {
-  font-size: 12.5px;
+  font-size: 15px;
   margin: 0;
 }
 
 .limits-list {
   margin: 12px 0 0;
   padding-left: 20px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -417,11 +417,11 @@ section p:last-child {
   gap: 2px 16px;
   padding: 8px 0;
   border-bottom: 1px solid var(--gridline);
-  font-size: 13.5px;
+  font-size: 16px;
 }
 .source-license {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 14px;
 }
 #data-licences {
   scroll-margin-top: 24px;
@@ -430,7 +430,7 @@ section p:last-child {
 .dist-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13.5px;
+  font-size: 16px;
   margin-top: 8px;
 }
 .dist-table th,
@@ -441,7 +441,7 @@ section p:last-child {
   color: var(--text-secondary);
 }
 .dist-table th {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 .dist-table td:first-child {
@@ -453,13 +453,13 @@ section p:last-child {
   overflow-x: auto;
 }
 .table-caption {
-  font-size: 13px !important;
+  font-size: 15px !important;
   color: var(--text-secondary);
   margin-bottom: 0 !important;
 }
 .sidewalk-table th[scope='row'] {
   font-family: inherit;
-  font-size: 13px;
+  font-size: 15px;
   text-transform: none;
   letter-spacing: normal;
   color: var(--text-primary);
@@ -469,7 +469,7 @@ section p:last-child {
   .sidewalk-table th,
   .sidewalk-table td {
     padding: 7px 4px;
-    font-size: 12px;
+    font-size: 14px;
   }
   .sidewalk-table th[scope='col'] {
     font-size: 9.5px;
@@ -486,18 +486,14 @@ section p:last-child {
 
 .dist-note {
   margin-top: 14px !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
   color: var(--text-muted) !important;
 }
 
 .press-kit-link {
   display: inline-block;
   margin-top: 4px;
-  font-size: 13px;
-  color: var(--accent);
-  text-decoration: none;
-}
-.press-kit-link:hover {
-  color: var(--magenta);
+  font-size: 17px;
+  color: var(--primary);
 }
 </style>

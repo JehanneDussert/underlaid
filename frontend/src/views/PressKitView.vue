@@ -124,20 +124,20 @@ function print() {
 }
 
 .back-link {
-  font-size: 12.5px;
+  font-size: 15px;
   color: var(--text-secondary);
   text-decoration: none;
 }
 .back-link:hover {
-  color: var(--accent);
+  color: var(--primary);
 }
 
 .print-btn {
-  font-size: 12px;
+  font-size: 16px;
   padding: 8px 16px;
   border-radius: 999px;
-  border: 1px solid var(--panel-b);
-  background: var(--dark);
+  border: 1px solid var(--primary);
+  background: var(--primary);
   color: #ffffff;
   font-weight: 600;
   cursor: pointer;
@@ -159,7 +159,7 @@ h1 {
 }
 
 .subtitle {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-secondary);
   margin: 0 0 22px;
 }
@@ -169,14 +169,14 @@ section {
 }
 
 h2 {
-  font-size: 13px;
+  font-size: 17px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--text);
   margin: 0 0 6px;
 }
 
 section p {
-  font-size: 12.5px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--text-secondary);
   margin: 0;
@@ -185,7 +185,7 @@ section p {
 section ul {
   margin: 0;
   padding-left: 16px;
-  font-size: 12.5px;
+  font-size: 15px;
   line-height: 1.55;
   color: var(--text-secondary);
 }
@@ -195,7 +195,7 @@ section ul li {
 
 table {
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 14px;
 }
 table td {
   padding: 3px 12px 3px 0;
@@ -212,7 +212,7 @@ footer {
   border-top: 1px solid var(--gridline);
 }
 footer p {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
   margin: 0 0 4px;
 }
@@ -255,6 +255,17 @@ footer p {
   }
   footer {
     border-top-color: #ccc;
+  }
+  /* The screen sizes are larger; print keeps the summary short. */
+  section p,
+  section li,
+  table td,
+  table th,
+  footer p {
+    font-size: 11px !important;
+  }
+  h2 {
+    font-size: 13px !important;
   }
 }
 </style>

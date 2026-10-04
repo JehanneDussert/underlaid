@@ -1,118 +1,6 @@
 {
-  "metrics": {
-    "cumulative": "Score de cumul",
-    "thermal": "Chaleur",
-    "pollution": "Air et bruit",
-    "housing": "Logement",
-    "accessCare": "Accès aux soins"
-  },
-  "nav": {
-    "methodology": "Méthodologie",
-    "ranking": "Classement",
-    "sources": "Sources",
-    "github": "GitHub"
-  },
-  "hero": {
-    "eyebrow": "Score de cumul en direct",
-    "prefix": "Là où ",
-    "grad": "tout se superpose",
-    "suffix": " à la fois.",
-    "body": "Chaleur, pollution de l'air et bruit, logement : Underlaid croise ces couches pour révéler, quartier par quartier, où les expositions s'accumulent à Paris et en petite couronne — et les met en regard des moyens des habitants pour y faire face."
-  },
-  "jargon": {
-    "iris": "Quartier : découpage statistique de l'INSEE (appelé IRIS), d'environ 2 000 habitants, plus fin qu'un arrondissement ou une commune.",
-    "quartile": "Les 2 752 quartiers sont répartis en 4 groupes de même taille pour ce critère, du quart le moins touché (1er) au quart le plus touché (4e).",
-    "cumulativeScore": "Le nombre de catégories (sur 4 : chaleur, pollution de l'air et bruit, logement, accès aux soins) pour lesquelles ce quartier fait partie du quart des quartiers les plus touchés — de 0 à 4.",
-    "secondaryResidences": "Part des logements qui sont des résidences secondaires ou des logements occasionnels (Insee, recensement 2022) — affiché comme contexte, jamais intégré au score. Un indicateur approximatif de la capacité à quitter physiquement le quartier en cas de canicule, que le revenu médian seul ne capture qu'indirectement.",
-    "capacity": "Moyens pour faire face : un axe séparé, jamais intégré au score d'exposition. Combine le revenu médian, la suroccupation des logements et la part de résidences secondaires (Insee : revenu 2021, recensement 2022), classés sur les 2 752 IRIS et répartis en trois groupes égaux.",
-    "overcrowding": "Part des résidences principales qui comptent moins de pièces que ce dont le ménage a besoin (définition INSEE, hors studios d'une personne). Dans un logement suroccupé, impossible de se replier dans une pièce plus fraîche.",
-    "accessCare": "Accès aux soins : les médecins généralistes et les pharmacies que les habitants peuvent atteindre sans voiture (à pied ou en transport en commun), rapportés à toutes les personnes qui peuvent atteindre les mêmes cabinets et officines. Plus le chiffre est bas, plus l'accès est faible.",
-    "mobility": "Mobilité inclusive : la même mesure d'accès aux médecins, recalculée pour un trajet sans marches et en n'utilisant que les arrêts et les trajets de transport déclarés accessibles en fauteuil roulant. Affichée pour information, elle n'entre pas dans le score : elle compare deux façons de se déplacer au même endroit, alors que le score compare des lieux entre eux."
-  },
-  "sidePanel": {
-    "sectionLabel": "Quartier sélectionné",
-    "prompt": "Cliquez un quartier sur la carte pour voir ses scores et ses chiffres."
-  },
   "footer": "Données : INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © les contributeurs d'OpenStreetMap",
   "footerLastUpdated": "Dernière mise à jour des données : {date}",
-  "legend": {
-    "worst": "{n} (le plus défavorable)",
-    "q": "{n}e quart",
-    "qBest": "1er quart (le moins touché)",
-    "qWorst": "4e quart (le plus touché)",
-    "noData": "Aucune donnée",
-    "qpvNote": "Contour ambre = quartier prioritaire (QPV, Politique de la Ville) officiel"
-  },
-  "buttons": {
-    "exportMap": "Exporter l'image de la carte (PNG)",
-    "incomeVsVulnerability": "Revenu vs. exposition ↗",
-    "context": "Contexte : chaleur, mortalité, écoles, arbres, éclairage, associations ↗",
-    "about": "À propos : sources d'inspiration ↗",
-    "qpvToggle": "Comparer aux quartiers prioritaires (QPV) officiels"
-  },
-  "modals": {
-    "incomeTitle": "Revenu médian vs. score de cumul d'exposition environnementale",
-    "contextTitle": "Contexte local",
-    "aboutTitle": "À propos d'Underlaid : sources d'inspiration"
-  },
-  "panel": {
-    "subscoresWorstQuartile": "catégories dans le quart des quartiers les plus touchés",
-    "evaluated": "({n} évalués)",
-    "concreteFigures": "Chiffres concrets",
-    "medianIncome": "Revenu médian",
-    "timeToEducation": "Temps vers l'équipement éducatif le plus proche",
-    "timeToHealth": "Temps vers l'équipement de santé le plus proche",
-    "timeToTransport": "Temps vers l'équipement de transport le plus proche",
-    "coolSpots400m": "Îlots de fraîcheur à moins de 400m",
-    "coolGreenArea": "Couverture d'espaces verts frais",
-    "heatVulnerabilityIndex": "Indice de vulnérabilité à la chaleur",
-    "airNoiseCoexposure": "Co-exposition air-bruit (11=meilleur, 33=pire)",
-    "housingFG": "Logements classés F/G (énergie)",
-    "thermosensitivity": "Thermosensibilité électrique hivernale (Enedis)",
-    "schoolsIPS": "Indice de position sociale des écoles à proximité (IPS)",
-    "middleSchoolsIPS": "Indice de position sociale des collèges à proximité (IPS)",
-    "pmrAccessible": "Entrées accessibles PMR (ERP documentés)",
-    "noData": "aucune donnée",
-    "insufficientData": "données insuffisantes",
-    "maskedIncome": "non publié (quartier trop peu peuplé)",
-    "minutes": "{n} min",
-    "cityMedian": "Médiane MGP : {value}",
-    "morevulnerable": "Plus exposé que {n} % des quartiers de la Métropole du Grand Paris",
-    "artificialization": "Surface artificialisée/imperméabilisée (occupation du sol MOS)",
-    "population": "Population (recensement 2022)",
-    "secondaryResidences": "Résidences secondaires / logements occasionnels",
-    "capacityTitle": "Moyens pour faire face",
-    "capacityTier": "Dans le {tier} de la métropole",
-    "capacitySeparate": "Un axe séparé : ces chiffres ne modifient jamais le score d'exposition.",
-    "capacityMasked": "L'INSEE ne publie pas le revenu de ce quartier (trop peu de ménages — secret statistique) : pas de classe de moyens.",
-    "overcrowding": "Logements suroccupés",
-    "accessContextTitle": "Autres repères d'accès — pour information, non notés",
-    "accessContextNote": "Ces anciens indicateurs ne mesurent pas l'accès de façon fiable sur toute la métropole (temps de trajet presque identiques partout, données fauteuil roulant lacunaires, et l'indice des écoles reflète les ressources des familles, déjà mesurées à part). Ils restent affichés pour information ; l'accès aux soins ci-dessus les remplace dans le score.",
-    "sparselyPopulated": "Quartier très peu habité (moins de 50 habitants) : ses chiffres décrivent un lieu plus que les personnes qui y vivent.",
-    "gpAccess": "Médecins généralistes à portée, sans voiture (pour 10 000 hab.)",
-    "pharmacyAccess": "Pharmacies à 15 min à pied (pour 10 000 hab.)",
-    "mobilityTitle": "Transports — mobilité inclusive (pour information, non notée)",
-    "gpAccessible": "Médecins à portée en fauteuil roulant (pour 10 000 hab.)",
-    "gapKept": "Part de l'accès conservée en fauteuil roulant",
-    "mobilityNote1": "L'inaccessibilité du métro pénalise surtout les déplacements en fauteuil roulant dans Paris, quel que soit le niveau de ressources du quartier.",
-    "mobilityNote2": "En nombre de médecins atteignables, l'accès en fauteuil roulant reste plus faible en petite couronne."
-  },
-  "search": {
-    "placeholder": "Rechercher une adresse à Paris ou en petite couronne…",
-    "outsideParis": "Cette adresse est en dehors de la Métropole du Grand Paris (Paris + Hauts-de-Seine, Seine-Saint-Denis, Val-de-Marne), seul périmètre couvert actuellement."
-  },
-  "share": {
-    "button": "Partager ce quartier ↓",
-    "tagline": "Cumul d'exposition environnementale, Paris et petite couronne — Underlaid",
-    "eyebrow": "Score de cumul",
-    "worst": "Oui",
-    "notWorst": "Non"
-  },
-  "heatwave": {
-    "bannerText": "— Île-de-France, 22-28 juin 2026 (dernière alerte connue ; pas de flux en direct — voir la méthodologie pour comprendre pourquoi).",
-    "moreLink": "Détails →",
-    "dismiss": "Fermer"
-  },
   "ranking": {
     "title": "Les quartiers où les expositions se cumulent",
     "intro": "Les quartiers de Paris et de la petite couronne qui font partie, pour au moins trois des quatre catégories suivies par Underlaid — chaleur, pollution de l'air et bruit, logement énergivore, accès aux soins —, du quart des quartiers les plus touchés du territoire. Les quatre quartiers concernés pour les quatre catégories sont présentés en premier.",
@@ -144,33 +32,18 @@
     "filterEmpty": "Aucun quartier de ce département n'atteint 3 sur 4.",
     "fig_gp": "Médecins à portée (pour 10 000 hab.)"
   },
-  "srTable": {
-    "caption": "Score de cumul pour les 2 752 quartiers de Paris et de la petite couronne, du plus élevé au plus faible. Ce tableau reprend le contenu de la carte pour les lecteurs d'écran.",
-    "colIris": "Quartier",
-    "colCommune": "Commune",
-    "colScore": "Score de cumul",
-    "colMeans": "Moyens pour faire face (tiers de la métropole)",
-    "meansMasked": "non publié"
-  },
   "scatter": {
-    "loading": "Chargement…",
-    "xAxis": "Revenu médian (€)",
-    "yAxis": "Score de cumul d'exposition environnementale",
-    "tooltipIncome": "Revenu :",
-    "tooltipScore": "Score de cumul :",
-    "tooltipScoreSuffix": "/ 4",
-    "caption": "Chaque point est un quartier ({n} quartiers dont le revenu est publié, sur 2 752 ; l'INSEE ne publie pas le revenu de 223 quartiers trop peu peuplés). Les points sont légèrement décalés en hauteur autour de leur score pour rester lisibles.",
-    "exportPng": "Télécharger le graphique (PNG)"
+    "loading": "Chargement…"
   },
   "methodology": {
-    "backLink": "← Retour à la carte",
+    "backLink": "← Retour à la méthode",
     "title": "Comment le score fonctionne",
     "intro": "Cette page existe pour que n'importe qui — pas seulement quelqu'un à l'aise avec le code — puisse vérifier ce que la carte affirme réellement, et où elle pourrait se tromper. La version technique complète se trouve dans SCORING.md, dans le dépôt public du projet ; ceci est le même contenu en langage clair.",
     "countTitle": "Pourquoi un cumul, pas une moyenne",
     "countBody1": "Une simple moyenne lissée masquerait exactement ce que ce projet existe pour montrer : des quartiers où plusieurs problèmes différents s'accumulent en même temps. Un quartier avec un problème sévère et deux scores médiocres peut finir avec la même moyenne qu'un quartier avec trois problèmes modérés — pourtant ce ne sont pas les mêmes situations, et une moyenne lissée ne permet pas de les distinguer.",
     "countBody2": "Underlaid compte donc, plutôt que de moyenner : pour chaque quartier, combien des 4 catégories ci-dessous le placent parmi le quart des quartiers les plus touchés (les 25 % les plus touchés des 2 752 quartiers de Paris et de la petite couronne pour cette catégorie). Ce nombre, de 0 à 4, est le score de cumul.",
     "notMeasuredTitle": "Ce que ce score ne mesure pas",
-    "notMeasuredBody1": "Ce score s'appelle un score d'exposition, délibérément pas un « score de vulnérabilité ». Les chercheurs en climat séparent généralement la vulnérabilité en trois éléments distincts : l'exposition (un lieu est-il physiquement soumis à la chaleur, la pollution, un logement dégradé ?), la sensibilité (dans quelle mesure cela nuit-il réellement aux personnes qui y vivent — âge, santé ?), et la capacité d'adaptation (peuvent-elles y remédier — des moyens pour agir, un logement assez grand pour trouver une pièce plus fraîche, la possibilité de partir pendant une canicule ?). Le score d'exposition ne mesure que le premier de ces trois éléments. La capacité d'adaptation est montrée à part (ci-dessous, et dans la vue « Exposition × moyens » de la carte), sans jamais être intégrée au score ; la sensibilité n'est pas mesurée.",
+    "notMeasuredBody1": "Ce score s'appelle un score d'exposition, délibérément pas un « score de vulnérabilité ». Les chercheurs en climat séparent généralement la vulnérabilité en trois éléments distincts : l'exposition (un lieu est-il physiquement soumis à la chaleur, la pollution, un logement dégradé ?), la sensibilité (dans quelle mesure cela nuit-il réellement aux personnes qui y vivent — âge, santé ?), et la capacité d'adaptation (peuvent-elles y remédier — des moyens pour agir, un logement assez grand pour trouver une pièce plus fraîche, la possibilité de partir pendant une canicule ?). Le score d'exposition ne mesure que le premier de ces trois éléments. La capacité d'adaptation est montrée à part (ci-dessous, et dans le thème « Ressources des habitants » de la carte), sans jamais être intégrée au score ; la sensibilité n'est pas mesurée.",
     "notMeasuredBody2": "Cela compte en pratique. Le graphique revenu vs. exposition sur la carte montre que l'exposition, telle que mesurée ici, ne suit pas fidèlement le revenu — chaque tranche de score couvre presque toute la gamme de revenus, y compris plusieurs des quartiers les plus aisés de la métropole. Un foyer aisé confronté à la même exposition physique (chaleur, bruit, un vieil appartement) a généralement plus de moyens d'y faire face qu'un foyer à faible revenu. Deux quartiers peuvent partager exactement le même score et faire face à des chances réelles très différentes de s'adapter — c'est précisément pourquoi cette page n'appelle jamais ce score « vulnérabilité ».",
     "notMeasuredBody3": "La séparation en « Groupe A » et « Groupe B » sur la page classement existe pour la même raison : elle distingue visuellement un quartier à faible revenu avec un vrai déficit de services d'un quartier plus aisé dont le score vient plutôt d'un bâti dense et ancien — même score d'exposition, point de départ très différent pour y faire face.",
     "subscoresTitle": "Les quatre catégories",
@@ -215,7 +88,7 @@
     "license_airBruit": "Données ouvertes, citation obligatoire",
     "licensesNote": "Citations obligatoires — INSEE : « Source : Insee ». Carte air-bruit : « Source des données : Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr ». OpenStreetMap : « © les contributeurs d'OpenStreetMap ». Horaires de transport : « Contient des informations de “Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub)”, mises à disposition par Île-de-France Mobilités aux conditions de la “Licence Mobilités” ». Pour citer Underlaid, voir le fichier CITATION.cff du dépôt GitHub, en précisant la date de l'instantané des données (indiquée en bas de chaque page).",
     "capacityTitle": "Moyens pour faire face : un axe séparé",
-    "capacityBody1": "La vue « Exposition × moyens » de la carte croise le score d'exposition avec une seconde mesure, séparée : les moyens des habitants pour y faire face. Elle combine trois chiffres de l'Insee (revenu 2021, recensement 2022) : le revenu médian, la part de logements suroccupés (moins de pièces que ce dont le ménage a besoin — pas de pièce plus fraîche où se replier) et la part de résidences secondaires (la possibilité de partir pendant une canicule). Chaque quartier est classé sur chacun des trois chiffres, les trois rangs sont moyennés, et les 2 752 quartiers sont répartis en trois groupes égaux : tiers le plus bas, médian et le plus haut de la métropole.",
+    "capacityBody1": "La carte montre, à côté du score d'exposition, une seconde mesure, séparée : les ressources des habitants pour y faire face (thème « Ressources des habitants », et filtre qui le croise avec les quartiers très exposés). Elle combine trois chiffres de l'Insee (revenu 2021, recensement 2022) : le revenu médian, la part de logements suroccupés (moins de pièces que ce dont le ménage a besoin — pas de pièce plus fraîche où se replier) et la part de résidences secondaires (la possibilité de partir pendant une canicule). Chaque quartier est classé sur chacun des trois chiffres, les trois rangs sont moyennés, et les 2 752 quartiers sont répartis en trois groupes égaux : tiers le plus bas, médian et le plus haut de la métropole.",
     "capacityBody2": "Cette mesure n'est jamais ajoutée au score d'exposition. Gardées à part, les deux se lisent côte à côte : deux quartiers également exposés peuvent avoir des moyens très différents d'y faire face. L'INSEE ne publie pas le revenu de 223 petits quartiers (surtout des bois, des parcs et des zones d'activités) : ils n'ont pas de classe de moyens et sont affichés comme tels, jamais estimés.",
     "capacityBody3": "Ce qu'elle montre : les quartiers très exposés ne font pas face aux mêmes expositions selon leurs moyens. Ceux aux moyens les plus élevés sont surtout à Paris et cumulent chaleur et logement ancien énergivore ; ceux aux moyens les plus faibles sont surtout en Seine-Saint-Denis et dans le Val-de-Marne et cumulent surtout la chaleur, la pollution de l'air et le bruit. Dans l'ensemble, le lien entre exposition et moyens est faible — et légèrement positif uniquement à cause du centre de Paris, dense et ancien ; dans les trois départements de petite couronne, il est quasi nul. Et là où forte exposition et faibles moyens se rejoignent, c'est concentré : en Seine-Saint-Denis, 62 % des quartiers très exposés (au moins 2 des 3 expositions : chaleur, air et bruit, logement) sont dans le tiers de moyens le plus bas de la métropole ; à Paris, 4,5 %.",
     "capacityBody4": "Ce qu'elle ne montre pas : elle mesure des moyens, pas ce que les ménages en font — rien ici ne dit si un logement est climatisé ni si quelqu'un peut s'absenter pendant une canicule. Les groupes sont relatifs à cette métropole, pas un seuil absolu de moyens « suffisants ».",
@@ -277,7 +150,7 @@
     "dataSources": "Données : INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif (« Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr ») · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités · IGN BD TOPO · DEPP · Acceslibre · Ville de Paris · © les contributeurs d'OpenStreetMap. Licence Ouverte 2.0, ODbL et Licence Mobilités — données publiées sous ODbL, code sous MIT. Liste complète : page méthodologie, « Sources de données et licences ».",
     "printButton": "Imprimer / Enregistrer en PDF",
     "meansTitle": "Moyens pour faire face — un axe séparé",
-    "meansBody": "Le score d'exposition ne dit pas qui peut y faire face. Une seconde mesure, séparée, le fait : revenu médian, logements suroccupés et résidences secondaires (Insee : revenu 2021, recensement 2022), classés et répartis en tiers de la métropole. Elle n'est jamais ajoutée au score ; la vue « Exposition × moyens » de la carte croise les deux. Les zones très exposées aux moyens les plus élevés sont surtout à Paris (chaleur, logement ancien) ; celles aux moyens les plus faibles surtout en Seine-Saint-Denis et dans le Val-de-Marne (chaleur, air et bruit). En Seine-Saint-Denis, 62 % des quartiers très exposés (au moins 2 des 3 expositions) sont dans le tiers de moyens le plus bas ; à Paris, 4,5 %. Elle mesure des moyens, pas ce que les ménages en font (par exemple la climatisation).",
+    "meansBody": "Le score d'exposition ne dit pas qui peut y faire face. Une seconde mesure, séparée, le fait : revenu médian, logements suroccupés et résidences secondaires (Insee : revenu 2021, recensement 2022), classés et répartis en tiers de la métropole. Elle n'est jamais ajoutée au score ; sur la carte, un filtre croise les deux. Les zones très exposées aux moyens les plus élevés sont surtout à Paris (chaleur, logement ancien) ; celles aux moyens les plus faibles surtout en Seine-Saint-Denis et dans le Val-de-Marne (chaleur, air et bruit). En Seine-Saint-Denis, 62 % des quartiers très exposés (au moins 2 des 3 expositions) sont dans le tiers de moyens le plus bas ; à Paris, 4,5 %. Elle mesure des moyens, pas ce que les ménages en font (par exemple la climatisation).",
     "accessCareLine": "Accès aux soins — médecins généralistes et pharmacies atteignables sans voiture, à pied ou en transport en commun, rapportés à toutes les personnes qui peuvent les atteindre.",
     "idfmNotice": "Contient des informations de « Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub) », mises à disposition par Île-de-France Mobilités aux conditions de la « Licence Mobilités »."
   },
@@ -365,66 +238,7 @@
     },
     "privacy": "L'adresse saisie est envoyée à la Base adresse nationale (service public) pour trouver votre quartier ; elle n'est ni conservée par Underlaid ni placée dans l'adresse de la page. Le site n'utilise ni cookies ni mesure d'audience. Votre choix de langue est gardé dans votre navigateur, et le code du dernier quartier consulté est gardé dans l'onglet, le temps de la visite. L'hébergeur (Vercel) tient des journaux techniques d'accès."
   },
-  "context": {
-    "intro": "Six faits qui ne sont pas comptés dans le score, parce qu'ils ne sont disponibles qu'à une échelle plus large que le quartier (arrondissement, commune, région). Ils sont affichés comme contexte. Trois ne concernent que Paris (signalé ci-dessous) : aucune source équivalente n'existe encore pour la petite couronne.",
-    "lifeExpectancyTitle": "Écarts d'espérance de vie (Paris uniquement)",
-    "lifeExpectancyBody": "Les 5e, 6e, 7e et 16e arrondissements comptent parmi les espérances de vie les plus élevées de l'agglomération parisienne (84 ans et plus). Les 18e, 19e, 20e et 10e arrondissements — plus denses, aux revenus plus modestes — vont de 79,9 à 80,9 ans (hommes) / 85,4 à 85,6 ans (femmes). Aucun chiffre équivalent n'a été trouvé pour les communes de la petite couronne.",
-    "lifeExpectancySource": "Source : Institut Paris Région / APUR, ORS Île-de-France.",
-    "heatwaveTitle": "Canicule de juin 2026 — surmortalité",
-    "heatwaveBodyStrong": "+619 décès (+62,8%)",
-    "heatwaveBody": "en Île-de-France, du 22 au 28 juin 2026 — un record national pour cette semaine-là, selon le décompte officiel de Santé publique France. Ce chiffre couvre déjà toute la région, Paris et petite couronne compris ; aucune déclinaison plus fine n'existe.",
-    "heatwaveSource": "Source : Santé publique France, communiqué de presse, 27/06/2026.",
-    "schoolsTitle": "Écoles climatisées pendant la canicule de juin 2026 (Paris uniquement)",
-    "schoolsLoading": "Chargement…",
-    "schoolsBody": "Plan annoncé le 20 juin 2026 par la Ville de Paris : plus de 1 200 climatiseurs d'appoint commandés pour 620 écoles. Des chiffres par arrondissement n'ont été publiés que pour 8 arrondissements sur 20 ; ils ont été relevés dans la presse et sur les sites des mairies d'arrondissement. Aucune information équivalente n'a été trouvée pour la petite couronne.",
-    "schoolsSource": "Source : mairies d'arrondissement / presse locale, compilé le 11/07/2026 — voir scripts/16_school_ac_context.py.",
-    "treesTitle": "L'âge de la canopée de rue (Paris uniquement)",
-    "treesBody": "Il n'existe pas de date de plantation publique pour les quelque 219 000 arbres de rue parisiens ; la circonférence du tronc (l'indice classique en arboriculture — plus large signifie plus âgé) sert donc de substitut. L'écart est réel : {lowName} affiche une moyenne de seulement {lowCm}cm, contre {highCm}cm pour {highName} — un indice approximatif de depuis combien de temps la canopée de chaque arrondissement pousse réellement, pas seulement de son volume actuel. L'inventaire des arbres de la Ville de Paris n'a pas d'équivalent en petite couronne, donc ce fait reste limité à Paris.",
-    "treesRow": "{cm}cm de circonférence moyenne, {young} encore de jeunes plants ({n} arbres recensés)",
-    "treesSource": "Source : Ville de Paris, jeu de données « Arbres » (opendata.paris.fr), agrégé par arrondissement.",
-    "lightingTitle": "Densité d'éclairage public (Paris uniquement)",
-    "lightingBody": "Un simple indice de visibilité nocturne — pas une mesure de sécurité réelle ou de délinquance. {lowName} a la densité la plus faible avec {lowDensity} lampadaires/km², contre {highDensity} lampadaires/km² pour {highName}. L'inventaire d'éclairage de la Ville de Paris n'a pas d'équivalent en petite couronne, donc ce fait reste limité à Paris.",
-    "lightingRow": "{n} lampadaires/km²",
-    "lightingSource": "Source : Ville de Paris, jeu de données « éclairage public » (opendata.paris.fr), agrégé par arrondissement.",
-    "rnaTitle": "Densité associative (Paris + petite couronne)",
-    "rnaBody": "Combien d'associations actuellement actives ont leur siège pour 1 000 habitants dans chaque commune, d'après le répertoire national (RNA) — couvre désormais les 143 communes de Paris et de la petite couronne, pas seulement les 20 arrondissements parisiens. {lowName} a le taux le plus faible avec {lowRate}/1 000, contre {highRate}/1 000 pour {highName}.",
-    "rnaCaveat": "Exprimé pour 1 000 habitants comme chiffre principal ; la densité par km² est affichée en complément car elle révèle une distorsion différente, que le taux par habitant seul ne corrige pas — les communes à plus faible densité par km² incluent le Bois de Vincennes et le Bois de Boulogne, dont la grande surface de parc à elle seule fait baisser ce chiffre, pas nécessairement une vie associative plus faible. Une adresse de siège social n'est pas non plus le lieu où vivent les membres d'une association ni où se déroule son activité. À lire comme un point de donnée, pas un verdict sur la santé civique.",
-    "rnaRow": "{rate} pour 1 000 habitants ({n}/km², {count} actuellement actives)",
-    "rnaSource": "Source : Répertoire National des Associations, miroir Île-de-France (data.iledefrance.fr), agrégé par commune ; population Insee, recensement 2022.",
-    "layerAsOf": "Données au {date} : la dernière mise à jour de cette source a échoué, sa version précédente est affichée."
-  },
   "footerLicense": "Code : MIT · Données : ODbL · Cartes et visuels : CC BY 4.0",
-  "footerLicenseLink": "Licences et attributions",
-  "view": {
-    "label": "Vue de la carte",
-    "exposure": "Exposition",
-    "bivariate": "Exposition × moyens"
-  },
-  "bivariate": {
-    "intro": "Chaque quartier est placé sur deux axes séparés : son niveau d'exposition (le score de cumul, regroupé en 0, 1, ou 2 et plus) et les moyens de ses habitants pour y faire face (tiers le plus bas, médian ou le plus haut de la métropole). Le score d'exposition lui-même ne change pas.",
-    "axisExposure": "Exposition →",
-    "axisMeans": "Moyens",
-    "meansHigher": "plus élevés",
-    "meansLower": "plus faibles",
-    "masked": "Revenu non publié : peu ou pas d'habitants (secret statistique)",
-    "cellTitle": "Exposition {exposure} · moyens : {means}",
-    "caption": "Plus foncé = expositions cumulées et moyens parmi les plus faibles",
-    "exposureLevel0": "0",
-    "exposureLevel1": "1",
-    "exposureLevel2": "2+",
-    "tier0": "tiers le plus bas",
-    "tier1": "tiers médian",
-    "tier2": "tiers le plus haut",
-    "cell_0_0": "Aucune des 4 catégories parmi le quart le plus touché, avec des moyens parmi les plus faibles de la métropole.",
-    "cell_0_1": "Aucune des 4 catégories parmi le quart le plus touché, avec des moyens dans la moyenne.",
-    "cell_0_2": "Aucune des 4 catégories parmi le quart le plus touché, avec des moyens parmi les plus élevés de la métropole.",
-    "cell_1_0": "Une catégorie parmi le quart le plus touché, avec des moyens parmi les plus faibles de la métropole.",
-    "cell_1_1": "Une catégorie parmi le quart le plus touché, avec des moyens dans la moyenne.",
-    "cell_1_2": "Une catégorie parmi le quart le plus touché, avec des moyens parmi les plus élevés de la métropole.",
-    "cell_2_0": "Au moins deux catégories parmi le quart le plus touché, avec des moyens parmi les plus faibles de la métropole : la combinaison où il est le plus difficile de compenser l'exposition par ses propres moyens.",
-    "cell_2_1": "Au moins deux catégories parmi le quart le plus touché, avec des moyens dans la moyenne.",
-    "cell_2_2": "Au moins deux catégories parmi le quart le plus touché, avec des moyens parmi les plus élevés de la métropole. L'exposition est bien réelle ; la carte ne dit pas quels moyens les habitants utilisent effectivement pour y faire face."
-  },
   "site": {
     "skipLink": "Aller au contenu",
     "navLabel": "Navigation principale",
@@ -716,221 +530,6 @@
     "searching": "Recherche en cours…",
     "loadingPlace": "Chargement du quartier…",
     "clear": "Effacer l'adresse"
-  },
-  "home": {
-    "eyebrow": "Paris et petite couronne · 2 752 quartiers",
-    "title": "Une même ville, des conditions de vie inégales.",
-    "lead": "Chaleur, pollution de l'air et bruit, logement, accès aux soins : les écarts entre quartiers, mesurés à partir de données publiques.",
-    "hint": "Les principaux constats sont présentés ci-dessous.",
-    "dep": {
-      "75": "Paris",
-      "92": "Hauts-de-Seine",
-      "93": "Seine-Saint-Denis",
-      "94": "Val-de-Marne"
-    },
-    "f1": {
-      "title": "{n} quartiers figurent parmi les plus touchés pour les quatre critères à la fois.",
-      "body": "Chaleur, pollution de l'air et bruit, logements énergivores, accès aux soins : ces situations sont le plus souvent cartographiées séparément. Leur superposition, quartier par quartier, l'est rarement.",
-      "body2": "{n} quartiers habités figurent parmi le quart des plus touchés pour au moins trois des quatre critères.",
-      "mapLink": "Voir la carte",
-      "listLink": "Voir la liste des {n} quartiers",
-      "alt": "Carte de Paris et de la petite couronne : chaque quartier est coloré selon le nombre de critères pour lesquels il figure parmi le quart des plus touchés, de 0 (rose clair) à 4 (bordeaux).",
-      "legend": "Nombre de critères pour lesquels le quartier figure parmi le quart des plus touchés",
-      "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif et Bruitparif, ADEME, Enedis, ANS, Île-de-France Mobilités"
-    },
-    "f2": {
-      "title": "À exposition égale, des situations sociales opposées.",
-      "body": "Parmi les quartiers très exposés dont les habitants ont les ressources les plus élevées, la plupart se trouvent à Paris et cumulent surtout la chaleur et des logements énergivores. Parmi ceux dont les habitants ont les ressources les plus faibles, la plupart se trouvent en Seine-Saint-Denis et dans le Val-de-Marne, et cumulent surtout la chaleur, la pollution de l'air et le bruit.",
-      "body2": "Sur l'ensemble de la métropole, le lien entre exposition et ressources est faible (corrélation de rang de {rho}), et légèrement positif à cause du centre de Paris, dense et ancien.",
-      "question": "Parmi les quartiers très exposés (au moins 2 des 3 expositions), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
-      "definition": "Les 3 expositions : chaleur, pollution de l'air et bruit, logement. L'accès aux soins est mesuré à part. Ressources des habitants : revenu médian, part de logements surpeuplés, part de résidences secondaires (Insee : revenu 2021, recensement 2022), mesurées à part du score.",
-      "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME"
-    },
-    "quiz": {
-      "kicker": "Question",
-      "question": "Où la part des points d'arrêt du métro accessibles en fauteuil roulant est-elle la plus élevée ?",
-      "right": "Réponse exacte : la Seine-Saint-Denis.",
-      "wrong": "Réponse inexacte : il s'agit de la Seine-Saint-Denis.",
-      "explanation": "Seine-Saint-Denis : {ssd} des points d'arrêt du métro signalés accessibles en fauteuil roulant. Paris : {paris}. En Seine-Saint-Denis, ce sont les points d'arrêt des prolongements récents des lignes 11 et 14.",
-      "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026, Licence Mobilités)"
-    },
-    "f3": {
-      "title": "L'accès aux soins dépend aussi du nombre de personnes qui se partagent l'offre.",
-      "body": "Nombre de médecins généralistes et de pharmacies accessibles à pied ou en transports en commun, rapporté à l'ensemble des habitants qui peuvent aussi les atteindre. Dans les Hauts-de-Seine et le Val-de-Marne, les quartiers aux ressources les plus faibles sont plus souvent parmi les moins bien desservis.",
-      "question": "Part des quartiers figurant parmi le quart des moins bien desservis en soins, selon les ressources des habitants",
-      "lowest": "Tiers aux ressources les plus faibles",
-      "highest": "Tiers aux ressources les plus élevées",
-      "density": "À densité de population égale, l'écart atteint {n92} points dans les Hauts-de-Seine et {n94} points dans le Val-de-Marne (test défini avant tout calcul, octobre 2026). En Seine-Saint-Denis, presque aucun quartier n'appartient au tiers aux ressources les plus élevées : la comparaison n'est pas possible.",
-      "wheelchair": "En fauteuil roulant, le nombre de médecins atteignables reste plus faible en petite couronne : médiane de {p} pour 10 000 habitants à Paris, {d92} dans les Hauts-de-Seine, {d93} en Seine-Saint-Denis, {d94} dans le Val-de-Marne. Il s'agit d'une limite basse : ni les ascenseurs en panne, ni l'état des trottoirs, ni une vitesse réduite ne sont pris en compte.",
-      "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités, OpenStreetMap"
-    },
-    "f4": {
-      "title": "Des données publiques inégales selon les territoires.",
-      "body": "Les trottoirs sont recensés par les contributeurs bénévoles d'OpenStreetMap. Ce recensement est presque complet à Paris et lacunaire en Seine-Saint-Denis : une donnée manquante ne signifie pas l'absence de trottoir. Ces données ont donc été écartées du calcul.",
-      "paris": "de la longueur des rues de Paris comporte une information sur les trottoirs",
-      "ssd": "en Seine-Saint-Denis",
-      "sources": "contributeurs d'OpenStreetMap (extrait du 30 septembre 2026), calcul Underlaid"
-    },
-    "consult": "Consulter un quartier"
-  },
-  "addressPage": {
-    "title": "Consulter un quartier",
-    "another": "Consulter une autre adresse",
-    "outside": "Cette adresse ne se trouve pas à Paris ni en petite couronne.",
-    "loadError": "Les données n'ont pas pu être chargées. Réessayez plus tard.",
-    "score": "Score de cumul : {score} sur 4 — {domains}.",
-    "scoreZero": "Score de cumul : {score} sur 4 — aucun critère parmi le quart des quartiers les plus touchés.",
-    "scoreUnknown": "Score de cumul non calculé : données insuffisantes pour ce quartier.",
-    "scoreLink": "Comment ce score est calculé",
-    "controlsLabel": "Réglages de l'affichage",
-    "summary": "Ce quartier est moins favorable que la médiane métropolitaine sur {n} des {total} critères évalués.",
-    "modeLabel": "Mode de déplacement",
-    "modeStandard": "Sans contrainte",
-    "modeStepFree": "Sans marches (fauteuil roulant, poussette)",
-    "compare": "Comparer avec un autre quartier",
-    "compareLabel": "Adresse à comparer",
-    "compareClose": "Retirer la comparaison",
-    "moreFav": "Plus favorable",
-    "median": "Médiane métropolitaine",
-    "lessFav": "Moins favorable",
-    "infoTag": "pour information",
-    "titles": {
-      "thermal": "Chaleur",
-      "pollution": "Pollution de l'air et bruit",
-      "housing": "Logement",
-      "cool": "Lieux et espaces de fraîcheur",
-      "care": "Accès aux soins",
-      "transport": "Transports"
-    },
-    "rows": {
-      "thermal": "Exemple : sols artificialisés sur {v} de la surface, contre {m} en médiane.",
-      "pollution": "Indice combinant pollution de l'air et bruit (Airparif, Bruitparif) : {v}, contre {m} en médiane. Il va de 11 pour les quartiers les moins exposés à 33 pour les plus exposés.",
-      "housing": "Exemple : {v} de logements classés F ou G, contre {m} en médiane.",
-      "cool": "Piscines, bibliothèques et musées à moins de 400 m : {n}, contre {mn} en médiane ; espaces verts frais : {g} de la surface, contre {mg}.",
-      "care": "Médecins généralistes accessibles à pied ou en transports en commun : {gp} pour 10 000 habitants, contre {mgp} en médiane ; pharmacies à 15 minutes à pied : {ph}, contre {mph}.",
-      "careStepFree": "Médecins généralistes accessibles sans marches : {v} pour 10 000 habitants, contre {m} en médiane. Les pharmacies ne sont pas recalculées pour ce mode.",
-      "transport": "En fauteuil roulant ou avec une poussette, ce quartier conserve {v} de son accès aux médecins (médiane : {m}). C'est la part des médecins atteignables qui le restent en évitant les escaliers et les transports non accessibles."
-    },
-    "moreFavourable": "Plus favorable que {n} % des quartiers",
-    "lessFavourable": "Moins favorable que {n} % des quartiers",
-    "noData": "Donnée non disponible",
-    "means": "Ressources des habitants (revenu médian, logements surpeuplés, résidences secondaires) : {third} de la métropole. Elles sont mesurées à part et n'entrent pas dans le score.",
-    "meansMasked": "Ressources des habitants : non publiées pour ce quartier (secret statistique de l'INSEE).",
-    "third0": "tiers le plus bas",
-    "third1": "tiers médian",
-    "third2": "tiers le plus élevé",
-    "meansLink": "Pourquoi une mesure distincte",
-    "note": "Position : rang du quartier parmi les {n} quartiers habités (50 habitants ou plus), le milieu de l'échelle correspondant à la médiane. Pour les lieux et espaces de fraîcheur, moyenne des rangs des deux indicateurs. Seuls l'accès aux soins et les transports varient selon le mode de déplacement.",
-    "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif et Bruitparif, ADEME, Enedis, ANS, FINESS, Île-de-France Mobilités, OpenStreetMap",
-    "onMap": "Voir ce quartier sur la carte",
-    "otherPos": "{name} : {text}",
-    "scope": {
-      "thermal": "La position porte sur l'ensemble du critère : vulnérabilité à la chaleur, sols artificialisés, espaces verts frais, lieux frais.",
-      "housing": "La position porte sur l'ensemble du critère : logements classés F ou G, sensibilité de la consommation électrique au froid."
-    },
-    "legendLabel": "Légende des repères",
-    "legendWorse": "{name}, moins favorable que la médiane",
-    "legendBetter": "{name}, plus favorable que la médiane",
-    "blocks": {
-      "exposure": {
-        "title": "Ce que le quartier subit",
-        "intro": "Expositions mesurées sur place, quelle que soit la façon de se déplacer."
-      },
-      "access": {
-        "title": "Ce à quoi on accède depuis le quartier",
-        "intro": "Soins et transports atteignables depuis le quartier ; les résultats dépendent du mode de déplacement."
-      }
-    }
-  },
-  "quiz": {
-    "progress": "Question {n} sur {total}",
-    "score": "Score : {n}",
-    "optionsLabel": "Réponses possibles",
-    "right": "Réponse exacte.",
-    "wrong": "Réponse inexacte : la bonne réponse est {answer}.",
-    "next": "Question suivante",
-    "seeResult": "Voir le résultat",
-    "result": "{n} réponses exactes sur {total}",
-    "endText": "Chaque réponse provient de données publiques, avec sa source et sa date. La méthode détaille les définitions utilisées.",
-    "toAddress": "Consulter un quartier",
-    "toMethod": "Voir la méthode",
-    "restart": "Recommencer",
-    "q": {
-      "metro": {
-        "question": "Dans quel département la part des points d'arrêt du métro accessibles en fauteuil roulant est-elle la plus élevée ?",
-        "explanation": "Seine-Saint-Denis : {d93} des points d'arrêt du métro signalés accessibles en fauteuil roulant. Val-de-Marne : {d94}. Paris : {p}. Hauts-de-Seine : {d92}. En Seine-Saint-Denis, ce sont les points d'arrêt des prolongements récents des lignes 11 et 14.",
-        "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026, Licence Mobilités)"
-      },
-      "sidewalks": {
-        "question": "Dans OpenStreetMap, quelle part de la longueur des rues de Seine-Saint-Denis comporte une information sur les trottoirs ?",
-        "explanation": "{ssd}, contre {paris} à Paris. Une information manquante ne signifie pas l'absence de trottoir : ces données ont été écartées du calcul, faute de pouvoir comparer les territoires.",
-        "sources": "contributeurs d'OpenStreetMap (extrait du 30 septembre 2026), calcul Underlaid du 1er octobre 2026"
-      },
-      "exposed": {
-        "question": "En Seine-Saint-Denis, parmi les quartiers très exposés (au moins 2 des 3 expositions : chaleur, air et bruit, logement), quelle part se trouve aussi dans le tiers de la métropole où les habitants ont le moins de ressources ?",
-        "explanation": "{v}. À Paris, cette part est de {paris}. À exposition égale, les situations sociales diffèrent fortement d'un territoire à l'autre.",
-        "sources": "INSEE, CSTB, Airparif et Bruitparif, ADEME"
-      },
-      "care": {
-        "question": "Dans les Hauts-de-Seine, à densité de population égale, l'accès aux soins (médecins généralistes et pharmacies) des quartiers aux ressources les plus faibles est-il meilleur, équivalent ou moins bon que celui des quartiers les plus aisés ?",
-        "better": "Meilleur",
-        "same": "Équivalent",
-        "worse": "Moins bon",
-        "explanation": "Moins bon. Dans les Hauts-de-Seine, {low} des quartiers aux ressources les plus faibles figurent parmi le quart des moins bien desservis en soins, contre {high} des quartiers aux ressources les plus élevées. À densité de population égale, l'écart atteint {gap} points : il ne vient donc pas seulement de l'opposition entre zones denses et moins denses.",
-        "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités ; test défini avant tout calcul (octobre 2026)"
-      }
-    }
-  },
-  "mapPage": {
-    "title": "Carte des 2 752 quartiers",
-    "lead": "Chaque quartier est coloré selon le nombre de critères — chaleur, pollution de l'air et bruit, logement, accès aux soins — pour lesquels il figure parmi le quart des plus touchés. Cliquez sur un quartier ou saisissez une adresse."
-  },
-  "routes": {
-    "title": "Un même trajet, des durées inégales.",
-    "lead": "Depuis votre quartier, durée jusqu'à la destination la plus proche de chaque type, selon la façon de se déplacer et l'heure de départ.",
-    "formLabel": "Choix du trajet",
-    "from": "Départ (adresse)",
-    "to": "Destination la plus proche",
-    "when": "Heure de départ",
-    "stationNoSlot": "Les stations se rejoignent à pied : la durée ne dépend pas de l'heure.",
-    "types": {
-      "emergency": "Urgences",
-      "gp": "Médecin généraliste",
-      "pharmacy": "Pharmacie",
-      "town_hall": "Mairie",
-      "france_services": "France Services",
-      "caf": "CAF",
-      "cpam": "CPAM",
-      "employment": "France Travail",
-      "post_office": "Bureau de poste",
-      "station": "Station du réseau lourd (métro, RER, train, tram)"
-    },
-    "slots": {
-      "tue10": "Mardi, 10 h",
-      "tue21": "Mardi, 21 h",
-      "tue01": "Nuit, 1 h",
-      "sun10": "Dimanche, 10 h"
-    },
-    "profiles": {
-      "standard": "Sans contrainte",
-      "slow": "Marche lente (3,4 km/h)",
-      "step_free_no": "Sans marches (fauteuil roulant, poussette)"
-    },
-    "resultTitle": "{dest} la plus proche depuis {name}, {commune}",
-    "minutes": "{n} min",
-    "over90": "plus de 90 min",
-    "ratio": "Sans marches, la durée du trajet est multipliée par {n}.",
-    "detour": "Détour imposé par les escaliers et les transports non accessibles : {n} min de plus.",
-    "variant": "Si les arrêts dont l'accessibilité n'est pas renseignée sont en réalité accessibles : {v} sans marches.",
-    "noValue": "Pas de résultat pour ce quartier (aucun habitant recensé dans la grille de l'INSEE).",
-    "unavailable": "Les résultats sont en cours de calcul et seront publiés prochainement.",
-    "note": "Durée médiane pour les habitants du quartier, porte à porte, à pied et en transports en commun, pour des départs étalés sur une heure. La destination la plus proche peut différer selon le mode de déplacement. L'accessibilité du bâtiment d'arrivée n'est pas connue. Jours de référence : mardi 13 et dimanche 11 octobre 2026.",
-    "sources": "Île-de-France Mobilités (horaires du 1er octobre 2026, Licence Mobilités), OpenStreetMap, IGN, INSEE (BPE 2025, grille de population 2021), ANCT, annuaire de l'administration (DILA), ANS, FINESS",
-    "slotsLimited": "Soirée, nuit et dimanche : durées affichées seulement pour les urgences. Les horaires d'ouverture des services et les gardes des médecins et pharmacies ne figurent pas dans les données.",
-    "infoOnly": "pour information",
-    "infoOnlyNote": "Pour information : le médecin et la pharmacie les plus proches sont à quelques minutes dans presque tous les quartiers ; l'accès aux soins noté tient compte du nombre de personnes qui se partagent chaque cabinet ou officine (page Par adresse).",
-    "lowerBound": "Durée sans marches : une limite basse. Le calcul évite les escaliers et les arrêts déclarés non accessibles, mais ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni d'une vitesse réduite, ni de l'accessibilité du bâtiment d'arrivée.",
-    "stationAccessible": "Sans marches : point d'arrêt accessible le plus proche"
   },
   "modes": {
     "free": "Sans contrainte",

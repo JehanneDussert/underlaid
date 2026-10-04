@@ -131,7 +131,7 @@ function figures(p) {
 
 <template>
   <div class="ranking-view">
-    <router-link class="back-link" :to="{ name: localizedRouteName('map', locale) }">{{ t('methodology.backLink') }}</router-link>
+    <router-link class="back-link" :to="{ name: localizedRouteName('methodology', locale) }">{{ t('methodology.backLink') }}</router-link>
 
     <h1>{{ t('ranking.title') }}</h1>
     <p class="intro">{{ t('ranking.intro') }}</p>
@@ -203,7 +203,7 @@ function figures(p) {
   align-items: center;
   gap: 10px 14px;
   margin: 8px 0 24px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
 }
 .filter select {
@@ -218,7 +218,7 @@ function figures(p) {
   color: #14161a;
 }
 .filter-count {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-muted);
 }
 .three-title {
@@ -230,7 +230,7 @@ function figures(p) {
   margin-left: 8px;
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
   background: var(--accent);
   color: #ffffff;
@@ -248,12 +248,12 @@ function figures(p) {
 .back-link {
   display: inline-block;
   margin-bottom: 24px;
-  font-size: 12.5px;
+  font-size: 15px;
   color: var(--text-secondary);
   text-decoration: none;
 }
 .back-link:hover {
-  color: var(--accent);
+  color: var(--primary);
 }
 
 h1 {
@@ -265,14 +265,14 @@ h1 {
 }
 
 .intro {
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.65;
   color: var(--text-secondary);
   margin: 0 0 14px;
 }
 
 .tie-notice {
-  font-size: 12.5px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--text-muted);
   font-style: italic;
@@ -280,7 +280,7 @@ h1 {
 }
 
 .intro-split {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.65;
   color: var(--text-secondary);
   margin: 0 0 28px;
@@ -291,7 +291,7 @@ h1 {
 
 .loading {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .ranking-group {
@@ -309,7 +309,7 @@ h1 {
 }
 
 .group-desc {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.55;
   color: var(--text-muted);
   margin: 0 0 14px;
@@ -337,24 +337,24 @@ h1 {
 }
 .name {
   font-weight: 700;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--text-primary);
 }
 .commune {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
 .gap-sentence {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.55;
   color: var(--text-secondary);
 }
 
 .footnote {
   margin-top: 24px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-muted);
 }
 
@@ -372,7 +372,7 @@ h1 {
   }
 }
 .figures li {
-  font-size: 12.5px;
+  font-size: 15px;
   color: var(--text-secondary);
 }
 .figures .fig-value {
@@ -381,7 +381,7 @@ h1 {
 }
 .figures .fig-median {
   display: block;
-  font-size: 10.5px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 </style>

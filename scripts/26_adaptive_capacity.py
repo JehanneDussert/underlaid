@@ -9,7 +9,8 @@ score itself harder to read or defend: two neighborhoods with the same
 exposure can have very different means to cope with it.
 
 Index = mean of the percentile ranks (0-1, higher = more capacity) of
-three indicators, all INSEE 2021, all at IRIS level:
+three indicators, all INSEE, all at IRIS level (income: Filosofi 2021;
+housing: 2022 census):
   - median disposable income (Filosofi) — financial means;
   - housing overcrowding rate (RP logement), reversed — room to get away
     from the heat inside one's own home;
@@ -117,7 +118,7 @@ def main():
     payload = {
         "description": (
             "Adaptive-capacity index per IRIS (mean percentile rank of median income, "
-            "reversed overcrowding rate, secondary-residence rate; INSEE 2021) and its "
+            "reversed overcrowding rate, secondary-residence rate; INSEE Filosofi 2021 and 2022 census) and its "
             "tertile class, plus the exposure class (0, 1, 2+) of the cumulative exposure "
             "score. Separate axis: never part of the exposure score. See SCORING.md."
         ),

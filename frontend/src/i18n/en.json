@@ -1,118 +1,6 @@
 {
-  "metrics": {
-    "cumulative": "Cumulative score",
-    "thermal": "Heat",
-    "pollution": "Air and noise",
-    "housing": "Housing",
-    "accessCare": "Access to care"
-  },
-  "nav": {
-    "methodology": "Methodology",
-    "ranking": "Ranking",
-    "sources": "Sources",
-    "github": "GitHub"
-  },
-  "hero": {
-    "eyebrow": "Live cumulative score",
-    "prefix": "Where ",
-    "grad": "everything overlaps",
-    "suffix": " at once.",
-    "body": "Heat, air and noise pollution, housing: Underlaid cross-references these layers to reveal, neighborhood by neighborhood, where exposures stack up across Paris and its inner suburbs — and sets them beside residents' means to cope."
-  },
-  "jargon": {
-    "iris": "Neighbourhood: INSEE's statistical division (called IRIS), about 2,000 residents, finer than an arrondissement or a commune.",
-    "quartile": "For this criterion, the 2,752 neighbourhoods are split into 4 groups of equal size, from the least affected quarter (1) to the most affected (4).",
-    "cumulativeScore": "How many of the 4 categories (heat, air/noise pollution, housing, access to care) place this neighborhood among the most affected quarter of neighborhoods — 0 to 4.",
-    "secondaryResidences": "Share of housing units that are secondary residences or occasional dwellings (INSEE, 2022 census) — shown as context, never part of the score. A rough proxy for the ability to physically leave during a heatwave, which median income alone only captures indirectly.",
-    "capacity": "Means to cope: a separate axis, never part of the exposure score. Combines median income, housing overcrowding and the share of secondary residences (INSEE: income 2021, 2022 census), ranked across the 2,752 IRIS and split into three equal groups.",
-    "overcrowding": "Share of main residences with fewer rooms than the household needs (INSEE definition; one-person studios excluded). In an overcrowded home there's no cooler room to retreat to.",
-    "accessCare": "Access to care: the GPs and pharmacies residents can reach without a car (on foot or by public transport), shared among everyone who can reach the same practices and pharmacies. The lower the figure, the weaker the access.",
-    "mobility": "Inclusive mobility: the same GP access measure, recomputed for a step-free trip using only the stops and journeys declared wheelchair-accessible. Shown for information, it isn't part of the score: it compares two ways of travelling in the same place, while the score compares places."
-  },
-  "sidePanel": {
-    "sectionLabel": "Selected neighborhood",
-    "prompt": "Click a neighborhood on the map to see its scores and figures."
-  },
   "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors",
   "footerLastUpdated": "Data last updated: {date}",
-  "legend": {
-    "worst": "{n} (least favourable)",
-    "q": "Quarter {n}",
-    "qBest": "Quarter 1 (least affected)",
-    "qWorst": "Quarter 4 (most affected)",
-    "noData": "No data",
-    "qpvNote": "Amber outline = official priority neighborhood (QPV, Politique de la Ville) boundary"
-  },
-  "buttons": {
-    "exportMap": "Export map snapshot (PNG)",
-    "incomeVsVulnerability": "Income vs. exposure ↗",
-    "context": "Context: heat, mortality, schools, trees, lighting, associations ↗",
-    "about": "About: sources of inspiration ↗",
-    "qpvToggle": "Compare to official priority neighborhoods (QPV)"
-  },
-  "modals": {
-    "incomeTitle": "Median income vs. cumulative environmental exposure score",
-    "contextTitle": "Local context",
-    "aboutTitle": "About Underlaid: sources of inspiration"
-  },
-  "panel": {
-    "subscoresWorstQuartile": "categories in the most affected quarter of neighborhoods",
-    "evaluated": "({n} evaluated)",
-    "concreteFigures": "Concrete figures",
-    "medianIncome": "Median income",
-    "timeToEducation": "Time to nearest education equipment",
-    "timeToHealth": "Time to nearest health equipment",
-    "timeToTransport": "Time to nearest transport equipment",
-    "coolSpots400m": "Cool spots within 400m",
-    "coolGreenArea": "Cool green area coverage",
-    "heatVulnerabilityIndex": "Heat vulnerability index",
-    "airNoiseCoexposure": "Air-noise co-exposure (11=best, 33=worst)",
-    "housingFG": "Housing rated F/G (energy)",
-    "thermosensitivity": "Electricity use temperature-sensitivity (winter, Enedis)",
-    "schoolsIPS": "Nearby schools' social index (IPS)",
-    "middleSchoolsIPS": "Nearby middle schools' social index (IPS)",
-    "pmrAccessible": "Wheelchair-accessible entrances (documented ERPs)",
-    "noData": "no data",
-    "insufficientData": "insufficient data",
-    "maskedIncome": "not published (sparsely populated neighbourhood)",
-    "minutes": "{n} min",
-    "cityMedian": "MGP median: {value}",
-    "morevulnerable": "More exposed than {n}% of the neighbourhoods of the Greater Paris metropolis",
-    "artificialization": "Artificialized/sealed surface (MOS land use)",
-    "population": "Population (2022 census)",
-    "secondaryResidences": "Secondary residences / occasional dwellings",
-    "capacityTitle": "Means to cope",
-    "capacityTier": "In the {tier} of the metro area",
-    "capacitySeparate": "A separate axis: these figures never change the exposure score.",
-    "capacityMasked": "INSEE doesn't publish income for this neighborhood (too few households — statistical secrecy), so it has no means class.",
-    "overcrowding": "Overcrowded homes",
-    "accessContextTitle": "Other access figures — for information, not scored",
-    "accessContextNote": "These earlier indicators don't measure access reliably across the whole metro area (travel times are almost identical everywhere, wheelchair data is sparse, and the school index reflects families' resources, already measured separately). They stay on display for information; access to care above replaces them in the score.",
-    "sparselyPopulated": "Very sparsely populated neighborhood (fewer than 50 residents): its figures describe a place more than the people living there.",
-    "gpAccess": "GPs within reach, without a car (per 10,000 residents)",
-    "pharmacyAccess": "Pharmacies within a 15-min walk (per 10,000 residents)",
-    "mobilityTitle": "Transport — inclusive mobility (for information, not scored)",
-    "gpAccessible": "GPs within reach in a wheelchair (per 10,000 residents)",
-    "gapKept": "Share of access kept in a wheelchair",
-    "mobilityNote1": "Metro inaccessibility mostly penalises wheelchair journeys within Paris, whatever the neighbourhood's level of resources.",
-    "mobilityNote2": "Counted in GPs within reach, wheelchair access remains lower in the inner suburbs."
-  },
-  "search": {
-    "placeholder": "Search an address in Paris or the inner suburbs…",
-    "outsideParis": "This address is outside the Metropole du Grand Paris (Paris + Hauts-de-Seine, Seine-Saint-Denis, Val-de-Marne), which is the only area currently covered."
-  },
-  "share": {
-    "button": "Share this neighborhood ↓",
-    "tagline": "Cumulative environmental exposure, Paris & inner suburbs — Underlaid",
-    "eyebrow": "Cumulative score",
-    "worst": "Yes",
-    "notWorst": "No"
-  },
-  "heatwave": {
-    "bannerText": "— Île-de-France, June 22–28, 2026 (last known alert; no live feed — see the methodology for why).",
-    "moreLink": "Details →",
-    "dismiss": "Dismiss"
-  },
   "ranking": {
     "title": "Where exposures stack up",
     "intro": "The neighborhoods of Paris and its inner suburbs that are among the most affected quarter of the region's neighborhoods for at least three of the four categories Underlaid tracks — heat, air and noise pollution, energy-inefficient housing, access to care. The four neighborhoods in that position for all four categories come first.",
@@ -144,33 +32,18 @@
     "filterEmpty": "No neighborhood in this department reaches 3 out of 4.",
     "fig_gp": "GPs within reach (per 10,000)"
   },
-  "srTable": {
-    "caption": "Cumulative score for the 2,752 neighbourhoods of Paris and its inner suburbs, highest first. This table repeats the map's content for screen readers.",
-    "colIris": "Neighbourhood",
-    "colCommune": "Commune",
-    "colScore": "Cumulative score",
-    "colMeans": "Means to cope (third of the metro area)",
-    "meansMasked": "not published"
-  },
   "scatter": {
-    "loading": "Loading…",
-    "xAxis": "Median income (€)",
-    "yAxis": "Cumulative environmental exposure score",
-    "tooltipIncome": "Income:",
-    "tooltipScore": "Cumulative score:",
-    "tooltipScoreSuffix": "/ 4",
-    "caption": "Each dot is a neighbourhood ({n} neighbourhoods with published income, out of 2,752; INSEE does not publish income for 223 sparsely populated neighbourhoods). Dots are slightly offset vertically around their score to stay readable.",
-    "exportPng": "Download chart (PNG)"
+    "loading": "Loading…"
   },
   "methodology": {
-    "backLink": "← Back to the map",
+    "backLink": "← Back to the method",
     "title": "How the score works",
     "intro": "This page exists so anyone — not just someone comfortable reading code — can check what the map is actually claiming, and where it might be wrong. The full technical version lives in SCORING.md in the project's public repository; this is the same content in plain language.",
     "countTitle": "Why a count, not an average",
     "countBody1": "A single blended average would hide exactly what this project exists to show: neighborhoods where several different problems pile up at once. A neighborhood with one severe problem and two mediocre ones can end up with the same average as a neighborhood with three moderately-bad ones — but those are not the same situation, and a smoothed average can't tell them apart.",
     "countBody2": "So instead of averaging, Underlaid counts: for each neighbourhood, how many of the 4 categories below place it among the most affected quarter of neighbourhoods (the 25% most affected of the 2,752 neighbourhoods of Paris and its inner suburbs for that category). That number, from 0 to 4, is the cumulative score.",
     "notMeasuredTitle": "What this score doesn't measure",
-    "notMeasuredBody1": "This is called an exposure score, deliberately not a \"vulnerability score.\" Climate researchers usually split vulnerability into three separate things: exposure (is a place physically subject to heat, pollution, bad housing?), sensitivity (how much does that actually harm the people there — age, health?), and adaptive capacity (can they do something about it — the means to act, a home large enough to find a cooler room, the option to leave during a heatwave?). The exposure score only measures the first one. Adaptive capacity is shown separately (below, and in the map's \"Exposure × means\" view) and never folded into the score; sensitivity isn't measured.",
+    "notMeasuredBody1": "This is called an exposure score, deliberately not a \"vulnerability score.\" Climate researchers usually split vulnerability into three separate things: exposure (is a place physically subject to heat, pollution, bad housing?), sensitivity (how much does that actually harm the people there — age, health?), and adaptive capacity (can they do something about it — the means to act, a home large enough to find a cooler room, the option to leave during a heatwave?). The exposure score only measures the first one. Adaptive capacity is shown separately (below, and in the map's \"Residents' resources\" theme) and never folded into the score; sensitivity isn't measured.",
     "notMeasuredBody2": "That matters in practice. The income-vs-exposure chart on the map shows that exposure, as measured here, doesn't reliably track income — every score band spans nearly the whole income range, including several of the metro area's wealthiest neighborhoods. A wealthy household facing the same physical exposure (heat, noise, an old apartment) usually has more ways to cope with it than a low-income one does. Two neighborhoods can share the exact same score and still face very different real odds of coping — which is precisely why this page never calls that score \"vulnerability.\"",
     "notMeasuredBody3": "The ranking page's split into \"Group A\" and \"Group B\" exists for the same reason: it keeps a lower-income neighborhood with a real service shortfall visually distinct from a wealthier one whose score comes from dense, older housing stock instead — same exposure score, different starting point for coping with it.",
     "subscoresTitle": "The four categories",
@@ -215,7 +88,7 @@
     "license_airBruit": "Open data, mandatory citation",
     "licensesNote": "Mandatory citations — INSEE: \"Source: Insee\". Air-noise map: \"Source des données : Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr\". OpenStreetMap: \"© OpenStreetMap contributors\". Transport timetables: \"Contains information from ‘Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub)’, made available by Île-de-France Mobilités under the terms of the ‘Licence Mobilités’.\" To cite Underlaid, see the repository's CITATION.cff file, and state the data snapshot date (shown at the bottom of every page).",
     "capacityTitle": "Means to cope: a separate axis",
-    "capacityBody1": "The map's \"Exposure × means\" view crosses the exposure score with a second, separate measure: the means residents have to cope. It combines three INSEE figures (income 2021, 2022 census): median income, the share of overcrowded homes (fewer rooms than the household needs — no cooler room to retreat to), and the share of secondary residences (the option to leave during a heatwave). Each neighborhood is ranked on each figure, the three ranks are averaged, and the 2,752 neighborhoods are split into three equal groups: lowest, middle and highest third of the metro area.",
+    "capacityBody1": "Next to the exposure score, the map shows a second, separate measure: the resources residents have to cope (the \"Residents' resources\" theme, and a filter that crosses it with highly exposed neighbourhoods). It combines three INSEE figures (income 2021, 2022 census): median income, the share of overcrowded homes (fewer rooms than the household needs — no cooler room to retreat to), and the share of secondary residences (the option to leave during a heatwave). Each neighborhood is ranked on each figure, the three ranks are averaged, and the 2,752 neighborhoods are split into three equal groups: lowest, middle and highest third of the metro area.",
     "capacityBody2": "It is never added to the exposure score. Kept apart, the two can be read side by side: two neighborhoods with the same exposure can have very different means to cope with it. INSEE doesn't publish income for 223 small neighborhoods (mostly woods, parks and business areas); they have no means class and are shown as such, never estimated.",
     "capacityBody3": "What it shows: highly exposed neighborhoods don't face the same exposures depending on their means. Those with the highest means are mostly in Paris and stack heat and old, inefficient housing; those with the lowest means are mostly in Seine-Saint-Denis and Val-de-Marne and stack mainly heat, air pollution and noise. Overall, the link between exposure and means is weak — and slightly positive only because of dense, older central Paris; in the three inner-suburb departments there's almost no link. Where high exposure and low means do meet, it's concentrated: in Seine-Saint-Denis, 62% of highly exposed neighborhoods (at least 2 of the 3 exposures: heat, air and noise, housing) are in the metro area's lowest third of means; in Paris, 4.5%.",
     "capacityBody4": "What it doesn't show: it measures means, not what households do with them — nothing here says whether a home has air conditioning or whether someone can take time off during a heatwave. The groups are relative to this metro area, not an absolute threshold of \"enough.\"",
@@ -277,7 +150,7 @@
     "dataSources": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif (\"Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr\") · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités · IGN BD TOPO · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors. Licence Ouverte 2.0, ODbL and Licence Mobilités — published data under ODbL, code under MIT. Full list: methodology page, \"Data sources & licenses\".",
     "printButton": "Print / Save as PDF",
     "meansTitle": "Means to cope — a separate axis",
-    "meansBody": "The exposure score doesn't say who can cope. A second, separate measure does: median income, overcrowded homes and secondary residences (INSEE: income 2021, 2022 census), ranked and split into thirds of the metro area. It is never added to the score; the map's \"Exposure × means\" view crosses the two. Highly exposed areas with the most means are mostly in Paris (heat, old housing); those with the least are mostly in Seine-Saint-Denis and Val-de-Marne (heat, air and noise). In Seine-Saint-Denis, 62% of highly exposed neighborhoods (at least 2 of the 3 exposures) are in the lowest third of means; in Paris, 4.5%. It measures means, not what households do with them (e.g. air conditioning).",
+    "meansBody": "The exposure score doesn't say who can cope. A second, separate measure does: median income, overcrowded homes and secondary residences (INSEE: income 2021, 2022 census), ranked and split into thirds of the metro area. It is never added to the score; on the map, a filter crosses the two. Highly exposed areas with the most means are mostly in Paris (heat, old housing); those with the least are mostly in Seine-Saint-Denis and Val-de-Marne (heat, air and noise). In Seine-Saint-Denis, 62% of highly exposed neighborhoods (at least 2 of the 3 exposures) are in the lowest third of means; in Paris, 4.5%. It measures means, not what households do with them (e.g. air conditioning).",
     "accessCareLine": "Access to care — GPs and pharmacies reachable without a car, on foot or by public transport, shared among everyone who can reach them.",
     "idfmNotice": "Contains information from \"Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub)\", made available by Île-de-France Mobilités under the terms of the \"Licence Mobilités\"."
   },
@@ -365,66 +238,7 @@
     },
     "privacy": "The address you type is sent to the Base adresse nationale (a public service) to find your neighbourhood; Underlaid neither keeps it nor puts it in the page address. The site uses neither cookies nor audience measurement. Your language choice is kept in your browser, and the code of the last neighbourhood viewed is kept in the tab for the visit. The host (Vercel) keeps technical access logs."
   },
-  "context": {
-    "intro": "Six facts that are not counted in the score, because they are only available at a coarser scale than the neighbourhood (arrondissement, commune, region). They are shown as context. Three concern Paris only (flagged below): no equivalent source exists yet for the inner suburbs.",
-    "lifeExpectancyTitle": "Life expectancy disparity (Paris only)",
-    "lifeExpectancyBody": "The 5th, 6th, 7th and 16th arrondissements are among the highest life expectancies in the Paris agglomeration (84+ years). The 18th, 19th, 20th and 10th arrondissements — denser, lower-income — range 79.9-80.9 years (men) / 85.4-85.6 years (women). No equivalent figure was found for the inner-suburb communes.",
-    "lifeExpectancySource": "Source: Institut Paris Région / APUR, ORS Île-de-France.",
-    "heatwaveTitle": "June 2026 heatwave — excess mortality",
-    "heatwaveBodyStrong": "+619 deaths (+62.8%)",
-    "heatwaveBody": "in Île-de-France, June 22-28, 2026 — a national record for that week, per Santé publique France's official count. This figure already covers the whole region, Paris and inner suburbs alike; no finer breakdown exists.",
-    "heatwaveSource": "Source: Santé publique France, press release, 2026-06-27.",
-    "schoolsTitle": "Air-conditioned schools during the June 2026 heatwave (Paris only)",
-    "schoolsLoading": "Loading…",
-    "schoolsBody": "Plan announced on 20 June 2026 by the City of Paris: more than 1,200 portable air conditioners ordered for 620 schools. Figures by arrondissement were published for only 8 of 20 arrondissements; they were collected from the press and from the arrondissement town halls' websites. No equivalent information was found for the inner suburbs.",
-    "schoolsSource": "Source: arrondissement mairies / local press, compiled 2026-07-11 — see scripts/16_school_ac_context.py.",
-    "treesTitle": "How old is the street canopy (Paris only)",
-    "treesBody": "There's no public planting-date record for Paris's ~219,000 street trees, so trunk circumference (the standard arboriculture proxy — wider means older) stands in instead. The spread is real: {lowName} averages just {lowCm}cm, against {highCm}cm in {highName} — a rough proxy for how long each arrondissement's tree canopy has actually been growing, not just how much of it there is today. Paris's own tree inventory has no inner-suburb equivalent, so this stays Paris-only.",
-    "treesRow": "{cm}cm average circumference, {young} still young saplings ({n} trees recorded)",
-    "treesSource": "Source: Ville de Paris, \"Arbres\" dataset (opendata.paris.fr), aggregated by arrondissement.",
-    "lightingTitle": "Street lighting density (Paris only)",
-    "lightingBody": "A nighttime-visibility proxy only — not a measure of actual safety or crime. {lowName} has the lowest density at {lowDensity} lamps/km², against {highDensity} lamps/km² in {highName}. Paris's own lighting inventory has no inner-suburb equivalent, so this stays Paris-only.",
-    "lightingRow": "{n} lamps/km²",
-    "lightingSource": "Source: Ville de Paris, \"eclairage public\" dataset (opendata.paris.fr), aggregated by arrondissement.",
-    "rnaTitle": "Associational density (Paris + inner suburbs)",
-    "rnaBody": "How many currently-active associations are headquartered per 1,000 residents in each commune, from the national register (RNA) — now covering all 143 communes of Paris and the inner suburbs, not just Paris's 20 arrondissements. {lowName} has the lowest rate at {lowRate}/1,000, against {highRate}/1,000 in {highName}.",
-    "rnaCaveat": "Reported per 1,000 residents as the primary figure; per km² is shown alongside since it's a separate, real distortion that per-capita alone doesn't fix — the lowest-density-per-km² communes include the Bois de Vincennes and Bois de Boulogne, whose large park area alone pulls that figure down, not necessarily weaker associational life. A headquarters address also isn't where an association's members live or its activity happens. Read this as one data point, not a verdict on civic health.",
-    "rnaRow": "{rate} per 1,000 residents ({n}/km², {count} currently active)",
-    "rnaSource": "Source: Repertoire National des Associations, Ile-de-France mirror (data.iledefrance.fr), aggregated by commune; population from the INSEE 2022 census.",
-    "layerAsOf": "Data as of {date}: the latest refresh of this source failed, so its previous version is shown."
-  },
   "footerLicense": "Code: MIT · Data: ODbL · Maps and visuals: CC BY 4.0",
-  "footerLicenseLink": "Licenses & attribution",
-  "view": {
-    "label": "Map view",
-    "exposure": "Exposure",
-    "bivariate": "Exposure × means"
-  },
-  "bivariate": {
-    "intro": "Each neighborhood is placed on two separate axes: how exposed it is (the cumulative score, grouped as 0, 1, or 2 and more) and the means its residents have to cope (lowest, middle or highest third of the metro area). The exposure score itself doesn't change.",
-    "axisExposure": "Exposure →",
-    "axisMeans": "Means",
-    "meansHigher": "higher",
-    "meansLower": "lower",
-    "masked": "Income not published: few or no residents (statistical secrecy)",
-    "cellTitle": "Exposure {exposure} · means: {means}",
-    "caption": "Darkest = exposures stacked and among the lowest means",
-    "exposureLevel0": "0",
-    "exposureLevel1": "1",
-    "exposureLevel2": "2+",
-    "tier0": "lowest third",
-    "tier1": "middle third",
-    "tier2": "highest third",
-    "cell_0_0": "None of the 4 categories among the most affected quarter, with among the lowest means in the metro area.",
-    "cell_0_1": "None of the 4 categories among the most affected quarter, with middle-range means.",
-    "cell_0_2": "None of the 4 categories among the most affected quarter, with among the highest means in the metro area.",
-    "cell_1_0": "One category among the most affected quarter, with among the lowest means in the metro area.",
-    "cell_1_1": "One category among the most affected quarter, with middle-range means.",
-    "cell_1_2": "One category among the most affected quarter, with among the highest means in the metro area.",
-    "cell_2_0": "At least two categories among the most affected quarter, with among the lowest means in the metro area: the combination where making up for the exposure with one's own means is hardest.",
-    "cell_2_1": "At least two categories among the most affected quarter, with middle-range means.",
-    "cell_2_2": "At least two categories among the most affected quarter, with among the highest means in the metro area. The exposure is real; the map doesn't say which means residents actually use to cope with it."
-  },
   "site": {
     "skipLink": "Skip to content",
     "navLabel": "Main navigation",
@@ -716,221 +530,6 @@
     "searching": "Searching…",
     "loadingPlace": "Loading the neighbourhood…",
     "clear": "Clear the address"
-  },
-  "home": {
-    "eyebrow": "Paris and its inner suburbs · 2,752 neighbourhoods",
-    "title": "One city, unequal living conditions.",
-    "lead": "Heat, air pollution and noise, housing, access to care: the gaps between neighbourhoods, measured from public data.",
-    "hint": "The main findings are set out below.",
-    "dep": {
-      "75": "Paris",
-      "92": "Hauts-de-Seine",
-      "93": "Seine-Saint-Denis",
-      "94": "Val-de-Marne"
-    },
-    "f1": {
-      "title": "{n} neighbourhoods are among the most affected on all four criteria at once.",
-      "body": "Heat, air pollution and noise, energy-inefficient housing, access to care: these are usually mapped separately. How they overlap, neighbourhood by neighbourhood, rarely is.",
-      "body2": "{n} inhabited neighbourhoods are among the most affected quarter on at least three of the four criteria.",
-      "mapLink": "See the map",
-      "listLink": "See the list of {n} neighbourhoods",
-      "alt": "Map of Paris and its inner suburbs: each neighbourhood is shaded by the number of criteria on which it is among the most affected quarter, from 0 (light pink) to 4 (dark red).",
-      "legend": "Number of criteria on which the neighbourhood is among the most affected quarter",
-      "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif and Bruitparif, ADEME, Enedis, ANS, Île-de-France Mobilités"
-    },
-    "f2": {
-      "title": "Same exposure, opposite social situations.",
-      "body": "Among highly exposed neighbourhoods whose residents have the most means, most are in Paris and combine mainly heat and energy-inefficient housing. Among those whose residents have the fewest means, most are in Seine-Saint-Denis and Val-de-Marne, and combine mainly heat, air pollution and noise.",
-      "body2": "Across the metropolis, the link between exposure and means is weak (rank correlation {rho}), and slightly positive because of central Paris, dense and old.",
-      "question": "Among highly exposed neighbourhoods (at least 2 of the 3 exposures), what share is also in the metro area's third where residents have the fewest means?",
-      "definition": "The 3 exposures: heat, air pollution and noise, housing. Access to care is measured separately. Residents' means: median income, share of overcrowded homes, share of second homes (INSEE: income 2021, 2022 census), measured separately from the score.",
-      "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME"
-    },
-    "quiz": {
-      "kicker": "Question",
-      "question": "Where is the share of wheelchair-accessible metro stop points highest?",
-      "right": "Correct: Seine-Saint-Denis.",
-      "wrong": "Incorrect: it is Seine-Saint-Denis.",
-      "explanation": "Seine-Saint-Denis: {ssd} of metro stop points marked wheelchair-accessible. Paris: {paris}. In Seine-Saint-Denis, they are the stop points of the recent extensions of lines 11 and 14.",
-      "sources": "Île-de-France Mobilités (timetables of 1 October 2026, Licence Mobilités)"
-    },
-    "f3": {
-      "title": "Access to care also depends on how many people share what is on offer.",
-      "body": "Number of GPs and pharmacies reachable on foot or by public transport, relative to all the residents who can also reach them. In Hauts-de-Seine and Val-de-Marne, neighbourhoods whose residents have the fewest means are more often among the least well served.",
-      "question": "Share of neighbourhoods among the least well-served quarter for care, by residents' means",
-      "lowest": "Third with the fewest means",
-      "highest": "Third with the most means",
-      "density": "At equal population density, the gap reaches {n92} points in Hauts-de-Seine and {n94} points in Val-de-Marne (test set before any calculation, October 2026). In Seine-Saint-Denis, almost no neighbourhood is in the third with the most means: no comparison is possible.",
-      "wheelchair": "In a wheelchair, the number of GPs within reach remains lower in the inner suburbs: median of {p} per 10,000 residents in Paris, {d92} in Hauts-de-Seine, {d93} in Seine-Saint-Denis, {d94} in Val-de-Marne. This is a lower bound: lifts out of order, pavement condition and a slower speed are not taken into account.",
-      "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités, OpenStreetMap"
-    },
-    "f4": {
-      "title": "Public data that is uneven from one area to another.",
-      "body": "Pavements are recorded by OpenStreetMap's volunteer contributors. This record is almost complete in Paris and patchy in Seine-Saint-Denis: missing data does not mean there is no pavement. This data was therefore left out of the calculation.",
-      "paris": "of street length in Paris has pavement information",
-      "ssd": "in Seine-Saint-Denis",
-      "sources": "OpenStreetMap contributors (extract of 30 September 2026), Underlaid calculation"
-    },
-    "consult": "Look up a neighbourhood"
-  },
-  "addressPage": {
-    "title": "Look up a neighbourhood",
-    "another": "Look up another address",
-    "outside": "This address is not in Paris or its inner suburbs.",
-    "loadError": "The data could not be loaded. Please try again later.",
-    "score": "Cumulative score: {score} out of 4 — {domains}.",
-    "scoreZero": "Cumulative score: {score} out of 4 — no criterion among the most affected quarter of neighbourhoods.",
-    "scoreUnknown": "Cumulative score not computed: not enough data for this neighbourhood.",
-    "scoreLink": "How this score is computed",
-    "controlsLabel": "Display settings",
-    "summary": "This neighbourhood is less favourable than the metro-wide median on {n} of the {total} criteria assessed.",
-    "modeLabel": "Travel mode",
-    "modeStandard": "No constraint",
-    "modeStepFree": "Step-free (wheelchair, pushchair)",
-    "compare": "Compare with another neighbourhood",
-    "compareLabel": "Address to compare",
-    "compareClose": "Remove the comparison",
-    "moreFav": "More favourable",
-    "median": "Metro-wide median",
-    "lessFav": "Less favourable",
-    "infoTag": "for information",
-    "titles": {
-      "thermal": "Heat",
-      "pollution": "Air pollution and noise",
-      "housing": "Housing",
-      "cool": "Cool places and green spaces",
-      "care": "Access to care",
-      "transport": "Transport"
-    },
-    "rows": {
-      "thermal": "Example: sealed ground over {v} of the area, against {m} for the median.",
-      "pollution": "Index combining air pollution and noise (Airparif, Bruitparif): {v}, against {m} for the median. It runs from 11 for the least exposed neighbourhoods to 33 for the most exposed.",
-      "housing": "Example: {v} of homes rated F or G, against {m} for the median.",
-      "cool": "Swimming pools, libraries and museums within 400 m: {n}, against {mn} for the median; cool green space: {g} of the area, against {mg}.",
-      "care": "GPs reachable on foot or by public transport: {gp} per 10,000 residents, against {mgp} for the median; pharmacies within a 15-minute walk: {ph}, against {mph}.",
-      "careStepFree": "GPs reachable step-free: {v} per 10,000 residents, against {m} for the median. Pharmacies are not recomputed for this mode.",
-      "transport": "In a wheelchair or with a pushchair, this neighbourhood keeps {v} of its access to GPs (median: {m}). It is the share of reachable GPs that stay reachable when avoiding stairs and inaccessible transport."
-    },
-    "moreFavourable": "More favourable than {n}% of neighbourhoods",
-    "lessFavourable": "Less favourable than {n}% of neighbourhoods",
-    "noData": "No data",
-    "means": "Residents' means (median income, overcrowded homes, second homes): {third} of the metro area. Measured separately, they are not part of the score.",
-    "meansMasked": "Residents' means: not published for this neighbourhood (INSEE statistical confidentiality).",
-    "third0": "lowest third",
-    "third1": "middle third",
-    "third2": "highest third",
-    "meansLink": "Why a separate measure",
-    "note": "Position: rank of the neighbourhood among the {n} inhabited neighbourhoods (50 residents or more); the middle of the scale is the median. For cool places and green spaces, the mean rank of the two indicators. Only access to care and transport change with the travel mode.",
-    "sources": "CSTB, L'Institut Paris Region, INSEE, Airparif and Bruitparif, ADEME, Enedis, ANS, FINESS, Île-de-France Mobilités, OpenStreetMap",
-    "onMap": "See this neighbourhood on the map",
-    "otherPos": "{name}: {text}",
-    "scope": {
-      "thermal": "The position covers the whole criterion: heat vulnerability, sealed ground, cool green space, cool places.",
-      "housing": "The position covers the whole criterion: homes rated F or G, how strongly electricity use rises with the cold."
-    },
-    "legendLabel": "Marker key",
-    "legendWorse": "{name}, less favourable than the median",
-    "legendBetter": "{name}, more favourable than the median",
-    "blocks": {
-      "exposure": {
-        "title": "What the neighbourhood is exposed to",
-        "intro": "Exposures measured on site, however one travels."
-      },
-      "access": {
-        "title": "What can be reached from the neighbourhood",
-        "intro": "Care and transport within reach of the neighbourhood; the results depend on the travel mode."
-      }
-    }
-  },
-  "quiz": {
-    "progress": "Question {n} of {total}",
-    "score": "Score: {n}",
-    "optionsLabel": "Possible answers",
-    "right": "Correct.",
-    "wrong": "Incorrect: the answer is {answer}.",
-    "next": "Next question",
-    "seeResult": "See the result",
-    "result": "{n} correct answers out of {total}",
-    "endText": "Every answer comes from public data, with its source and date. The method page details the definitions used.",
-    "toAddress": "Look up a neighbourhood",
-    "toMethod": "See the method",
-    "restart": "Start again",
-    "q": {
-      "metro": {
-        "question": "In which département is the share of wheelchair-accessible metro stop points highest?",
-        "explanation": "Seine-Saint-Denis: {d93} of metro stop points marked wheelchair-accessible. Val-de-Marne: {d94}. Paris: {p}. Hauts-de-Seine: {d92}. In Seine-Saint-Denis, they are the stop points of the recent extensions of lines 11 and 14.",
-        "sources": "Île-de-France Mobilités (timetables of 1 October 2026, Licence Mobilités)"
-      },
-      "sidewalks": {
-        "question": "In OpenStreetMap, what share of street length in Seine-Saint-Denis has pavement information?",
-        "explanation": "{ssd}, against {paris} in Paris. Missing information does not mean there is no pavement: this data was left out of the calculation because areas could not be compared fairly.",
-        "sources": "OpenStreetMap contributors (extract of 30 September 2026), Underlaid calculation of 1 October 2026"
-      },
-      "exposed": {
-        "question": "In Seine-Saint-Denis, among highly exposed neighbourhoods (at least 2 of the 3 exposures: heat, air and noise, housing), what share is also in the metro area's third where residents have the fewest means?",
-        "explanation": "{v}. In Paris, the share is {paris}. At equal exposure, social situations differ sharply from one area to another.",
-        "sources": "INSEE, CSTB, Airparif and Bruitparif, ADEME"
-      },
-      "care": {
-        "question": "In Hauts-de-Seine, at equal population density, is access to care (GPs and pharmacies) in the neighbourhoods with the fewest means better than, the same as or worse than in the best-off neighbourhoods?",
-        "better": "Better",
-        "same": "The same",
-        "worse": "Worse",
-        "explanation": "Worse. In Hauts-de-Seine, {low} of the neighbourhoods with the fewest means are among the least well-served quarter for care, against {high} of those with the most means. At equal population density, the gap reaches {gap} points: it does not come only from the contrast between dense and less dense areas.",
-        "sources": "ANS (RPPS), FINESS, INSEE, Île-de-France Mobilités; test set before any calculation (October 2026)"
-      }
-    }
-  },
-  "mapPage": {
-    "title": "Map of the 2,752 neighbourhoods",
-    "lead": "Each neighbourhood is shaded by the number of criteria — heat, air pollution and noise, housing, access to care — on which it is among the most affected quarter. Click a neighbourhood or enter an address."
-  },
-  "routes": {
-    "title": "One trip, unequal durations.",
-    "lead": "From your neighbourhood, travel time to the nearest destination of each type, depending on how you travel and when you leave.",
-    "formLabel": "Choose a trip",
-    "from": "Departure (address)",
-    "to": "Nearest destination",
-    "when": "Departure time",
-    "stationNoSlot": "Stations are reached on foot: the time does not depend on the hour.",
-    "types": {
-      "emergency": "Emergency department",
-      "gp": "GP",
-      "pharmacy": "Pharmacy",
-      "town_hall": "Town hall",
-      "france_services": "France Services",
-      "caf": "CAF (family benefits)",
-      "cpam": "CPAM (health insurance)",
-      "employment": "France Travail (employment)",
-      "post_office": "Post office",
-      "station": "Heavy-network station (metro, RER, train, tram)"
-    },
-    "slots": {
-      "tue10": "Tuesday, 10 am",
-      "tue21": "Tuesday, 9 pm",
-      "tue01": "Night, 1 am",
-      "sun10": "Sunday, 10 am"
-    },
-    "profiles": {
-      "standard": "No constraint",
-      "slow": "Walking slowly (3.4 km/h)",
-      "step_free_no": "Step-free (wheelchair, pushchair)"
-    },
-    "resultTitle": "Nearest {dest} from {name}, {commune}",
-    "minutes": "{n} min",
-    "over90": "more than 90 min",
-    "ratio": "Step-free, the trip takes {n} times as long.",
-    "detour": "Detour imposed by stairs and inaccessible transport: {n} more minutes.",
-    "variant": "If the stops whose accessibility is not recorded are in fact accessible: {v} step-free.",
-    "noValue": "No result for this neighbourhood (no residents in the INSEE grid).",
-    "unavailable": "The results are being computed and will be published soon.",
-    "note": "Median door-to-door time for the neighbourhood's residents, on foot and by public transport, for departures spread over one hour. The nearest destination may differ by travel mode. Whether the destination building is accessible is not known. Reference days: Tuesday 13 and Sunday 11 October 2026.",
-    "sources": "Île-de-France Mobilités (timetables of 1 October 2026, Licence Mobilités), OpenStreetMap, IGN, INSEE (BPE 2025, 2021 population grid), ANCT, public administration directory (DILA), ANS, FINESS",
-    "slotsLimited": "Evening, night and Sunday: durations shown for emergency departments only. Services' opening hours and on-call GPs and pharmacies are not in the data.",
-    "infoOnly": "for information",
-    "infoOnlyNote": "For information: the nearest GP and pharmacy are a few minutes away in almost every neighbourhood; the scored access to care accounts for how many people share each practice or pharmacy (address page).",
-    "lowerBound": "Step-free duration: a lower bound. The calculation avoids stairs and stops declared inaccessible, but accounts neither for lifts out of order, nor pavement condition, nor a slower speed, nor whether the destination building is accessible.",
-    "stationAccessible": "Step-free: nearest accessible stop point"
   },
   "modes": {
     "free": "No constraint",

@@ -451,7 +451,7 @@
         },
         {
           "name": "Step-free travel.",
-          "desc": "Step-free times and access are a lower bound: the calculation avoids stairs and stops declared inaccessible, but accounts neither for lifts out of order, nor pavement condition, nor a slower speed, nor whether the destination building is accessible."
+          "desc": "Step-free times and access are a lower bound: the calculation avoids stairs and stops declared inaccessible, but accounts neither for lifts out of order, nor pavement condition, nor a slower speed, nor whether the destination building is accessible. A stop flagged as accessible may also require assistance booked in advance (as at many RER and train stations)."
         },
         {
           "name": "Starting point of journeys.",

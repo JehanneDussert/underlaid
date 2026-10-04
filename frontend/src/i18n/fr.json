@@ -451,7 +451,7 @@
         },
         {
           "name": "Déplacements sans marches.",
-          "desc": "Les durées et l'accès sans marches sont une limite basse : le calcul évite les escaliers et les arrêts déclarés non accessibles, mais ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni d'une vitesse réduite, ni de l'accessibilité du bâtiment d'arrivée."
+          "desc": "Les durées et l'accès sans marches sont une limite basse : le calcul évite les escaliers et les arrêts déclarés non accessibles, mais ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni d'une vitesse réduite, ni de l'accessibilité du bâtiment d'arrivée. Un arrêt signalé accessible peut aussi nécessiter une assistance réservée à l'avance (c'est le cas de nombreuses gares de RER et de train)."
         },
         {
           "name": "Point de départ des trajets.",

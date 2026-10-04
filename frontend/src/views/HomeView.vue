@@ -132,11 +132,11 @@ const strip = computed(() => {
       <div class="hero-plan">
         <div class="phone-plan-head">
           <h2 class="phone-plan-title">{{ t('plan.fromNeighbourhood') }}</h2>
-          <router-link class="phone-all" :to="{ name: localizedRouteName('routes', locale) }">{{ t('landing.allPlacesShort') }} <span aria-hidden="true">→</span></router-link>
+          <router-link class="phone-all" :to="{ name: localizedRouteName('places', locale) }">{{ t('landing.allPlacesShort') }} <span aria-hidden="true">→</span></router-link>
         </div>
         <NetworkPlan :mode="mode" :medians="routes?.day_metropolis_median" />
         <p v-if="!mode" class="phone-plan-hint">{{ t('landing.phoneHint') }}</p>
-        <router-link class="all-places" :to="{ name: localizedRouteName('routes', locale) }">{{ t('landing.allPlaces') }} <span aria-hidden="true">→</span></router-link>
+        <router-link class="all-places" :to="{ name: localizedRouteName('places', locale) }">{{ t('landing.allPlaces') }} <span aria-hidden="true">→</span></router-link>
       </div>
     </section>
 

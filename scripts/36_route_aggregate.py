@@ -47,6 +47,14 @@ if ROUTES_SET == "neighbourhood":
     TYPES = ["creche", "food_store", "nursery_school", "police", "social_centre", "library", "park"]
     N_CHUNKS = 92  # 13,752 cells / 150
     OUT_PREFIX = "routes_neighbourhood"
+elif ROUTES_SET == "paris":
+    # Public toilets and drinking fountains, Paris only (script 41): origins
+    # are the Paris cells, so only Paris neighbourhoods get a value.
+    TTM_DIR = config.DATA_INTERIM / "access" / "routes_ttm_paris"
+    SLOTS = ["tue10"]
+    TYPES = ["toilets", "toilets_pmr", "toilets_24h", "drinking_water"]
+    N_CHUNKS = 7  # 2,034 Paris cells / 300
+    OUT_PREFIX = "routes_paris"
 else:
     TTM_DIR = config.DATA_INTERIM / "access" / "routes_ttm"
     SLOTS = ["tue10", "tue21", "tue01", "sun10"]
@@ -149,7 +157,7 @@ def main():
         out.write_text(json.dumps({"slot": slot, "max_minutes": MAX_MINUTES, "layout": layout, "iris": result}, separators=(",", ":")), encoding="utf-8")
         print(f"wrote {out.name} ({out.stat().st_size / 1e6:.2f} MB, {len(result)} IRIS)")
 
-    if ROUTES_SET == "neighbourhood":
+    if ROUTES_SET in ("neighbourhood", "paris"):
         if missing:
             print(f"incomplete tasks (not written): {', '.join(missing)}")
         return

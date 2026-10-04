@@ -166,6 +166,7 @@ const lastUpdatedLabel = computed(() => (dataDate.value ? t('footerLastUpdated',
           <li><router-link :to="{ name: localizedRouteName('about', locale), hash: '#presse' }">{{ t('site.nav.press') }}</router-link></li>
           <li><router-link :to="{ name: localizedRouteName('about', locale) }">{{ t('site.nav.about') }}</router-link></li>
           <li><a :href="contactHref" rel="noopener" @click="openContact">{{ t('site.footerContact') }}</a></li>
+          <li><router-link :to="{ name: localizedRouteName('accessibility', locale) }">{{ t('site.footerA11y') }}</router-link></li>
         </ul>
       </div>
       <div class="footer-meta">

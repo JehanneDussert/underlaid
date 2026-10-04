@@ -16,7 +16,9 @@ address) and everything the page shows about each of them:
   the site: free (standard), slow, wheelchair (step-free, unknown = not
   accessible), plus the emergency department at night (1:00) and the
   nearest station on foot; the everyday places of the second routing run
-  when it exists (else absent: "pas encore calculé").
+  when it exists (else absent: "pas encore calculé"); for Paris
+  neighbourhoods, public toilets (all, wheelchair-accessible, open 24 h)
+  and drinking fountains (script 41).
 
 Plus index.json: for part 3 of the page ("Les deux à la fois"), each
 inhabited neighbourhood's number of exposures in the worst quarter (0-3)
@@ -81,6 +83,8 @@ def main():
     night = routes_by_iris(load("routes_iris_tue01.json"), ["emergency"])
     stations_data = load("routes_stations_iris.json")
     places = routes_by_iris(load("routes_neighbourhood_tue10.json"))
+    # Public toilets and drinking fountains, Paris only (script 41).
+    paris_places = routes_by_iris(load("routes_paris_tue10.json"))
 
     props = {f["properties"]["code_iris"]: f["properties"] for f in score["features"]}
     inhabited = {c for c, p in props.items() if (p.get("population") or 0) >= MIN_POPULATION}
@@ -133,6 +137,8 @@ def main():
             rec["station"] = {m: row[stations_data["profiles"].index(prof)] for m, prof in MODES.items()}
         if code in places:
             rec["places"] = places[code]
+        if code.startswith("75") and code in paris_places:
+            rec["paris_places"] = paris_places[code]
         by_commune.setdefault(str(p["insee_com"]), []).append(rec)
 
         if code in inhabited and ranks["access_care"][code] is not None and all(quarters[k] is not None for k in EXPOSURES):

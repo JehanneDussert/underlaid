@@ -133,7 +133,7 @@
     "fig_income": "Revenu médian",
     "metroMedian": "médiane métropole {value}",
     "incomeMasked": "non publié",
-    "figuresNote": "Un chiffre par catégorie, comparé à la médiane de la métropole. Chaque catégorie combine plusieurs indicateurs : un chiffre proche de la médiane ne contredit pas l'appartenance au quart le plus touché (détail complet sur la page « Par adresse »).",
+    "figuresNote": "Un chiffre par catégorie, comparé à la médiane de la métropole. Chaque catégorie combine plusieurs indicateurs : un chiffre proche de la médiane ne contredit pas l'appartenance au quart le plus touché (détail complet sur la page de chaque quartier).",
     "group_max_title": "Dans le quart le plus touché pour les quatre catégories ({n})",
     "group_max_desc": "Pour la chaleur, la pollution de l'air et le bruit, le logement énergivore et l'accès aux soins, ces quartiers font partie du quart le plus touché : le score maximal, 4 sur 4.",
     "maxBadge": "4 sur 4",
@@ -450,7 +450,10 @@
     "footerOpenData": "Données publiques ouvertes.",
     "footerSources": "Sources et méthode",
     "footerReuse": "Citer et réutiliser",
-    "footerContact": "Contact"
+    "footerContact": "Contact",
+    "footerA11y": "Accessibilité : partiellement conforme",
+    "footerCorrections": "Corrections",
+    "tableRegion": "Tableau (faites défiler horizontalement si besoin)"
   },
   "figure": {
     "sources": "Sources : {sources}",
@@ -1209,7 +1212,8 @@
       "library": "Bibliothèque",
       "park": "Parc ou jardin ouvert au public",
       "toilets": "Toilettes publiques",
-      "drinking_water": "Fontaine d'eau potable"
+      "drinking_water": "Fontaine d'eau potable",
+      "toilets_24h": "Toilettes ouvertes 24 h/24"
     },
     "parisOnly": "La plupart des communes de petite couronne ne publient pas de liste ouverte de leurs toilettes publiques et points d'eau.",
     "station": "En fauteuil roulant, une grande partie de l'écart se joue à l'entrée du réseau : depuis votre quartier, l'arrêt accessible le plus proche (métro, RER, train ou tram) est à {wc} à pied, contre {free} pour l'arrêt le plus proche. Ces durées ne tiennent pas compte des trottoirs, des pentes ni des pannes d'ascenseur : la réalité est souvent plus longue.",
@@ -1435,7 +1439,7 @@
         {
           "place": "Toilettes publiques, fontaines",
           "source": "Ville de Paris",
-          "note": "Paris seulement : la plupart des communes de petite couronne ne publient pas de liste ouverte."
+          "note": "Paris seulement : la plupart des communes de petite couronne ne publient pas de liste ouverte. Toilettes en service ; en fauteuil roulant, la plus proche signalée accessible ; les toilettes ouvertes 24 h/24 sont indiquées à part."
         },
         {
           "place": "Urgences",
@@ -1472,5 +1476,59 @@
       "data": "Données (Zenodo)",
       "report": "Signaler une erreur"
     }
+  },
+  "places": {
+    "title": "Tous les lieux du quotidien",
+    "lead": "Durée pour rejoindre le lieu le plus proche, à pied et en transports en commun, un mardi à 10 h : médiane des quartiers de Paris et de la petite couronne. Pour votre quartier, saisissez une adresse.",
+    "addressLabel": "Voir les durées depuis votre quartier",
+    "place": "Lieu",
+    "caption": "{need} : durée médiane vers le lieu le plus proche, selon le mode",
+    "parisOnly": "Paris seulement",
+    "note": "Durées données pour information, sans contrainte de capacité ni d'horaires d'ouverture. Le mode fauteuil roulant est une limite basse.",
+    "method": "Comment ces durées sont calculées"
+  },
+  "corrections": {
+    "title": "Corrections",
+    "lead": "Les changements de méthode apportés depuis la mise en ligne, du plus récent au plus ancien, avec leur raison.",
+    "report": "Une erreur ? Signalez-la :"
+  },
+  "a11y": {
+    "title": "Accessibilité",
+    "statusLabel": "État de conformité :",
+    "status": "partiellement conforme au référentiel général d'amélioration de l'accessibilité (RGAA 4.1), niveau AA.",
+    "intro": "Le site vise la conformité au RGAA 4.1 (critères WCAG 2.1 de niveau AA). Il est déclaré « partiellement conforme » tant que les tests manuels décrits ci-dessous n'ont pas été faits et datés.",
+    "doneTitle": "Ce qui est vérifié",
+    "done": [
+      "Contrôles automatiques (axe-core) sur chaque page, en français et en anglais, sur ordinateur et téléphone, y compris les états ouverts (mode choisi, comparaison, fiche de la carte, liste) : aucune violation grave ou critique, à chaque mise à jour du code.",
+      "Navigation au clavier : lien d'évitement, contour de focus visible, focus sur le titre à chaque changement de page, menu, fiche et panneaux qui se ferment avec Échap.",
+      "Contrastes calculés : texte au moins 4,5:1, contours des champs et boutons au moins 3:1 ; la couleur n'est jamais seule porteuse de l'information.",
+      "Affichage à 320 px de large sans défilement horizontal ; police Atkinson Hyperlegible, conçue pour les personnes malvoyantes.",
+      "La carte a une alternative textuelle : la liste des quartiers, triable et filtrable avec les mêmes filtres.",
+      "Animations réduites ou supprimées si le réglage du système le demande ; aucune animation qui dure plus de 5 secondes."
+    ],
+    "pendingTitle": "Ce qui reste à vérifier",
+    "pendingIntro": "Ces tests doivent être faits par une personne, sur de vrais appareils :",
+    "pending": [
+      "lecteurs d'écran : NVDA avec Firefox, VoiceOver sur macOS et iOS, TalkBack sur Android ;",
+      "navigation au clavier seul sur le parcours complet (adresse, quartier, carte, méthode) ;",
+      "zoom du navigateur à 200 % et 400 % ;",
+      "mode de contraste élevé de Windows ;",
+      "animations réduites sur un vrai téléphone."
+    ],
+    "knownTitle": "Limites connues",
+    "known": [
+      "La carte elle-même ne se parcourt pas quartier par quartier au clavier : la liste des quartiers en est l'alternative.",
+      "Les premiers crans des couleurs de la carte sont pâles sur fond blanc (contraste de 1,5:1) ; la valeur est toujours donnée par écrit (légende, fiche, liste).",
+      "Les durées en fauteuil roulant ne tiennent compte ni des trottoirs, ni des pentes, ni des pannes d'ascenseur."
+    ],
+    "contactTitle": "Signaler un problème",
+    "contact": "Si une page ou une information ne vous est pas accessible, écrivez à la porteuse du projet : une réponse ou une version accessible du contenu vous sera proposée.",
+    "testsLink": "Liste des tests",
+    "date": "Déclaration établie le 4 octobre 2026."
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "body": "Cette adresse ne correspond à aucune page du site. Elle a peut-être changé lors de la refonte.",
+    "home": "Aller à l'accueil"
   }
 }

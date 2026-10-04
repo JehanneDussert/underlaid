@@ -10,7 +10,14 @@
       "caf": 24,
       "cpam": 19,
       "employment": 16,
-      "post_office": 7
+      "post_office": 7,
+      "creche": 4,
+      "food_store": 3,
+      "nursery_school": 4,
+      "police": 14,
+      "social_centre": 12,
+      "library": 9,
+      "park": 3
     },
     "slow": {
       "emergency": 22,
@@ -21,7 +28,14 @@
       "caf": 27,
       "cpam": 22,
       "employment": 19,
-      "post_office": 9
+      "post_office": 9,
+      "creche": 5,
+      "food_store": 5,
+      "nursery_school": 5,
+      "police": 17,
+      "social_centre": 15,
+      "library": 11,
+      "park": 4
     },
     "wheelchair": {
       "emergency": 21,
@@ -32,7 +46,14 @@
       "caf": 29,
       "cpam": 21,
       "employment": 18,
-      "post_office": 7
+      "post_office": 7,
+      "creche": 4,
+      "food_store": 3,
+      "nursery_school": 4,
+      "police": 15,
+      "social_centre": 13,
+      "library": 9,
+      "park": 3
     }
   },
   "station_median_by_department": {
@@ -98,5 +119,6 @@
         "n": 1750
       }
     }
-  }
+  },
+  "paris_median": null
 }

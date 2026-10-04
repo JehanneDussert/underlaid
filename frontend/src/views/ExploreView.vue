@@ -506,7 +506,8 @@ function openPage(code) {
     <section v-if="listOpen" id="explore-list" class="list container" aria-labelledby="list-title">
       <h2 id="list-title">{{ t('explore.list.title') }}</h2>
       <p class="list-intro">{{ t('explore.list.intro', { n: nf(listRows.length) }) }}</p>
-      <div class="table-wrap">
+      <!-- Focusable: a scrollable region must be reachable with the keyboard. -->
+      <div class="table-wrap" tabindex="0" role="region" :aria-label="t('site.tableRegion')">
         <table>
           <thead>
             <tr>

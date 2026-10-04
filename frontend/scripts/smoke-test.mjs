@@ -109,23 +109,11 @@ try {
     check(`${path} home: question answered, verdict written`, (await page.locator('.question-verdict').count()) === 1)
   }
 
-  // Quiz, keyboard only: answer each question (Tab to an option, Enter),
-  // the verdict appears in the live region, "next" moves focus to the
-  // next question's heading; the last screen gives the result.
-  await page.goto(base + '/quiz', { waitUntil: 'networkidle' })
-  let quizOk = true
-  for (let i = 0; i < 4; i++) {
-    await page.locator('.option').first().focus()
-    await page.keyboard.press('Enter')
-    const verdict = await page.locator('[aria-live="polite"] .verdict').count()
-    await page.locator('button.next').focus()
-    await page.keyboard.press('Enter')
-    await page.waitForTimeout(100)
-    const focused = await page.evaluate(() => document.activeElement?.tagName)
-    if (verdict !== 1 || focused !== 'H1') quizOk = false
-  }
-  const result = await page.locator('h1').innerText()
-  check('quiz by keyboard: 4 verdicts, focus on each heading, result', quizOk && /sur 4/.test(result), result)
+  // Everyday places: every need, three modes, medians from the summary.
+  await page.goto(base + '/lieux-du-quotidien', { waitUntil: 'networkidle' })
+  const placeTables = await page.locator('.need table').count()
+  const townHall = routesSummary.day_metropolis_median.free.town_hall
+  check(`everyday places: 9 needs, town hall ${townHall} min without constraint`, placeTables === 9 && (await page.locator('.need tr', { hasText: 'Mairie' }).first().innerText()).includes(`${townHall} min`))
 
   // Home address field (combobox, keyboard only) -> the neighbourhood page,
   // by its code only: no address or coordinates in the URL.
@@ -234,7 +222,7 @@ try {
   check('EN home -> FR home stays in French', new URL(page.url()).pathname === '/' && (await page.getAttribute('html', 'lang')) === 'fr')
 
   // Every route by direct access
-  for (const path of ['/en/quiz', '/quiz', '/en/address', '/adresse', '/en/method', '/methode', '/en/method/details', '/methode/detail', '/en/most-exposed-neighbourhoods', '/quartiers-les-plus-exposes', '/en/press', '/presse']) {
+  for (const path of ['/lieux-du-quotidien', '/en/everyday-places', '/corrections', '/en/corrections', '/accessibilite', '/en/accessibility', '/en/method', '/methode', '/en/method/details', '/methode/detail', '/en/most-exposed-neighbourhoods', '/quartiers-les-plus-exposes', '/en/press', '/presse']) {
     const response = await page.goto(base + path, { waitUntil: 'networkidle' })
     check(`direct ${path}`, response.status() === 200 && (await page.locator('h1').count()) === 1)
     if (path.endsWith('exposed-neighbourhoods') || path.endsWith('les-plus-exposes')) {
@@ -295,7 +283,7 @@ try {
   // Phone width: no sideways scroll
   const phone = await (await browser.newContext({ viewport: { width: 400, height: 860 }, isMobile: true, hasTouch: true })).newPage()
   phone.on('pageerror', (e) => errors.push(`phone ${phone.url()}: ${e.message}`))
-  for (const path of ['/', '/quiz', '/adresse?lon=2.4431&lat=48.9248&label=Drancy', '/carte', '/quartiers-les-plus-exposes', '/methode', '/methode/detail']) {
+  for (const path of ['/', '/quartier/930290101', '/lieux-du-quotidien', '/accessibilite', '/carte', '/quartiers-les-plus-exposes', '/methode', '/methode/detail']) {
     await phone.goto(base + path, { waitUntil: 'networkidle' })
     const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
     check(`phone ${path}: no horizontal scroll`, overflow <= 0, overflow > 0 ? `${overflow}px` : '')

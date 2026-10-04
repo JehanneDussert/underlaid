@@ -132,7 +132,8 @@ function writeTo(e) {
         <section id="reutiliser" class="part" aria-labelledby="a-reutiliser">
           <h2 id="a-reutiliser"><span class="num">3.</span>{{ t('about.part.reutiliser') }}</h2>
           <p>{{ t('about.reuse.intro') }}</p>
-          <div class="table-wrap">
+          <!-- Focusable: a scrollable region must be reachable with the keyboard. -->
+      <div class="table-wrap" tabindex="0" role="region" :aria-label="t('site.tableRegion')">
             <table>
               <caption class="sr-only">{{ t('about.part.reutiliser') }}</caption>
               <thead>

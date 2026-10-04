@@ -64,5 +64,14 @@ export const NEEDS = [
       { id: 'drinking_water', source: 'paris', parisOnly: true },
     ],
   },
-  { id: 'toilets', color: '#5B6B7A', column: 1, places: [{ id: 'toilets', source: 'paris', parisOnly: true }] },
+  {
+    id: 'toilets',
+    color: '#5B6B7A',
+    column: 1,
+    places: [
+      // Wheelchair mode: the nearest toilet marked accessible (toilets_pmr).
+      { id: 'toilets', source: 'paris', parisOnly: true, wheelchairId: 'toilets_pmr' },
+      { id: 'toilets_24h', source: 'paris', parisOnly: true },
+    ],
+  },
 ]

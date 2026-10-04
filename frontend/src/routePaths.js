@@ -36,9 +36,19 @@ export const ROUTE_PATHS = [
   },
   { name: 'about', fr: '/a-propos', en: '/en/about' },
   { name: 'press', fr: '/presse', en: '/en/press', old: { en: '/press', fr: '/fr/press' } },
-  { name: 'address', fr: '/adresse', en: '/en/address', old: { en: '/address', fr: '/fr/address' }, sitemap: false },
-  { name: 'quiz', fr: '/quiz', en: '/en/quiz', old: { en: '/quiz', fr: '/fr/quiz' }, sitemap: false },
-  { name: 'routes', fr: '/itineraires', en: '/en/routes', old: { en: '/routes', fr: '/fr/routes' }, sitemap: false },
+  { name: 'places', fr: '/lieux-du-quotidien', en: '/en/everyday-places' },
+  { name: 'corrections', fr: '/corrections', en: '/en/corrections' },
+  { name: 'accessibility', fr: '/accessibilite', en: '/en/accessibility' },
+  // Prerendered as dist/404.html, served by the host for unknown addresses.
+  { name: 'notFound', fr: '/404', en: '/en/404', sitemap: false },
+]
+
+// Pages removed by the redesign (D4): their addresses, old and transitional,
+// redirect permanently to the page that replaced them.
+const RETIRED = [
+  ['/adresse', '/'], ['/en/address', '/en'], ['/fr/address', '/'], ['/address', '/en'],
+  ['/quiz', '/'], ['/en/quiz', '/en'], ['/fr/quiz', '/'],
+  ['/itineraires', '/lieux-du-quotidien'], ['/en/routes', '/en/everyday-places'], ['/fr/routes', '/lieux-du-quotidien'], ['/routes', '/en/everyday-places'],
 ]
 
 export const LOCALES = ['fr', 'en']
@@ -68,5 +78,6 @@ export function legacyRedirects() {
       out.push({ source, destination: r[locale], permanent: true })
     }
   }
+  for (const [source, destination] of RETIRED) if (!current.has(source)) out.push({ source, destination, permanent: true })
   return out
 }

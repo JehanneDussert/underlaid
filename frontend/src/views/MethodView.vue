@@ -172,7 +172,8 @@ const distribution = computed(() => {
             </template>
           </dl>
           <p>{{ t('methodD4.portee.info') }}</p>
-          <div class="table-wrap">
+          <!-- Focusable: a scrollable region must be reachable with the keyboard. -->
+      <div class="table-wrap" tabindex="0" role="region" :aria-label="t('site.tableRegion')">
             <table class="places">
               <caption class="sr-only">{{ t('methodD4.portee.tableCaption') }}</caption>
               <thead>
@@ -233,7 +234,8 @@ const distribution = computed(() => {
 
           <h3 id="sources">{{ t('method.sources.title') }}</h3>
           <p>{{ t('method.sources.intro') }}</p>
-          <div class="table-wrap">
+          <!-- Focusable: a scrollable region must be reachable with the keyboard. -->
+      <div class="table-wrap" tabindex="0" role="region" :aria-label="t('site.tableRegion')">
             <table>
               <caption class="sr-only">{{ t('method.sources.title') }}</caption>
               <thead>
@@ -258,7 +260,10 @@ const distribution = computed(() => {
           <p class="small">{{ t('method.sources.mobilityNotice') }}</p>
 
           <h3 id="corrections">{{ t('method.fixes.title') }}</h3>
-          <p>{{ t('method.fixes.intro') }}</p>
+          <p>
+            {{ t('method.fixes.intro') }}
+            <router-link :to="{ name: localizedRouteName('corrections', locale) }">{{ t('corrections.title') }}</router-link>
+          </p>
           <ol class="fixes" role="list">
             <li v-for="f in fixes" :key="f.what" class="fix">
               <span class="when">{{ f.when }}</span>

@@ -450,7 +450,10 @@
     "footerOpenData": "Open public data.",
     "footerSources": "Sources and method",
     "footerReuse": "Cite and reuse",
-    "footerContact": "Contact"
+    "footerContact": "Contact",
+    "footerA11y": "Accessibility: partially compliant",
+    "footerCorrections": "Corrections",
+    "tableRegion": "Table (scroll sideways if needed)"
   },
   "figure": {
     "sources": "Sources: {sources}",
@@ -1209,7 +1212,8 @@
       "library": "Library",
       "park": "Park or garden open to the public",
       "toilets": "Public toilets",
-      "drinking_water": "Drinking fountain"
+      "drinking_water": "Drinking fountain",
+      "toilets_24h": "Toilets open 24 hours"
     },
     "parisOnly": "Most inner-suburb communes do not publish an open list of their public toilets and water points.",
     "station": "In a wheelchair, much of the difference is at the entrance to the network: from your neighbourhood, the nearest accessible stop (metro, RER, train or tram) is {wc} away on foot, against {free} for the nearest stop. These durations do not account for pavements, slopes or broken lifts: reality is often longer.",
@@ -1435,7 +1439,7 @@
         {
           "place": "Public toilets, fountains",
           "source": "City of Paris",
-          "note": "Paris only: most inner-suburb communes do not publish an open list."
+          "note": "Paris only: most inner-suburb communes do not publish an open list. Toilets in service; in a wheelchair, the nearest one marked accessible; toilets open 24 hours are shown separately."
         },
         {
           "place": "Emergency department",
@@ -1472,5 +1476,59 @@
       "data": "Data (Zenodo)",
       "report": "Report an error"
     }
+  },
+  "places": {
+    "title": "All everyday places",
+    "lead": "Time to reach the nearest place, on foot and by public transport, on a Tuesday at 10:00: median of the neighbourhoods of Paris and its inner suburbs. For your neighbourhood, enter an address.",
+    "addressLabel": "See the durations from your neighbourhood",
+    "place": "Place",
+    "caption": "{need}: median duration to the nearest place, by mode",
+    "parisOnly": "Paris only",
+    "note": "Durations for information, without capacity or opening hours. The wheelchair mode is a lower bound.",
+    "method": "How these durations are computed"
+  },
+  "corrections": {
+    "title": "Corrections",
+    "lead": "Changes of method made since the site went online, most recent first, with their reason.",
+    "report": "An error? Report it:"
+  },
+  "a11y": {
+    "title": "Accessibility",
+    "statusLabel": "Compliance status:",
+    "status": "partially compliant with the French accessibility framework (RGAA 4.1), level AA.",
+    "intro": "The site aims at RGAA 4.1 compliance (WCAG 2.1 level AA criteria). It is stated as \"partially compliant\" until the manual tests described below have been carried out and dated.",
+    "doneTitle": "What is checked",
+    "done": [
+      "Automated checks (axe-core) on every page, in French and English, on desktop and phone, including open states (mode chosen, comparison, map card, list): no serious or critical violation, at every code update.",
+      "Keyboard navigation: skip link, visible focus ring, focus on the heading at each page change, menu, card and panels closing with Escape.",
+      "Computed contrasts: text at least 4.5:1, field and button outlines at least 3:1; colour never carries information alone.",
+      "Display at 320 px wide without horizontal scrolling; Atkinson Hyperlegible typeface, designed for low-vision readers.",
+      "The map has a text alternative: the list of neighbourhoods, sortable and filterable with the same filters.",
+      "Animations reduced or removed when the system setting asks for it; no animation lasting more than 5 seconds."
+    ],
+    "pendingTitle": "What remains to be checked",
+    "pendingIntro": "These tests must be done by a person, on real devices:",
+    "pending": [
+      "screen readers: NVDA with Firefox, VoiceOver on macOS and iOS, TalkBack on Android;",
+      "keyboard-only navigation of the whole journey (address, neighbourhood, map, method);",
+      "browser zoom at 200% and 400%;",
+      "Windows high-contrast mode;",
+      "reduced motion on a real phone."
+    ],
+    "knownTitle": "Known limits",
+    "known": [
+      "The map itself cannot be browsed neighbourhood by neighbourhood with the keyboard: the list of neighbourhoods is its alternative.",
+      "The first steps of the map colours are pale on white (1.5:1 contrast); the value is always given in writing (legend, card, list).",
+      "Wheelchair durations account for neither pavements, slopes nor broken lifts."
+    ],
+    "contactTitle": "Report a problem",
+    "contact": "If a page or a piece of information is not accessible to you, write to the project lead: you will get an answer or an accessible version of the content.",
+    "testsLink": "List of tests",
+    "date": "Statement drawn up on 4 October 2026."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This address matches no page of the site. It may have changed with the redesign.",
+    "home": "Go to the home page"
   }
 }

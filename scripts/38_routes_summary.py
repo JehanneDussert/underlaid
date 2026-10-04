@@ -15,7 +15,10 @@ Definitions (pre-registration of the routes, CLAUDE.md):
 - stations: nearest heavy-network stop point on foot (metro, RER, train,
   tram), and for the wheelchair profile the nearest accessible one;
 - night: Tuesday 1:00, on foot and by public transport, emergency
-  departments only (display rule of 3 October 2026).
+  departments only (display rule of 3 October 2026);
+- everyday places (script 37) added to the day medians when published;
+  Paris toilets and fountains (script 41) as medians of Paris
+  neighbourhoods only (paris_median).
 
 Output: data/processed/routes_summary.json, copied to frontend/public/data/.
 """
@@ -53,8 +56,8 @@ def main():
     population = {f["properties"]["code_iris"]: f["properties"].get("population") or 0 for f in score["features"]}
     inhabited = lambda code: population.get(code, 0) >= MIN_POPULATION
 
-    def slot_file(slot):
-        d = json.loads((config.DATA_PROCESSED / f"routes_iris_{slot}.json").read_text(encoding="utf-8"))
+    def slot_file(slot, prefix="routes_iris"):
+        d = json.loads((config.DATA_PROCESSED / f"{prefix}_{slot}.json").read_text(encoding="utf-8"))
         blocks, types = d["layout"]["blocks"], d["layout"]["types"]
         def value(row, profile, type_):
             return row[blocks.index(f"time:{profile}") * len(types) + types.index(type_)]
@@ -62,6 +65,18 @@ def main():
 
     rows, types, value = slot_file("tue10")
     day = {mode: {t: median(value(r, profile, t) for r in rows.values()) for t in types} for mode, profile in MODES.items()}
+    # Everyday places of the second run (script 37), when published.
+    if (config.DATA_PROCESSED / "routes_neighbourhood_tue10.json").exists():
+        prow, ptypes, pvalue = slot_file("tue10", "routes_neighbourhood")
+        for mode, profile in MODES.items():
+            day[mode].update({t: median(pvalue(r, profile, t) for r in prow.values()) for t in ptypes})
+    # Paris toilets and fountains (script 41): medians of Paris
+    # neighbourhoods only (no data elsewhere).
+    paris = None
+    if (config.DATA_PROCESSED / "routes_paris_tue10.json").exists():
+        qrow, qtypes, qvalue = slot_file("tue10", "routes_paris")
+        qrow = {c: r for c, r in qrow.items() if c.startswith("75")}
+        paris = {mode: {t: median(qvalue(r, profile, t) for r in qrow.values()) for t in qtypes} for mode, profile in MODES.items()}
 
     st = json.loads((config.DATA_PROCESSED / "routes_stations_iris.json").read_text(encoding="utf-8"))
     st_rows = {c: r for c, r in st["iris"].items() if inhabited(c)}
@@ -86,6 +101,7 @@ def main():
         "day_metropolis_median": day,
         "station_median_by_department": stations,
         "night_emergency": night,
+        "paris_median": paris,
     }
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(out, ensure_ascii=False, indent=2))

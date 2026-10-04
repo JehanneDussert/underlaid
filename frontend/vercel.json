@@ -59,28 +59,58 @@
       "permanent": true
     },
     {
+      "source": "/adresse",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/en/address",
+      "destination": "/en",
+      "permanent": true
+    },
+    {
       "source": "/fr/address",
-      "destination": "/adresse",
+      "destination": "/",
       "permanent": true
     },
     {
       "source": "/address",
-      "destination": "/en/address",
+      "destination": "/en",
+      "permanent": true
+    },
+    {
+      "source": "/quiz",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/en/quiz",
+      "destination": "/en",
       "permanent": true
     },
     {
       "source": "/fr/quiz",
-      "destination": "/quiz",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/itineraires",
+      "destination": "/lieux-du-quotidien",
+      "permanent": true
+    },
+    {
+      "source": "/en/routes",
+      "destination": "/en/everyday-places",
       "permanent": true
     },
     {
       "source": "/fr/routes",
-      "destination": "/itineraires",
+      "destination": "/lieux-du-quotidien",
       "permanent": true
     },
     {
       "source": "/routes",
-      "destination": "/en/routes",
+      "destination": "/en/everyday-places",
       "permanent": true
     }
   ],

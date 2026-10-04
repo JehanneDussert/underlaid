@@ -156,7 +156,7 @@ function figures(p) {
         <ol class="ranking-list">
           <li v-for="p in atMax" :key="p.code_iris" class="ranking-row glass">
             <div class="row-head">
-              <span class="name">{{ p.nom_iris }}</span>
+              <router-link class="name" :to="{ name: localizedRouteName('neighbourhood', locale), params: { code: p.code_iris } }">{{ p.nom_iris }}</router-link>
               <span class="commune">{{ p.nom_com }}</span>
               <span class="badge">{{ t('ranking.maxBadge') }}</span>
             </div>
@@ -177,7 +177,7 @@ function figures(p) {
         <ol class="ranking-list">
           <li v-for="p in g.rows" :key="p.code_iris" class="ranking-row glass">
             <div class="row-head">
-              <span class="name">{{ p.nom_iris }}</span>
+              <router-link class="name" :to="{ name: localizedRouteName('neighbourhood', locale), params: { code: p.code_iris } }">{{ p.nom_iris }}</router-link>
               <span class="commune">{{ p.nom_com }}</span>
             </div>
             <ul class="figures">
@@ -236,9 +236,8 @@ function figures(p) {
   color: #ffffff;
 }
 .ranking-view {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 40px 40px 64px;
+  max-width: calc(1000px + 2 * var(--page-gutter));
+  padding: 40px var(--page-gutter) 64px;
 }
 @media (max-width: 920px) {
   .ranking-view {

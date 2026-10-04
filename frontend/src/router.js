@@ -1,9 +1,10 @@
 import HomeView from './views/HomeView.vue'
 import NeighbourhoodView from './views/NeighbourhoodView.vue'
 import AboutView from './views/AboutView.vue'
-import AddressView from './views/AddressView.vue'
-import QuizView from './views/QuizView.vue'
-import RoutesView from './views/RoutesView.vue'
+import PlacesView from './views/PlacesView.vue'
+import CorrectionsView from './views/CorrectionsView.vue'
+import AccessibilityView from './views/AccessibilityView.vue'
+import NotFoundView from './views/NotFoundView.vue'
 import MethodView from './views/MethodView.vue'
 import MethodologyView from './views/MethodologyView.vue'
 import PressKitView from './views/PressKitView.vue'
@@ -15,9 +16,10 @@ const COMPONENTS = {
   home: HomeView,
   neighbourhood: NeighbourhoodView,
   about: AboutView,
-  address: AddressView,
-  quiz: QuizView,
-  routes: RoutesView,
+  places: PlacesView,
+  corrections: CorrectionsView,
+  accessibility: AccessibilityView,
+  notFound: NotFoundView,
   // Loaded on demand: MapLibre (about 1 MB) is only needed by the map.
   map: () => import('./views/ExploreView.vue'),
   methodology: MethodView,

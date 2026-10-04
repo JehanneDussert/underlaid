@@ -165,7 +165,12 @@ function minutes(place, m) {
   if (place.source === 'times') return r.times ? r.times[m]?.[place.id] : undefined
   if (place.source === 'night') return r.night_emergency ? r.night_emergency[m] : undefined
   if (place.source === 'places') return r.places ? r.places[m]?.[place.id] : undefined
-  return undefined // "paris": next routing run
+  if (place.source === 'paris') {
+    if (!r.paris_places) return undefined
+    const id = m === 'wheelchair' && place.wheelchairId ? place.wheelchairId : place.id
+    return r.paris_places[m]?.[id]
+  }
+  return undefined
 }
 // undefined = not computed yet; null = more than 90 min.
 const computedYet = (place) => minutes(place, 'free') !== undefined

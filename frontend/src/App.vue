@@ -20,6 +20,7 @@ const route = useRoute()
 const NAV = [
   { name: 'map', key: 'map' },
   { name: 'methodology', key: 'methodology' },
+  { name: 'about', key: 'about' },
 ]
 const otherLocale = computed(() => (locale.value === 'fr' ? 'en' : 'fr'))
 // The equivalent page in the other language, same params, query and hash.

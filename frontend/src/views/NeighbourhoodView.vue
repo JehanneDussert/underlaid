@@ -811,14 +811,28 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
 .place-times {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+/* Fixed-width cells, right-aligned, so that durations and gaps line up
+   from one place to the next. */
+.place-times > * {
+  min-width: 5.2em;
+  text-align: right;
 }
 .t-item {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 5px;
   font-weight: 700;
+}
+.place-times > .gap {
+  min-width: 6.4em;
+  text-align: center;
 }
 .gap {
   font-size: 12px;
@@ -949,8 +963,15 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   .part h2 {
     font-size: 24px;
   }
+  /* Phone: the durations of a place go on their own line under its
+     name, right-aligned, in the same columns from one place to the next. */
   .place {
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .place-times {
+    align-self: flex-end;
   }
   /* Phone (VotreQuartierMobileD4): name and duration only; the list of
      places and "le plus proche" stay for screen readers. */

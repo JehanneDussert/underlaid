@@ -923,6 +923,9 @@ thead th {
   .theme-select-wrap {
     position: relative;
     flex: 1;
+    /* A select is as wide as its longest option unless allowed to shrink
+       (Safari): without this the filters button left the screen. */
+    min-width: 0;
     display: flex;
     align-items: center;
     border: 2px solid var(--theme-color);
@@ -938,6 +941,9 @@ thead th {
   }
   .theme-select {
     flex: 1;
+    min-width: 0;
+    width: 100%;
+    text-overflow: ellipsis;
     min-height: 48px;
     border: none;
     background: transparent;
@@ -953,6 +959,7 @@ thead th {
     font-weight: 700;
   }
   .filters-button {
+    flex-shrink: 0;
     white-space: nowrap;
     min-height: 48px;
     padding: 0 18px;

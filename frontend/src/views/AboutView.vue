@@ -20,6 +20,10 @@ useSeoMeta({
 })
 
 const REPO_URL = 'https://github.com/JehanneDussert/underlaid'
+const PERSONAL_SITE = 'https://jehannedussert.com'
+const GITHUB_PROFILE = 'https://github.com/JehanneDussert'
+// To fill in: the LinkedIn profile address (not shown while empty).
+const LINKEDIN_URL = ''
 const VERSION = '0.2.0'
 const VERSION_DOI = '10.5281/zenodo.23101510'
 const CONCEPT_DOI_URL = 'https://doi.org/10.5281/zenodo.23083312'
@@ -91,7 +95,11 @@ function writeTo(e) {
             <a href="https://eig.numerique.gouv.fr/defis/twincity/" rel="noopener">TwinCity</a>{{ t('about.projet.p3b') }}
           </p>
           <p>{{ t('about.projet.p4') }}</p>
-          <p><a :href="REPO_URL" rel="noopener">GitHub</a></p>
+          <ul class="person-links">
+            <li><a :href="PERSONAL_SITE" rel="noopener">jehannedussert.com</a></li>
+            <li><a :href="GITHUB_PROFILE" rel="noopener">GitHub</a></li>
+            <li v-if="LINKEDIN_URL"><a :href="LINKEDIN_URL" rel="noopener">LinkedIn</a></li>
+          </ul>
         </section>
 
         <section id="citer" class="part" aria-labelledby="a-citer">
@@ -422,5 +430,19 @@ a.press-card:hover {
   .part h2 {
     font-size: 24px;
   }
+}
+.person-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  font-size: 17px;
+}
+.person-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 </style>

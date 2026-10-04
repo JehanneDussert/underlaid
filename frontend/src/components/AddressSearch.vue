@@ -3,6 +3,8 @@
 // api-adresse.data.gouv.fr). WAI-ARIA combobox pattern: arrow keys move
 // through the suggestions, Enter picks, Escape closes; the number of
 // suggestions is announced. Emits `select` with { label, lon, lat }.
+// Only addresses of Paris and the inner suburbs (departments 75, 92, 93,
+// 94) are proposed; when every match is elsewhere, a message says so.
 // Used on the home page and on the address page.
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -27,6 +29,8 @@ const { t } = useI18n()
 
 const GEOCODE_URL = 'https://api-adresse.data.gouv.fr/search/'
 const MGP_CENTER = [2.35, 48.86]
+const DEPARTMENTS = ['75', '92', '93', '94']
+const inZone = (feature) => DEPARTMENTS.includes(String(feature.properties?.citycode ?? '').slice(0, 2))
 
 const query = ref(props.initial)
 const input = ref(null)
@@ -53,17 +57,21 @@ const status = computed(() => {
   if (message.value) return message.value
   if (searching.value) return t('address.searching')
   if (!open.value) return ''
-  return suggestions.value.length ? t('address.suggestions', { n: suggestions.value.length }) : ''
+  return suggestions.value.length ? t('address.suggestions', { n: suggestions.value.length }, suggestions.value.length) : ''
 })
 
 async function fetchSuggestions(q) {
   const request = ++lastRequest
   searching.value = true
   try {
-    const url = `${GEOCODE_URL}?q=${encodeURIComponent(q)}&lat=${MGP_CENTER[1]}&lon=${MGP_CENTER[0]}&limit=5`
+    // More results than shown, so that addresses of the zone are not
+    // crowded out by homonyms elsewhere in France.
+    const url = `${GEOCODE_URL}?q=${encodeURIComponent(q)}&lat=${MGP_CENTER[1]}&lon=${MGP_CENTER[0]}&limit=20`
     const data = await (await fetch(url)).json()
     if (request !== lastRequest) return []
-    suggestions.value = data.features ?? []
+    const all = data.features ?? []
+    suggestions.value = all.filter(inZone).slice(0, 5)
+    message.value = all.length && !suggestions.value.length ? t('address.outsideZone') : ''
     open.value = suggestions.value.length > 0
     active.value = -1
     return suggestions.value

@@ -522,14 +522,15 @@
     "placeholder": "Numéro, rue, commune",
     "placeholderShort": "Adresse",
     "submit": "Voir",
-    "suggestions": "{n} adresses proposées. Utilisez les flèches haut et bas pour choisir.",
+    "suggestions": "{n} adresse proposée. Utilisez les flèches haut et bas pour choisir. | {n} adresses proposées. Utilisez les flèches haut et bas pour choisir.",
     "listLabel": "Adresses proposées",
     "unavailable": "Le service de recherche d'adresse ne répond pas. Réessayez plus tard.",
     "tooShort": "Saisissez au moins 3 caractères.",
     "notFound": "Aucune adresse trouvée.",
     "searching": "Recherche en cours…",
     "loadingPlace": "Chargement du quartier…",
-    "clear": "Effacer l'adresse"
+    "clear": "Effacer l'adresse",
+    "outsideZone": "Cette adresse est hors de la zone couverte (Paris et petite couronne)."
   },
   "modes": {
     "free": "Sans contrainte",
@@ -668,7 +669,7 @@
     "modesLabel": "Mode de déplacement",
     "compareLabel": "Comparer avec",
     "unknownCode": "Ce quartier est introuvable.",
-    "outside": "Cette adresse est hors de Paris et de la petite couronne, ou n'a pas pu être située.",
+    "outside": "Cette adresse est hors de la zone couverte (Paris et petite couronne), ou n'a pas pu être située.",
     "empty": "Saisissez une adresse pour voir la situation de votre quartier.",
     "title": {
       "none": "Un quartier qui ne fait pas partie des plus exposés.",

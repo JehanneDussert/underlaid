@@ -522,14 +522,15 @@
     "placeholder": "Number, street, town",
     "placeholderShort": "Address",
     "submit": "Show",
-    "suggestions": "{n} addresses suggested. Use the up and down arrows to choose.",
+    "suggestions": "{n} address suggested. Use the up and down arrows to choose. | {n} addresses suggested. Use the up and down arrows to choose.",
     "listLabel": "Suggested addresses",
     "unavailable": "The address search service is not responding. Please try again later.",
     "tooShort": "Type at least 3 characters.",
     "notFound": "No address found.",
     "searching": "Searching…",
     "loadingPlace": "Loading the neighbourhood…",
-    "clear": "Clear the address"
+    "clear": "Clear the address",
+    "outsideZone": "This address is outside the area covered (Paris and the inner suburbs)."
   },
   "modes": {
     "free": "No constraint",
@@ -668,7 +669,7 @@
     "modesLabel": "Travel mode",
     "compareLabel": "Compare with",
     "unknownCode": "This neighbourhood cannot be found.",
-    "outside": "This address is outside Paris and its inner suburbs, or could not be located.",
+    "outside": "This address is outside the area covered (Paris and the inner suburbs), or could not be located.",
     "empty": "Enter an address to see the situation of your neighbourhood.",
     "title": {
       "none": "A neighbourhood that is not among the most exposed.",

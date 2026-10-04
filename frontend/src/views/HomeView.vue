@@ -125,7 +125,7 @@ const strip = computed(() => {
         </div>
         <p class="hero-hint">
           {{ t('landing.hint') }}
-          <router-link :to="{ name: localizedRouteName('methodology', locale) }">{{ t('landing.hintLink') }}</router-link>
+          <router-link :to="{ name: localizedRouteName('methodology', locale), hash: '#portee' }">{{ t('landing.hintLink') }}</router-link>
         </p>
       </div>
 

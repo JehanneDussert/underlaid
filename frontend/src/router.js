@@ -1,6 +1,6 @@
 import HomeView from './views/HomeView.vue'
 import NeighbourhoodView from './views/NeighbourhoodView.vue'
-import ExploreView from './views/ExploreView.vue'
+import AboutView from './views/AboutView.vue'
 import AddressView from './views/AddressView.vue'
 import QuizView from './views/QuizView.vue'
 import RoutesView from './views/RoutesView.vue'
@@ -14,10 +14,12 @@ import { ROUTE_PATHS, DEFAULT_LOCALE } from './routePaths'
 const COMPONENTS = {
   home: HomeView,
   neighbourhood: NeighbourhoodView,
+  about: AboutView,
   address: AddressView,
   quiz: QuizView,
   routes: RoutesView,
-  map: ExploreView,
+  // Loaded on demand: MapLibre (about 1 MB) is only needed by the map.
+  map: () => import('./views/ExploreView.vue'),
   methodology: MethodView,
   // The detailed methodology page (before the redesign): kept in full for
   // journalists and researchers, linked from the short "Method" page.

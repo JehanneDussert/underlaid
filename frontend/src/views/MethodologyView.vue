@@ -54,7 +54,7 @@ const DATA_SOURCES = [
   { name: { en: 'DREES — APL age weights and decay', fr: 'DREES — pondérations par âge et décroissance de l\'APL' }, license: 'lo' },
   { name: { en: 'Île-de-France Mobilités — public transport timetables (GTFS)', fr: 'Île-de-France Mobilités — horaires des transports en commun (GTFS)' }, license: 'mobilites' },
   { name: { en: 'IGN — BD TOPO (staircases)', fr: 'IGN — BD TOPO (escaliers)' }, license: 'lo' },
-  { name: { en: '© CARTO, © OpenStreetMap contributors — basemap', fr: "© CARTO, © les contributeurs d'OpenStreetMap — fond de carte" }, license: 'carto' },
+  { name: { en: '© OpenStreetMap contributors — Seine and Marne drawn on the map', fr: "© les contributeurs d'OpenStreetMap — Seine et Marne dessinées sur la carte" }, license: 'odbl' },
   { name: { en: 'IGN, DINUM — API Adresse (BAN)', fr: 'IGN, DINUM — API Adresse (BAN)' }, license: 'lo' },
 ]
 

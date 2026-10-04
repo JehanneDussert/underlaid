@@ -34,6 +34,7 @@ export const ROUTE_PATHS = [
     en: '/en/most-exposed-neighbourhoods',
     old: { en: '/ranking', fr: '/fr/ranking' },
   },
+  { name: 'about', fr: '/a-propos', en: '/en/about' },
   { name: 'press', fr: '/presse', en: '/en/press', old: { en: '/press', fr: '/fr/press' } },
   { name: 'address', fr: '/adresse', en: '/en/address', old: { en: '/address', fr: '/fr/address' }, sitemap: false },
   { name: 'quiz', fr: '/quiz', en: '/en/quiz', old: { en: '/quiz', fr: '/fr/quiz' }, sitemap: false },

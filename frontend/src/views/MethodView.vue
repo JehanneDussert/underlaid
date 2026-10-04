@@ -1,13 +1,18 @@
 <script setup>
-// Short method page of the redesign (mock-up docs/maquettes/Methode.dc.html):
-// sources, calculation, limits, corrections. The full methodology stays on
-// /methodology/details (MethodologyView.vue) and in SCORING.md.
+// Method page, redesign D4 (docs/design/refonte-d4/: 05, MethodeD4): nine
+// numbered parts and a sticky table of contents. Filled from the published
+// data (key_figures.json), the hypotheses (data/hypotheses.js) and the
+// decisions recorded in CLAUDE.md / SCORING.md. The full methodology stays
+// on /methode/detail (MethodologyView.vue) and in SCORING.md.
+// Anchors kept for links from other pages: #calcul (part 3), #hypotheses,
+// #limites, #sources and #corrections (inside part 9), #portee (modes).
 import { computed, onMounted, onServerPrefetch, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import HypothesesResults from '../components/HypothesesResults.vue'
 import { useRoute, useRouter } from 'vue-router'
 import FigureSource from '../components/FigureSource.vue'
+import HypothesesResults from '../components/HypothesesResults.vue'
 import { useSeoMeta } from '../composables/useSeoMeta'
+import { MODES } from '../data/modes'
 import { localizedRouteName } from '../router'
 import { loadStaticJson } from '../utils/loadStaticJson'
 
@@ -16,7 +21,7 @@ const route = useRoute()
 const router = useRouter()
 
 // Links published before the redesign point to anchors of the former
-// methodology page, now at /methodology/details: send them there.
+// methodology page, now at /methode/detail: send them there.
 const DETAILS_ANCHORS = ['#access', '#access-rebuilt', '#access-without-car', '#data-licences', '#inclusive-mobility', '#means', '#osm-sidewalks']
 onMounted(() => {
   if (DETAILS_ANCHORS.includes(route.hash)) {
@@ -27,8 +32,8 @@ onMounted(() => {
 useSeoMeta({
   title: { en: 'Sources and method', fr: 'Sources et méthode' },
   description: {
-    en: 'Where the data comes from, how the cumulative exposure score is computed for 2,752 neighbourhoods of Paris and its inner suburbs, its limits and the corrections made.',
-    fr: "D'où viennent les données, comment le score de cumul est calculé pour 2 752 quartiers de Paris et de la petite couronne, ses limites et les corrections apportées.",
+    en: 'How the 2,752 neighbourhoods of Paris and its inner suburbs are compared: themes, access to care, travel times, residents’ resources, tested hypotheses, limits, data and corrections.',
+    fr: "Comment les 2 752 quartiers de Paris et de la petite couronne sont comparés : thèmes, accès aux soins, durées de trajet, ressources des habitants, hypothèses testées, limites, données et corrections.",
   },
 })
 
@@ -36,7 +41,6 @@ const REPO_URL = 'https://github.com/JehanneDussert/underlaid'
 const SCORING_URL = `${REPO_URL}/blob/master/SCORING.md`
 const DOI_URL = 'https://doi.org/10.5281/zenodo.23083312'
 
-// Computed from the published data by scripts/35_key_figures.py.
 const figures = ref(null)
 async function loadFigures() {
   figures.value = await loadStaticJson('/data/key_figures.json')
@@ -48,13 +52,13 @@ onMounted(() => {
 
 const nf = computed(() => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB'))
 const list = (key) => tm(key).map((item) => Object.fromEntries(Object.entries(item).map(([k, v]) => [k, typeof v === 'boolean' ? v : rt(v)])))
-
 const sources = computed(() => list('method.sources.rows'))
 const criteria = computed(() => list('method.calc.criteria'))
-const measures = computed(() => list('method.measures.items'))
 const limits = computed(() => list('method.limits.items'))
 const fixes = computed(() => list('method.fixes.items'))
+const places = computed(() => list('methodD4.portee.places'))
 
+const PARTS = ['bref', 'quartiers', 'calcul', 'soins', 'portee', 'ressources', 'hypotheses', 'limites', 'donnees']
 const CATEGORY_KEYS = ['thermal', 'pollution', 'housing', 'access_care']
 const example = computed(() => figures.value?.example)
 const distribution = computed(() => {
@@ -70,540 +74,492 @@ const distribution = computed(() => {
 
 <template>
   <article class="method">
-    <section class="container intro">
-      <p class="eyebrow">{{ t('method.eyebrow') }}</p>
-      <h1>{{ t('method.title') }}</h1>
-      <p class="lead">{{ t('method.lead') }}</p>
+    <header class="method-head container">
+      <h1>{{ t('methodD4.title') }}</h1>
+      <p class="lead">{{ t('methodD4.lead') }}</p>
+    </header>
+
+    <div class="container method-grid">
       <nav class="toc" :aria-label="t('method.tocLabel')">
-        <a href="#sources">1. {{ t('method.sources.short') }}</a>
-        <a href="#calcul">2. {{ t('method.calc.short') }}</a>
-        <a href="#hypotheses">3. {{ t('method.hyp.short') }}</a>
-        <a href="#limites">4. {{ t('method.limits.short') }}</a>
-        <a href="#corrections">5. {{ t('method.fixes.short') }}</a>
-      </nav>
-    </section>
-
-    <section id="sources" class="band" aria-labelledby="sources-title">
-      <div class="container stack">
-        <h2 id="sources-title">1. {{ t('method.sources.title') }}</h2>
-        <p class="body">{{ t('method.sources.intro') }}</p>
-        <div class="card table-card">
-          <table>
-            <caption class="sr-only">{{ t('method.sources.title') }}</caption>
-            <thead>
-              <tr>
-                <th scope="col">{{ t('method.sources.colWhat') }}</th>
-                <th scope="col">{{ t('method.sources.colWho') }}</th>
-                <th scope="col">{{ t('method.sources.colWhen') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in sources" :key="row.what">
-                <th scope="row">{{ row.what }}</th>
-                <td>{{ row.who }}</td>
-                <td>
-                  <span class="edition">{{ row.when }}</span>
-                  <span v-if="row.note" class="note"><span class="dot" aria-hidden="true"></span>{{ row.note }}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <p class="legend"><span class="dot" aria-hidden="true"></span>{{ t('method.sources.legend') }}</p>
-        </div>
-        <p class="body small">{{ t('method.sources.mobilityNotice') }}</p>
-      </div>
-    </section>
-
-    <section id="calcul" class="band" aria-labelledby="calc-title">
-      <div class="container stack">
-        <h2 id="calc-title">2. {{ t('method.calc.title') }}</h2>
-        <p class="body">{{ t('method.calc.intro') }}</p>
-        <div class="criteria">
-          <div v-for="(c, i) in criteria" :key="c.name" class="card criterion">
-            <span class="kicker">{{ t('method.calc.criterion', { n: i + 1 }) }}</span>
-            <h3>{{ c.name }}</h3>
-            <p>{{ c.desc }}</p>
-          </div>
-          <div class="card criterion result">
-            <span class="kicker">{{ t('method.calc.resultKicker') }}</span>
-            <h3>{{ t('method.calc.resultName') }}</h3>
-            <p>{{ t('method.calc.resultDesc') }}</p>
-          </div>
-        </div>
-
-        <div v-if="example" class="card example">
-          <h3 class="example-title">{{ t('method.calc.exampleTitle', { name: example.name, commune: example.commune }) }}</h3>
-          <ul class="chips" role="list">
-            <li v-for="key in CATEGORY_KEYS" :key="key" :class="['chip', { bad: example.worst_quarter[key] }]">
-              {{ t('method.calc.chip', { category: t(`method.calc.cat.${key}`), state: example.worst_quarter[key] ? t('method.calc.unfavourable') : t('method.calc.notUnfavourable') }) }}
-            </li>
-          </ul>
-          <p class="example-score">{{ t('method.calc.exampleScore', { score: example.score }) }}</p>
-          <p class="body small">{{ t('method.calc.countNotMean') }}</p>
-        </div>
-
-        <div v-if="distribution.length" class="card">
-          <h3 class="example-title">{{ t('method.calc.distTitle') }}</h3>
-          <table class="dist">
-            <caption class="sr-only">{{ t('method.calc.distTitle') }}</caption>
-            <thead>
-              <tr>
-                <th scope="col">{{ t('method.calc.distScore') }}</th>
-                <th scope="col">{{ t('method.calc.distCount') }}</th>
-                <th scope="col">{{ t('method.calc.distShare') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in distribution" :key="row.score">
-                <th scope="row">{{ t('method.calc.outOf4', { score: row.score }) }}</th>
-                <td>{{ row.count }}</td>
-                <td>{{ row.share }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <FigureSource :sources="t('method.calc.distSources')" />
-        </div>
-
-        <h3 class="sub">{{ t('method.measures.title') }}</h3>
-        <p class="body">{{ t('method.measures.intro') }}</p>
-        <div class="measures">
-          <div v-for="m in measures" :key="m.name" class="card measure">
-            <h4>{{ m.name }}</h4>
-            <p class="status">{{ m.status }}</p>
-            <p>{{ m.desc }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="hypotheses" class="band" aria-labelledby="hyp-title">
-      <div class="container stack">
-        <h2 id="hyp-title">3. {{ t('method.hyp.title') }}</h2>
-        <HypothesesResults />
-      </div>
-    </section>
-
-    <section id="limites" class="band" aria-labelledby="limits-title">
-      <div class="container stack">
-        <h2 id="limits-title">4. {{ t('method.limits.title') }}</h2>
-        <ul class="limits" role="list">
-          <li v-for="l in limits" :key="l.name" class="card limit"><strong>{{ l.name }}</strong> {{ l.desc }}</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="corrections" class="band" aria-labelledby="fixes-title">
-      <div class="container stack">
-        <h2 id="fixes-title">5. {{ t('method.fixes.title') }}</h2>
-        <p class="body">{{ t('method.fixes.intro') }}</p>
-        <ol class="fixes" role="list">
-          <li v-for="f in fixes" :key="f.what" class="card fix">
-            <span class="when">{{ f.when }}</span>
-            <span class="fix-text">
-              <strong>{{ f.what }}</strong>
-              <span>{{ f.why }}</span>
-            </span>
+        <span class="toc-title">{{ t('method.tocLabel') }}</span>
+        <ol>
+          <li v-for="(id, i) in PARTS" :key="id">
+            <a :href="`#${id}`"><span class="toc-num">{{ i + 1 }}</span>{{ t(`methodD4.part.${id}`) }}</a>
           </li>
         </ol>
-      </div>
-    </section>
+      </nav>
 
-    <section class="band dark-band" aria-labelledby="doc-title">
-      <div class="container doc">
-        <div>
-          <h2 id="doc-title">{{ t('method.doc.title') }}</h2>
-          <p>{{ t('method.doc.body') }}</p>
-        </div>
-        <div class="doc-links">
-          <router-link class="btn primary" :to="{ name: localizedRouteName('methodology-details', locale) }">{{ t('method.doc.details') }}</router-link>
-          <a class="btn" :href="SCORING_URL" rel="noopener">{{ t('method.doc.scoring') }}</a>
-          <a class="btn" :href="REPO_URL" rel="noopener">{{ t('method.doc.code') }}</a>
-          <a class="btn" :href="DOI_URL" rel="noopener">{{ t('method.doc.cite') }}</a>
-        </div>
+      <div class="parts">
+        <!-- 1. En bref -->
+        <section id="bref" class="part" aria-labelledby="t-bref">
+          <h2 id="t-bref"><span class="num">1.</span>{{ t('methodD4.part.bref') }}</h2>
+          <div class="facts">
+            <div class="fact"><strong>{{ nf.format(figures?.n_iris ?? 2752) }}</strong><span>{{ t('methodD4.bref.iris') }}</span></div>
+            <div class="fact"><strong>{{ t('methodD4.bref.themesN') }}</strong><span>{{ t('methodD4.bref.themes') }}</span></div>
+            <div class="fact"><strong>{{ t('methodD4.bref.modesN') }}</strong><span>{{ t('methodD4.bref.modes') }}</span></div>
+          </div>
+          <p>{{ t('methodD4.bref.body') }}</p>
+        </section>
+
+        <!-- 2. Les quartiers -->
+        <section id="quartiers" class="part" aria-labelledby="t-quartiers">
+          <h2 id="t-quartiers"><span class="num">2.</span>{{ t('methodD4.part.quartiers') }}</h2>
+          <p>{{ t('methodD4.quartiers.p1', { n: nf.format(figures?.n_iris ?? 2752) }) }}</p>
+          <p>{{ t('methodD4.quartiers.p2') }}</p>
+        </section>
+
+        <!-- 3. Le cadre de vie -->
+        <section id="calcul" class="part" aria-labelledby="t-calcul">
+          <h2 id="t-calcul"><span class="num">3.</span>{{ t('methodD4.part.calcul') }}</h2>
+          <p>{{ t('methodD4.cadre.intro') }}</p>
+          <dl class="defs">
+            <template v-for="c in criteria" :key="c.name">
+              <dt>{{ c.name }}</dt>
+              <dd>{{ c.desc }}</dd>
+            </template>
+          </dl>
+          <p v-html="t('methodD4.cadre.cumul')"></p>
+          <p>{{ t('methodD4.cadre.rank') }}</p>
+          <div v-if="example" class="card">
+            <h3>{{ t('method.calc.exampleTitle', { name: example.name, commune: example.commune }) }}</h3>
+            <ul class="chips" role="list">
+              <li v-for="key in CATEGORY_KEYS" :key="key" :class="['chip', { bad: example.worst_quarter[key] }]">
+                {{ t('method.calc.chip', { category: t(`method.calc.cat.${key}`), state: example.worst_quarter[key] ? t('method.calc.unfavourable') : t('method.calc.notUnfavourable') }) }}
+              </li>
+            </ul>
+            <p class="example-score">{{ t('method.calc.exampleScore', { score: example.score }) }}</p>
+            <p class="small">{{ t('method.calc.countNotMean') }}</p>
+          </div>
+          <div v-if="distribution.length" class="card">
+            <h3>{{ t('method.calc.distTitle') }}</h3>
+            <table class="dist">
+              <caption class="sr-only">{{ t('method.calc.distTitle') }}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">{{ t('method.calc.distScore') }}</th>
+                  <th scope="col">{{ t('method.calc.distCount') }}</th>
+                  <th scope="col">{{ t('method.calc.distShare') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in distribution" :key="row.score">
+                  <th scope="row">{{ t('method.calc.outOf4', { score: row.score }) }}</th>
+                  <td>{{ row.count }}</td>
+                  <td>{{ row.share }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <FigureSource :sources="t('method.calc.distSources')" />
+          </div>
+        </section>
+
+        <!-- 4. L'accès aux soins -->
+        <section id="soins" class="part" aria-labelledby="t-soins">
+          <h2 id="t-soins"><span class="num">4.</span>{{ t('methodD4.part.soins') }}</h2>
+          <p>{{ t('methodD4.soins.p1') }}</p>
+          <p>{{ t('methodD4.soins.p2') }}</p>
+          <p class="small">{{ t('methodD4.soins.sources') }}</p>
+        </section>
+
+        <!-- 5. Ce qui est à portée -->
+        <section id="portee" class="part" aria-labelledby="t-portee">
+          <h2 id="t-portee"><span class="num">5.</span>{{ t('methodD4.part.portee') }}</h2>
+          <p>{{ t('methodD4.portee.intro') }}</p>
+          <dl class="defs">
+            <template v-for="m in MODES" :key="m">
+              <dt><span class="dot" :class="`dot-${m}`" aria-hidden="true"></span>{{ t(`modes.${m}`) }}</dt>
+              <dd>{{ t(`nbhd.how.${m}`) }}</dd>
+            </template>
+          </dl>
+          <p>{{ t('methodD4.portee.info') }}</p>
+          <div class="table-wrap">
+            <table class="places">
+              <caption class="sr-only">{{ t('methodD4.portee.tableCaption') }}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">{{ t('methodD4.portee.colPlace') }}</th>
+                  <th scope="col">{{ t('methodD4.portee.colSource') }}</th>
+                  <th scope="col">{{ t('methodD4.portee.colNote') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="p in places" :key="p.place">
+                  <th scope="row">{{ p.place }}</th>
+                  <td>{{ p.source }}</td>
+                  <td>{{ p.note }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small">
+            {{ t('methodD4.portee.exclusions') }}
+            <a :href="`${SCORING_URL}#excluded-destinations-full-list`" rel="noopener">{{ t('methodD4.portee.exclusionsLink') }}</a>
+          </p>
+        </section>
+
+        <!-- 6. Les ressources des habitants -->
+        <section id="ressources" class="part" aria-labelledby="t-ressources">
+          <h2 id="t-ressources"><span class="num">6.</span>{{ t('methodD4.part.ressources') }}</h2>
+          <p>{{ t('methodD4.ressources.p1') }}</p>
+          <p>{{ t('methodD4.ressources.p2') }}</p>
+          <p class="small">{{ t('methodD4.ressources.sources') }}</p>
+        </section>
+
+        <!-- 7. Hypothèses et résultats -->
+        <section id="hypotheses" class="part" aria-labelledby="t-hypotheses">
+          <h2 id="t-hypotheses"><span class="num">7.</span>{{ t('methodD4.part.hypotheses') }}</h2>
+          <HypothesesResults />
+        </section>
+
+        <!-- 8. Limites -->
+        <section id="limites" class="part" aria-labelledby="t-limites">
+          <h2 id="t-limites"><span class="num">8.</span>{{ t('methodD4.part.limites') }}</h2>
+          <ul class="limits" role="list">
+            <li v-for="l in limits" :key="l.name"><strong>{{ l.name }}</strong> {{ l.desc }}</li>
+          </ul>
+        </section>
+
+        <!-- 9. Données, code et corrections -->
+        <section id="donnees" class="part" aria-labelledby="t-donnees">
+          <h2 id="t-donnees"><span class="num">9.</span>{{ t('methodD4.part.donnees') }}</h2>
+          <p>{{ t('methodD4.donnees.intro') }}</p>
+          <div class="links">
+            <a class="pill-link" :href="REPO_URL" rel="noopener">{{ t('methodD4.donnees.code') }}</a>
+            <a class="pill-link" :href="DOI_URL" rel="noopener">{{ t('methodD4.donnees.data') }}</a>
+            <a class="pill-link" :href="SCORING_URL" rel="noopener">{{ t('method.doc.scoring') }}</a>
+            <router-link class="pill-link" :to="{ name: localizedRouteName('methodology-details', locale) }">{{ t('method.doc.details') }}</router-link>
+            <a class="pill-link" :href="`${REPO_URL}/issues/new`" rel="noopener">{{ t('methodD4.donnees.report') }}</a>
+          </div>
+
+          <h3 id="sources">{{ t('method.sources.title') }}</h3>
+          <p>{{ t('method.sources.intro') }}</p>
+          <div class="table-wrap">
+            <table>
+              <caption class="sr-only">{{ t('method.sources.title') }}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">{{ t('method.sources.colWhat') }}</th>
+                  <th scope="col">{{ t('method.sources.colWho') }}</th>
+                  <th scope="col">{{ t('method.sources.colWhen') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in sources" :key="row.what">
+                  <th scope="row">{{ row.what }}</th>
+                  <td>{{ row.who }}</td>
+                  <td>
+                    <span class="edition">{{ row.when }}</span>
+                    <span v-if="row.note" class="note">{{ row.note }}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small">{{ t('method.sources.mobilityNotice') }}</p>
+
+          <h3 id="corrections">{{ t('method.fixes.title') }}</h3>
+          <p>{{ t('method.fixes.intro') }}</p>
+          <ol class="fixes" role="list">
+            <li v-for="f in fixes" :key="f.what" class="fix">
+              <span class="when">{{ f.when }}</span>
+              <span class="fix-text">
+                <strong>{{ f.what }}</strong>
+                <span>{{ f.why }}</span>
+              </span>
+            </li>
+          </ol>
+        </section>
       </div>
-    </section>
+    </div>
   </article>
 </template>
 
 <style scoped>
-.intro {
-  padding-top: 72px;
-  padding-bottom: 56px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.method-head {
+  padding-top: 40px;
+  padding-bottom: 8px;
 }
-.eyebrow {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--accent);
-}
-h1 {
-  margin: 0;
-  font-size: clamp(40px, 6vw, 60px);
-  line-height: 1.04;
-  letter-spacing: -0.035em;
-  font-weight: 800;
-  max-width: 820px;
+.method-head h1 {
+  margin: 0 0 12px;
+  font-size: 46px;
+  letter-spacing: -0.02em;
 }
 .lead {
   margin: 0;
-  font-size: 20px;
-  line-height: 1.5;
-  color: var(--text-body);
-  max-width: 700px;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 820px;
+}
+.method-grid {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 56px;
+  padding-top: 32px;
 }
 .toc {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 8px;
+  align-self: start;
+  position: sticky;
+  top: 24px;
+  border-left: 3px solid var(--primary);
+  padding-left: 18px;
+}
+.toc-title {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.toc ol {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
 }
 .toc a {
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: var(--surface);
-  text-decoration: none;
+  display: flex;
+  gap: 10px;
+  padding: 7px 0;
   font-size: 15px;
-  font-weight: 600;
+  text-decoration: none;
+  min-height: 36px;
+  align-items: center;
 }
-
-.band {
-  border-top: 1px solid var(--line);
+.toc a:hover {
+  text-decoration: underline;
 }
-.stack {
-  padding-top: 72px;
-  padding-bottom: 72px;
+.toc-num {
+  color: var(--text-muted);
+  min-width: 16px;
+}
+.parts {
+  min-width: 0;
+}
+.part {
+  padding-bottom: 64px;
+  scroll-margin-top: 24px;
+}
+.part h2 {
+  margin: 0 0 18px;
+  font-size: 30px;
+}
+.num {
+  color: var(--primary);
+  margin-right: 10px;
+}
+.part p {
+  font-size: 17px;
+  line-height: 1.65;
+  margin: 0 0 14px;
+  max-width: 820px;
+}
+.part h3 {
+  margin: 32px 0 10px;
+  font-size: 21px;
+  scroll-margin-top: 24px;
+}
+.small,
+.part p.small {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.fact {
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 6px;
 }
-h2 {
-  margin: 0;
-  font-size: 36px;
-  letter-spacing: -0.025em;
+.fact strong {
+  font-size: 28px;
 }
-.sub {
-  margin: 24px 0 0;
-  font-size: 26px;
-  letter-spacing: -0.02em;
-}
-.body {
-  margin: 0;
-  font-size: 18px;
-  line-height: 1.55;
-  color: var(--text-body);
-  max-width: 720px;
-}
-.body.small {
+.fact span {
   font-size: 15px;
-}
-
-.card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 24px 28px;
-}
-
-.table-card {
-  padding: 8px 28px;
-  overflow-x: auto;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 16px;
-}
-thead th {
-  text-align: left;
-  font-size: 14px;
-  font-weight: 600;
   color: var(--text-secondary);
-  padding: 18px 16px 18px 0;
-  border-bottom: 1px solid var(--line-soft);
+  line-height: 1.5;
 }
-tbody th,
-tbody td {
-  text-align: left;
-  vertical-align: top;
-  padding: 16px 16px 16px 0;
-  border-bottom: 1px solid var(--line-soft);
+.defs {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 12px 24px;
+  margin: 0 0 18px;
+  max-width: 900px;
 }
-tbody th {
-  font-weight: 600;
-}
-tbody td {
-  color: var(--text-body);
-}
-.edition {
-  display: block;
-  color: var(--text-primary);
-}
-.note {
+.defs dt {
+  font-weight: 700;
   display: flex;
+  align-items: flex-start;
   gap: 8px;
-  align-items: baseline;
-  margin-top: 4px;
-  font-size: 14px;
+}
+.defs dd {
+  margin: 0;
+  line-height: 1.6;
   color: var(--text-secondary);
 }
 .dot {
+  display: inline-block;
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  margin-top: 7px;
   flex-shrink: 0;
-  background: #8a5300;
-  display: inline-block;
 }
-.legend {
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
-  margin: 0;
-  padding: 16px 0;
-  font-size: 14px;
-  color: var(--text-secondary);
+.dot-free {
+  background: var(--mode-free);
 }
-
-.criteria {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 16px;
+.dot-slow {
+  background: var(--mode-slow);
 }
-.criterion {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.dot-wheelchair {
+  background: var(--mode-wheelchair);
 }
-.criterion h3 {
-  margin: 0;
-  font-size: 20px;
+.card {
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  margin: 20px 0;
 }
-.criterion p {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--text-body);
-}
-.kicker {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-.result {
-  background: var(--dark);
-  color: var(--text-on-dark);
-}
-.result .kicker {
-  color: var(--accent-on-dark);
-}
-.result p {
-  color: var(--text-on-dark-secondary);
-}
-
-.example {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.example-title {
-  margin: 0 0 4px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-secondary);
+.card h3 {
+  margin: 0 0 12px;
+  font-size: 19px;
 }
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 0;
+  gap: 8px;
+  margin: 0 0 10px;
   padding: 0;
   list-style: none;
 }
 .chip {
-  padding: 10px 16px;
+  padding: 6px 12px;
   border-radius: 999px;
-  border: 1.5px solid var(--control-border);
-  font-size: 15px;
-  font-weight: 600;
+  border: 1.5px solid var(--line-strong);
+  font-size: 14px;
 }
 .chip.bad {
-  background: var(--accent);
+  background: var(--accent-tint);
   border-color: var(--accent);
-  color: #ffffff;
 }
 .example-score {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 700;
 }
-
-.dist {
-  max-width: 460px;
-}
-
-.measures {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-.measure h4 {
-  margin: 0 0 4px;
-  font-size: 20px;
-}
-.measure .status {
-  margin: 0 0 10px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent);
-}
-.measure p {
-  margin: 0;
+table {
+  border-collapse: collapse;
+  width: 100%;
   font-size: 15px;
-  line-height: 1.5;
-  color: var(--text-body);
 }
-
-.limits,
+.dist {
+  max-width: 420px;
+}
+th,
+td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.5;
+}
+.table-wrap {
+  overflow-x: auto;
+  margin: 8px 0 14px;
+}
+.edition {
+  display: block;
+  font-weight: 700;
+}
+.note {
+  display: block;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.limits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 900px;
+}
+.limits li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.6;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 8px 0 8px;
+}
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 2px solid var(--control-border);
+  text-decoration: none;
+  font-weight: 700;
+}
+.pill-link:hover {
+  border-color: var(--text-primary);
+}
 .fixes {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-.limits {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-.limit {
-  padding: 20px 24px;
-  font-size: 16px;
-  line-height: 1.5;
-}
-.fixes {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  max-width: 900px;
 }
 .fix {
-  padding: 20px 24px;
-  display: flex;
-  gap: 24px;
-  align-items: baseline;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
 }
 .when {
-  width: 120px;
-  flex-shrink: 0;
-  font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-secondary);
 }
 .fix-text {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 15px;
-  color: var(--text-body);
-}
-.fix-text strong {
-  font-size: 17px;
-  color: var(--text-primary);
+  line-height: 1.55;
 }
 
-.dark-band {
-  background: var(--dark);
-  color: var(--text-on-dark);
-  border-top: none;
-}
-.doc {
-  padding-top: 64px;
-  padding-bottom: 64px;
-  display: flex;
-  justify-content: space-between;
-  gap: 32px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.doc h2 {
-  font-size: 30px;
-}
-.doc p {
-  margin: 8px 0 0;
-  font-size: 16px;
-  color: var(--text-on-dark-secondary);
-}
-.doc-links {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.btn {
-  min-height: 48px;
-  padding: 0 20px;
-  display: inline-flex;
-  align-items: center;
-  border-radius: var(--radius-small);
-  border: 1.5px solid #ffffff;
-  color: #ffffff;
-  font-weight: 600;
-  text-decoration: none;
-}
-.btn.primary {
-  background: #ffffff;
-  color: var(--dark);
-}
-.btn:hover {
-  color: var(--accent-on-dark);
-}
-.btn.primary:hover {
-  color: var(--accent);
-}
-.dark-band :focus-visible {
-  outline-color: #ffffff;
-}
-
-@media (max-width: 1000px) {
-  .criteria {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 900px) {
+  .method-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
   }
-}
-@media (max-width: 640px) {
-  .criteria,
-  .measures,
-  .limits {
+  .toc {
+    position: static;
+  }
+  .facts {
     grid-template-columns: minmax(0, 1fr);
   }
+  .defs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px 0;
+  }
+  .defs dd {
+    margin-bottom: 10px;
+  }
+  .method-head h1 {
+    font-size: 34px;
+  }
+  .part h2 {
+    font-size: 24px;
+  }
   .fix {
-    flex-direction: column;
-    gap: 6px;
-  }
-  .stack {
-    padding-top: 48px;
-    padding-bottom: 48px;
-  }
-  .card {
-    padding: 20px;
-  }
-  .table-card {
-    padding: 4px 16px;
-  }
-  /* Sources table only: rows become stacked blocks on a phone. */
-  .table-card thead {
-    display: none;
-  }
-  .table-card tbody tr {
-    display: block;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--line-soft);
-  }
-  .table-card tbody th,
-  .table-card tbody td {
-    display: block;
-    padding: 2px 0;
-    border: none;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
   }
 }
 </style>

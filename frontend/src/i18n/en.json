@@ -33,7 +33,7 @@
     "sectionLabel": "Selected neighborhood",
     "prompt": "Click a neighborhood on the map to see its scores and figures."
   },
-  "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors · © CARTO",
+  "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors",
   "footerLastUpdated": "Data last updated: {date}",
   "legend": {
     "worst": "{n} (least favourable)",
@@ -282,17 +282,88 @@
     "idfmNotice": "Contains information from \"Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub)\", made available by Île-de-France Mobilités under the terms of the \"Licence Mobilités\"."
   },
   "about": {
-    "intro": "Underlaid didn't invent this idea — it borrows from tools that came before it, and exists inside an active policy debate. Naming both openly is part of being checkable.",
-    "orsInerisTitle": "ORS Île-de-France / Ineris / L'Institut Paris Region, 2022",
-    "orsInerisBody": "\"Cumuls d'expositions environnementales en Île-de-France\": a 5-year, 500m-grid regional study of composite environmental exposure across the whole of Île-de-France, with a public interactive map and a case study on Aubervilliers — a commune inside Underlaid's own Métropole du Grand Paris coverage. The most directly comparable regional precedent found: same core idea (composite exposure, not a single index), a coarser and non-cumulative grid rather than a neighbourhood-by-neighbourhood count of the least favourable categories.",
-    "orsInerisSource": "Source: ORS Île-de-France, Ineris, L'Institut Paris Region, 2022 — interactive map at cartoviz.institutparisregion.fr.",
-    "adaptTitle": "Adapt'Canicules (RésO Villes)",
-    "adaptBody": "The closest existing French tool: 137 agglomerations, focused on officially recognized priority neighborhoods (QPV), built on a 200m grid. Underlaid's difference: IRIS-level granularity (finer than QPV), a public interactive map rather than an institutional report, and a cumulative count rather than a smoothed average.",
-    "ejTitle": "EJScreen / CalEnviroScreen / EJNYC",
-    "ejBody": "US environmental-justice screening tools (federal EPA, California, New York City) that pioneered composite cumulative-burden scoring at small-area granularity. Underlaid adapts the same core idea — count how many burdens stack up in the same place, don't average them away — to Paris and to a different set of indicators.",
-    "hccTitle": "Haut Conseil pour le Climat, July 9, 2026 report",
-    "hccBody": "\"France isn't ready\": the report that coined \"bouilloires thermiques\" (thermal kettles) for the worst-affected neighborhoods, published as the state cut the Fonds Vert budget from €2.5bn to €837M and the idea of a \"service public de la fraîcheur\" (public cooling service) entered debate. Underlaid is built to make that debate concrete at the scale of an actual street.",
-    "hccSource": "Source: Haut Conseil pour le Climat, press coverage, 2026-07-09."
+    "title": "About",
+    "lead": "Who runs this project, how to cite it, reuse its data or contribute.",
+    "part": {
+      "projet": "The project",
+      "citer": "Cite this work",
+      "reutiliser": "Reuse the data and code",
+      "collaborer": "Collaborate",
+      "presse": "Press",
+      "confidentialite": "Your data"
+    },
+    "projet": {
+      "p1": "A few streets apart, the air, the heat and the time it takes to see a doctor are not the same. Underlaid brings together scattered public data to make these gaps visible, neighbourhood by neighbourhood, from an address and depending on how each person gets around. The site describes; it does not rank residents.",
+      "p2": "Underlaid is an independent project by <strong>Jehanne Dussert</strong>, trained in law and computer science, now an expert in artificial intelligence governance.",
+      "p3a": "A former Entrepreneur d'Intérêt Général, a programme of the French interministerial digital directorate (DINUM, Prime Minister's services), she led the development of ",
+      "p3b": ", a generator of synthetic 3D images built from a digital twin of Paris to test the biases of computer-vision algorithms. Who is represented in data, and who is not, was already at the heart of her work. Underlaid carries that thread on.",
+      "p4": "A personal project, run in her free time, unrelated to her employer. It receives no funding, shows no advertising and supports no party or candidate."
+    },
+    "cite": {
+      "intro": "For an article, a report, a thesis or a presentation:",
+      "formats": "Citation format",
+      "text": "Text",
+      "bibtex": "BibTeX",
+      "kind": "data and software",
+      "copy": "Copy the citation",
+      "copied": "Citation copied.",
+      "copyFailed": "Copying failed: select the text.",
+      "note": "Cite the version used: figures may change from one version to the next.",
+      "concept": "To always point to the latest version:"
+    },
+    "reuse": {
+      "intro": "The neighbourhood indicators, the code and the detailed method are public. Every reuse must cite Underlaid and the original sources.",
+      "what": "What",
+      "licence": "Licence",
+      "allows": "What it allows",
+      "rows": {
+        "code": {
+          "what": "Code",
+          "licence": "MIT",
+          "allows": "Reuse, modify and redistribute the code, including commercially, keeping the licence notice."
+        },
+        "data": {
+          "what": "Neighbourhood indicators",
+          "licence": "ODbL",
+          "allows": "Reuse, including commercially, citing the source; derived databases must stay under the same licence (an obligation inherited from OpenStreetMap and City of Paris data)."
+        },
+        "osm": {
+          "what": "Data from OpenStreetMap",
+          "licence": "ODbL",
+          "allows": "Reuse citing \"© OpenStreetMap contributors\"; derived databases stay under the same licence."
+        },
+        "visuals": {
+          "what": "Maps and visuals of the site",
+          "licence": "CC BY 4.0",
+          "allows": "Reuse a map or a screenshot citing \"Underlaid\" and the data source."
+        }
+      },
+      "zenodo": "Download the data (Zenodo)",
+      "github": "Source code (GitHub)",
+      "sources": "Licence of each source"
+    },
+    "collab": {
+      "intro": "Researchers, associations, local authorities, public servants: all proposals are welcome, in particular to:",
+      "items": [
+        "report an error or a more reliable source;",
+        "check the figures of an area you know well;",
+        "test wheelchair or slow-walking trips on the ground;",
+        "extend the map to other areas."
+      ],
+      "report": "Report an error",
+      "discuss": "Discussions (GitHub)",
+      "write": "Write to the project lead"
+    },
+    "press": {
+      "intro": "Key figures are checked and dated. Please cite the version and do not present neighbourhoods as \"the worst\": the site places, it does not rank residents.",
+      "figures": "Key figures",
+      "figuresDesc": "A printable page, with sources and dates.",
+      "visuals": "Visuals",
+      "visualsDesc": "Maps and screenshots free to reuse (CC BY 4.0), citing Underlaid and the data source.",
+      "contact": "Press contact",
+      "contactDesc": "Write to the project lead."
+    },
+    "privacy": "The address you type is sent to the Base adresse nationale (a public service) to find your neighbourhood; Underlaid neither keeps it nor puts it in the page address. The site uses neither cookies nor audience measurement. Your language choice is kept in your browser, and the code of the last neighbourhood viewed is kept in the tab for the visit. The host (Vercel) keeps technical access logs."
   },
   "context": {
     "intro": "Six facts that are not counted in the score, because they are only available at a coarser scale than the neighbourhood (arrondissement, commune, region). They are shown as context. Three concern Paris only (flagged below): no equivalent source exists yet for the inner suburbs.",
@@ -367,7 +438,8 @@
       "ranking": "Most exposed neighbourhoods",
       "press": "Press",
       "neighbourhood": "Your neighbourhood",
-      "neighbourhoodHint": "(enter an address first)"
+      "neighbourhoodHint": "(enter an address first)",
+      "about": "About"
     },
     "code": "Source code",
     "cite": "Cite (DOI)",
@@ -1294,6 +1366,111 @@
         "access_care": "Access to care",
         "third": "Resources"
       }
+    }
+  },
+  "methodD4": {
+    "title": "Sources and method",
+    "lead": "How neighbourhoods are compared, where the data come from, what was tested and what the site does not measure.",
+    "part": {
+      "bref": "In short",
+      "quartiers": "Neighbourhoods",
+      "calcul": "Living conditions",
+      "soins": "Access to care",
+      "portee": "What is within reach",
+      "ressources": "Residents' resources",
+      "hypotheses": "Hypotheses and results",
+      "limites": "Limits",
+      "donnees": "Data, code and corrections"
+    },
+    "bref": {
+      "iris": "neighbourhoods of Paris and its inner suburbs, as defined by INSEE (IRIS)",
+      "themesN": "4 themes",
+      "themes": "heat, air and noise, housing, access to care; for each, the most affected quarter of neighbourhoods",
+      "modesN": "3 ways",
+      "modes": "of getting around: no constraint, slow walking, wheelchair; with real public transport timetables",
+      "body": "The site does not grade neighbourhoods. It places each one against the others, theme by theme, and shows what can be reached from home. All the data are public and open."
+    },
+    "quartiers": {
+      "p1": "A neighbourhood, here, is an IRIS: INSEE's smallest statistical unit, of about 2,000 residents. Paris and the three inner-suburb départements have {n} of them.",
+      "p2": "Neighbourhoods with fewer than 50 residents (woods, business parks, railway land) are shown but not used in comparisons: their figures would be too fragile."
+    },
+    "cadre": {
+      "intro": "For each theme, neighbourhoods are ranked from least to most affected. A neighbourhood is \"in the most affected quarter\" if it is among the 25% most exposed.",
+      "cumul": "<strong>The combined score</strong> counts the number of themes, out of 4, in which the neighbourhood is in the most affected quarter. <strong>\"Highly exposed\"</strong> means at least 2 of the 3 exposures (heat, air and noise, housing) in the most affected quarter; access to care is a separate axis.",
+      "rank": "The sentence \"Out of 10 neighbourhoods, 8 are less exposed than yours\" rounds the ranking to the nearest ten."
+    },
+    "soins": {
+      "p1": "Being next to a practice is not enough if the GP is already overstretched. The indicator therefore accounts for both distance and demand: each GP and each pharmacy is \"shared\" among the residents who can reach it on foot and by public transport.",
+      "p2": "The method follows the DREES's localised potential accessibility indicator (APL), whose weights it uses, applied to a grid of 200 m squares. Facilities without on-site consultations (teleconsultation, home visits, emergency departments) are excluded; the list is published.",
+      "sources": "Sources: directory of health professionals (RPPS, Agence du numérique en santé), list of pharmacies (FINESS), INSEE Filosofi 2021 gridded population, Île-de-France Mobilités timetables, OpenStreetMap walking network."
+    },
+    "portee": {
+      "intro": "For each need, the site computes the duration to the nearest place, on foot and by public transport, from the neighbourhood's inhabited squares, on a Tuesday at 10:00. The value shown is the neighbourhood's population-weighted median.",
+      "info": "These durations are for information: they are not part of the combined score. At night (departure at 1:00), only emergency departments and stations are shown, always on foot and by public transport.",
+      "tableCaption": "Sources and caveats by place",
+      "colPlace": "Place",
+      "colSource": "Source",
+      "colNote": "Good to know",
+      "places": [
+        {
+          "place": "Crèche (public or private)",
+          "source": "INSEE BPE",
+          "note": "The base only lists facilities receiving a CAF service grant; it mostly matches crèches on the CAF scale, where fees depend on income, whoever runs them. Micro-crèches whose fees do not depend on income are largely missing. About a two-year lag."
+        },
+        {
+          "place": "Convenience store or supermarket",
+          "source": "INSEE BPE",
+          "note": "The supermarket category includes non-food shops of the same size, which the base cannot separate; grocery shops under 120 m² are not counted."
+        },
+        {
+          "place": "Public nursery school",
+          "source": "INSEE BPE",
+          "note": "The nearest school is not necessarily the catchment-area school."
+        },
+        {
+          "place": "Park or garden",
+          "source": "L'Institut Paris Region",
+          "note": "Green spaces open to the public. Entrances are unknown, so the distance is measured to points every 100 m along the outline."
+        },
+        {
+          "place": "Public toilets, fountains",
+          "source": "City of Paris",
+          "note": "Paris only: most inner-suburb communes do not publish an open list."
+        },
+        {
+          "place": "Emergency department",
+          "source": "INSEE BPE",
+          "note": "General emergency departments only; paediatric and specialised ones not counted."
+        },
+        {
+          "place": "Town hall, France Travail, post office",
+          "source": "INSEE BPE",
+          "note": "One town hall per commune (per arrondissement in Paris), annexes not counted; local France Travail agencies; post offices, without postal relays."
+        },
+        {
+          "place": "France Services, CAF, CPAM",
+          "source": "ANCT; public administration directory",
+          "note": "Fixed sites (mobile buses excluded); offices open to all insured people (sessions at partners' premises excluded)."
+        },
+        {
+          "place": "Police station, social centre, library",
+          "source": "INSEE BPE",
+          "note": "National police open to the public (municipal police excluded); approved social centres; local-authority libraries."
+        }
+      ],
+      "exclusions": "The places set aside by these rules are listed one by one, with their reason:",
+      "exclusionsLink": "list of excluded places"
+    },
+    "ressources": {
+      "p1": "Median income, overcrowded homes and the share of second homes describe the means residents have to cope. They are shown separately, for information, and are not part of the combined score: a well-off neighbourhood can be highly exposed to heat. Neighbourhoods are split into three thirds, from lowest to highest.",
+      "p2": "Since 3 October 2026, the 2022 census replaces the 2021 one. INSEE changed its definition of overcrowding: the median rate goes from 13.5% to 24.6% because of this change of definition, not of a real change. About one neighbourhood in five changes third, always to a neighbouring one. The results already published were checked with these new data (part 7).",
+      "sources": "Sources: INSEE, Filosofi 2021 (income, latest vintage published at neighbourhood level) and 2022 population census (overcrowding, second homes, population)."
+    },
+    "donnees": {
+      "intro": "The code, the data produced and the detailed method are public. To cite this work or reuse the data, see the About page.",
+      "code": "Source code (GitHub)",
+      "data": "Data (Zenodo)",
+      "report": "Report an error"
     }
   }
 }

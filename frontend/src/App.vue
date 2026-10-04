@@ -162,8 +162,9 @@ const lastUpdatedLabel = computed(() => (dataDate.value ? t('footerLastUpdated',
         </p>
         <ul class="footer-links">
           <li><router-link :to="{ name: localizedRouteName('ranking', locale) }">{{ t('site.nav.ranking') }}</router-link></li>
-          <li><router-link :to="{ name: localizedRouteName('methodology-details', locale), hash: '#data-licences' }">{{ t('site.footerReuse') }}</router-link></li>
-          <li><router-link :to="{ name: localizedRouteName('press', locale) }">{{ t('site.nav.press') }}</router-link></li>
+          <li><router-link :to="{ name: localizedRouteName('about', locale), hash: '#citer' }">{{ t('site.footerReuse') }}</router-link></li>
+          <li><router-link :to="{ name: localizedRouteName('about', locale), hash: '#presse' }">{{ t('site.nav.press') }}</router-link></li>
+          <li><router-link :to="{ name: localizedRouteName('about', locale) }">{{ t('site.nav.about') }}</router-link></li>
           <li><a :href="contactHref" rel="noopener" @click="openContact">{{ t('site.footerContact') }}</a></li>
         </ul>
       </div>

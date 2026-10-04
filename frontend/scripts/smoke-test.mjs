@@ -267,6 +267,19 @@ try {
     }
   }
 
+  // Method (nine parts with a table of contents) and About (six parts,
+  // citation in two formats, privacy wording) in both languages.
+  for (const [path, parts] of [['/methode', 9], ['/en/method', 9], ['/a-propos', 6], ['/en/about', 6]]) {
+    const r = await page.goto(base + path, { waitUntil: 'networkidle' })
+    const tocLinks = await page.locator('nav.toc a').count()
+    const sections = await page.locator('.parts > section.part').count()
+    check(`${path}: ${parts} parts, table of contents`, r.status() === 200 && tocLinks === parts && sections === parts, `${tocLinks} links, ${sections} sections`)
+  }
+  await page.goto(base + '/a-propos', { waitUntil: 'networkidle' })
+  await page.locator('[role=tab]', { hasText: 'BibTeX' }).click()
+  check('about: BibTeX citation with the version DOI', /@software[\s\S]*10\.5281\/zenodo\.23101510/.test(await page.locator('.citation').innerText()))
+  check('about: no e-mail address written in the page', !(await page.content()).includes('research.jehannedussert@'))
+
   // Links from before the redesign: #data-licences now lives on the
   // detailed page.
   await page.goto(base + '/methode#data-licences', { waitUntil: 'networkidle' })

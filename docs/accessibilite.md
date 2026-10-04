@@ -60,3 +60,11 @@ Points à vérifier en particulier :
 - Orangé et jaune jamais en texte.
 - **Rampes de la carte** : premier cran légèrement foncé pour rester visible sur fond blanc. La valeur est toujours donnée aussi en texte (légende, fiche, liste).
 - **Animations** : uniquement `transform`, `opacity` et `stroke-dashoffset`. Aucune animation avec « animations réduites ». La pastille qui pulse s'arrête après trois battements (critère 2.2.2).
+- **Passage de l'accueil au quartier** : sur ordinateur, le plan zoome vers « vous êtes ici » en 600 ms avant le changement de page. Pas d'attente ni de zoom avec « animations réduites » ou sur téléphone.
+- **Tableaux qui défilent** (méthode, lieux du quotidien) : la zone de défilement reçoit le focus et porte un nom (« Tableau (faites défiler horizontalement si besoin) »), pour être parcourue au clavier.
+
+## Journal des contrôles automatiques
+
+| Date | Résultat |
+|---|---|
+| 04/10/2026 | axe-core : aucune violation grave ou critique (toutes pages, FR/EN, ordinateur et téléphone) ; clavier OK ; parcours complet 60/60 ; redistribution OK (9 tailles d'écran). Un tableau défilant de la méthode détaillée n'était pas accessible au clavier sur téléphone : corrigé. |

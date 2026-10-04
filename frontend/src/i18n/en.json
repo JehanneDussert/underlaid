@@ -698,7 +698,7 @@
       "housing": "Energy-inefficient homes",
       "access_care": "Access to care"
     },
-    "pillsNote": ": in the most affected quarter of the {n} neighbourhoods",
+    "pillsNote": "In the most affected quarter of the {n} neighbourhoods:",
     "fewResidents": "Very sparsely inhabited neighbourhood: read the figures with caution.",
     "insufficient": "Insufficient data for: {what}.",
     "lead": "This page follows one question: are the most exposed neighbourhoods also those with the least access to what people need?",

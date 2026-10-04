@@ -12,7 +12,7 @@
 //      access to care (descriptive), with the tested hypothesis as stated
 //      in the method.
 // Data: one file per commune (scripts/39_neighbourhood_files.py).
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import AccordionItem from '../components/AccordionItem.vue'
@@ -67,7 +67,20 @@ async function load(code) {
 onMounted(() => {
   label.value = (typeof history !== 'undefined' && history.state?.label) || ''
   load(route.params.code)
+  revealMode()
 })
+
+// Phone: the three mode buttons scroll sideways in the sticky bar; the
+// chosen one is scrolled into view so that it is never hidden off-screen.
+const stickyModes = ref(null)
+async function revealMode() {
+  await nextTick()
+  const row = stickyModes.value?.querySelector('.mode-buttons')
+  const on = row?.querySelector('[aria-pressed="true"]')
+  if (!row || !on || row.scrollWidth <= row.clientWidth) return
+  const left = on.offsetLeft - row.offsetLeft
+  if (left < row.scrollLeft || left + on.offsetWidth > row.scrollLeft + row.clientWidth) row.scrollLeft = left - 16
+}
 watch(
   () => route.params.code,
   (code) => load(code)
@@ -230,7 +243,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
             @select="onAddress"
           />
         </div>
-        <div class="sticky-modes">
+        <div ref="stickyModes" class="sticky-modes">
           <ModeToggle v-model="mode" :label="t('nbhd.modesLabel')" />
         </div>
       </div>
@@ -250,8 +263,8 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
         <header class="nbhd-head">
           <h1>{{ title }}</h1>
           <div v-if="pills.length" class="pills">
-            <span v-for="p in pills" :key="p" class="pill"><span class="pill-dot" aria-hidden="true"></span>{{ t(`nbhd.pill.${p}`) }}</span>
             <span class="pills-note">{{ t('nbhd.pillsNote', { n: nf(index?.n_iris ?? 2752) }) }}</span>
+            <span v-for="p in pills" :key="p" class="pill"><span class="pill-dot" aria-hidden="true"></span>{{ t(`nbhd.pill.${p}`) }}</span>
           </div>
           <p v-if="!record.inhabited" class="flag">{{ t('nbhd.fewResidents') }}</p>
           <p v-if="insufficient.length" class="flag">{{ t('nbhd.insufficient', { what: insufficient.map((k) => t(`nbhd.exposure.${k}.title`).toLowerCase()).join(', ') }) }}</p>

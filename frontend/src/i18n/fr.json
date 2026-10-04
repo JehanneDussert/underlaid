@@ -698,7 +698,7 @@
       "housing": "Logements énergivores",
       "access_care": "Accès aux soins"
     },
-    "pillsNote": ": dans le quart le plus touché des {n} quartiers",
+    "pillsNote": "Dans le quart le plus touché des {n} quartiers :",
     "fewResidents": "Quartier très peu habité : chiffres à lire avec prudence.",
     "insufficient": "Données insuffisantes pour : {what}.",
     "lead": "Cette page suit une question : les quartiers les plus exposés sont-ils aussi ceux où l'on accède le moins à ce dont on a besoin ?",

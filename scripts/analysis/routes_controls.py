@@ -34,13 +34,15 @@ import config
 agg = importlib.import_module("36_route_aggregate")
 # ROUTES_SET=neighbourhood: controls of the second run (everyday places,
 # Tuesday 10:00 only; no public-services indicator, night or stations).
-NEIGHBOURHOOD = agg.ROUTES_SET == "neighbourhood"
-OUT = config.DATA_INTERIM / "analysis" / ("routes_neighbourhood_controls.txt" if NEIGHBOURHOOD else "routes_controls.txt")
+# ROUTES_SET=paris: Paris toilets and fountains (same restrictions).
+NEIGHBOURHOOD = agg.ROUTES_SET in ("neighbourhood", "paris")
+OUT = config.DATA_INTERIM / "analysis" / {"neighbourhood": "routes_neighbourhood_controls.txt", "paris": "routes_paris_controls.txt"}.get(agg.ROUTES_SET, "routes_controls.txt")
 DEPS = ["75", "92", "93", "94"]
 NAMES = {"emergency": "urgences", "gp": "médecin", "pharmacy": "pharmacie", "town_hall": "mairie", "france_services": "France Services",
          "caf": "CAF", "cpam": "CPAM", "employment": "France Travail", "post_office": "poste", "station": "station",
          "creche": "crèche", "food_store": "supérette", "nursery_school": "maternelle", "police": "commissariat",
-         "social_centre": "centre social", "library": "bibliothèque", "park": "parc"}
+         "social_centre": "centre social", "library": "bibliothèque", "park": "parc",
+         "toilets": "toilettes", "toilets_pmr": "toilettes PMR", "toilets_24h": "toilettes 24h", "drinking_water": "fontaine"}
 
 
 def neighbourhood_table(task: pd.DataFrame, cells: pd.DataFrame, types: list[str]) -> pd.DataFrame:

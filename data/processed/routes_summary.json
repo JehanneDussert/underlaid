@@ -120,5 +120,24 @@
       }
     }
   },
-  "paris_median": null
+  "paris_median": {
+    "free": {
+      "toilets": 3,
+      "toilets_pmr": 3,
+      "toilets_24h": 6,
+      "drinking_water": 3
+    },
+    "slow": {
+      "toilets": 4,
+      "toilets_pmr": 4,
+      "toilets_24h": 8,
+      "drinking_water": 4
+    },
+    "wheelchair": {
+      "toilets": 3,
+      "toilets_pmr": 3,
+      "toilets_24h": 6,
+      "drinking_water": 3
+    }
+  }
 }

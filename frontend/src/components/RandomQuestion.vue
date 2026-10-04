@@ -6,6 +6,13 @@
 // dated audit (data/facts.js); only the wrong answers are fixed.
 // Texts validated by the project owner on 3 October 2026.
 //
+// "Lequel de ces quartiers ?" (rules validated on 4 October 2026): a pair
+// drawn at random from question_pairs.json (script 43), either close but
+// different or far apart but alike. The neighbourhoods are "Quartier A" and
+// "Quartier B" in the question; their names (readable: "un quartier du
+// Blanc-Mesnil" for a generic INSEE name) and links come in the answer.
+// The stock is loaded after the page, only in the browser.
+//
 // The prerendered page shows the first question (readable without
 // JavaScript); a random one is drawn in the browser. The verdict is
 // written in words ("Réponse exacte" / "inexacte", "votre réponse") and
@@ -14,6 +21,7 @@ import { computed, nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { localizedRouteName } from '../router'
 import { FACTS } from '../data/facts'
+import { loadStaticJson } from '../utils/loadStaticJson'
 
 const props = defineProps({
   figures: { type: Object, default: null },
@@ -66,6 +74,7 @@ const questions = computed(() => {
       })
     }
   }
+  if (pair.value) out.push(pair.value)
   if (r) {
     const n = r.night_emergency.free
     const paris = pct(Math.round(n['75'].over30_pct))
@@ -85,6 +94,84 @@ const questions = computed(() => {
   return out
 })
 
+// --- "Lequel de ces quartiers ?" --------------------------------------------
+const stock = ref(null)
+const drawn = ref(null)
+const EXPO = { t: 'thermal', p: 'pollution', h: 'housing' }
+function communeLabel(c) {
+  return c.replace(/ Arrondissement$/, '')
+}
+// French: "de Bagnolet", "du Blanc-Mesnil", "des Lilas", "d’Ivry-sur-Seine".
+function ofCommune(c) {
+  const name = communeLabel(c)
+  if (locale.value !== 'fr') return name
+  if (name.startsWith('Le ')) return `du ${name.slice(3)}`
+  if (name.startsWith('Les ')) return `des ${name.slice(4)}`
+  if (/^[AEIOUYÉÈÎÏ]/i.test(name)) return `d’${name}`
+  return `de ${name}`
+}
+// French: "à Bagnolet", "au Blanc-Mesnil", "aux Lilas".
+function atCommune(c) {
+  const name = communeLabel(c)
+  if (locale.value !== 'fr') return name
+  if (name.startsWith('Le ')) return `au ${name.slice(3)}`
+  if (name.startsWith('Les ')) return `aux ${name.slice(4)}`
+  return `à ${name}`
+}
+function readable(h) {
+  return h.generic ? t('question.pair.generic', { of: ofCommune(h.commune) }) : `${h.name} (${communeLabel(h.commune)})`
+}
+function exposures(h) {
+  if (!h.exp.length) return t('question.pair.none')
+  return h.exp.map((k) => t(`question.pair.expo.${k}`)).join(', ')
+}
+function draw() {
+  const st = stock.value
+  if (!st?.pairs?.length) return
+  const [kind, dist, ia, ib] = st.pairs[Math.floor(Math.random() * st.pairs.length)]
+  const hood = (k) => {
+    const [code, name, commune, generic, exp, third] = st.hoods[k]
+    return { code, name, commune, generic: Boolean(generic), exp: [...exp].map((c) => EXPO[c]), third }
+  }
+  let [a, b] = Math.random() < 0.5 ? [hood(ia), hood(ib)] : [hood(ib), hood(ia)]
+  // Far pairs: A is the neighbourhood with more resources, as the question says.
+  if (kind === 'f' && a.third < b.third) [a, b] = [b, a]
+  drawn.value = { kind, dist, a, b }
+}
+const pair = computed(() => {
+  const d = drawn.value
+  if (!d) return null
+  const { a, b } = d
+  const links = [
+    { label: t('question.pair.seeA'), code: a.code },
+    { label: t('question.pair.seeB'), code: b.code },
+  ]
+  const who = t('question.pair.who', { a: readable(a), ea: exposures(a), b: readable(b), eb: exposures(b) })
+  const count = (k) => nf(stock.value.pairs.filter((x) => x[0] === k).length)
+  if (d.kind === 'c') {
+    const aMore = a.exp.length > b.exp.length
+    const same = a.commune === b.commune
+    return {
+      id: 'pair',
+      text: t(same ? 'question.pair.closeSame' : 'question.pair.closeTwo', { d: nf(d.dist), ca: atCommune(a.commune), cb: atCommune(b.commune), of: ofCommune(a.commune) }),
+      options: [{ label: t('question.pair.a'), right: aMore }, { label: t('question.pair.b'), right: !aMore }],
+      explanation: `${who} ${t('question.pair.closeLesson')}`,
+      note: t('question.pair.closeNote', { n: count('c') }),
+      sources: t('question.pair.sources'),
+      links,
+    }
+  }
+  return {
+    id: 'pair',
+    text: t('question.pair.far', { d: nf(Math.round(d.dist / 1000)), ca: atCommune(a.commune), cb: atCommune(b.commune) }),
+    options: [{ label: t('question.pair.a') }, { label: t('question.pair.b') }, { label: t('question.pair.same'), right: true }],
+    explanation: `${who} ${t('question.pair.farLesson')}`,
+    note: t('question.pair.farNote', { n: count('f') }),
+    sources: t('question.pair.sources'),
+    links,
+  }
+})
+
 const index = ref(0)
 const answer = ref(null)
 const current = computed(() => questions.value[index.value % Math.max(1, questions.value.length)])
@@ -94,7 +181,13 @@ const verdict = computed(() => {
 })
 const questionHeading = ref(null)
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    stock.value = await loadStaticJson('/data/question_pairs.json')
+    draw()
+  } catch {
+    // Without the stock, the other questions remain.
+  }
   if (questions.value.length) index.value = Math.floor(Math.random() * questions.value.length)
 })
 
@@ -105,6 +198,7 @@ function choose(i) {
 async function another() {
   const n = questions.value.length
   if (n > 1) index.value = (index.value + 1 + Math.floor(Math.random() * (n - 1))) % n
+  if (current.value?.id === 'pair') draw()
   answer.value = null
   await nextTick()
   questionHeading.value?.focus()
@@ -125,7 +219,7 @@ function optionState(i, option) {
       <p class="question-lead">{{ t('question.lead') }}</p>
     </div>
     <div v-if="current" class="question-card">
-      <h3 ref="questionHeading" class="question-text" tabindex="-1">{{ t(`question.${current.id}.question`) }}</h3>
+      <h3 ref="questionHeading" class="question-text" tabindex="-1">{{ current.text || t(`question.${current.id}.question`) }}</h3>
       <ul class="question-options">
         <li v-for="(option, i) in current.options" :key="`${current.id}-${i}`">
           <button
@@ -148,6 +242,9 @@ function optionState(i, option) {
       <div v-if="answer !== null" class="question-answer">
         <p class="question-verdict">{{ verdict }}</p>
         <p class="question-explanation">{{ current.explanation }}</p>
+        <p v-if="current.links" class="question-links">
+          <router-link v-for="l in current.links" :key="l.code" :to="{ name: localizedRouteName('neighbourhood', locale), params: { code: l.code } }">{{ l.label }} <span aria-hidden="true">→</span></router-link>
+        </p>
         <p class="question-note">{{ current.note }} {{ t('figure.sources', { sources: current.sources }) }}</p>
       </div>
       <div class="question-actions">
@@ -274,6 +371,18 @@ function optionState(i, option) {
   margin: 0 0 8px;
   font-size: 17px;
   line-height: 1.55;
+}
+.question-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin: 0 0 8px;
+}
+.question-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
 }
 .question-note {
   margin: 0;

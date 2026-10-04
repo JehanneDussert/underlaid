@@ -618,6 +618,29 @@
       "explanation": "{paris} des quartiers à Paris, {inner} en petite couronne. Durée médiane, à pied et en transports en commun : {mp} minutes à Paris, {mi} minutes en petite couronne.",
       "note": "Urgences générales ; urgences pédiatriques et spécialisées non comptées. Départ entre 1 h et 2 h, mardi 13 octobre 2026.",
       "sources": "INSEE (BPE 2025), Île-de-France Mobilités, OpenStreetMap"
+    },
+    "pair": {
+      "a": "Quartier A",
+      "b": "Quartier B",
+      "same": "Autant l’un que l’autre",
+      "closeSame": "Ces deux quartiers {of} sont à {d} mètres l’un de l’autre. L’un est très exposé (au moins 2 des 3 expositions : chaleur, air et bruit, logements énergivores), l’autre non. Lequel est très exposé ?",
+      "closeTwo": "Ces deux quartiers, l’un {ca}, l’autre {cb}, sont à {d} mètres l’un de l’autre. L’un est très exposé (au moins 2 des 3 expositions : chaleur, air et bruit, logements énergivores), l’autre non. Lequel est très exposé ?",
+      "far": "Ces deux quartiers sont à {d} km l’un de l’autre, l’un {ca}, l’autre {cb}. Les habitants du quartier A sont parmi ceux qui ont le plus de ressources ; ceux du quartier B, parmi ceux qui en ont le moins. Lequel est le plus exposé ?",
+      "who": "Le quartier A est {a} : {ea}. Le quartier B est {b} : {eb}.",
+      "closeLesson": "À quelques rues d’écart, les conditions de vie peuvent être très différentes.",
+      "farLesson": "À exposition égale, des situations sociales opposées.",
+      "closeNote": "Paire tirée au hasard parmi {n} paires de quartiers habités distants de moins de 800 m et séparés par au moins deux expositions.",
+      "farNote": "Paire tirée au hasard parmi {n} paires de quartiers habités distants d’au moins 10 km, dans deux départements différents, avec les mêmes expositions et des ressources opposées (tiers le plus bas et tiers le plus haut).",
+      "sources": "expositions et ressources des habitants publiées par Underlaid (Insee : revenu 2021, recensement 2022)",
+      "generic": "un quartier {of}",
+      "none": "aucune des trois expositions",
+      "expo": {
+        "thermal": "chaleur",
+        "pollution": "air et bruit",
+        "housing": "logements énergivores"
+      },
+      "seeA": "Voir le quartier A",
+      "seeB": "Voir le quartier B"
     }
   },
   "hypotheses": {

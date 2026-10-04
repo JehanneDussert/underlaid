@@ -618,6 +618,29 @@
       "explanation": "{paris} of neighbourhoods in Paris, {inner} in the inner suburbs. Median duration, on foot and by public transport: {mp} minutes in Paris, {mi} minutes in the inner suburbs.",
       "note": "General emergency departments; paediatric and specialised ones not counted. Departure between 1:00 and 2:00, Tuesday 13 October 2026.",
       "sources": "INSEE (BPE 2025), Île-de-France Mobilités, OpenStreetMap"
+    },
+    "pair": {
+      "a": "Neighbourhood A",
+      "b": "Neighbourhood B",
+      "same": "Both equally",
+      "closeSame": "These two neighbourhoods of {of} are {d} metres apart. One is highly exposed (at least 2 of the 3 exposures: heat, air and noise, energy-inefficient housing), the other is not. Which one is highly exposed?",
+      "closeTwo": "These two neighbourhoods, one in {ca}, the other in {cb}, are {d} metres apart. One is highly exposed (at least 2 of the 3 exposures: heat, air and noise, energy-inefficient housing), the other is not. Which one is highly exposed?",
+      "far": "These two neighbourhoods are {d} km apart, one in {ca}, the other in {cb}. Residents of neighbourhood A are among those with the most resources; those of neighbourhood B, among those with the least. Which one is more exposed?",
+      "who": "Neighbourhood A is {a}: {ea}. Neighbourhood B is {b}: {eb}.",
+      "closeLesson": "A few streets apart, living conditions can be very different.",
+      "farLesson": "Equal exposure, opposite social situations.",
+      "closeNote": "Pair drawn at random from {n} pairs of inhabited neighbourhoods less than 800 m apart and at least two exposures apart.",
+      "farNote": "Pair drawn at random from {n} pairs of inhabited neighbourhoods at least 10 km apart, in two different départements, with the same exposures and opposite resources (lowest and highest third).",
+      "sources": "exposures and residents' resources published by Underlaid (INSEE: income 2021, 2022 census)",
+      "generic": "a neighbourhood of {of}",
+      "none": "none of the three exposures",
+      "expo": {
+        "thermal": "heat",
+        "pollution": "air and noise",
+        "housing": "energy-inefficient housing"
+      },
+      "seeA": "See neighbourhood A",
+      "seeB": "See neighbourhood B"
     }
   },
   "hypotheses": {

@@ -69,7 +69,12 @@ NEIGHBOURHOOD = ROUTES_SET == "neighbourhood"
 PARIS = ROUTES_SET == "paris"
 VERSION = os.environ.get("ROUTES_VERSION", "1")
 PILOT = os.environ.get("ROUTES_PILOT")
-SUFFIX = "_pilot" if PILOT else ("_v2" if VERSION == "2" else "")
+# Version 2: the points already lie on a common street, so r5py must not move
+# them again (snap_to_network moves a point onto the network before routing
+# without counting that distance, and differently in each network; diagnosed
+# on 4 October 2026). R5 then links each point itself and counts the link.
+SNAP = VERSION != "2"
+SUFFIX = ("_pilot2" if VERSION == "2" else "_pilot") if PILOT else ("_v2" if VERSION == "2" else "")
 OUT_DIR = WORK_DIR / ({"neighbourhood": "routes_ttm_neighbourhood", "paris": "routes_ttm_paris"}.get(ROUTES_SET, "routes_ttm") + SUFFIX)
 PROGRESS = WORK_DIR / {"neighbourhood": "routes_neighbourhood_progress.txt", "paris": "routes_paris_progress.txt"}.get(ROUTES_SET, "routes_progress.txt").replace(".txt", f"{SUFFIX}.txt")
 SNAPPED = ACCESS_DIR / "snapped_points.csv"
@@ -214,7 +219,7 @@ def main():
             transport_modes=modes,
             speed_walking=speed,
             max_time=dt.timedelta(minutes=MAX_MINUTES),
-            snap_to_network=True,
+            snap_to_network=SNAP,
         )
         ttm = pd.DataFrame(ttm).dropna(subset=["travel_time"])
         ttm = ttm[ttm.travel_time <= MAX_MINUTES]

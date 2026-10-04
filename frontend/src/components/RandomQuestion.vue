@@ -29,22 +29,6 @@ const questions = computed(() => {
   const f = props.figures
   const r = props.routes
   const out = []
-  if (r) {
-    const wc = r.station_median_by_department.wheelchair['75']
-    const free = r.station_median_by_department.free['75']
-    const mid = Math.round((wc + free) / 2)
-    out.push({
-      id: 'station',
-      options: [
-        { label: t('question.minutes', { n: free }) },
-        { label: t('question.minutes', { n: mid }) },
-        { label: t('question.minutes', { n: wc }), right: true },
-      ],
-      explanation: t('question.station.explanation', { wc, free }),
-      note: t('question.station.note'),
-      sources: t('question.station.sources'),
-    })
-  }
   const m = FACTS.metroAccessible
   out.push({
     id: 'metro',

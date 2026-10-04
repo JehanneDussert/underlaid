@@ -583,12 +583,6 @@
     "yourAnswer": "your answer",
     "another": "Another question",
     "seeMap": "See on the map",
-    "station": {
-      "question": "In Paris, how many minutes does it take, as a median and on foot, to reach a wheelchair-accessible metro, RER, train or tram stop?",
-      "explanation": "{wc} minutes, against {free} minutes to reach the nearest stop, accessible or not. In Paris, few metro stop points are wheelchair-accessible.",
-      "note": "Median of Paris neighbourhoods, on foot, Tuesday 13 October 2026.",
-      "sources": "Île-de-France Mobilités (timetables of 1 October 2026), OpenStreetMap, INSEE"
-    },
     "metro": {
       "question": "What share of metro stop points (platforms) is marked wheelchair-accessible by Île-de-France Mobilités, in Paris and in Seine-Saint-Denis?",
       "pair": "Paris {paris} · Seine-Saint-Denis {ssd}",

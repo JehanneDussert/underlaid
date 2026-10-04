@@ -66,6 +66,8 @@ function onPhoneModesKeydown(event) {
 // never in the URL.
 const leaving = ref(false)
 const outside = ref('')
+const zooming = ref(false)
+const ZOOM_MS = 600
 async function goToAddress(a) {
   leaving.value = true
   outside.value = ''
@@ -74,6 +76,13 @@ async function goToAddress(a) {
     leaving.value = false
     outside.value = t('nbhd.outside')
     return
+  }
+  // Zoom towards "you are here", then change page; no wait with reduced
+  // motion or when the drawing is hidden (phone).
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.matchMedia('(max-width: 900px)').matches
+  if (!still) {
+    zooming.value = true
+    await new Promise((resolve) => setTimeout(resolve, ZOOM_MS))
   }
   router.push({
     name: localizedRouteName('neighbourhood', locale.value),
@@ -134,7 +143,7 @@ const strip = computed(() => {
           <h2 class="phone-plan-title">{{ t('plan.fromNeighbourhood') }}</h2>
           <router-link class="phone-all" :to="{ name: localizedRouteName('places', locale) }">{{ t('landing.allPlacesShort') }} <span aria-hidden="true">→</span></router-link>
         </div>
-        <NetworkPlan :mode="mode" :medians="routes?.day_metropolis_median" />
+        <NetworkPlan :mode="mode" :medians="routes?.day_metropolis_median" :zooming="zooming" />
         <p v-if="!mode" class="phone-plan-hint">{{ t('landing.phoneHint') }}</p>
         <router-link class="all-places" :to="{ name: localizedRouteName('places', locale) }">{{ t('landing.allPlaces') }} <span aria-hidden="true">→</span></router-link>
       </div>

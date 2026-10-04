@@ -13,7 +13,8 @@
 // Animations (CSS only, transform / opacity / stroke-dashoffset): lines
 // drawn in 2 s, 200 ms apart; stations pop (0 -> 1.15 -> 1) in 400 ms;
 // labels fade in 500 ms; durations cross-fade in about 250 ms; "you are
-// here" pulses three times then stops (WCAG 2.2.2). None with reduced
+// here" pulses three times then stops (WCAG 2.2.2); on leaving, the
+// drawing zooms towards "you are here" in 600 ms. None with reduced
 // motion (style.css).
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -22,6 +23,9 @@ const props = defineProps({
   mode: { type: String, default: null },
   // { free: { town_hall: 12, ... }, slow: {...}, wheelchair: {...} }
   medians: { type: Object, default: null },
+  // True while leaving for the neighbourhood page: the drawing zooms
+  // towards "you are here" (about 600 ms) before the page changes.
+  zooming: { type: Boolean, default: false },
 })
 const { t } = useI18n()
 
@@ -61,7 +65,7 @@ const phoneItems = computed(() => PHONE_ORDER.map((type, i) => ({ type, color: P
 <template>
   <div class="plan">
     <!-- Desktop drawing -->
-    <div class="plan-desktop">
+    <div class="plan-desktop" :class="{ zooming }" :style="{ transformOrigin: `${pct(HERE.x, VIEW.x, VIEW.w)} ${pct(HERE.y, VIEW.y, VIEW.h)}` }">
       <svg class="plan-svg" aria-hidden="true" :viewBox="`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="plan-fade" x1="0" x2="1">
@@ -142,6 +146,13 @@ const phoneItems = computed(() => PHONE_ORDER.map((type, i) => ({ type, color: P
      the column, as tall as the hero, whichever is smaller. */
   width: min(100cqw, 100cqh * 720 / 712);
   aspect-ratio: 720 / 712;
+}
+.plan-desktop.zooming {
+  transform: scale(3);
+  opacity: 0;
+  transition:
+    transform 600ms ease-in,
+    opacity 600ms ease-in;
 }
 .plan-svg {
   position: absolute;

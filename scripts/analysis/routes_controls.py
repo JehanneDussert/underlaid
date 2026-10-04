@@ -32,10 +32,15 @@ import pandas as pd
 import config
 
 agg = importlib.import_module("36_route_aggregate")
-OUT = config.DATA_INTERIM / "analysis" / "routes_controls.txt"
+# ROUTES_SET=neighbourhood: controls of the second run (everyday places,
+# Tuesday 10:00 only; no public-services indicator, night or stations).
+NEIGHBOURHOOD = agg.ROUTES_SET == "neighbourhood"
+OUT = config.DATA_INTERIM / "analysis" / ("routes_neighbourhood_controls.txt" if NEIGHBOURHOOD else "routes_controls.txt")
 DEPS = ["75", "92", "93", "94"]
 NAMES = {"emergency": "urgences", "gp": "médecin", "pharmacy": "pharmacie", "town_hall": "mairie", "france_services": "France Services",
-         "caf": "CAF", "cpam": "CPAM", "employment": "France Travail", "post_office": "poste", "station": "station"}
+         "caf": "CAF", "cpam": "CPAM", "employment": "France Travail", "post_office": "poste", "station": "station",
+         "creche": "crèche", "food_store": "supérette", "nursery_school": "maternelle", "police": "commissariat",
+         "social_centre": "centre social", "library": "bibliothèque", "park": "parc"}
 
 
 def neighbourhood_table(task: pd.DataFrame, cells: pd.DataFrame, types: list[str]) -> pd.DataFrame:
@@ -107,6 +112,8 @@ def main():
             qa, qb = a > a.quantile(.75), b > b.quantile(.75)
             print(f"  {NAMES[t]:15s} Spearman {a.corr(b, method='spearman'):.3f} | bascules du quart le plus long {100 * (qa != qb).mean():4.1f} % | écart médian {(b - a).replace([np.inf, -np.inf], np.nan).median():+.0f} min")
         services = ["town_hall", "france_services", "caf", "cpam", "employment", "post_office"]
+        if NEIGHBOURHOOD:
+            return
         ra, rb = tn[services].fillna(np.inf).rank(pct=True).mean(axis=1), ty[services].fillna(np.inf).rank(pct=True).mean(axis=1)
         print(f"  indicateur services publics (rang moyen) : Spearman {ra.corr(rb, method='spearman'):.3f} | bascules du quart {100 * ((ra > ra.quantile(.75)) != (rb > rb.quantile(.75))).mean():.1f} %")
 

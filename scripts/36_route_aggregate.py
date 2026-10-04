@@ -35,12 +35,24 @@ import pandas as pd
 import config
 
 ACCESS_DIR = config.DATA_PROCESSED / "access"
-TTM_DIR = config.DATA_INTERIM / "access" / "routes_ttm"
 MAX_MINUTES = 90
 PROFILES = ["standard", "slow", "step_free_no", "step_free_yes"]
-SLOTS = ["tue10", "tue21", "tue01", "sun10"]
-TYPES = ["emergency", "gp", "pharmacy", "town_hall", "france_services", "caf", "cpam", "employment", "post_office"]
-N_CHUNKS = 46  # 13,752 cells / 300
+# ROUTES_SET=neighbourhood: the second run (everyday places of the
+# "Votre quartier" page, script 37; Tuesday 10:00 only, no stations), as in
+# script 34. Outputs routes_neighbourhood_tue10.json.
+ROUTES_SET = os.environ.get("ROUTES_SET", "key")
+if ROUTES_SET == "neighbourhood":
+    TTM_DIR = config.DATA_INTERIM / "access" / "routes_ttm_neighbourhood"
+    SLOTS = ["tue10"]
+    TYPES = ["creche", "food_store", "nursery_school", "police", "social_centre", "library", "park"]
+    N_CHUNKS = 92  # 13,752 cells / 150
+    OUT_PREFIX = "routes_neighbourhood"
+else:
+    TTM_DIR = config.DATA_INTERIM / "access" / "routes_ttm"
+    SLOTS = ["tue10", "tue21", "tue01", "sun10"]
+    TYPES = ["emergency", "gp", "pharmacy", "town_hall", "france_services", "caf", "cpam", "employment", "post_office"]
+    N_CHUNKS = 46  # 13,752 cells / 300
+    OUT_PREFIX = "routes_iris"
 
 
 def cells_by_iris() -> pd.DataFrame:
@@ -133,10 +145,14 @@ def main():
         blocks += [detour(data[v], data["standard"], cells, TYPES) for v in ("step_free_no", "step_free_yes")]
         result = {code: [b[code][t] for b in blocks for t in TYPES] for code in sorted(cells.code_iris.unique())}
         layout = {"blocks": [f"time:{p}" for p in PROFILES] + ["detour:step_free_no", "detour:step_free_yes"], "types": TYPES}
-        out = config.DATA_PROCESSED / f"routes_iris_{slot}.json"
+        out = config.DATA_PROCESSED / f"{OUT_PREFIX}_{slot}.json"
         out.write_text(json.dumps({"slot": slot, "max_minutes": MAX_MINUTES, "layout": layout, "iris": result}, separators=(",", ":")), encoding="utf-8")
         print(f"wrote {out.name} ({out.stat().st_size / 1e6:.2f} MB, {len(result)} IRIS)")
 
+    if ROUTES_SET == "neighbourhood":
+        if missing:
+            print(f"incomplete tasks (not written): {', '.join(missing)}")
+        return
     stations = {p: load_task(f"{p}_stations_walk") for p in PROFILES}
     absent = [p for p, d in stations.items() if d is None]
     if absent:

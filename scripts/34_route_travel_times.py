@@ -54,11 +54,15 @@ WORK_DIR = config.DATA_INTERIM / "access"
 # (script 37 destinations, Tuesday 10:00 only, no station task), validated
 # on 2026-10-03; smaller origin chunks because there are about twice as
 # many destinations.
+# ROUTES_SET=paris: public toilets and drinking fountains, Paris only
+# (script 41; decision of 2026-10-03), Paris cells as origins, Tuesday
+# 10:00, four profiles.
 ROUTES_SET = os.environ.get("ROUTES_SET", "routes")
 NEIGHBOURHOOD = ROUTES_SET == "neighbourhood"
-OUT_DIR = WORK_DIR / ("routes_ttm_neighbourhood" if NEIGHBOURHOOD else "routes_ttm")
-PROGRESS = WORK_DIR / ("routes_neighbourhood_progress.txt" if NEIGHBOURHOOD else "routes_progress.txt")
-DEST_FILE = "neighbourhood_destinations_idf.geojson" if NEIGHBOURHOOD else "route_destinations_idf.geojson"
+PARIS = ROUTES_SET == "paris"
+OUT_DIR = WORK_DIR / {"neighbourhood": "routes_ttm_neighbourhood", "paris": "routes_ttm_paris"}.get(ROUTES_SET, "routes_ttm")
+PROGRESS = WORK_DIR / {"neighbourhood": "routes_neighbourhood_progress.txt", "paris": "routes_paris_progress.txt"}.get(ROUTES_SET, "routes_progress.txt")
+DEST_FILE = {"neighbourhood": "neighbourhood_destinations_idf.geojson", "paris": "paris_amenities_idf.geojson"}.get(ROUTES_SET, "route_destinations_idf.geojson")
 CHUNK = 150 if NEIGHBOURHOOD else 300
 MAX_MINUTES = 90
 WINDOW = dt.timedelta(minutes=60)
@@ -93,7 +97,7 @@ class Task:
     departure: dt.datetime
 
 
-if NEIGHBOURHOOD:
+if NEIGHBOURHOOD or PARIS:
     TASKS = [Task(f"{p}_tue10", p, True, SLOTS["tue10"]) for p in PROFILES]
 else:
     TASKS = [Task(f"{p}_{s}", p, True, d) for p in PROFILES for s, d in SLOTS.items()]
@@ -106,6 +110,8 @@ def origins() -> gpd.GeoDataFrame:
     iris = gpd.read_file(config.IRIS_REFERENCE_PATH)[["code_iris", "geometry"]].to_crs(cells.crs)
     inside = gpd.sjoin(cells, iris, predicate="within", how="inner")
     inside = inside[inside["pop"] > 0].drop_duplicates("cell_id")
+    if PARIS:
+        inside = inside[inside["code_iris"].astype(str).str.startswith("75")]
     return inside[["cell_id", "geometry"]].rename(columns={"cell_id": "id"}).to_crs(config.CRS_LATLON).reset_index(drop=True)
 
 

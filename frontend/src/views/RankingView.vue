@@ -8,11 +8,13 @@ import { loadStaticJson } from '../utils/loadStaticJson'
 const { t, locale } = useI18n()
 const DATA_URL = '/data/vulnerability_score_iris.geojson'
 const CAPACITY_URL = '/data/adaptive_capacity_iris.json'
-// v0.2: score on 4 (heat, air/noise, housing, access to care). Listed:
-// every inhabited IRIS at 3 or 4 out of 4; those at 4/4 come first and are
-// flagged as such.
-const MAX_SCORE = 4
-const MIN_LISTED_SCORE = 3
+// "Très exposé" = at least 2 of the 3 exposures (heat, air and noise,
+// housing) in the most affected quarter, the definition used everywhere on
+// the site (decision of 3 October 2026, confirmed on 5 October). Listed:
+// every inhabited IRIS that is highly exposed; those exposed on all three
+// come first. Access to care is measured apart (a figure per row).
+const EXPOSURES = ['thermal', 'pollution', 'housing']
+const nExposures = (p) => EXPOSURES.filter((k) => p[`subscore_${k}_quartile`] === 4).length
 // Same floor as cool_facility_deficit's per-resident rate (scripts/11,
 // MIN_POPULATION_FOR_RATE): below 50 residents an IRIS is a park, a
 // station or a business block, not a neighborhood people live in. Such
@@ -25,12 +27,12 @@ const MIN_POPULATION_FOR_LIST = 50
 // sync with the pipeline the way a hand-typed number would.
 useSeoMeta({
   title: {
-    en: `Where Exposures Stack Up — ${__RANKING_COUNT__} Neighborhoods at 3 or 4 out of 4`,
-    fr: `Les quartiers où les expositions se cumulent — ${__RANKING_COUNT__} quartiers à 3 ou 4 sur 4`,
+    en: `The ${__RANKING_COUNT__} neighbourhoods where exposures stack up`,
+    fr: `Les ${__RANKING_COUNT__} quartiers où les expositions se cumulent`,
   },
   description: {
-    en: `The ${__RANKING_COUNT__} neighborhoods in Paris and its inner suburbs where at least 3 of 4 categories — heat, air and noise pollution, energy-inefficient housing, access to care — place them among the most affected quarter of neighbourhoods, grouped by residents' means.`,
-    fr: `Les ${__RANKING_COUNT__} quartiers de Paris et de la petite couronne où au moins 3 des 4 catégories — chaleur, pollution de l'air et bruit, logement énergivore, accès aux soins — les placent parmi le quart des quartiers les plus touchés, regroupés selon les ressources des habitants.`,
+    en: `Neighbourhoods of Paris and its inner suburbs with at least 2 of the 3 exposures (heat, air and noise, housing) in the most affected quarter, with their residents' resources.`,
+    fr: `Les quartiers de Paris et de la petite couronne qui cumulent au moins 2 des 3 expositions (chaleur, air et bruit, logement) dans le quart le plus touché, avec les ressources de leurs habitants.`,
   },
 })
 
@@ -85,13 +87,13 @@ const filterAnnouncement = computed(() =>
 
 const listed = computed(() =>
   allRows.value
-    .filter((p) => (p.cumulative_vulnerability_score ?? 0) >= MIN_LISTED_SCORE && (p.population ?? 0) >= MIN_POPULATION_FOR_LIST)
+    .filter((p) => nExposures(p) >= 2 && (p.population ?? 0) >= MIN_POPULATION_FOR_LIST)
     .filter((p) => department.value === 'all' || String(p.code_iris).slice(0, 2) === department.value)
     .sort((a, b) => String(a.insee_com).localeCompare(String(b.insee_com)) || a.nom_iris.localeCompare(b.nom_iris))
 )
 
-const atMax = computed(() => listed.value.filter((p) => p.cumulative_vulnerability_score === MAX_SCORE))
-const atThree = computed(() => listed.value.filter((p) => p.cumulative_vulnerability_score < MAX_SCORE))
+const atMax = computed(() => listed.value.filter((p) => nExposures(p) === 3))
+const atThree = computed(() => listed.value.filter((p) => nExposures(p) === 2))
 
 const groups = computed(() =>
   GROUPS.map((g) => ({

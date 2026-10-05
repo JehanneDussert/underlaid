@@ -3,10 +3,10 @@
   "footerLastUpdated": "Dernière mise à jour des données : {date}",
   "ranking": {
     "title": "Les quartiers où les expositions se cumulent",
-    "intro": "Les quartiers de Paris et de la petite couronne qui font partie, pour au moins trois des quatre catégories suivies par Underlaid — chaleur, pollution de l'air et bruit, logement énergivore, accès aux soins —, du quart des quartiers les plus touchés du territoire. Les quatre quartiers concernés pour les quatre catégories sont présentés en premier.",
-    "tieNotice": "Ce n'est pas un classement : à score égal, l'ordre suit la commune ou l'arrondissement, puis le nom du quartier. La position dans la liste ne dit rien sur la gravité relative d'un quartier par rapport à un autre.",
+    "intro": "Les quartiers de Paris et de la petite couronne qui cumulent au moins 2 des 3 expositions suivies par Underlaid (chaleur, pollution de l'air et bruit, logement énergivore) : pour chacune, ils font partie du quart des quartiers les plus touchés. Ceux qui cumulent les trois sont présentés en premier. L'accès aux soins, mesuré à part, figure en chiffre sur chaque ligne.",
+    "tieNotice": "Ce n'est pas un classement : dans chaque groupe, l'ordre suit la commune ou l'arrondissement, puis le nom du quartier. La position dans la liste ne dit rien de la gravité relative d'un quartier par rapport à un autre.",
     "footnote": "Les quartiers de moins de 50 habitants (parcs, gares, zones d'activités) restent sur la carte mais sont écartés de cette liste. Le score bouge à chaque correction méthodologique et à chaque mise à jour des données : cette liste n'est pas définitive.",
-    "sameScoreNote": "Même score, pas la même situation. Les quartiers très exposés ne font pas face aux mêmes expositions selon les moyens de leurs habitants : là où les moyens sont les plus élevés — surtout dans les parties denses et anciennes de Paris —, ce sont la chaleur et le logement ancien énergivore qui pèsent le plus ; là où ils sont les plus faibles — surtout en Seine-Saint-Denis et dans le Val-de-Marne —, la pollution de l'air et le bruit, et un accès aux soins plus faible. Les quartiers à 3 sur 4 sont donc regroupés selon les moyens des habitants, mesurés à part du score.",
+    "sameScoreNote": "Même nombre d'expositions, pas la même situation. Là où les ressources des habitants sont les plus élevées (surtout dans les parties denses et anciennes de Paris), ce sont la chaleur et le logement ancien énergivore qui pèsent le plus ; là où elles sont les plus faibles (surtout en Seine-Saint-Denis et dans le Val-de-Marne), la pollution de l'air et le bruit. Les quartiers à 2 expositions sur 3 sont donc regroupés selon les ressources des habitants, mesurées à part.",
     "group_low_title": "Moyens parmi les plus faibles de la métropole ({n})",
     "group_low_desc": "Les moyens des habitants — revenu médian, logements suroccupés, résidences secondaires (Insee : revenu 2021, recensement 2022) — sont dans le tiers le plus bas de la métropole.",
     "group_mid_title": "Moyens dans la moyenne ({n})",
@@ -22,14 +22,14 @@
     "metroMedian": "médiane métropole {value}",
     "incomeMasked": "non publié",
     "figuresNote": "Un chiffre par catégorie, comparé à la médiane de la métropole. Chaque catégorie combine plusieurs indicateurs : un chiffre proche de la médiane ne contredit pas l'appartenance au quart le plus touché (détail complet sur la page de chaque quartier).",
-    "group_max_title": "Dans le quart le plus touché pour les quatre catégories ({n})",
-    "group_max_desc": "Pour la chaleur, la pollution de l'air et le bruit, le logement énergivore et l'accès aux soins, ces quartiers font partie du quart le plus touché : le score maximal, 4 sur 4.",
-    "maxBadge": "4 sur 4",
-    "threeTitle": "Trois catégories sur quatre ({n})",
+    "group_max_title": "Les trois expositions ({n})",
+    "group_max_desc": "Pour la chaleur, la pollution de l'air et le bruit, et le logement énergivore, ces quartiers font partie du quart le plus touché.",
+    "maxBadge": "3 sur 3",
+    "threeTitle": "Deux expositions sur trois ({n})",
     "filterLabel": "Département",
     "filterAll": "Tous",
     "filterCount": "{n} quartiers affichés",
-    "filterEmpty": "Aucun quartier de ce département n'atteint 3 sur 4.",
+    "filterEmpty": "Aucun quartier de ce département ne cumule au moins 2 des 3 expositions.",
     "fig_gp": "Médecins à portée (pour 10 000 hab.)"
   },
   "scatter": {
@@ -456,6 +456,10 @@
         {
           "name": "Point de départ des trajets.",
           "desc": "Dans 0,8 % des cas, la durée affichée en fauteuil roulant est inférieure de 1 à 8 minutes à la durée sans contrainte. La cause est le point du réseau de rues où le calcul rattache chaque départ et chaque arrivée : dans le réseau complet, c'est parfois un escalier ou un chemin qui impose un détour. Pour la même raison, certaines durées sans contrainte sont surestimées. Ce sera corrigé au prochain calcul, avec les mêmes points de départ et d'arrivée pour tous les modes."
+        },
+        {
+          "name": "Accès aux médecins en fauteuil roulant.",
+          "desc": "Pour l’écart de mobilité inclusive (accès aux médecins en fauteuil roulant comparé à l’accès sans contrainte), une durée en fauteuil roulant plus courte que la durée sans contrainte vers le même cabinet est remplacée par celle-ci. Cela concerne 10 958 couples carreau × cabinet sur 1 053 176 (1,04 %), d’une minute dans 73 % des cas, à cause du point du réseau où le calcul rattache chaque départ et chaque arrivée. Sans cette règle, les verdicts sont identiques : accès aux soins soutenu (il ne dépend pas de ces durées), mobilité inclusive infirmée (écart sur la métropole de −21,4 points au lieu de −21,8)."
         },
         {
           "name": "Accès aux soins.",

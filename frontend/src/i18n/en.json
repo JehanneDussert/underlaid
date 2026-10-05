@@ -2,11 +2,11 @@
   "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors",
   "footerLastUpdated": "Data last updated: {date}",
   "ranking": {
-    "title": "Where exposures stack up",
-    "intro": "The neighborhoods of Paris and its inner suburbs that are among the most affected quarter of the region's neighborhoods for at least three of the four categories Underlaid tracks — heat, air and noise pollution, energy-inefficient housing, access to care. The four neighborhoods in that position for all four categories come first.",
-    "tieNotice": "This isn't a ranking: within a score, the order follows the commune or borough, then the neighborhood name. Position in the list says nothing about how bad one neighborhood's situation is relative to another's.",
+    "title": "The neighbourhoods where exposures stack up",
+    "intro": "Neighbourhoods of Paris and its inner suburbs with at least 2 of the 3 exposures followed by Underlaid (heat, air pollution and noise, energy-inefficient housing): for each, they are in the most affected quarter of neighbourhoods. Those with all three come first. Access to care, measured apart, is given as a figure on each row.",
+    "tieNotice": "This is not a ranking: within each group, the order follows the commune or arrondissement, then the neighbourhood name. The position in the list says nothing about how serious one neighbourhood is compared with another.",
     "footnote": "Neighborhoods with fewer than 50 residents (parks, stations, business blocks) stay on the map but are left out of this list. The score moves with each methodological correction and data update: this list isn't final.",
-    "sameScoreNote": "Same score, not the same situation. Highly exposed neighborhoods don't face the same exposures depending on their residents' means: where means are highest — mostly dense, older parts of Paris — heat and old, energy-inefficient housing weigh most; where they are lowest — mostly Seine-Saint-Denis and Val-de-Marne — air and noise pollution, and weaker access to care. So the neighborhoods at 3 out of 4 are grouped by residents' means, measured separately from the score.",
+    "sameScoreNote": "Same number of exposures, not the same situation. Where residents' resources are highest (mostly in the dense, older parts of Paris), heat and old energy-inefficient housing weigh most; where they are lowest (mostly in Seine-Saint-Denis and Val-de-Marne), air pollution and noise. Neighbourhoods with 2 of the 3 exposures are therefore grouped by residents' resources, measured apart.",
     "group_low_title": "Means among the lowest in the metro area ({n})",
     "group_low_desc": "Residents' means — median income, overcrowded homes, secondary residences (INSEE: income 2021, 2022 census) — are in the metro area's lowest third.",
     "group_mid_title": "Middle-range means ({n})",
@@ -22,14 +22,14 @@
     "metroMedian": "metro median {value}",
     "incomeMasked": "not published",
     "figuresNote": "One figure per category, compared with the metro-wide median. Each category combines several indicators: a figure close to the median doesn't contradict being in the most affected quarter (full detail on the address page).",
-    "group_max_title": "In the most affected quarter for all four categories ({n})",
-    "group_max_desc": "For heat, air and noise pollution, energy-inefficient housing and access to care, these neighborhoods are among the most affected quarter: the maximum score, 4 out of 4.",
-    "maxBadge": "4 out of 4",
-    "threeTitle": "Three categories out of four ({n})",
+    "group_max_title": "All three exposures ({n})",
+    "group_max_desc": "For heat, air pollution and noise, and energy-inefficient housing, these neighbourhoods are in the most affected quarter.",
+    "maxBadge": "3 of 3",
+    "threeTitle": "Two exposures out of three ({n})",
     "filterLabel": "Department",
     "filterAll": "All",
     "filterCount": "{n} neighborhoods shown",
-    "filterEmpty": "No neighborhood in this department reaches 3 out of 4.",
+    "filterEmpty": "No neighbourhood in this département has at least 2 of the 3 exposures.",
     "fig_gp": "GPs within reach (per 10,000)"
   },
   "scatter": {
@@ -456,6 +456,10 @@
         {
           "name": "Starting point of journeys.",
           "desc": "In 0.8% of cases, the wheelchair duration shown is 1 to 8 minutes shorter than the duration without constraint. The cause is the point of the street network to which the calculation attaches each start and end: in the full network, it is sometimes a stairway or a path that forces a detour. For the same reason, some durations without constraint are overestimated. This will be fixed in the next calculation, with the same start and end points for every mode."
+        },
+        {
+          "name": "Access to GPs in a wheelchair.",
+          "desc": "For the inclusive-mobility gap (access to GPs in a wheelchair compared with access without constraint), a wheelchair duration shorter than the duration without constraint to the same practice is replaced by the latter. This concerns 10,958 cell × practice pairs out of 1,053,176 (1.04%), by one minute in 73% of cases, because of the point of the network to which the calculation attaches each start and end. Without this rule, the verdicts are the same: access to care supported (it does not depend on these durations), inclusive mobility refuted (gap across the metropolis −21.4 points instead of −21.8)."
         },
         {
           "name": "Access to care.",

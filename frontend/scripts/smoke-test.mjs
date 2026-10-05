@@ -25,10 +25,12 @@ const EXPORT_TIMEOUT_MS = 30_000
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 
 // Expected /ranking length, derived from the published data with the same
-// rule as RankingView.vue (score 3 or 4 out of 4, >= 50 residents) — never hardcoded.
+// rule as RankingView.vue (highly exposed: at least 2 of the 3 exposures in
+// the most affected quarter, >= 50 residents) — never hardcoded.
 const published = JSON.parse(readFileSync(`${ROOT}/public/data/vulnerability_score_iris.geojson`, 'utf-8'))
+const nExposures = (p) => ['thermal', 'pollution', 'housing'].filter((k) => p[`subscore_${k}_quartile`] === 4).length
 const EXPECTED_RANKING_ROWS = published.features.filter(
-  (f) => (f.properties.cumulative_vulnerability_score ?? 0) >= 3 && (f.properties.population ?? 0) >= 50
+  (f) => nExposures(f.properties) >= 2 && (f.properties.population ?? 0) >= 50
 ).length
 
 const MAP_TIMEOUT_MS = 60_000

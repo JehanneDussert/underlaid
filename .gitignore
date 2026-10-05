@@ -15,7 +15,7 @@ frontend/dist
 # the public project
 CLAUDE.md
 COM.md
-docs/design/refonte_00/
+docs/design
 .claude/
 # Access working files (scripts 27-32): regenerable. The per-IRIS result,
 # data/processed/access_e2sfca_iris.csv, is versioned and read by script

@@ -57,6 +57,15 @@ ACCESS_DIR = config.DATA_PROCESSED / "access"
 TTM_DIR = config.DATA_INTERIM / "access" / "ttm"
 # Published (tracked in git, read by script 11), unlike the working files in ACCESS_DIR.
 OUT_PATH = config.DATA_PROCESSED / "access_e2sfca_iris.csv"
+# E2SFCA_NO_CAP=1 (control asked on 2026-10-05): no "accessible no faster
+# than standard" rule; output written next to the published file, which is
+# left untouched. The number of pairs the rule changes is always printed.
+import os  # noqa: E402
+
+NO_CAP = os.environ.get("E2SFCA_NO_CAP") == "1"
+if NO_CAP:
+    OUT_PATH = config.DATA_INTERIM / "analysis" / "access_e2sfca_iris_nocap.csv"
+CAPPED = []
 PER = 10_000
 
 GP_DECAY = [(10, 1.0), (15, 2 / 3), (20, 1 / 3)]
@@ -86,6 +95,10 @@ def no_faster_than(acc: pd.DataFrame, std: pd.DataFrame) -> pd.DataFrame:
     shorter accessible time for ~1% of pairs (almost all by 1 min), from
     the two networks snapping points slightly differently. Keep the max."""
     m = acc.merge(std, on=["from_id", "to_id"], how="left", suffixes=("", "_std"))
+    faster = m.travel_time < m.travel_time_std
+    CAPPED.append((len(m), int(faster.sum()), (m.travel_time_std - m.travel_time)[faster].value_counts().sort_index().to_dict()))
+    if NO_CAP:
+        return m[["from_id", "to_id", "travel_time"]]
     m["travel_time"] = np.fmax(m.travel_time, m.travel_time_std)
     return m[["from_id", "to_id", "travel_time"]]
 
@@ -173,6 +186,11 @@ def main():
     unroutable = ~values.index.isin(reached)
     values.loc[unroutable] = np.nan
     print(f"Unroutable cells (no GP and no pharmacy reached): {unroutable.sum()}")
+    n, k = CAPPED[0][0], CAPPED[0][1]
+    print(f"'Accessible no faster than standard' rule, main run (GPs, morning, unknown = no): {k:,} of {n:,} cell-site pairs "
+          f"({100 * k / n:.2f}%), by minutes: {CAPPED[0][2]}; {'NOT applied' if NO_CAP else 'applied'}")
+    k2, n2 = CAPPED[1][1], CAPPED[1][0]
+    print(f"  unknown = yes: {k2:,} of {n2:,} ({100 * k2 / n2:.2f}%)")
 
     iris = gpd.read_file(config.IRIS_REFERENCE_PATH)[["code_iris", "geometry"]].to_crs(cells.crs)
     mapping, extra = cells_to_iris(cells, iris)

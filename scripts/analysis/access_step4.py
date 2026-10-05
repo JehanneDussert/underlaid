@@ -16,6 +16,7 @@ Usage: python scripts/analysis/access_step4.py
 """
 import importlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -58,7 +59,9 @@ def main():
     s11.SUB_SCORES_3 = dict(s11.SUB_SCORES)
     base = s11.build_dataset()
     ref3 = s11.compute_cumulative_score(s11.compute_subscores(s11.build_indicators(base.copy()))).set_index("code_iris")
-    access = pd.read_csv(config.DATA_PROCESSED / "access_e2sfca_iris.csv", dtype={"code_iris": str})
+    # ACCESS_CSV: another E2SFCA output (e.g. the control without the
+    # "accessible no faster than standard" rule, 2026-10-05).
+    access = pd.read_csv(os.environ.get("ACCESS_CSV", config.DATA_PROCESSED / "access_e2sfca_iris.csv"), dtype={"code_iris": str})
     runs = {"main (unknown = no)": score(s11, base, access, "gp_gap_no"),
             "variant (unknown = yes)": score(s11, base, access, "gp_gap_yes")}
     cap = pd.DataFrame(json.load(open(config.DATA_PROCESSED / "adaptive_capacity_iris.json", encoding="utf-8"))["iris"]).set_index("code_iris")

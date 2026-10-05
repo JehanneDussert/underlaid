@@ -877,6 +877,10 @@
       "sentenceParis": "Sur 10 quartiers parisiens, aucun n'est plus près de ces services | Sur 10 quartiers parisiens, 1 est plus près de ces services | Sur 10 quartiers parisiens, {n} sont plus près de ces services",
       "careNote": "Position calculée sur les urgences seulement : le médecin et la pharmacie sont à quelques minutes de presque tous les quartiers.",
       "noMode": "Choisissez un mode de déplacement pour situer votre quartier."
+    },
+    "seo": {
+      "title": "{name} : cadre de vie et lieux à portée",
+      "description": "{summary}. Durées vers les lieux du quotidien, à pied et en transports en commun, selon le mode de déplacement."
     }
   },
   "explore": {

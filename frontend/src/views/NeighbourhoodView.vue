@@ -12,7 +12,7 @@
 //      access to care (descriptive), with the tested hypothesis as stated
 //      in the method.
 // Data: one file per commune (scripts/39_neighbourhood_files.py).
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onServerPrefetch, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import AccordionItem from '../components/AccordionItem.vue'
@@ -31,13 +31,15 @@ const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
-useSeoMeta({
+// Each neighbourhood page is prerendered (decision of 5 October 2026), so
+// its title and description name the neighbourhood (never an address).
+const GENERIC_SEO = {
   title: { en: 'Your neighbourhood', fr: 'Votre quartier' },
   description: {
     en: 'Heat, air and noise, housing, access to care and everyday places: the situation of a neighbourhood of Paris or its inner suburbs, depending on how you get around.',
     fr: "Chaleur, air et bruit, logement, accès aux soins et lieux du quotidien : la situation d'un quartier de Paris ou de la petite couronne, selon votre façon de vous déplacer.",
   },
-})
+}
 
 const EXPOSURES = ['thermal', 'pollution', 'housing']
 const nf = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB').format(v)
@@ -64,9 +66,13 @@ async function load(code) {
   if (r) rememberNeighbourhood(r.code)
   else notFound.value = t('nbhd.unknownCode')
 }
+// Prerendering: the page of each neighbourhood is built with its data.
+onServerPrefetch(() => load(route.params.code))
+const hydrated = ref(false)
 onMounted(() => {
+  hydrated.value = true
   label.value = (typeof history !== 'undefined' && history.state?.label) || ''
-  load(route.params.code)
+  if (!record.value || record.value.code !== route.params.code) load(route.params.code)
   revealMode()
 })
 
@@ -131,6 +137,20 @@ const title = computed(() => {
   if (n === 1) return t(`nbhd.title.one.${worst.value[0]}${care}`)
   if (n === 2) return t(`nbhd.title.two${care}`, { what: worst.value.map((k) => t(`nbhd.title.short.${k}`)).join(t('nbhd.title.and')) })
   return t(`nbhd.title.three${care}`)
+})
+
+const seoName = () => (record.value ? `${record.value.name}, ${record.value.commune.replace(/ Arrondissement$/, '')}` : '')
+useSeoMeta({
+  title: () => {
+    if (!record.value) return GENERIC_SEO.title
+    const text = t('nbhd.seo.title', { name: seoName() })
+    return { en: text, fr: text }
+  },
+  description: () => {
+    if (!record.value) return GENERIC_SEO.description
+    const text = t('nbhd.seo.description', { summary: title.value.replace(/\.$/, '') })
+    return { en: text, fr: text }
+  },
 })
 const pills = computed(() => [...worst.value, ...(careWorst.value ? ['access_care'] : [])])
 
@@ -464,7 +484,9 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
                  most difficult access to care, this neighbourhood selected. -->
             <router-link class="primary-button" :to="{ name: localizedRouteName('map', locale), query: { f: 'exposed,care', q: record.code } }">{{ t('nbhd.part3.map') }}</router-link>
           </div>
-          <NeighbourhoodScatter v-if="index" :points="index.points" :current="record.code" />
+          <!-- Drawn in the browser only: its 2,700 points would otherwise be
+               copied into each of the 5,500 prerendered pages. -->
+          <NeighbourhoodScatter v-if="index && hydrated" :points="index.points" :current="record.code" />
         </section>
       </template>
 

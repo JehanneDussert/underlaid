@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { readdirSync, readFileSync, writeFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -41,6 +41,31 @@ function countRankingNeighborhoods() {
   }
 }
 
+// Every neighbourhood gets its own prerendered page in both languages
+// (decision of 5 October 2026), so that sharing a neighbourhood shows its
+// name; codes read from the published per-commune files (script 39).
+// Inhabited ones (>= 50 residents) go into the sitemap.
+function neighbourhoodCodes() {
+  try {
+    const dir = fileURLToPath(new URL('./public/data/quartiers/', import.meta.url))
+    const all = []
+    const inhabited = []
+    for (const f of readdirSync(dir)) {
+      if (!/^\d+\.json$/.test(f)) continue
+      for (const r of JSON.parse(readFileSync(`${dir}${f}`, 'utf-8')).iris) {
+        all.push(r.code)
+        if (r.inhabited) inhabited.push(r.code)
+      }
+    }
+    return { all, inhabited }
+  } catch {
+    return { all: [], inhabited: [] }
+  }
+}
+const NEIGHBOURHOODS = neighbourhoodCodes()
+const NBHD = ROUTE_PATHS.find((r) => r.name === 'neighbourhood')
+const nbhdPath = (pattern, code) => pattern.replace(':code?', code)
+
 // Generates a standard multilingual sitemap.xml (one <url> per language
 // per route, each carrying its own reciprocal hreflang alternates) and
 // robots.txt after the production build writes its output — the same
@@ -61,6 +86,18 @@ function seoFilesPlugin() {
   </url>`
         )
       )
+      for (const code of NEIGHBOURHOODS.inhabited) {
+        const fr = nbhdPath(NBHD.fr, code)
+        const en = nbhdPath(NBHD.en, code)
+        for (const path of [fr, en]) {
+          urls.push(`  <url>
+    <loc>${SITE_URL}${path}</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="${SITE_URL}${fr}"/>
+    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}${en}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}${fr}"/>
+  </url>`)
+        }
+      }
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls.join('\n')}
@@ -99,7 +136,10 @@ export default defineConfig({
   plugins: [vue(), seoFilesPlugin(), previewRewritesPlugin()],
   ssgOptions: {
     // Pages with an optional parameter are prerendered once, as a shell.
-    includedRoutes: (paths) => paths.map((p) => shellPath(p)),
+    includedRoutes: (paths) => [
+      ...paths.map((p) => shellPath(p)),
+      ...NEIGHBOURHOODS.all.flatMap((code) => [nbhdPath(NBHD.fr, code), nbhdPath(NBHD.en, code)]),
+    ],
   },
   define: {
     __RANKING_COUNT__: JSON.stringify(countRankingNeighborhoods()),

@@ -96,6 +96,15 @@ NETWORKS = {
     "acc_unknown_no": (WORK_DIR / "idf_no_stairs.osm.pbf", WORK_DIR / "gtfs_accessible_unknown_no.zip"),
     "acc_unknown_yes": (WORK_DIR / "idf_no_stairs.osm.pbf", WORK_DIR / "gtfs_accessible_unknown_yes.zip"),
 }
+if VERSION == "2":
+    # Pre-registered on 2026-10-04 (docs/preregistrations): the wheelchair
+    # profile uses the network without stairs and without segments steeper
+    # than 8 % (script 44); sensitivity on a 6 % network.
+    NETWORKS.update({
+        "acc_unknown_no": (WORK_DIR / "idf_no_stairs_slope8.osm.pbf", WORK_DIR / "gtfs_accessible_unknown_no.zip"),
+        "acc_unknown_yes": (WORK_DIR / "idf_no_stairs_slope8.osm.pbf", WORK_DIR / "gtfs_accessible_unknown_yes.zip"),
+        "acc_unknown_no_slope6": (WORK_DIR / "idf_no_stairs_slope6.osm.pbf", WORK_DIR / "gtfs_accessible_unknown_no.zip"),
+    })
 # profile -> (network, walking speed km/h, station accessibility values kept)
 PROFILES = {
     "standard": ("standard", 4.5, None),
@@ -103,6 +112,17 @@ PROFILES = {
     "step_free_no": ("acc_unknown_no", 4.5, {"1"}),
     "step_free_yes": ("acc_unknown_yes", 4.5, {"1", "0"}),
 }
+WHEELCHAIR_KMH = 0.8 * 3.6  # 0.8 m/s, pre-registered on 2026-10-04
+if VERSION == "2":
+    PROFILES.update({
+        "step_free_no": ("acc_unknown_no", WHEELCHAIR_KMH, {"1"}),
+        "step_free_yes": ("acc_unknown_yes", WHEELCHAIR_KMH, {"1", "0"}),
+        # Sensitivity (Tuesday 10:00 only, unknown = not accessible).
+        "sens_speed05": ("acc_unknown_no", 0.5 * 3.6, {"1"}),
+        "sens_speed10": ("acc_unknown_no", 1.0 * 3.6, {"1"}),
+        "sens_slope6": ("acc_unknown_no_slope6", WHEELCHAIR_KMH, {"1"}),
+    })
+SENSITIVITY = {"sens_speed05", "sens_speed10", "sens_slope6"}
 
 
 @dataclass
@@ -116,8 +136,13 @@ class Task:
 if NEIGHBOURHOOD or PARIS:
     TASKS = [Task(f"{p}_tue10", p, True, SLOTS["tue10"]) for p in PROFILES]
 else:
-    TASKS = [Task(f"{p}_{s}", p, True, d) for p in PROFILES for s, d in SLOTS.items()]
+    TASKS = [Task(f"{p}_{s}", p, True, d) for p in PROFILES for s, d in SLOTS.items() if p not in SENSITIVITY or s == "tue10"]
     TASKS += [Task(f"{p}_stations_walk", p, False, SLOTS["tue10"]) for p in PROFILES]
+# ROUTES_PROFILES=standard,slow: only these profiles (lets the profiles that
+# do not depend on a network still being prepared start first).
+if os.environ.get("ROUTES_PROFILES"):
+    _keep = set(os.environ["ROUTES_PROFILES"].split(","))
+    TASKS = [t for t in TASKS if t.profile in _keep]
 
 
 def origins() -> gpd.GeoDataFrame:

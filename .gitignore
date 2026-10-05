@@ -16,6 +16,8 @@ frontend/dist
 CLAUDE.md
 COM.md
 docs/design
+docs/notes
+docs/preregistrations
 .claude/
 # Access working files (scripts 27-32): regenerable. The per-IRIS result,
 # data/processed/access_e2sfca_iris.csv, is versioned and read by script

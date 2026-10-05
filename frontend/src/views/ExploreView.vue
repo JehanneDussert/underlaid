@@ -29,6 +29,7 @@ const route = useRoute()
 const router = useRouter()
 
 useSeoMeta({
+  image: 'carte',
   title: { en: 'Explore the map', fr: 'Explorer la carte' },
   description: {
     en: 'The 2,752 neighbourhoods of Paris and its inner suburbs: heat, air and noise, housing, access to care, residents’ resources, and where they combine.',

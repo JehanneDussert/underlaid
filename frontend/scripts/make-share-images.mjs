@@ -105,6 +105,9 @@ async function shoot(html, file) {
 for (const lang of ['fr', 'en']) {
   for (const [key, copy] of Object.entries(FIXED[lang])) await shoot(fixedCard(lang, copy), `${key}-${lang}.png`)
 }
+// Background of the per-neighbourhood image made on request (api/og.js):
+// the plan alone, on the right half.
+await shoot(page(`${plan('560 88 720 712')}`), 'plan-panel.png')
 if (process.env.OUT) {
   await shoot(hoodCard('fr', 'Économie 1', 'Drancy', ['thermal', 'pollution', 'housing']), 'quartier-exemple-1-fr.png')
   await shoot(hoodCard('fr', 'Batignolles 14', 'Paris 17e', ['pollution']), 'quartier-exemple-2-fr.png')

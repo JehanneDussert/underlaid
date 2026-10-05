@@ -12,6 +12,7 @@ import { localizedRouteName } from '../router'
 const { t, locale } = useI18n()
 
 useSeoMeta({
+  image: 'apropos',
   title: { en: 'About', fr: 'À propos' },
   description: {
     en: 'Who runs Underlaid, how to cite it, reuse its data and code, contribute, and what happens to your data.',

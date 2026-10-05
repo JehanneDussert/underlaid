@@ -141,6 +141,15 @@ const title = computed(() => {
 
 const seoName = () => (record.value ? `${record.value.name}, ${record.value.commune.replace(/ Arrondissement$/, '')}` : '')
 useSeoMeta({
+  // Image made on request for each neighbourhood (api/og.js): its name, its
+  // commune and the pills of its exposures; never an address.
+  image: () =>
+    record.value
+      ? {
+          url: `${__SITE_URL__}/api/og?code=${record.value.code}&lang=${locale.value}`,
+          alt: t('nbhd.seo.imageAlt', { name: seoName() }),
+        }
+      : null,
   title: () => {
     if (!record.value) return GENERIC_SEO.title
     const text = t('nbhd.seo.title', { name: seoName() })

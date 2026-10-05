@@ -30,6 +30,7 @@ onMounted(() => {
 })
 
 useSeoMeta({
+  image: 'methode',
   title: { en: 'Sources and method', fr: 'Sources et méthode' },
   description: {
     en: 'How the 2,752 neighbourhoods of Paris and its inner suburbs are compared: themes, access to care, travel times, residents’ resources, tested hypotheses, limits, data and corrections.',

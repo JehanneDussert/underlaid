@@ -880,7 +880,8 @@
     },
     "seo": {
       "title": "{name}: living conditions and places within reach",
-      "description": "{summary}. Times to everyday places, on foot and by public transport, depending on how you get around."
+      "description": "{summary}. Times to everyday places, on foot and by public transport, depending on how you get around.",
+      "imageAlt": "{name}: the neighbourhood's exposures, Underlaid"
     }
   },
   "explore": {

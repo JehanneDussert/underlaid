@@ -37,11 +37,15 @@ agg = importlib.import_module("36_route_aggregate")
 # ROUTES_SET=paris: Paris toilets and fountains (same restrictions).
 NEIGHBOURHOOD = agg.ROUTES_SET in ("neighbourhood", "paris")
 OUT = config.DATA_INTERIM / "analysis" / {"neighbourhood": "routes_neighbourhood_controls.txt", "paris": "routes_paris_controls.txt"}.get(agg.ROUTES_SET, "routes_controls.txt")
+if getattr(agg, "VERSION", "1") == "2":  # second calculation: separate output, first one kept
+    OUT = OUT.with_name(OUT.stem + "_v2.txt")
 DEPS = ["75", "92", "93", "94"]
 NAMES = {"emergency": "urgences", "gp": "médecin", "pharmacy": "pharmacie", "town_hall": "mairie", "france_services": "France Services",
          "caf": "CAF", "cpam": "CPAM", "employment": "France Travail", "post_office": "poste", "station": "station",
          "creche": "crèche", "food_store": "supérette", "nursery_school": "maternelle", "police": "commissariat",
-         "social_centre": "centre social", "library": "bibliothèque", "park": "parc",
+         "social_centre": "centre social", "elementary_public": "élémentaire publique", "elementary_private": "élémentaire privée sous contrat",
+         "college_public": "collège public", "college_private": "collège privé sous contrat", "lycee_public": "lycée public",
+         "lycee_private": "lycée privé sous contrat", "library": "bibliothèque", "park": "parc",
          "toilets": "toilettes", "toilets_pmr": "toilettes PMR", "toilets_24h": "toilettes 24h", "drinking_water": "fontaine"}
 
 

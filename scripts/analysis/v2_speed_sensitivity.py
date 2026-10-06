@@ -1,5 +1,6 @@
 """Second calculation: sensitivity of the wheelchair profile to its speed
-(pre-registered 2026-10-04: main 0.8 m/s, sensitivity 0.5 and 1.0 m/s;
+and slope threshold (pre-registered 2026-10-04: main 0.8 m/s and 8 %,
+sensitivity 0.5 and 1.0 m/s, and 6 %;
 Tuesday 10:00, unknown = not accessible), key places. Per neighbourhood,
 population-weighted median of its cells (script 36 rules); then, over
 inhabited neighbourhoods: median time per place type and speed, Spearman
@@ -23,8 +24,8 @@ s36 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(s36)
 import config  # noqa: E402
 
-OUT = config.DATA_INTERIM / "analysis" / "v2_speed_sensitivity.txt"
-PROFILES = {"0.5 m/s": "sens_speed05", "0.8 m/s (main)": "step_free_no", "1.0 m/s": "sens_speed10", "without constraint": "standard"}
+OUT = config.DATA_INTERIM / "analysis" / ("v2_speed_sensitivity.txt" if s36.ROUTES_SET not in ("neighbourhood", "paris") else f"v2_speed_sensitivity_{s36.ROUTES_SET}.txt")
+PROFILES = {"0.5 m/s": "sens_speed05", "0.8 m/s (main)": "step_free_no", "1.0 m/s": "sens_speed10", "slope 6 %": "sens_slope6", "without constraint": "standard"}
 
 
 def main():
@@ -46,7 +47,7 @@ def main():
         lines.append(f"{t:16}" + "".join(f"{tables[k].loc[tables[k].index.isin(inhabited), t].median():>22.0f}" for k in PROFILES))
     lines.append("")
     main_t = tables["0.8 m/s (main)"]
-    for k in ["0.5 m/s", "1.0 m/s"]:
+    for k in ["0.5 m/s", "1.0 m/s", "slope 6 %"]:
         rows = []
         for t in s36.TYPES:
             a = main_t.loc[main_t.index.isin(inhabited), t]

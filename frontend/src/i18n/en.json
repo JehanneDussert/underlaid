@@ -768,7 +768,7 @@
       "title": "How are these durations computed?",
       "free": "Walking at 4.5 km/h, on the whole public transport network.",
       "slow": "Same network, but walking at 3.4 km/h on every walking part: from home, to the stop, in connections and to the destination. It is the usual walking speed measured in people aged 80 and over (Bohannon and Andrews, 2011). This profile can also give an idea of a trip with pain, late in pregnancy or with a young child walking alongside.",
-      "wheelchair": "Only stops and stations declared step-free are used. The calculation sees neither pavements, slopes, broken lifts nor the help sometimes needed to board a train: real durations are often longer.",
+      "wheelchair": "Only stops and stations declared step-free are used. The journey avoids stairs and slopes steeper than 8 %, at 0.8 m/s (mean speed measured for manual wheelchair users). The calculation sees neither pavement condition, broken lifts nor the help sometimes needed to board a train: real durations are often longer.",
       "all": "All durations: departure on a Tuesday at 10:00 (at night: 1:00), real timetables, median over the time window.",
       "link": "Detailed method"
     },
@@ -832,6 +832,12 @@
       "food_store": "Convenience store or supermarket",
       "creche": "Crèche (public or private)",
       "nursery_school": "Public nursery school",
+      "elementary_public": "Public primary school",
+      "elementary_private": "Private primary school under state contract",
+      "college_public": "Public lower secondary school (collège)",
+      "college_private": "Private lower secondary school under state contract",
+      "lycee_public": "Public upper secondary school (lycée)",
+      "lycee_private": "Private upper secondary school under state contract",
       "post_office": "Post office",
       "police": "Police station",
       "social_centre": "Social centre",
@@ -842,7 +848,7 @@
       "toilets_24h": "Toilets open 24 hours"
     },
     "parisOnly": "Most inner-suburb communes do not publish an open list of their public toilets and water points.",
-    "station": "In a wheelchair, much of the difference is at the entrance to the network: from your neighbourhood, the nearest accessible stop (metro, RER, train or tram) is {wc} away on foot, against {free} for the nearest stop. These durations do not account for pavements, slopes or broken lifts: reality is often longer.",
+    "station": "In a wheelchair, much of the difference is at the entrance to the network: from your neighbourhood, the nearest accessible stop (metro, RER, train or tram) is {wc} away on foot, against {free} for the nearest stop. These durations avoid stairs and slopes steeper than 8 %, but take no account of pavement condition or broken lifts: reality is often longer.",
     "stationLink": "What the calculation does not see",
     "part3": {
       "title": "Both at once",
@@ -869,13 +875,14 @@
       "care": "In {commune}, no other neighbourhood has easier access to care. | In {commune}, 1 neighbourhood out of {total} has easier access to care. | In {commune}, {count} neighbourhoods out of {total} have easier access to care.",
       "names": "Best placed: {names}."
     },
-    "stationSame": "In a wheelchair: the nearest stop to your neighbourhood (metro, RER, train or tram) is accessible, {wc} away on foot. These durations do not account for pavements, slopes or broken lifts: reality is often longer.",
+    "stationSame": "In a wheelchair: the nearest stop to your neighbourhood (metro, RER, train or tram) is accessible, {wc} away on foot. These durations avoid stairs and slopes steeper than 8 %, but take no account of pavement condition or broken lifts: reality is often longer.",
     "needRank": {
       "left": "closer",
       "right": "the farthest quarter",
       "sentence": "Out of 10 neighbourhoods, none is closer to these services | Out of 10 neighbourhoods, 1 is closer to these services | Out of 10 neighbourhoods, {n} are closer to these services",
       "sentenceParis": "Out of 10 Paris neighbourhoods, none is closer to these services | Out of 10 Paris neighbourhoods, 1 is closer to these services | Out of 10 Paris neighbourhoods, {n} are closer to these services",
       "careNote": "Position based on the emergency department only: a GP and a pharmacy are a few minutes from almost every neighbourhood.",
+      "childrenNote": "The nearest school is not necessarily the one the neighbourhood is assigned to.",
       "noMode": "Choose a way of getting around to place your neighbourhood."
     },
     "seo": {
@@ -1158,7 +1165,7 @@
     "known": [
       "The map itself cannot be browsed neighbourhood by neighbourhood with the keyboard: the list of neighbourhoods is its alternative.",
       "The first steps of the map colours are pale on white (1.5:1 contrast); the value is always given in writing (legend, card, list).",
-      "Wheelchair durations account for neither pavements, slopes nor broken lifts."
+      "Wheelchair durations avoid stairs and slopes steeper than 8 %, but take no account of pavement condition or broken lifts."
     ],
     "contactTitle": "Report a problem",
     "contact": "If a page or a piece of information is not accessible to you, write to the project lead: you will get an answer or an accessible version of the content.",

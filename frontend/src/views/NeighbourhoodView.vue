@@ -439,7 +439,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
                     :left-label="t('nbhd.needRank.left')"
                     :right-label="t('nbhd.needRank.right')"
                     :sentence="needSentence(need)"
-                    :note="need.id === 'care' ? t('nbhd.needRank.careNote') : ''"
+                    :note="need.id === 'care' ? t('nbhd.needRank.careNote') : need.id === 'children' ? t('nbhd.needRank.childrenNote') : ''"
                   />
                   <p v-else-if="!mode" class="need-rank-none">{{ t('nbhd.needRank.noMode') }}</p>
                 </div>

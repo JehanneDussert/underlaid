@@ -41,6 +41,16 @@ export const NEEDS = [
     places: [
       { id: 'creche', source: 'places' },
       { id: 'nursery_school', source: 'places' },
+      // Schools (second routing run, pre-registered 4 October 2026), public and
+      // private under contract as separate places; private without contract
+      // excluded. Display choice (public only or both) pending: drop the
+      // three *_private rows here and in NEED_PLACES (script 39) for public only.
+      { id: 'elementary_public', source: 'places' },
+      { id: 'elementary_private', source: 'places' },
+      { id: 'college_public', source: 'places' },
+      { id: 'college_private', source: 'places' },
+      { id: 'lycee_public', source: 'places' },
+      { id: 'lycee_private', source: 'places' },
     ],
   },
   { id: 'post', color: '#8C6E00', column: 1, places: [{ id: 'post_office', source: 'times' }] },

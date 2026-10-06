@@ -859,7 +859,57 @@ profiles; no crossing with means is pre-registered for them.
 Script 39 writes one small file per commune (per arrondissement in
 Paris) with everything the page shows about each neighbourhood —
 exposures, rank shares, means, travel times — so the page no longer
-loads the whole 5 MB score to find one address.
+loads the whole 5 MB score to find one address. It also writes
+`map_iris.geojson` for the map (only the fields it reads, outlines at 5
+decimals).
+
+**Need positions (decided on 4 October 2026).** On the neighbourhood
+page, each need ("Se soigner", "Faire ses démarches", …) gets one
+position bar: "Sur 10 quartiers, N sont plus près de ces services". The
+places of a need are combined by the **mean of their ranks** (each place
+ranked among inhabited neighbourhoods, "more than 90 min" last), not the
+mean of their minutes, so that one distant place (e.g. the CAF) does not
+outweigh the others. GP and pharmacy are left out (crushed at the floor:
+43 % and 37 % of neighbourhoods at 2 min or less), and so is the night,
+so "Se soigner" rests on the emergency department alone, which the page
+says. Paris-only places (public toilets, drinking fountains) are ranked
+among Paris neighbourhoods ("Sur 10 quartiers parisiens"). Without a
+chosen way of getting around, no bar is shown. N is at most 9 (the
+neighbourhood itself is one of the ten).
+
+**"Lequel de ces quartiers ?" (home page questions, validated on
+4 October 2026).** Script 43 lists the pairs of inhabited neighbourhoods
+with complete data that are either **close but different** (at most
+800 m apart, exposure counts differing by 2 or 3) or **far apart but
+alike** (at least 10 km apart, different départements, the same 2 or 3
+exposures, opposite resources thirds). The page draws one pair at random
+from the whole stock; names appear only in the answer (a generic INSEE
+name such as "Iris 10" becomes "un quartier du Blanc-Mesnil"), with links
+to both pages. The stock is rebuilt after every score or travel-time
+update.
+
+**Second travel-time calculation (in progress, pre-registered on
+4 October 2026, `docs/preregistrations/2026-10-04-profil-fauteuil-roulant.md`
+in the history).** Three changes, all fixed before any result:
+(1) **common start and end points**: some wheelchair (step-free) times
+were shorter than the unconstrained ones, because R5 attached each point
+to the nearest element of each network separately (in the full network,
+sometimes a stairway or a path forcing a detour; 0.8 % of
+neighbourhood × place pairs, 1 to 8 min); every origin and destination is
+now first moved onto a way of the network without stairs, which exists
+in both networks (script 42), and r5py no longer moves it again — this
+removes most cases, not all (published as a limit with its measured
+share); (2) a **revised wheelchair profile**: 0.8 m/s (Tolerico et al.
+2007, 0.79 m/s in daily life; sensitivity 0.5 and 1.0 m/s) on a network
+without stairs and **without segments steeper than 8 %** (IGN RGE ALTI
+1 m, gradient over about 12 m; points within 20 m of a bridge or tunnel
+not used, gradients above 25 % treated as terrain-model errors;
+sensitivity 6 %; script 44); (3) **schools**: elementary, lower and upper
+secondary (BPE `C108`/`C109`, `C201`, `C301`/`C302`), public and private
+under contract as separate types, private without contract excluded;
+the nearest school is not necessarily the assigned one. The verdicts
+already published stay the reference; the new results are published as
+checks.
 
 ## From sub-score to quartile
 
@@ -1641,20 +1691,22 @@ Previous distributions: at the v0 launch, all IRIS, 1,122 / 1,216 / 382
 / 32; before access left the count (old 4 sub-scores), 874 / 1,230 / 586
 / 58 / 4.
 
-**Public ranking (`/ranking`).** Lists the IRIS at 3 or 4 out of 4 with
-at least **50 residents** — the same floor as `cool_facility_deficit`'s
-per-resident rate (`MIN_POPULATION_FOR_RATE`): below it an IRIS is a
-park, a station or a business block, not a neighborhood people live in
-(62 IRIS in all are under 50 residents; they stay on the map, flagged
-"very sparsely populated" in the detail panel). The 81 listed IRIS (80
-with the 2021 census): the 4 at 4/4 first, flagged; then the others at
-3/4 grouped by the means-to-cope tertile (lowest, middle, highest,
-without published income), never by an implied cause, ordered by commune then name. Each row shows
-one figure per category (sealed ground, air/noise index, F/G-rated
-homes, GPs within reach) plus median income, each against the
-metro-wide median. A department filter (native select, keyboard and
-screen-reader ready, count announced) narrows the list. A paragraph
-above the list states that it is not a ranking.
+**Most exposed neighbourhoods (`/quartiers-les-plus-exposes`).** Since
+5 October 2026 the list uses the same threshold as the rest of the site:
+**highly exposed = at least 2 of the 3 exposures** (heat, air and noise,
+energy-inefficient housing) in the most affected quarter; access to care
+is a separate axis, given as a figure on each row. Inhabited IRIS only
+(at least **50 residents**, the same floor as `cool_facility_deficit`'s
+per-resident rate; the 62 IRIS under 50 residents stay on the map,
+flagged "very sparsely populated"). With the October 2026 data: 407
+IRIS, the 31 with all three exposures first, then the others grouped by
+residents' resources tertile (lowest, middle, highest, without published
+income), never by an implied cause, ordered by commune then name. Each
+row shows one figure per category (sealed ground, air/noise index, F/G
+homes, GPs within reach) and median income, each against the metro-wide
+median; a département filter narrows the list; a paragraph states that
+it is not a ranking. (Until 5 October 2026 the list held the IRIS at 3
+or 4 out of 4 on the cumulative score: 81.)
 
 This is a live demonstration of the score's core caveat, repeatedly now:
 it's an **estimate that shifts with every methodological correction and

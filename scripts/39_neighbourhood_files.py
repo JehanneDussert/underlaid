@@ -38,6 +38,11 @@ and its access-to-care rank, and the count of neighbourhoods both highly
 exposed (2 of the 3 exposures or more) and in the worst quarter for
 access to care.
 
+Plus map_iris.geojson for "Explorer la carte": every IRIS with only the
+fields the map reads and coordinates at 5 decimals (about 1 m, enough to
+draw; the address lookup keeps using the per-commune files at 6 decimals),
+half the size of the published score file.
+
 Inhabited = at least 50 residents (as everywhere). Output:
 data/processed/quartiers/<insee_com>.json and index.json, copied to
 frontend/public/data/quartiers/.
@@ -237,6 +242,16 @@ def main():
         "places_computed": bool(places),
     }
     (OUT / "index.json").write_text(json.dumps(index, separators=(",", ":")), encoding="utf-8")
+
+    keep = {"code_iris", "nom_iris", "nom_com", "population", "cumulative_vulnerability_score"}
+    keep |= {f"subscore_{k}" for k in SUBSCORES} | {f"subscore_{k}_quartile" for k in SUBSCORES}
+    map_features = [
+        {"type": "Feature", "geometry": {"type": f["geometry"]["type"], "coordinates": round_coords(f["geometry"]["coordinates"], 5)},
+         "properties": {k: v for k, v in f["properties"].items() if k in keep}}
+        for f in score["features"]
+    ]
+    (config.DATA_PROCESSED / "map_iris.geojson").write_text(
+        json.dumps({"type": "FeatureCollection", "features": map_features}, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     sizes = [f.stat().st_size for f in OUT.glob("*.json")]
     print(f"{len(by_commune)} commune files, {sum(sizes) / 1e6:.1f} MB in all, largest {max(sizes) / 1e3:.0f} kB; "
           f"{both} neighbourhoods highly exposed and in the worst quarter for care; places computed: {bool(places)}")

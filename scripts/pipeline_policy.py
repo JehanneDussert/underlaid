@@ -70,7 +70,7 @@ SCRIPTS: dict[str, tuple[str, tuple[Layer, ...]]] = {
     # hand), recomputed each quarter because "inhabited" follows the score.
     "38_routes_summary.py": ("means", (Layer("routes_summary.json", (), iris_grain=False),)),
     # Per-commune files of the neighbourhood page, rebuilt from the score.
-    "39_neighbourhood_files.py": ("means", (Layer("quartiers/index.json", (), iris_grain=False),)),
+    "39_neighbourhood_files.py": ("means", (Layer("quartiers/index.json", (), iris_grain=False), Layer("map_iris.geojson", (), iris_grain=False))),
     # Pairs of the "Lequel de ces quartiers ?" question, rebuilt from the files above.
     "43_question_pairs.py": ("means", (Layer("question_pairs.json", (), iris_grain=False),)),
     "16_school_ac_context.py": ("context", (Layer("school_ac_context_arrondissement.geojson", ("insee_com",), iris_grain=False),)),

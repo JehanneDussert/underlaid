@@ -109,7 +109,8 @@ function rankShares(values) {
 
 async function loadData() {
   const [score, cap, mapLayers] = await Promise.all([
-    loadStaticJson('/data/vulnerability_score_iris.geojson'),
+    // Map-only file (script 39): only the fields read here, 5-decimal outlines.
+    loadStaticJson('/data/map_iris.geojson'),
     loadStaticJson('/data/adaptive_capacity_iris.json'),
     loadStaticJson('/data/map_layers.geojson'),
   ])

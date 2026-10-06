@@ -27,6 +27,7 @@ env:
     key_figures.json
     routes_summary.json
     question_pairs.json
+    map_iris.geojson
     qpv_boundaries_mgp.geojson
     associational_density_context_commune.geojson
     school_ac_context_arrondissement.geojson

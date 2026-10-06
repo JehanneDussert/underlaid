@@ -68,8 +68,9 @@ NEED_PLACES = {
     "care": [("times", "emergency")],
     "admin": [("times", "town_hall"), ("times", "france_services"), ("times", "caf"), ("times", "cpam"), ("times", "employment")],
     "food": [("places", "food_store")],
-    "children": [("places", "creche"), ("places", "nursery_school"), ("places", "elementary_public"), ("places", "elementary_private"),
-                 ("places", "college_public"), ("places", "college_private"), ("places", "lycee_public"), ("places", "lycee_private")],
+    # Public schools only (decision of 6 October 2026); private under contract computed, not shown.
+    "children": [("places", "creche"), ("places", "nursery_school"), ("places", "elementary_public"), ("places", "college_public"),
+                 ("places", "lycee_public")],
     "post": [("times", "post_office")],
     "police": [("places", "police")],
     "social": [("places", "social_centre"), ("places", "library")],

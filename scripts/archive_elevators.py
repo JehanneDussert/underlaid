@@ -1,0 +1,73 @@
+"""Archive of the IDFM "État des ascenseurs" feed (decided on 2026-10-04,
+roadmap: availability rate per station after the launch).
+
+The feed (990 lifts of the rail stations of Île-de-France, Licence
+Mobilités: reuse and archiving allowed with the source cited) is published
+three times a day by IDFM from the RATP and SNCF station staff rounds. This
+script asks every hour and keeps a snapshot only when the content changed,
+so that each publication is caught once. The token (PRIM_DATASET_TOKEN)
+comes from the environment (.env at the repository root, never versioned).
+
+Output: data/raw/elevators/YYYY-MM-DD/HHMM.json.gz (raw records), plus
+data/raw/elevators/log.csv (time, number of lifts, number available, hash).
+Runs as a long-lived container:
+  docker run -d --name underlaid-elevators --restart unless-stopped --env-file .env \
+    -v <repo>/data:/app/data -v <repo>/scripts:/app/scripts -w /app underlaid-access python scripts/archive_elevators.py
+"""
+import datetime as dt
+import gzip
+import hashlib
+import json
+import os
+import time
+from pathlib import Path
+
+import requests
+
+URL = "https://data.iledefrance-mobilites.fr/api/explore/v2.1/catalog/datasets/etat-des-ascenseurs/exports/json"
+OUT = Path("/app/data/raw/elevators") if Path("/app/data").exists() else Path(__file__).resolve().parents[1] / "data" / "raw" / "elevators"
+EVERY_S = 3600
+
+
+def fetch():
+    token = os.environ["PRIM_DATASET_TOKEN"]
+    r = requests.get(URL, headers={"Authorization": f"Apikey {token}"}, timeout=120)
+    r.raise_for_status()
+    return r.json()
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    log = OUT / "log.csv"
+    if not log.exists():
+        log.write_text("fetched_utc,lifts,available,sha256,saved\n", encoding="utf-8")
+    last = None
+    lines = log.read_text(encoding="utf-8").strip().splitlines()[1:]
+    for line in reversed(lines):
+        if line.endswith(",1"):
+            last = line.split(",")[3]
+            break
+    while True:
+        now = dt.datetime.now(dt.timezone.utc)
+        try:
+            records = fetch()
+            body = json.dumps(sorted(records, key=lambda r: str(r.get("liftid"))), ensure_ascii=False, sort_keys=True)
+            digest = hashlib.sha256(body.encode()).hexdigest()
+            available = sum(1 for r in records if r.get("liftstatus") == "available")
+            saved = digest != last
+            if saved:
+                day = OUT / now.strftime("%Y-%m-%d")
+                day.mkdir(exist_ok=True)
+                with gzip.open(day / f"{now:%H%M}.json.gz", "wt", encoding="utf-8") as f:
+                    f.write(body)
+                last = digest
+            with log.open("a", encoding="utf-8") as f:
+                f.write(f"{now:%Y-%m-%dT%H:%M:%SZ},{len(records)},{available},{digest[:16]},{int(saved)}\n")
+            print(f"{now:%Y-%m-%d %H:%M} UTC: {len(records)} lifts, {available} available, {'saved' if saved else 'unchanged'}", flush=True)
+        except Exception as e:  # keep going: a failed hour is retried the next hour
+            print(f"{now:%Y-%m-%d %H:%M} UTC: error {e}", flush=True)
+        time.sleep(EVERY_S)
+
+
+if __name__ == "__main__":
+    main()

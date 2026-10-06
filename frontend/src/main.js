@@ -29,8 +29,11 @@ function scrollBehavior(to, from, savedPosition) {
   return { top: 0 }
 }
 
-export const createApp = ViteSSG(App, { routes: routeRecords, scrollBehavior }, ({ app, router }) => {
+export const createApp = ViteSSG(App, { routes: routeRecords, scrollBehavior }, ({ app, router, initialState }) => {
   const { i18n, setLocale } = createI18nInstance()
   app.use(i18n)
+  // Data a prerendered page hands to the browser (vite-ssg serialises it
+  // into the page), so that the page is not redrawn empty first.
+  app.provide('initialState', initialState)
   installLocaleGuard(router, setLocale)
 })

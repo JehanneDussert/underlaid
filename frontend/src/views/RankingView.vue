@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onServerPrefetch } from 'vue'
+import { ref, computed, inject, onMounted, onServerPrefetch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { localizedRouteName } from '../router'
 import { useSeoMeta } from '../composables/useSeoMeta'
@@ -59,8 +59,33 @@ async function loadRows() {
   loading.value = false
 }
 
-onServerPrefetch(loadRows)
-onMounted(loadRows)
+// The prerendered page hands the browser only what the list needs (the
+// listed rows, their resources class and the metropolitan medians), so the
+// browser does not download the whole score file (5 MB) again.
+const FIELDS = ['code_iris', 'nom_iris', 'nom_com', 'insee_com', 'population', 'subscore_thermal_quartile', 'subscore_pollution_quartile',
+  'subscore_housing_quartile', 'pct_artificialized', 'air_noise_coexposure_class', 'pct_dpe_fg', 'median_income', 'gp_std']
+const initialState = inject('initialState', null)
+const handed = ref(null)
+onServerPrefetch(async () => {
+  await loadRows()
+  if (initialState) {
+    const rows = allRows.value.filter((p) => nExposures(p) >= 2 && (p.population ?? 0) >= MIN_POPULATION_FOR_LIST)
+    initialState.ranking = {
+      rows: rows.map((p) => Object.fromEntries(FIELDS.map((k) => [k, p[k] ?? null]))),
+      capacity: Object.fromEntries(rows.map((p) => [p.code_iris, { capacity_class: capacityByIris.value[p.code_iris]?.capacity_class ?? null }])),
+      medians: medians.value,
+    }
+  }
+})
+if (typeof window !== 'undefined' && initialState?.ranking) {
+  handed.value = initialState.ranking
+  allRows.value = handed.value.rows
+  capacityByIris.value = handed.value.capacity
+  loading.value = false
+}
+onMounted(() => {
+  if (!handed.value) loadRows()
+})
 
 function median(field) {
   const values = allRows.value.map((p) => p[field]).filter((v) => v !== null && v !== undefined).sort((a, b) => a - b)
@@ -69,7 +94,7 @@ function median(field) {
   return values.length % 2 ? values[mid] : (values[mid - 1] + values[mid]) / 2
 }
 
-const medians = computed(() => ({
+const computedMedians = computed(() => ({
   pct_artificialized: median('pct_artificialized'),
   air_noise_coexposure_class: median('air_noise_coexposure_class'),
   pct_dpe_fg: median('pct_dpe_fg'),
@@ -104,6 +129,10 @@ const groups = computed(() =>
     }),
   })).filter((g) => g.rows.length)
 )
+
+// Medians over the whole metropolis: computed from all rows at build time,
+// handed to the browser with the page.
+const medians = computed(() => handed.value?.medians ?? computedMedians.value)
 
 function numberLocale() {
   return locale.value === 'fr' ? 'fr-FR' : 'en-US'

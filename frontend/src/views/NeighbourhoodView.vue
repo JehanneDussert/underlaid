@@ -12,7 +12,7 @@
 //      access to care (descriptive), with the tested hypothesis as stated
 //      in the method.
 // Data: one file per commune (scripts/39_neighbourhood_files.py).
-import { computed, nextTick, onMounted, onServerPrefetch, ref, watch } from 'vue'
+import { computed, inject, nextTick, onMounted, onServerPrefetch, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import AccordionItem from '../components/AccordionItem.vue'
@@ -47,6 +47,7 @@ const nf = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB
 // --- Data -------------------------------------------------------------
 const record = ref(null)
 const index = ref(null)
+const communeIris = ref([])
 const loading = ref(false)
 const notFound = ref('')
 const label = ref('')
@@ -66,13 +67,35 @@ async function load(code) {
   if (r) rememberNeighbourhood(r.code)
   else notFound.value = t('nbhd.unknownCode')
 }
-// Prerendering: the page of each neighbourhood is built with its data.
-onServerPrefetch(() => load(route.params.code))
+// Prerendering: the page of each neighbourhood is built with its data, and
+// hands a small copy of it to the browser (no outlines, no scatter points),
+// so the browser shows the same page at once instead of redrawing it.
+const initialState = inject('initialState', null)
+onServerPrefetch(async () => {
+  await load(route.params.code)
+  if (initialState && record.value) {
+    const { geometry, ...rec } = record.value
+    initialState.nbhd = {
+      code: rec.code,
+      record: rec,
+      index: index.value ? { n_iris: index.value.n_iris, highly_exposed_and_worst_care: index.value.highly_exposed_and_worst_care } : null,
+      commune: communeIris.value.map((r) => ({ code: r.code, name: r.name, inhabited: r.inhabited, exposures: r.exposures })),
+    }
+  }
+})
+const fromPage = initialState?.nbhd
+if (typeof window !== 'undefined' && fromPage && fromPage.code === route.params.code) {
+  record.value = fromPage.record
+  index.value = fromPage.index
+  communeIris.value = fromPage.commune
+}
 const hydrated = ref(false)
 onMounted(() => {
   hydrated.value = true
   label.value = (typeof history !== 'undefined' && history.state?.label) || ''
   if (!record.value || record.value.code !== route.params.code) load(route.params.code)
+  // Page data handed over by the prerender: only the scatter points are left.
+  else if (!index.value?.points) loadIndex().then((i) => { if (i) index.value = i }).catch(() => {})
   revealMode()
 })
 
@@ -175,7 +198,6 @@ function rankCard(k) {
 // "Sur 10 quartiers, N…": which ones? The inhabited neighbourhoods of the
 // same commune (Paris: arrondissement) that are better placed, up to three
 // named, the most favourable first.
-const communeIris = ref([])
 function nearby(k) {
   const mine = record.value.exposures[k].rank
   const others = communeIris.value.filter((r) => r.code !== record.value.code && r.inhabited && r.exposures[k].rank !== null)

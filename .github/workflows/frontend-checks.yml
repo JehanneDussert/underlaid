@@ -11,7 +11,7 @@ on:
   pull_request:
     branches: [master]
   push:
-    branches: [travail, refonte]
+    branches-ignore: [master]
   workflow_dispatch:
 
 permissions:

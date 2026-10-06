@@ -63,6 +63,15 @@ function neighbourhoodCodes() {
   }
 }
 const NEIGHBOURHOODS = neighbourhoodCodes()
+
+function dataDate() {
+  try {
+    const path = fileURLToPath(new URL('./public/data/last_updated.json', import.meta.url))
+    return JSON.parse(readFileSync(path, 'utf-8')).generated_at.slice(0, 10)
+  } catch {
+    return null
+  }
+}
 const NBHD = ROUTE_PATHS.find((r) => r.name === 'neighbourhood')
 const nbhdPath = (pattern, code) => pattern.replace(':code?', code)
 
@@ -143,6 +152,8 @@ export default defineConfig({
   },
   define: {
     __RANKING_COUNT__: JSON.stringify(countRankingNeighborhoods()),
+    // Date of the published data snapshot (schema.org Dataset on the Method page).
+    __DATA_DATE__: JSON.stringify(dataDate()),
     __SITE_URL__: JSON.stringify(SITE_URL),
     __NOINDEX__: JSON.stringify(NOINDEX),
   },

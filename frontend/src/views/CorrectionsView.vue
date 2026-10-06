@@ -9,7 +9,7 @@ import { localizedRouteName } from '../router'
 
 const { t, tm, rt, locale } = useI18n()
 useSeoMeta({
-  title: { en: 'Corrections', fr: 'Corrections' },
+  title: { en: 'Method corrections', fr: 'Corrections de méthode' },
   description: { en: 'Changes of method made since the site went online, dated, with their reason.', fr: 'Les changements de méthode apportés depuis la mise en ligne, datés, avec leur raison.' },
 })
 const fixes = computed(() => tm('method.fixes.items').map((f) => ({ when: rt(f.when), what: rt(f.what), why: rt(f.why) })).reverse())

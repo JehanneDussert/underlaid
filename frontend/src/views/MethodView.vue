@@ -29,8 +29,48 @@ onMounted(() => {
   }
 })
 
+// schema.org Dataset (Google Dataset Search): the published data, its
+// licence (ODbL), its DOI, its dates and its author.
+const DATASET_DOI = '10.5281/zenodo.23083312'
+const datasetJsonLd = (locale) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name:
+    locale === 'fr'
+      ? 'Underlaid : cumul des expositions environnementales et accès aux services, quartiers de Paris et de la petite couronne'
+      : 'Underlaid: cumulative environmental exposure and access to services, neighbourhoods of Paris and its inner suburbs',
+  description:
+    locale === 'fr'
+      ? "Pour les 2 752 quartiers (IRIS de l'Insee) de Paris, des Hauts-de-Seine, de la Seine-Saint-Denis et du Val-de-Marne : nombre d'expositions dans le quart le plus touché (chaleur, pollution de l'air et bruit, logement énergivore), accès aux soins (médecins généralistes et pharmacies, méthode E2SFCA), ressources des habitants mesurées à part, et durées de trajet vers les lieux du quotidien à pied et en transports en commun, selon trois façons de se déplacer. Construit à partir de données publiques ouvertes."
+      : 'For the 2,752 neighbourhoods (INSEE IRIS) of Paris, Hauts-de-Seine, Seine-Saint-Denis and Val-de-Marne: number of exposures in the most affected quarter (heat, air pollution and noise, energy-inefficient housing), access to care (GPs and pharmacies, E2SFCA method), residents’ resources measured apart, and travel times to everyday places on foot and by public transport for three ways of getting around. Built from public open data.',
+  url: `${__SITE_URL__}${locale === 'fr' ? '/methode' : '/en/method'}`,
+  sameAs: `https://doi.org/${DATASET_DOI}`,
+  identifier: `https://doi.org/${DATASET_DOI}`,
+  license: 'https://opendatacommons.org/licenses/odbl/1-0/',
+  isAccessibleForFree: true,
+  creator: { '@type': 'Person', name: 'Jehanne Dussert', sameAs: 'https://orcid.org/0009-0008-3247-2180' },
+  datePublished: '2026-10-01',
+  ...(__DATA_DATE__ ? { dateModified: __DATA_DATE__ } : {}),
+  inLanguage: ['fr', 'en'],
+  keywords: ['justice environnementale', 'environmental justice', 'accessibilité', 'accessibility', 'Paris', 'IRIS', 'open data'],
+  spatialCoverage: { '@type': 'Place', name: 'Paris, Hauts-de-Seine, Seine-Saint-Denis, Val-de-Marne (France)' },
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/geo+json',
+      contentUrl: `${__SITE_URL__}/data/vulnerability_score_iris.geojson`,
+    },
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: `${__SITE_URL__}/data/routes_summary.json`,
+    },
+  ],
+})
+
 useSeoMeta({
   image: 'methode',
+  jsonLd: datasetJsonLd,
   title: { en: 'Sources and method', fr: 'Sources et méthode' },
   description: {
     en: 'How the 2,752 neighbourhoods of Paris and its inner suburbs are compared: themes, access to care, travel times, residents’ resources, tested hypotheses, limits, data and corrections.',

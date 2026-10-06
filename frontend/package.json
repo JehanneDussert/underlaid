@@ -10,7 +10,8 @@
     "test:smoke": "node scripts/smoke-test.mjs",
     "test:a11y": "node scripts/a11y-test.mjs",
     "test:fit": "node scripts/check-home-fit.mjs",
-    "test:overflow": "node scripts/check-overflow.mjs"
+    "test:overflow": "node scripts/check-overflow.mjs",
+    "test:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@fontsource/atkinson-hyperlegible": "^5.3.0",

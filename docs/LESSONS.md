@@ -342,3 +342,38 @@ But the redesigned home page brings elements in after a delay, with
 those elements stayed invisible for the length of the delay, precisely
 for the people who asked for less motion. The rule now also sets
 `animation-delay: 0s` (`frontend/src/style.css`).
+
+**Two routers can disagree because of where they start, not how they
+route.** Some wheelchair (step-free) times came out shorter than the
+unconstrained ones, although the step-free network is a subset of the
+full one. The cause was the attachment of each start and end point to
+each network: in the full network the nearest element was sometimes a
+stairway or a path that forced a detour. Putting every point beforehand
+on a street common to both networks removed most cases (14.2 % → 2.5 % of
+pairs on the cells that had the problem), but not all: R5 still chooses
+its own attachment. The remaining cases are published as a limit, with
+their measured share, rather than hidden by forcing one time to be at
+least the other.
+
+**A shared cache needs a lock.** Three routing workers built the same new
+network at the same time and wrote the same cache file; two failed on a
+corrupted file. Script 34 now lets only one worker build or load a given
+network at a time, records a fingerprint of each network (street
+vertices and edges, transit stops) and checks it before each chunk.
+
+**Phone keyboards compose words.** The address field searched only after
+a space on phones: `v-model` waits for the end of a keyboard
+"composition", and Android and iOS predictive keyboards compose a whole
+word. The field now reads its value on every input event.
+
+**Test the layout with Safari's engine too.** Explorer scrolled sideways
+on phones, but only in WebKit: there, a `<select>` is as wide as its
+longest option unless allowed to shrink, which pushed the filters button
+off-screen. Chromium showed nothing. The overflow test now runs in both
+engines.
+
+**Prerendering every page is not enough if the browser redraws it.** The
+neighbourhood pages were prerendered, but the browser threw the content
+away and drew it again once its data had loaded (layout shift 0.38). The
+page now hands its data to the browser with the HTML (vite-ssg initial
+state), without outlines or the scatter's 2,700 points.

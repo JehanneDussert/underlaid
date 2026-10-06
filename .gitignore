@@ -25,3 +25,7 @@ docs/preregistrations
 # README, SCORING.md and on the site).
 data/processed/access/
 frontend/dist-lighthouse
+
+# Local secrets (PRIM tokens): never versioned
+.env
+.env.*

@@ -468,6 +468,10 @@
         {
           "name": "Public toilets and water points.",
           "desc": "Only the City of Paris publishes a complete list (toilets and fountains). In the inner suburbs, partial lists exist but cover only a few communes: Grand Paris Seine Ouest (173 fountains and 33 toilets, for 7 communes), Sceaux (21 fountains), Montreuil (22 fountains, 2019 list); Seine-Saint-Denis publishes an OpenStreetMap extract (271 water points) of unknown completeness. These places are therefore shown for Paris neighbourhoods only."
+        },
+        {
+          "name": "Accessibility of buildings.",
+          "desc": "Acceslibre, the public database describing the accessibility of building entrances, is not used here: its coverage is very uneven. In the extract of 6 October 2026 (data updated on 5 October), it holds 136 records per 10,000 residents in Paris, 79 in Hauts-de-Seine, 58 in Seine-Saint-Denis and 49 in Val-de-Marne. A missing record means missing information, not an inaccessible place."
         }
       ]
     },

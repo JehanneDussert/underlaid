@@ -468,6 +468,10 @@
         {
           "name": "Toilettes publiques et points d'eau.",
           "desc": "Seule la Ville de Paris publie une liste complète (toilettes et fontaines). En petite couronne, des listes partielles existent mais ne couvrent que quelques communes : Grand Paris Seine Ouest (173 fontaines et 33 toilettes, pour 7 communes), Sceaux (21 fontaines), Montreuil (22 fontaines, liste de 2019) ; la Seine-Saint-Denis publie un extrait d'OpenStreetMap (271 points d'eau), dont la complétude n'est pas connue. Ces lieux ne sont donc affichés que pour les quartiers de Paris."
+        },
+        {
+          "name": "Accessibilité des établissements.",
+          "desc": "Acceslibre, la base publique qui décrit l'accessibilité de l'entrée des établissements, n'est pas utilisée ici : sa couverture est très inégale. À l'extraction du 6 octobre 2026 (données mises à jour le 5 octobre), elle compte 136 fiches pour 10 000 habitants à Paris, 79 dans les Hauts-de-Seine, 58 en Seine-Saint-Denis et 49 dans le Val-de-Marne. L'absence de fiche signale une information manquante, pas un lieu inaccessible."
         }
       ]
     },

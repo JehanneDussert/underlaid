@@ -1,0 +1,82 @@
+# Weekly Lighthouse report on the live site (https://underlaid.fr), phone
+# and desktop, main pages. The table goes to the job summary and the JSON
+# reports to an artifact (kept 90 days); nothing is committed (master only
+# changes through pull requests). Opens an issue (or comments on the open
+# one) when accessibility or SEO drops below 100 on any page; performance
+# is reported only, since it varies with the runner.
+name: Lighthouse
+
+on:
+  schedule:
+    - cron: "0 5 * * 1" # Mondays 05:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Lighthouse on underlaid.fr
+        run: bash scripts/lighthouse-report.sh
+        env:
+          LIGHTHOUSE_BASE_URL: https://underlaid.fr
+          LIGHTHOUSE_OUT: lighthouse.md
+      - name: Summary and threshold check
+        id: check
+        run: |
+          cat lighthouse.md >> "$GITHUB_STEP_SUMMARY"
+          python - <<'EOF'
+          import glob, json, os
+          low = []
+          for f in sorted(glob.glob("dist-lighthouse/*.json")):
+              try:
+                  c = json.load(open(f))["categories"]
+              except Exception:
+                  low.append(f"{f}: report missing or unreadable")
+                  continue
+              for k in ("accessibility", "seo"):
+                  s = c[k]["score"]
+                  if s is None or s < 1:
+                      low.append(f"{os.path.basename(f)}: {k} {'n/a' if s is None else round(s * 100)}")
+          with open("lighthouse_low.txt", "w") as out:
+              out.write("\n".join(low))
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"low={'true' if low else 'false'}\n")
+          print("\n".join(low) or "accessibility and SEO at 100 everywhere")
+          EOF
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-reports
+          path: |
+            frontend/dist-lighthouse/
+            frontend/lighthouse.md
+          retention-days: 90
+      - name: Open or update an issue
+        if: steps.check.outputs.low == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          TITLE="Lighthouse : accessibilité ou référencement sous 100"
+          BODY="$(printf 'Rapport hebdomadaire Lighthouse sur https://underlaid.fr : %s\n\n```\n%s\n```\n\nTableau complet dans le résumé du job.' "$RUN_URL" "$(cat lighthouse_low.txt)")"
+          NUM=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number')
+          if [ -n "$NUM" ]; then gh issue comment "$NUM" --body "$BODY"; else gh issue create --title "$TITLE" --body "$BODY"; fi

@@ -20,6 +20,7 @@ data/interim/analysis/neighbouring_pairs/.
 import datetime as dt
 import importlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -33,6 +34,7 @@ from shapely.ops import unary_union
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import config  # noqa: E402
+sys.argv += ["--max-memory", os.environ.get("R5_MAX_MEMORY", "10G")]  # read by r5py, as in script 34
 
 snap42 = importlib.import_module("42_snap_points")
 OUT = config.DATA_INTERIM / "analysis" / "neighbouring_pairs"

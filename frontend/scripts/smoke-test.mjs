@@ -81,7 +81,14 @@ try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true })
   const page = await context.newPage()
   page.on('pageerror', (e) => errors.push(`${page.url()}: ${e.message}`))
-  page.on('console', (m) => m.type() === 'error' && errors.push(`${page.url()}: ${m.text()}`))
+  // The unknown-code check (/quartier/000000000) asks for a commune file that
+  // does not exist: the production host answers a real 404, which the
+  // browser logs; that one is expected, not an error of the site.
+  page.on('console', (m) => {
+    if (m.type() !== 'error') return
+    if (page.url().endsWith('/quartier/000000000') && /404/.test(m.text())) return
+    errors.push(`${page.url()}: ${m.text()}`)
+  })
 
   // Home page, both languages (redesign D4): no duration on the plan
   // until a mode is chosen; a mode shows the six durations of

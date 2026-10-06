@@ -1,0 +1,27 @@
+# Python tests (tests/, `make test`) on every push and on every pull
+# request to master (required before merging, branch protection of
+# 6 October 2026). They read the versioned outputs of data/processed/;
+# tests whose input is not versioned skip themselves.
+name: Python tests
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q tests

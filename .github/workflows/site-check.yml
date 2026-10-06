@@ -1,0 +1,47 @@
+# Daily check of the live site (https://underlaid.fr): the full smoke test
+# run against production. On failure, opens an issue (or comments on the
+# open one), so that a broken deployment does not go unnoticed.
+name: Live site check
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC every day
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Smoke test against production
+        id: smoke
+        continue-on-error: true
+        run: npm run test:smoke 2>&1 | tee smoke.log
+        env:
+          SMOKE_BASE_URL: https://underlaid.fr
+          SMOKE_SOFTWARE_GL: "1"
+      - name: Open or update an issue on failure
+        if: steps.smoke.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Site en ligne : la vérification quotidienne échoue"
+          BODY=$(printf "La vérification quotidienne de https://underlaid.fr a échoué le %s.\n\nJournal : %s/%s/actions/runs/%s\n\n\`\`\`\n%s\n\`\`\`" "$(date -u +%Y-%m-%d)" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$(tail -40 smoke.log)")
+          NUM=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number')
+          if [ -n "$NUM" ]; then gh issue comment "$NUM" --body "$BODY"; else gh issue create --title "$TITLE" --body "$BODY"; fi
+          exit 1

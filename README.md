@@ -677,9 +677,12 @@ stops and asks — so it does:
   single category's share moving by more than 5 percentage points): the
   new data is copied into `frontend/public/data/`, a dated snapshot is
   kept in `data/history/` (`scripts/prune_export_history.py`, last 4
-  runs retained), the change is committed and pushed directly, and — if
-  a `DEPLOY_HOOK_URL` repository secret is set (a Vercel/Netlify deploy
-  hook URL) — a redeploy is triggered.
+  runs retained), and the change is proposed as a pull request (branch
+  `automated-update/within-thresholds`): `master` is protected (pull
+  requests only, checks required, no direct push), so a person merges it
+  and the host deploys on merge. A pull request opened with the
+  workflow's own token does not start the required checks: close and
+  reopen it to run them.
 - **Past either threshold**: nothing is published. The workflow opens a
   pull request instead (branch `automated-update/needs-review`, using
   [`peter-evans/create-pull-request`](https://github.com/peter-evans/create-pull-request)),

@@ -13,12 +13,14 @@ const NOINDEX = __NOINDEX__
 // 1200x630 PNG sharing images in the site's identity (validated on
 // 5 October 2026), one per main page and language, made by
 // scripts/make-share-images.mjs into public/share/. Other pages use the home
-// page's; a neighbourhood page passes its own (made on request, api/og.js).
+// page's. Neighbourhood pages share one image (an image per neighbourhood
+// made on request failed to deploy on 6 October 2026; to be revisited).
 const SHARE_ALT = {
   accueil: { fr: 'Underlaid : une même ville, des conditions de vie inégales', en: 'Underlaid: one city, unequal living conditions' },
   carte: { fr: 'Underlaid : explorer la carte des 2 752 quartiers de Paris et de la petite couronne', en: 'Underlaid: explore the map of the 2,752 neighbourhoods of Paris and its inner suburbs' },
   methode: { fr: 'Underlaid : sources et méthode', en: 'Underlaid: sources and method' },
   apropos: { fr: 'Underlaid : à propos du projet', en: 'Underlaid: about the project' },
+  quartier: { fr: 'Underlaid : la situation de votre quartier', en: 'Underlaid: the situation of your neighbourhood' },
 }
 const shareImage = (key, lang) => ({ url: `${SITE_URL}/share/${key}-${lang}.png`, alt: SHARE_ALT[key][lang] })
 const OG_IMAGE_WIDTH = '1200'

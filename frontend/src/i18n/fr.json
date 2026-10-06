@@ -880,8 +880,7 @@
     },
     "seo": {
       "title": "{name} : cadre de vie et lieux à portée",
-      "description": "{summary}. Durées vers les lieux du quotidien, à pied et en transports en commun, selon le mode de déplacement.",
-      "imageAlt": "{name} : expositions du quartier, Underlaid"
+      "description": "{summary}. Durées vers les lieux du quotidien, à pied et en transports en commun, selon le mode de déplacement."
     }
   },
   "explore": {

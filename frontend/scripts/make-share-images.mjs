@@ -60,12 +60,14 @@ const FIXED = {
     carte: ['Explorer la carte', 'Les 2 752 quartiers de Paris et de la petite couronne', 'Chaleur, air et bruit, logement, accès aux soins, ressources des habitants, et leur cumul.'],
     methode: ['Sources et méthode', 'Comment les quartiers sont comparés', 'Données publiques, calculs, hypothèses testées, limites et corrections.'],
     apropos: ['À propos', 'Un projet ouvert et indépendant', 'Qui porte Underlaid, comment le citer, réutiliser ses données et son code.'],
+    quartier: ['Votre quartier', 'La situation de votre quartier', 'Chaleur, air et bruit, logement, accès aux soins et lieux du quotidien, selon votre façon de vous déplacer.'],
   },
   en: {
     accueil: ['', 'One city, unequal living conditions.', 'Heat, pollution, housing, access to care and services, neighbourhood by neighbourhood, in Paris and its inner suburbs.'],
     carte: ['Explore the map', 'The 2,752 neighbourhoods of Paris and its inner suburbs', 'Heat, air and noise, housing, access to care, residents’ resources, and where they combine.'],
     methode: ['Sources and method', 'How neighbourhoods are compared', 'Open data, calculations, tested hypotheses, limits and corrections.'],
     apropos: ['About', 'An open, independent project', 'Who runs Underlaid, how to cite it, reuse its data and code.'],
+    quartier: ['Your neighbourhood', 'The situation of your neighbourhood', 'Heat, air and noise, housing, access to care and everyday places, depending on how you get around.'],
   },
 }
 const BRAND = { fr: 'Paris et petite couronne', en: 'Paris and its inner suburbs' }
@@ -105,9 +107,6 @@ async function shoot(html, file) {
 for (const lang of ['fr', 'en']) {
   for (const [key, copy] of Object.entries(FIXED[lang])) await shoot(fixedCard(lang, copy), `${key}-${lang}.png`)
 }
-// Background of the per-neighbourhood image made on request (api/og.js):
-// the plan alone, on the right half.
-await shoot(page(`${plan('560 88 720 712')}`), 'plan-panel.png')
 if (process.env.OUT) {
   await shoot(hoodCard('fr', 'Économie 1', 'Drancy', ['thermal', 'pollution', 'housing']), 'quartier-exemple-1-fr.png')
   await shoot(hoodCard('fr', 'Batignolles 14', 'Paris 17e', ['pollution']), 'quartier-exemple-2-fr.png')

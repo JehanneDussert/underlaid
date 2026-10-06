@@ -186,6 +186,88 @@ def destinations(task: Task, dest: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     return snapped(d[["dest_id", "geometry"]].rename(columns={"dest_id": "id"}), {"neighbourhood": "neighbourhood", "paris": "paris"}.get(ROUTES_SET, "key"))
 
 
+# --- Shared R5 cache: lock and integrity (6 October 2026) -----------------
+# On 6 October 2026 three workers built the same new network at the same
+# time; two failed on a corrupted cache file ("storage has invalid header").
+# Now: (1) only one worker at a time builds or loads a given network (a lock
+# file created atomically in the shared work folder); (2) each loaded
+# network gets a fingerprint (street vertices and edges, transit stops); the
+# first worker records it, every other worker must load the same network,
+# and before each chunk the record is read again: any mismatch stops the
+# worker instead of computing with a doubtful network.
+LOCK_STALE_S = 3 * 3600
+MANIFEST = WORK_DIR / "network_fingerprints.json"
+
+
+class NetworkLock:
+    def __init__(self, name):
+        self.path = WORK_DIR / f".network_{name}.lock"
+
+    def __enter__(self):
+        while True:
+            try:
+                fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                os.write(fd, f"worker {WORKER} {dt.datetime.now():%Y-%m-%d %H:%M:%S}".encode())
+                os.close(fd)
+                return self
+            except FileExistsError:
+                try:
+                    if time.time() - self.path.stat().st_mtime > LOCK_STALE_S:
+                        self.path.unlink()  # left by a worker that died while building
+                        continue
+                except FileNotFoundError:
+                    continue
+                time.sleep(15)
+
+    def __exit__(self, *exc):
+        try:
+            self.path.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def fingerprint(network) -> dict | None:
+    try:
+        tn = network._transport_network
+        return {"vertices": int(tn.streetLayer.getVertexCount()), "edges": int(tn.streetLayer.edgeStore.nEdges()),
+                "stops": int(tn.transitLayer.getStopCount())}
+    except Exception:  # r5py internals changed: no check rather than a false alarm
+        return None
+
+
+def read_manifest() -> dict:
+    import json
+
+    try:
+        return json.loads(MANIFEST.read_text(encoding="utf-8"))
+    except (FileNotFoundError, ValueError):
+        return {}
+
+
+def record_or_check(name: str, fp: dict | None) -> None:
+    import json
+
+    if fp is None:
+        return
+    key = f"{name}:{NETWORKS[name][0].name}:{NETWORKS[name][1].name}"
+    known = read_manifest()
+    if key not in known:
+        known[key] = fp
+        MANIFEST.write_text(json.dumps(known, indent=2), encoding="utf-8")
+    elif known[key] != fp:
+        raise SystemExit(f"Network {key}: fingerprint {fp} differs from the recorded {known[key]}; "
+                         "the shared cache may be damaged. Stopping before computing anything.")
+
+
+def check_before_chunk(name: str, fp: dict | None) -> None:
+    if fp is None:
+        return
+    key = f"{name}:{NETWORKS[name][0].name}:{NETWORKS[name][1].name}"
+    recorded = read_manifest().get(key)
+    if recorded is not None and recorded != fp:
+        raise SystemExit(f"Network {key} changed since it was loaded ({fp} vs {recorded}); stopping.")
+
+
 def write_progress(started, done_at_start, total, current):
     done = len(list(OUT_DIR.glob("*.parquet")))
     elapsed = time.time() - started
@@ -217,7 +299,7 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     started = time.time()
     done_at_start = len(list(OUT_DIR.glob("*.parquet")))
-    network_name, network = None, None
+    network_name, network, network_fp = None, None, None
 
     for index, (task, k, chunk) in enumerate(jobs):
         out = OUT_DIR / f"{task.name}_{k:02d}.parquet"
@@ -231,9 +313,13 @@ def main():
             gc.collect()
             jpype.java.lang.System.gc()
             osm, gtfs = NETWORKS[net]
-            network = r5py.TransportNetwork(str(osm), [str(gtfs)])
+            with NetworkLock(net):
+                network = r5py.TransportNetwork(str(osm), [str(gtfs)])
+                network_fp = fingerprint(network)
+                record_or_check(net, network_fp)
             network_name = net
         write_progress(started, done_at_start, total, label)
+        check_before_chunk(net, network_fp)
         modes = [r5py.TransportMode.TRANSIT, r5py.TransportMode.WALK] if task.transit else [r5py.TransportMode.WALK]
         ttm = r5py.TravelTimeMatrix(
             network,

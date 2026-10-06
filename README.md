@@ -442,41 +442,58 @@ own guards: masking follows income masking exactly, tertiles stay
 balanced, no cell of the 3×3 grid is anomalously over-represented, and
 no capacity field ever appears in the exposure score's output.
 
-## Step 3 — Web map
+## Step 3 — Web site
 
-`frontend/` is a Vue 3 + deck.gl app (see `frontend/README.md` for the
-frontend-specific details). It reads
-`frontend/public/data/vulnerability_score_iris.geojson` (a copy of the
-step-2 output — re-copy it after re-running the scoring script) and
-never recomputes anything client-side.
+`frontend/` is a Vue 3 site prerendered with `vite-ssg` (redesign D4,
+October 2026; see `frontend/README.md`). French at the root, English
+under `/en`. It never recomputes the score: it reads the files of
+`frontend/public/data/`, copied from `data/processed/`.
 
-- Choropleth of the cumulative score by default, toggle to any of the 3
-  sub-score quartiles.
-- Click an IRIS for a detail panel: which sub-scores are unfavorable,
-  median income, and the concrete figures behind them (e.g. "1.0 min to
-  the nearest health equipment").
-- Clear legend, consistent with the step-2 distribution chart's color
-  ramp.
-- "Exposure × means" view: a 3×3 bivariate map crossing the exposure
-  class (0 / 1 / 2+) with the adaptive-capacity tertile, read from its own
-  file (`frontend/public/data/adaptive_capacity_iris.json`); the detail
-  panel shows the two axes separately.
-- Basemap: CARTO Positron via MapLibre GL, no API key required.
-- "Votre quartier" (neighborhood page, redesign): loads only the
-  per-commune file of the address (`frontend/public/data/quartiers/
-  <insee_com>.json`, script 39) instead of the whole score. Travel-time
-  display rules (3 October 2026): public services, GP and pharmacy are
-  information only, never a sub-score; at night only emergency
-  departments and stations are shown; every night-time duration says "on
-  foot and by public transport"; the step-free profile is presented as a
-  lower bound (no lift outages, pavement condition or accessibility of
-  the destination building).
+- **Home**: an address field, an optional way of getting around (without
+  constraint, slow walk, wheelchair), an illustrated plan of a few
+  everyday places with the metropolitan median times, and one question
+  drawn at random (including "Lequel de ces quartiers ?": two anonymised
+  neighbourhoods, close but different or far apart but alike, names only
+  in the answer).
+- **Votre quartier** (`/quartier/<INSEE code>`, one prerendered page per
+  neighbourhood, never an address in the URL): the living environment
+  (heat, air and noise, energy performance of housing, access to care,
+  each placed among the 2,752 neighbourhoods), what is within reach (one
+  position bar per need — mean of the ranks of its places — and the
+  nearest place of each type for each way of getting around), and both
+  together. Each page loads only its commune's file
+  (`frontend/public/data/quartiers/<insee_com>.json`, script 39).
+  Travel-time display rules (3 October 2026): public services, GP and
+  pharmacy are information only, never a sub-score; at night only
+  emergency departments and stations are shown; the wheelchair profile is
+  presented as a lower bound.
+- **Explorer la carte**: MapLibre GL without a basemap (real IRIS
+  outlines, inner commune boundaries, the Seine), six themes, filters
+  combined with AND ("highly exposed" = at least 2 of the 3 exposures;
+  resources in the lowest quarter; access to care in the hardest
+  quarter), a text alternative (sortable list). Reads `map_iris.geojson`
+  (script 39: only the fields the map uses, 5-decimal outlines).
+- **Quartiers les plus exposés**: the inhabited neighbourhoods with at
+  least 2 of the 3 exposures (407 with the October 2026 data), those with
+  all three first, grouped by residents' resources.
+- **Méthode**, **À propos**, **Tous les lieux du quotidien**,
+  **Corrections**, **Accessibilité** (RGAA 4.1, "partiellement
+  conforme" until the manual tests are done; `docs/accessibilite.md`).
 
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+
+Checks (all in CI, `.github/workflows/frontend-checks.yml`):
+`npm run test:smoke` (full journey), `npm run test:a11y` (axe-core and
+keyboard, desktop and phone), `npm run test:fit` (home page at 9 screen
+sizes), `npm run test:overflow` (no sideways scrolling at 320, 375 and
+390 px, Chromium and WebKit), `npm run test:seo` (title, description,
+sharing image, canonical and hreflang on every prerendered page).
+Lighthouse report: `bash frontend/scripts/lighthouse-report.sh` →
+`docs/lighthouse.md`.
 
 ## Step 4 — Income correlation
 
@@ -528,15 +545,11 @@ npm run build   # runs vite-ssg build, outputs to frontend/dist/
 (see "SEO and pre-rendering" below) — bundling and static prerendering
 happen in the same command, no extra step needed.
 
-Current local build (post-Phase-5, 2,752 IRIS, geometry simplified —
-see below): `dist/` is 7.3 MB total — a 2.0 MB JS bundle (580 KB
-gzipped; mostly deck.gl + MapLibre, both inherently sizeable mapping
-libraries), a 91 KB CSS file (14.7 KB gzipped), and
-`vulnerability_score_iris.geojson` at 4.05 MB (720 KB gzipped). The
-smaller context layers (QPV boundaries, RNA, school/tree/lighting
-context) add another ~1.4 MB combined. All static hosts below apply
-gzip/brotli automatically, so the real transfer size is closer to
-~2.6 MB than 7.3 MB.
+Current build (October 2026): about 275 MB in `dist/`, almost all of it
+the 5,504 prerendered neighbourhood pages (about 46 KB each, a few KB
+compressed); the main JavaScript bundle is about 160 KB, the map code
+(MapLibre) is loaded only on "Explorer la carte", and the map reads
+`map_iris.geojson` (2.6 MB, about 0.6 MB compressed).
 
 **Geometry: precision reduced, shapes not simplified.** The published
 `vulnerability_score_iris.geojson` goes through
@@ -553,54 +566,25 @@ Re-run the command above after every copy from `data/processed/`.
 
 ### SEO and pre-rendering
 
-Every route (`/`, `/methodology`, `/ranking`, `/press`, each in English
-and again under a `/fr` prefix — 8 routes total) has its own per-route
-`<title>`, meta description, Open Graph/Twitter tags, canonical link, and
-reciprocal `hreflang` alternates (`en`/`fr`/`x-default`), via
-`@unhead/vue` (`frontend/src/composables/useSeoMeta.js`). Locale-prefixed
-routing (`/` = English, unprefixed; `/fr/...` = French) rather than a
-single URL with a client-side language toggle, specifically so each
-language gets its own crawlable, indexable URL instead of one URL
-rendering different content depending on `localStorage`. `robots.txt`
-and a `sitemap.xml` (all 8 URLs, with the same reciprocal `hreflang`
-entries) are generated at build time (`frontend/vite.config.js`).
-`Dataset` and `Article` JSON-LD (schema.org) are attached to the home
-and methodology pages respectively.
+The site address is set in one place (`frontend/src/siteUrl.js`,
+`https://underlaid.fr`; `SITE_URL=` overrides it at build time). Every
+page — French at the root, English under `/en`, and one page per
+neighbourhood in each language (5,504) — is prerendered with
+`vite-ssg` and carries its own `<title>`, meta description, canonical
+address, reciprocal `hreflang` alternates and sharing image
+(`frontend/public/share/`, made by `frontend/scripts/make-share-images.mjs`).
+`sitemap.xml` (main pages and inhabited neighbourhoods) and `robots.txt`
+are written at build time; preview deployments are never indexed. The
+Method page carries schema.org `Dataset` markup (ODbL licence, DOI,
+dates, author). The former address `underlaid.vercel.app` redirects
+permanently to the same path on `underlaid.fr` (`frontend/vercel.json`,
+generated with the page redirects by `frontend/scripts/sync-redirects.mjs`).
 
-The site is statically pre-rendered per route with `vite-ssg`, not just
-bundled — `/ranking`'s ~58 real neighborhood names and scores, and the
-home page's screen-reader IRIS table (all 2,752 rows), are present in
-the raw built HTML before any JS runs, verified by reading the built
-`dist/*.html` files directly rather than trusting a headless-browser
-render. Two real bugs surfaced while wiring this up, both found by
-actually inspecting the output rather than assuming the setup worked:
-
-- **`@unhead/vue` existed in two incompatible versions** in the
-  dependency tree — the app depended on v3 directly, while `vite-ssg`
-  pulls in its own nested v2 copy internally and creates its `<head>`
-  manager from that copy. Since the two versions don't share the same
-  provide/inject identity, every per-route `useHead()` call silently did
-  nothing during the SSR render pass — the prerendered `<title>` and all
-  meta/link tags stayed frozen at the static fallback in `index.html`,
-  with no error to signal it. Fixed by pinning the app's `@unhead/vue` to
-  the same `2.1.16` `vite-ssg` already depends on, so both resolve to a
-  single shared instance.
-- **A shared `i18n` singleton leaked locale state across concurrently
-  pre-rendered routes.** `vite-ssg` renders multiple routes through a
-  concurrency queue at build time; a `const i18n = createI18n(...)`
-  declared once at module scope is the same object for every one of
-  those concurrent renders, so one route's `setLocale()` call could
-  overwrite another's mid-render — caught directly when `/ranking`
-  (meant to be English) came out of the build with French content and a
-  French canonical URL. Fixed by turning the module-level `i18n` export
-  into a factory (`createI18nInstance()` in `frontend/src/i18n/index.js`)
-  that hands each `createApp()` call — one per prerendered route, plus
-  one in the browser — its own instance.
-
-Verified after both fixes: all 8 routes rebuilt with locale-correct
-titles/content, a Playwright smoke test against the built (not dev)
-site confirmed the map, address search, and language toggle all still
-work post-hydration with zero console errors.
+Two bugs met when wiring prerendering, kept as lessons: `@unhead/vue`
+existed in two incompatible versions (per-route `<head>` tags silently
+ignored), and a shared `i18n` singleton leaked the locale between pages
+rendered at the same time (fixed with one i18n instance per
+`createApp()`).
 
 ### Deploy
 
@@ -744,41 +728,43 @@ not the parent page's.
 ## Roadmap
 
 **v0.1** — the public launch: cumulative exposure score over the 2,752
-IRIS of Paris and the inner suburbs, the separate "means to cope" axis
-and its exposure × means map, methodology and press pages in French and
-English, quarterly automated data updates behind a publication
-guard-rail.
+IRIS of Paris and the inner suburbs, the separate "means to cope" axis,
+methodology and press pages in French and English, quarterly automated
+data updates behind a publication guard-rail.
 
 **v0.2** — access to care back in the score (now on 4), rebuilt without
 a car and weighted by how many people share each GP and pharmacy
-(E2SFCA); inclusive mobility (step-free walking, accessible public
-transport) shown for information; the pre-registered hypothesis tested
-and its verdicts published (SCORING.md).
+(E2SFCA); inclusive mobility shown for information; the pre-registered
+hypothesis tested and its verdicts published (SCORING.md).
 
-**Routes to key destinations** (October 2026, scripts 33-39) —
-precomputed travel times from each neighborhood to the nearest emergency
-department, GP, pharmacy, town hall, France Services, CAF, CPAM, France
-Travail agency, post office and heavy-network station, for several
-travel profiles and times of day; the pre-registered public-services
-hypothesis tested (refuted, and reversed); the census moved to 2022
-(sensitivity check published). Shown on the redesigned site ("Votre
-quartier").
+**Redesign and travel times** (October 2026) — the redesigned site at
+https://underlaid.fr ("Votre quartier", "Explorer la carte"); precomputed
+travel times from each neighbourhood to emergency departments, GP,
+pharmacy, public services, everyday places (crèches, food stores,
+nursery schools, police, social centres, libraries, parks) and, in Paris
+only, public toilets and drinking fountains; the pre-registered
+public-services hypothesis tested (refuted, and reversed); the census
+moved to 2022 (sensitivity check published).
 
-Next, in order:
-1. **Everyday places** on the neighborhood page (crèches, food stores,
-   public nursery schools, police, social centres, libraries, parks:
-   destinations ready, second routing run), then public toilets and
-   drinking fountains in Paris only, from the City's official lists (the
-   inner-suburb communes publish no open list). Each for information,
-   never scored.
-2. **New indicators** (Phase 7): **flood risk** (Seine/Marne PPRI — a
+**In progress** — a second travel-time calculation (pre-registered on
+4 October 2026): the same start and end points for every way of getting
+around (fixes most of the cases where the wheelchair time came out
+shorter than the unconstrained one), a revised wheelchair profile
+(0.8 m/s; segments steeper than 8 % removed using the IGN RGE ALTI 1 m;
+sensitivity 0.5-1.0 m/s and 6 %), and schools (elementary, lower and
+upper secondary). Its results are published as checks; the verdicts
+already published stay the reference.
+
+Next:
+1. **New indicators** (Phase 7): **flood risk** (Seine/Marne PPRI — a
    possible next layer, not measured today), soil and water pollution,
    aircraft noise, industrial risk, digital divide. Each goes through the
    same variance/skew check before entering anything.
+2. **Lift availability**: the IDFM lift-status feed is archived hourly
+   since 6 October 2026 (`scripts/archive_elevators.py`), for an
+   availability rate per station after the launch.
 3. **Access to public services nationwide** (Phase 9): a separate
-   commune/200 m-grid module for rural and peri-urban France, where the
-   question is distance rather than heat — not an extension of this
-   score.
+   commune/200 m-grid module, not an extension of this score.
 4. Citizen reporting, a guide to adapting Underlaid to another city.
 
 Not planned for now: Grande Couronne, PWA.
@@ -820,7 +806,6 @@ September 2026, not assumed:
 | Filosofi 2021 200 m population grid | INSEE | Access to care (demand) | Licence Ouverte 2.0 — "Source : Insee" |
 | Public transport timetables (GTFS) | Île-de-France Mobilités | Access to care, inclusive mobility and routes (travel times) | **Licence Mobilités** — "Contient des informations de « Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub) », mises à disposition par Île-de-France Mobilités aux conditions de la « Licence Mobilités »." |
 | BD TOPO (staircases) | IGN | Inclusive mobility (step-free walking) | Licence Ouverte 2.0 |
-| Basemap tiles (Positron) | © CARTO, © OpenStreetMap contributors | Web map background | CARTO basemap terms; OSM data ODbL |
 | Address search (API Adresse / BAN) | IGN, DINUM | Web map search | Licence Ouverte 2.0 |
 
 Context figures quoted but not redistributed as data (life expectancy —

@@ -107,6 +107,10 @@ async function shoot(html, file) {
 for (const lang of ['fr', 'en']) {
   for (const [key, copy] of Object.entries(FIXED[lang])) await shoot(fixedCard(lang, copy), `${key}-${lang}.png`)
 }
+// GitHub repository preview (Settings > Social preview), 1280 x 640.
+await tab.setViewportSize({ width: 1280, height: 640 })
+await shoot(fixedCard('en', FIXED.en.accueil).replace('width:1200px;height:630px', 'width:1280px;height:640px'), '../../../docs/github-social-preview.png')
+await tab.setViewportSize({ width: 1200, height: 630 })
 if (process.env.OUT) {
   await shoot(hoodCard('fr', 'Économie 1', 'Drancy', ['thermal', 'pollution', 'housing']), 'quartier-exemple-1-fr.png')
   await shoot(hoodCard('fr', 'Batignolles 14', 'Paris 17e', ['pollution']), 'quartier-exemple-2-fr.png')

@@ -510,6 +510,11 @@
           "when": "Oct. 2026",
           "what": "Recensement 2022 adopté",
           "why": "Population, logements surpeuplés et résidences secondaires passent du recensement 2021 au recensement 2022 ; le revenu reste en 2021, dernier millésime publié à l'échelle du quartier. Les chiffres clés du site sont mis à jour. Les verdicts des hypothèses, calculés sur 2021, restent les résultats officiels et sont contrôlés avec 2022. La suroccupation change de définition à l'Insee (taux médian de 13,5 % à 24,6 %, sans évolution réelle)."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Durées en fauteuil roulant recalculées",
+          "why": "Le profil fauteuil roulant suit désormais la vitesse moyenne mesurée chez les utilisateurs de fauteuil manuel, 0,8 m/s (environ 2,9 km/h) au lieu de 4,5 km/h, et évite les pentes de plus de 8 % en plus des escaliers. Les durées en fauteuil roulant s'allongent donc : par exemple, la durée médiane jusqu'à la CAF la plus proche passe de 29 à 36 minutes. Départs et arrivées sont aussi rattachés au même point pour tous les modes : la plupart des cas où la durée en fauteuil roulant ressortait plus courte que sans contrainte disparaissent, et les durées sans contrainte changent peu (médianes inchangées, quelques dizaines de secondes en moyenne, le plus souvent à la baisse). Les verdicts publiés restent la référence et sont contrôlés avec ce nouveau calcul."
         }
       ]
     },

@@ -26,6 +26,9 @@ import { routeRecords, installLocaleGuard } from './router'
 function scrollBehavior(to, from, savedPosition) {
   if (savedPosition) return savedPosition
   if (to.hash) return { el: to.hash }
+  // Same page, only the query changed (mode, "Comparer avec", map theme or
+  // filters): keep the reader where they are.
+  if (to.path === from.path) return false
   return { top: 0 }
 }
 

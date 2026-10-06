@@ -1,5 +1,6 @@
-# Frontend checks on every push to the redesign branch and on pull
-# requests: production build, end-to-end smoke test, automated
+# Frontend checks on every pull request to master (required before merging,
+# branch protection of 6 October 2026) and on pushes to the working
+# branches: production build, end-to-end smoke test, automated
 # accessibility checks (axe-core on every page at desktop and phone width,
 # keyboard). Fails on any serious or critical accessibility violation
 # (CLAUDE.md, "Refonte D4"). The manual tests (screen readers, zoom, high
@@ -7,9 +8,10 @@
 name: Frontend checks
 
 on:
-  push:
-    branches: [refonte]
   pull_request:
+    branches: [master]
+  push:
+    branches-ignore: [master]
   workflow_dispatch:
 
 permissions:

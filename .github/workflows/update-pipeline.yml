@@ -109,7 +109,7 @@ jobs:
           name: diff-report
           path: data/diff_report.md
 
-      # --- Path A: change is within the normal range -> publish directly ---
+      # --- Path A: change is within the normal range -> pull request ready to merge ---
 
       - name: Snapshot and prune export history
         if: steps.tests.outcome == 'success' && steps.diff.outcome == 'success'
@@ -134,24 +134,24 @@ jobs:
           npx --yes mapshaper frontend/public/data/vulnerability_score_iris.geojson \
             -o precision=0.000001 force frontend/public/data/vulnerability_score_iris.geojson
 
-      - name: Commit and push the accepted update
+      # master is protected (6 October 2026): pull requests only, checks
+      # required, no direct push. An update within the thresholds is
+      # therefore proposed as a pull request too, merged by a person. Note:
+      # a pull request opened with the workflow's own token does not start
+      # the required checks; close and reopen it to run them.
+      - name: Open a pull request with the accepted update
         if: steps.diff.outcome == 'success'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/processed data/history frontend/public/data
-          if git diff --cached --quiet; then
-            echo "No changes to publish (source data was identical to the last run)."
-          else
-            git commit -m "Automated pipeline update: $(date -u +%Y-%m-%d)"
-            git push
-          fi
-
-      - name: Trigger a redeploy
-        if: steps.diff.outcome == 'success' && env.DEPLOY_HOOK_URL != ''
-        env:
-          DEPLOY_HOOK_URL: ${{ secrets.DEPLOY_HOOK_URL }}
-        run: curl -fsS -X POST "$DEPLOY_HOOK_URL"
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Automated pipeline update: within the publication thresholds"
+          title: "Automated update: within the publication thresholds"
+          body-path: data/diff_report.md
+          branch: automated-update/within-thresholds
+          add-paths: |
+            data/processed
+            data/history
+            frontend/public/data
+          labels: automated-update
 
       # --- Path B: tests failed, or the change is larger than the threshold -> stop and ask for a human ---
       #

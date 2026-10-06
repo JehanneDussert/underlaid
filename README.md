@@ -493,7 +493,11 @@ sizes), `npm run test:overflow` (no sideways scrolling at 320, 375 and
 390 px, Chromium and WebKit), `npm run test:seo` (title, description,
 sharing image, canonical and hreflang on every prerendered page).
 Lighthouse report: `bash frontend/scripts/lighthouse-report.sh` →
-`docs/lighthouse.md`.
+`docs/lighthouse.md` (local build), or with
+`LIGHTHOUSE_BASE_URL=https://underlaid.fr` against the live site. The
+weekly workflow `.github/workflows/lighthouse.yml` does the latter every
+Monday: table in the job summary, JSON reports as an artifact, an issue
+when accessibility or SEO drops below 100 on any page.
 
 ## Step 4 — Income correlation
 
@@ -677,9 +681,12 @@ stops and asks — so it does:
   single category's share moving by more than 5 percentage points): the
   new data is copied into `frontend/public/data/`, a dated snapshot is
   kept in `data/history/` (`scripts/prune_export_history.py`, last 4
-  runs retained), the change is committed and pushed directly, and — if
-  a `DEPLOY_HOOK_URL` repository secret is set (a Vercel/Netlify deploy
-  hook URL) — a redeploy is triggered.
+  runs retained), and the change is proposed as a pull request (branch
+  `automated-update/within-thresholds`): `master` is protected (pull
+  requests only, checks required, no direct push), so a person merges it
+  and the host deploys on merge. A pull request opened with the
+  workflow's own token does not start the required checks: close and
+  reopen it to run them.
 - **Past either threshold**: nothing is published. The workflow opens a
   pull request instead (branch `automated-update/needs-review`, using
   [`peter-evans/create-pull-request`](https://github.com/peter-evans/create-pull-request)),

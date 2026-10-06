@@ -1,0 +1,36 @@
+# Monthly watch of the sources (scripts/watch_sources.py): new INSEE
+# releases (census and Filosofi at IRIS level, Filosofi grid, BPE) and the
+# RNA deadline. Opens one issue per new finding (none if already open).
+name: Sources watch
+
+on:
+  schedule:
+    - cron: "0 7 3 * *" # 07:00 UTC, the 3rd of each month
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - run: python scripts/watch_sources.py
+      - name: Open an issue per new finding
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -s watch_findings.txt ] || exit 0
+          while IFS= read -r line; do
+            TITLE="Veille des sources : ${line:0:110}"
+            if [ -z "$(gh issue list --state open --search "in:title \"${line:0:60}\"" --json number --jq '.[0].number')" ]; then
+              gh issue create --title "$TITLE" --body "$line"
+            fi
+          done < watch_findings.txt

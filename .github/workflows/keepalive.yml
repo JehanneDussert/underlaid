@@ -1,0 +1,24 @@
+# GitHub disables scheduled workflows in a repository without activity for
+# 60 days, which would silently stop the quarterly data update, the daily
+# site check and the sources watch. Once a month, this re-enables them
+# through the API (no commit: master is protected).
+name: Keep scheduled workflows enabled
+
+on:
+  schedule:
+    - cron: "0 5 15 * *" # 05:00 UTC, the 15th of each month
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for wf in update-pipeline.yml site-check.yml sources-watch.yml lighthouse.yml keepalive.yml; do
+            gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/$wf/enable" && echo "enabled $wf" || echo "could not enable $wf"
+          done

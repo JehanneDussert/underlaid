@@ -42,7 +42,7 @@ import pandas as pd
 import config
 
 agg = importlib.import_module("36_route_aggregate")
-OUT = config.DATA_INTERIM / "analysis" / "routes_means.txt"
+OUT = config.DATA_INTERIM / "analysis" / ("routes_means_v2.txt" if getattr(agg, "VERSION", "1") == "2" else "routes_means.txt")
 SERVICES = ["town_hall", "france_services", "caf", "cpam", "employment", "post_office"]
 DEPS = ["75", "92", "93", "94"]
 

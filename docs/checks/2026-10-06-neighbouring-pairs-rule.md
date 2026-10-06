@@ -41,3 +41,14 @@ Deux quartiers sont voisins s'ils **se touchent**, c'est-à-dire si leurs contou
 ## Calendrier
 
 Après la fin du grand calcul, pour ne pas le gêner : la durée de marche demande de charger le réseau de rues complet, environ 9 Go de mémoire.
+
+## Ajout du 6 octobre 2026, avant tout calcul de paires
+
+À la demande de la porteuse du projet, la recherche est faite **après la fin du grand calcul**, pour décrire aussi les différences selon le mode de déplacement.
+
+- **Le classement des paires ne change pas** : il repose sur l'écart des 4 thèmes défini plus haut. Les durées sont données pour information, comme sur le site, et n'entrent jamais dans un score.
+- Pour chaque quartier des paires rendues, on ajoute les durées publiées du second calcul (mardi 10 h) pour les trois modes (sans contrainte, marche lente, fauteuil roulant), vers :
+  - urgences, mairie, CAF ;
+  - supérette ou supermarché, crèche, école élémentaire publique ;
+  - l'arrêt du réseau lourd le plus proche à pied (accessible, pour le fauteuil roulant).
+- On ajoute aussi l'écart en fauteuil roulant (durée en fauteuil roulant − durée sans contrainte) de chaque quartier.

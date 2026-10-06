@@ -96,8 +96,8 @@ def main():
     cem = gpd.GeoDataFrame(geometry=h.polys, crs=config.CRS_LATLON).to_crs(config.CRS_PROJECTED)
     print(f"{len(green)} green spaces, {len(cem)} cemeteries, {len(mos)} activity polygons", flush=True)
     covers = gpd.GeoDataFrame(geometry=pd.concat([green.geometry, cem.geometry, mos.geometry], ignore_index=True), crs=config.CRS_PROJECTED)
-    covers = covers[covers.is_valid | covers.buffer(0).is_valid]
     covers["geometry"] = covers.buffer(0)
+    covers = covers[~covers.is_empty].reset_index(drop=True)  # positions = labels for the iloc below
 
     rows = []
     for code, r in recs.items():

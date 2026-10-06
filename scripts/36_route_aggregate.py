@@ -62,6 +62,22 @@ else:
     N_CHUNKS = 46  # 13,752 cells / 300
     OUT_PREFIX = "routes_iris"
 
+# ROUTES_VERSION=2 (second calculation, pre-registered on 2026-10-04): reads
+# the *_v2 folders of script 34 and writes *_v2 outputs next to the
+# published ones (nothing published is overwritten); the neighbourhood set
+# gains the schools; the sensitivity runs (wheelchair at 0.5 and 1.0 m/s,
+# slope threshold 6 %; Tuesday 10:00 and stations) go to
+# <prefix>_sensitivity_v2.json.
+VERSION = os.environ.get("ROUTES_VERSION", "1")
+SENSITIVITY = ["sens_speed05", "sens_speed10", "sens_slope6"]
+STATIONS_OUT = "routes_stations_iris.json"
+if VERSION == "2":
+    TTM_DIR = TTM_DIR.with_name(TTM_DIR.name + "_v2")
+    OUT_PREFIX += "_v2"
+    STATIONS_OUT = "routes_stations_iris_v2.json"
+    if ROUTES_SET == "neighbourhood":
+        TYPES = TYPES + ["elementary_public", "elementary_private", "college_public", "college_private", "lycee_public", "lycee_private"]
+
 
 def cells_by_iris() -> pd.DataFrame:
     """Inhabited cells per IRIS. Same rule as script 32: an IRIS that
@@ -157,6 +173,18 @@ def main():
         out.write_text(json.dumps({"slot": slot, "max_minutes": MAX_MINUTES, "layout": layout, "iris": result}, separators=(",", ":")), encoding="utf-8")
         print(f"wrote {out.name} ({out.stat().st_size / 1e6:.2f} MB, {len(result)} IRIS)")
 
+    if VERSION == "2":
+        sens = {p: load_task(f"{p}_tue10") for p in ["step_free_no"] + SENSITIVITY}
+        absent = [p for p, d in sens.items() if d is None]
+        if absent:
+            missing += [f"{p}_tue10" for p in absent]
+        else:
+            blocks = [summarise(sens[p], cells, TYPES) for p in sens]
+            result = {code: [b[code][t] for b in blocks for t in TYPES] for code in sorted(cells.code_iris.unique())}
+            out = config.DATA_PROCESSED / f"{OUT_PREFIX.replace('_v2', '')}_sensitivity_v2.json"
+            out.write_text(json.dumps({"slot": "tue10", "max_minutes": MAX_MINUTES, "layout": {"blocks": [f"time:{p}" for p in sens], "types": TYPES},
+                                       "iris": result}, separators=(",", ":")), encoding="utf-8")
+            print(f"wrote {out.name}")
     if ROUTES_SET in ("neighbourhood", "paris"):
         if missing:
             print(f"incomplete tasks (not written): {', '.join(missing)}")
@@ -168,7 +196,7 @@ def main():
     else:
         per_profile = [summarise(stations[p], cells, ["station"]) for p in PROFILES]
         result = {code: [b[code]["station"] for b in per_profile] for code in sorted(cells.code_iris.unique())}
-        out = config.DATA_PROCESSED / "routes_stations_iris.json"
+        out = config.DATA_PROCESSED / STATIONS_OUT
         out.write_text(json.dumps({"max_minutes": MAX_MINUTES, "profiles": PROFILES, "iris": result}, separators=(",", ":")), encoding="utf-8")
         print(f"wrote {out.name}")
     if missing:

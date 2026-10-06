@@ -39,7 +39,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Build pipeline image
         run: docker build -t underlaid-pipeline .
@@ -104,7 +104,7 @@ jobs:
           } > data/diff_report.md
 
       - name: Upload diff/failure report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: diff-report
           path: data/diff_report.md
@@ -141,7 +141,7 @@ jobs:
       # the required checks; close and reopen it to run them.
       - name: Open a pull request with the accepted update
         if: steps.diff.outcome == 'success'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "Automated pipeline update: within the publication thresholds"
           title: "Automated update: within the publication thresholds"
@@ -166,7 +166,7 @@ jobs:
 
       - name: Open a pull request for manual review (tests failed, or distribution shift exceeds threshold)
         if: steps.tests.outcome == 'failure' || steps.diff.outcome == 'failure'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "Automated pipeline update — needs manual review before publishing"
           title: "Automated update: distribution shift exceeds the auto-publish threshold"

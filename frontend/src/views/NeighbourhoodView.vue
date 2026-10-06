@@ -488,6 +488,12 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
               </p>
             </div>
           </aside>
+          <!-- Limit of the current travel times (Method, part 8), until the
+               next calculation corrects most of it. -->
+          <p class="durations-limit">
+            {{ t('nbhd.durationsLimit') }}
+            <router-link :to="{ name: localizedRouteName('methodology', locale), hash: '#limites' }">{{ t('nbhd.stationLink') }}</router-link>
+          </p>
         </section>
 
         <!-- 3. Les deux à la fois -->
@@ -944,6 +950,13 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   margin: 8px 0 0;
   font-size: 14px;
   color: var(--text-secondary);
+}
+.durations-limit {
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  max-width: 900px;
 }
 .station-note {
   display: flex;

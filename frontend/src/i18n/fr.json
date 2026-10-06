@@ -881,7 +881,8 @@
     "seo": {
       "title": "{name} : cadre de vie et lieux à portée",
       "description": "{summary}. Durées vers les lieux du quotidien, à pied et en transports en commun, selon le mode de déplacement."
-    }
+    },
+    "durationsLimit": "Dans 0,8 % des cas, la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, à cause du point du réseau de rues où le calcul rattache chaque départ et chaque arrivée ; certaines durées sans contrainte sont aussi surestimées pour la même raison. Ce sera corrigé au prochain calcul."
   },
   "explore": {
     "title": "Explorer la carte",

@@ -493,7 +493,11 @@ sizes), `npm run test:overflow` (no sideways scrolling at 320, 375 and
 390 px, Chromium and WebKit), `npm run test:seo` (title, description,
 sharing image, canonical and hreflang on every prerendered page).
 Lighthouse report: `bash frontend/scripts/lighthouse-report.sh` →
-`docs/lighthouse.md`.
+`docs/lighthouse.md` (local build), or with
+`LIGHTHOUSE_BASE_URL=https://underlaid.fr` against the live site. The
+weekly workflow `.github/workflows/lighthouse.yml` does the latter every
+Monday: table in the job summary, JSON reports as an artifact, an issue
+when accessibility or SEO drops below 100 on any page.
 
 ## Step 4 — Income correlation
 

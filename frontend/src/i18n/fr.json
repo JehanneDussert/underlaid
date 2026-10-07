@@ -466,6 +466,10 @@
           "desc": "Quand un lieu n'est pas atteint en 90 minutes en fauteuil roulant, la page du quartier l'indique. Deux causes se rencontrent. Dans des communes éloignées du centre (Santeny, Mandres-les-Roses, Périgny, par exemple), le trajet dure déjà 45 à 70 minutes sans contrainte et dépasse 90 minutes à 0,8 m/s. Sur les buttes et les coteaux (Montmartre, Chaville, Montfermeil, Villecresnes), les rues de plus de 8 % de pente isolent une partie des quartiers : sans le retrait des pentes, les mêmes lieux y seraient atteints en moins de 90 minutes, et en 3 à 43 minutes à Montmartre et à Chaville. Les quartiers concernés par cette seconde cause rassemblent environ 29 000 habitants, 0,4 % de la population. Le calcul ne voit ni les trottoirs ni l'aide d'un accompagnant."
         },
         {
+          "name": "Deux quartiers sans carreau habité.",
+          "desc": "Les durées d'un quartier sont la médiane, pondérée par la population, des carreaux habités de 200 m dont le centre se trouve dans le quartier ; un quartier qui n'en contient aucun prend le carreau qui contient son point représentatif. Pour deux quartiers, Nord 1 à Aulnay-sous-Bois et Iris 2 à Épinay-sur-Seine, ce point tombe dans un carreau sans habitant, absent de la grille : ils prennent le carreau habité, déjà calculé, qui les recouvre le plus. Cette approximation a été décidée le 7 octobre 2026, après avoir vu les résultats du second calcul. Leurs durées sont donc celles d'un seul carreau, pas une médiane du quartier."
+        },
+        {
           "name": "Accès aux médecins en fauteuil roulant.",
           "desc": "Pour l’écart de mobilité inclusive (accès aux médecins en fauteuil roulant comparé à l’accès sans contrainte), une durée en fauteuil roulant plus courte que la durée sans contrainte vers le même cabinet est remplacée par celle-ci. Cela concerne 10 958 couples carreau × cabinet sur 1 053 176 (1,04 %), d’une minute dans 73 % des cas, à cause du point du réseau où le calcul rattache chaque départ et chaque arrivée. Sans cette règle, les verdicts sont identiques : accès aux soins soutenu (il ne dépend pas de ces durées), mobilité inclusive infirmée (écart sur la métropole de −21,4 points au lieu de −21,8)."
         },
@@ -523,6 +527,11 @@
           "when": "Oct. 2026",
           "what": "Durées en fauteuil roulant recalculées",
           "why": "Le profil fauteuil roulant suit désormais la vitesse moyenne mesurée chez les utilisateurs de fauteuil manuel, 0,8 m/s (environ 2,9 km/h) au lieu de 4,5 km/h, et évite les pentes de plus de 8 % en plus des escaliers. Les durées en fauteuil roulant s'allongent donc : par exemple, la durée médiane jusqu'à la CAF la plus proche passe de 29 à 36 minutes. Départs et arrivées sont aussi rattachés au même point pour tous les modes : la plupart des cas où la durée en fauteuil roulant ressortait plus courte que sans contrainte disparaissent, et les durées sans contrainte changent peu (médianes inchangées, quelques dizaines de secondes en moyenne, le plus souvent à la baisse). Les verdicts publiés restent la référence et sont contrôlés avec ce nouveau calcul."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Durées pour deux quartiers sans carreau habité",
+          "why": "Nord 1 à Aulnay-sous-Bois et Iris 2 à Épinay-sur-Seine n'avaient pas de durée : aucun carreau habité n'a son centre dans ces quartiers, et leur point représentatif tombe dans un carreau sans habitant. Ils prennent désormais le carreau habité qui les recouvre le plus. Cette règle a été décidée le 7 octobre 2026, après avoir vu les résultats du second calcul."
         }
       ]
     },

@@ -237,7 +237,7 @@
       "contact": "Contact presse",
       "contactDesc": "Écrire à la porteuse du projet."
     },
-    "privacy": "L'adresse saisie est envoyée à la Base adresse nationale (service public) pour trouver votre quartier ; elle n'est ni conservée par Underlaid ni placée dans l'adresse de la page. Le site n'utilise ni cookies ni mesure d'audience. Votre choix de langue est gardé dans votre navigateur, et le code du dernier quartier consulté est gardé dans l'onglet, le temps de la visite. L'hébergeur (Vercel) tient des journaux techniques d'accès."
+    "privacy": "L'adresse saisie est envoyée à la Base adresse nationale (service public) pour trouver votre quartier ; elle n'est ni conservée par Underlaid ni placée dans l'adresse de la page. Le site n'utilise pas de cookies. Il mesure sa fréquentation avec Vercel Web Analytics, sans cookie : pages vues, page de provenance, pays, type d'appareil et de navigateur ; le code du quartier est retiré de l'adresse des pages avant l'envoi. Votre choix de langue est gardé dans votre navigateur, et le code du dernier quartier consulté est gardé dans l'onglet, le temps de la visite. L'hébergeur (Vercel) tient des journaux techniques d'accès."
   },
   "footerLicense": "Code : MIT · Données : ODbL · Cartes et visuels : CC BY 4.0",
   "site": {

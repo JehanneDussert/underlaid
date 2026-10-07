@@ -1,4 +1,5 @@
 import { ViteSSG } from 'vite-ssg'
+import { inject as injectAnalytics } from '@vercel/analytics'
 // Self-hosted font (no request to a third-party font service).
 // Atkinson Hyperlegible (Braille Institute, SIL Open Font License),
 // designed for low-vision readers: regular and bold only.
@@ -39,4 +40,16 @@ export const createApp = ViteSSG(App, { routes: routeRecords, scrollBehavior }, 
   // into the page), so that the page is not redrawn empty first.
   app.provide('initialState', initialState)
   installLocaleGuard(router, setLocale)
+  // Vercel Web Analytics (no cookies), in the browser only and only on the
+  // deployed site (underlaid.fr, Vercel previews): local builds and tests do
+  // not load the script. The neighbourhood code is removed from page
+  // addresses before sending, so the audience figures never say which
+  // neighbourhood a visitor looked at.
+  if (typeof window !== 'undefined' && /(^|\.)underlaid\.fr$|\.vercel\.app$/.test(window.location.hostname)) {
+    injectAnalytics({
+      framework: 'vue',
+      mode: 'production',
+      beforeSend: (event) => ({ ...event, url: event.url.replace(/\/(quartier|en\/neighbourhood)\/[0-9A-Za-z]+/, '/$1/[code]') }),
+    })
+  }
 })

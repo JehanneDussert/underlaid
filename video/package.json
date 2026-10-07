@@ -1,11 +1,13 @@
 {
   "name": "underlaid-launch-video",
   "private": true,
-  "description": "Launch video 'Deux adresses, quelques rues d'écart' (Remotion), real data from underlaid.fr",
+  "description": "Launch video (Remotion), real data from underlaid.fr; texts in src/texts.ts",
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "render": "remotion render src/index.ts DeuxAdresses out/deux-adresses-clichy.mp4 --codec h264 --crf 18",
-    "still": "remotion still src/index.ts DeuxAdresses out/still.png --frame 300"
+    "render:fr": "remotion render src/index.ts LaunchFR out/underlaid-fr.mp4 --codec h264 --crf 18",
+    "render:en": "remotion render src/index.ts LaunchEN out/underlaid-en.mp4 --codec h264 --crf 18",
+    "cover:fr": "remotion still src/index.ts LaunchFR out/underlaid-cover-fr.png --frame 670",
+    "cover:en": "remotion still src/index.ts LaunchEN out/underlaid-cover-en.png --frame 670"
   },
   "dependencies": {
     "@fontsource/atkinson-hyperlegible": "^5.2.6",

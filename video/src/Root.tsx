@@ -1,10 +1,12 @@
 import { Composition } from 'remotion'
-import { DeuxAdresses, DURATION, DURATION_STATION, FPS } from './DeuxAdresses'
+import { DURATION, FPS, Launch } from './Launch'
 
-// LinkedIn 4:5, 30 fps, about 22 s, no sound (readable without it).
+// LinkedIn 4:5, 1080 x 1350, 30 fps, 29 s, no sound. One composition per
+// language; every text is in src/texts.ts. Cover image: frame COVER_FRAME
+// of the same composition (see package.json, "cover").
 export const Root = () => (
   <>
-    <Composition id="DeuxAdresses" component={DeuxAdresses} durationInFrames={DURATION} fps={FPS} width={1080} height={1350} defaultProps={{ withStation: false }} />
-    <Composition id="DeuxAdressesStation" component={DeuxAdresses} durationInFrames={DURATION_STATION} fps={FPS} width={1080} height={1350} defaultProps={{ withStation: true }} />
+    <Composition id="LaunchFR" component={Launch} durationInFrames={DURATION} fps={FPS} width={1080} height={1350} defaultProps={{ lang: 'fr' as const }} />
+    <Composition id="LaunchEN" component={Launch} durationInFrames={DURATION} fps={FPS} width={1080} height={1350} defaultProps={{ lang: 'en' as const }} />
   </>
 )

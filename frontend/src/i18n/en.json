@@ -237,7 +237,7 @@
       "contact": "Press contact",
       "contactDesc": "Write to the project lead."
     },
-    "privacy": "The address you type is sent to the Base adresse nationale (a public service) to find your neighbourhood; Underlaid neither keeps it nor puts it in the page address. The site uses neither cookies nor audience measurement. Your language choice is kept in your browser, and the code of the last neighbourhood viewed is kept in the tab for the visit. The host (Vercel) keeps technical access logs."
+    "privacy": "The address you type is sent to the Base adresse nationale (a public service) to find your neighbourhood; Underlaid neither keeps it nor puts it in the page address. The site uses no cookies. It measures its audience with Vercel Web Analytics, without cookies: pages viewed, referring page, country, device and browser type; the neighbourhood code is removed from page addresses before sending. Your language choice is kept in your browser, and the code of the last neighbourhood viewed is kept in the tab for the visit. The host (Vercel) keeps technical access logs."
   },
   "footerLicense": "Code: MIT · Data: ODbL · Maps and visuals: CC BY 4.0",
   "site": {

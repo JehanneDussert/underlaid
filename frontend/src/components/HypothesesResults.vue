@@ -65,6 +65,10 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
           <strong>{{ t('hypotheses.control.label') }} {{ t(h.control2022.confirmed ? 'hypotheses.control.confirmed' : 'hypotheses.control.notConfirmed') }}.</strong>
           {{ controlText(h) }}
         </p>
+        <p v-if="h.id === 'publicServices'" class="hypothesis-control">
+          <strong>{{ t('hypotheses.control2.label') }} {{ t('hypotheses.control.confirmed') }}.</strong>
+          {{ t('hypotheses.publicServices.control2') }}
+        </p>
         <p class="hypothesis-date">{{ t('hypotheses.written', { date: date(h.written) }) }}</p>
       </li>
     </ul>

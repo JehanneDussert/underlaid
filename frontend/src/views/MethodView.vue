@@ -213,6 +213,16 @@ const distribution = computed(() => {
             </template>
           </dl>
           <p>{{ t('methodD4.portee.info') }}</p>
+          <p>{{ t('methodD4.portee.definition') }}</p>
+          <h3>{{ t('methodD4.portee.secondTitle') }}</h3>
+          <p>{{ t('methodD4.portee.second') }}</p>
+          <p>{{ t('methodD4.portee.sensitivity') }}</p>
+          <p>{{ t('methodD4.portee.checks') }}</p>
+          <p>{{ t('methodD4.portee.thresholds') }}</p>
+          <h3>{{ t('methodD4.portee.inProgressTitle') }}</h3>
+          <ul>
+            <li v-for="item in tm('methodD4.portee.inProgress').map(rt)" :key="item">{{ item }}</li>
+          </ul>
           <!-- Focusable: a scrollable region must be reachable with the keyboard. -->
       <div class="table-wrap" tabindex="0" role="region" :aria-label="t('site.tableRegion')">
             <table class="places">

@@ -98,11 +98,11 @@ below are the 2022 ones.
 
 ## About this repository
 
-Interactive mapping tool revealing, per IRIS zone, the cumulative overlap
-of several exposures (heat, air/noise, housing, access to care), with
-a breakdown by factor and a separate axis for residents' means. Modeled
-on EJScreen/CalEnviroScreen/EJNYC — never done for Paris (and, as of
-Phase 5, its inner-ring suburbs) at IRIS granularity before.
+Interactive map of living conditions per IRIS neighbourhood (heat, air
+and noise, energy-inefficient housing, access to care), with the
+cumulative count, the places within reach for three ways of getting
+around, and a separate axis for residents' resources. Modeled on
+EJScreen/CalEnviroScreen/EJNYC.
 
 Covers the full Métropole du Grand Paris "Petite Couronne": Paris (75)
 plus Hauts-de-Seine (92), Seine-Saint-Denis (93) and Val-de-Marne (94) —
@@ -128,12 +128,6 @@ built on 200m gridded data). Underlaid's differentiation: **IRIS-level**
 granularity (finer than QPV), an **interactive public-facing** map rather
 than an institutional report, and a **cumulative** metric rather than a
 smoothed average.
-
-This project is anchored in an active policy debate: the Haut Conseil
-pour le Climat's July 9, 2026 report ("France isn't ready", coining
-"bouilloires thermiques" — thermal kettles), the ongoing discussion around
-a "service public de la fraîcheur" (public cooling service), and the
-Fonds Vert budget cut (€2.5bn → €837M).
 
 The score is meant to stay **descriptive, never accusatory**: it shows
 the correlation between income and exposure without asserting intent
@@ -514,28 +508,19 @@ weekly workflow `.github/workflows/lighthouse.yml` does the latter every
 Monday: table in the job summary, JSON reports as an artifact, an issue
 when accessibility or SEO drops below 100 on any page.
 
-## Step 4 — Income correlation
+## Living conditions and residents' resources
 
-The "Income vs. exposure ↗" button opens `frontend/src/components/
-IncomeScatter.vue`: median income (x) against the cumulative score (y,
-jittered), colored with the same ramp as the map. It answers the
-question step 4 was meant to answer — do the poorest IRIS also cumulate
-the most exposures — and the honest answer, at a glance, is *not
-straightforwardly*: every score band spans nearly the whole income
-range. That's the more interesting, more defensible finding, and the one
-worth leading with in any public-facing pitch: **exposure doesn't
-reliably track income in this data, and that's precisely what no
-existing single-issue map (heat, noise, access) can show on its own.**
-(It's also exactly why this is called an exposure score, not a
-vulnerability score — see SCORING.md's "What this score doesn't
-measure": income is the closest available proxy for adaptive capacity,
-and this data shows the two don't move together, which is itself an
-argument for keeping the terms distinct rather than blurring them.)
-Don't oversell it the other way either — "the poorest neighborhoods
-cumulate the most exposures" is not what the scatter shows, and saying
-so would be the score correcting the pitch, not the other way around
-(see SCORING.md's note on Porte Dauphine 11 and Madeleine 2 for a
-concrete example of a claim that had to be walked back once checked).
+Part 3 of each neighbourhood page ("Les deux à la fois") places the
+neighbourhood on a cloud of all neighbourhoods: number of exposures in
+the most affected quarter against residents' resources. It is
+descriptive, never presented as a tested result; the tested hypotheses
+(pre-registered, with their verdicts) are on the Method page and in
+[SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered).
+What the cloud shows is that exposure does not follow income neatly:
+every level of exposure spans almost the whole range of resources, and
+the link is weak (slightly positive only because of dense, older central
+Paris). "The poorest neighbourhoods cumulate the most exposures" is not
+what the data shows.
 
 ## What building this actually taught us
 
@@ -728,24 +713,23 @@ Two ways, both documented here since the brief asked for both:
 for that subdomain at the host's provided domain. No code changes needed
 — it's a standalone static site.
 
-**2. Iframe embed** in an existing page:
+**2. Iframe embed** of a page of the site, for instance the map or one
+neighbourhood:
 
 ```html
 <iframe
-  src="https://underlaid.yoursite.com"
+  src="https://underlaid.fr/carte"
   width="100%"
-  height="700"
+  height="800"
   style="border: none;"
   loading="lazy"
-  title="Underlaid — cumulative environmental exposure map of Paris and its inner suburbs"
+  title="Underlaid — carte des quartiers de Paris et de la petite couronne"
 ></iframe>
 ```
 
-The map fills its container (`#map { position: absolute; inset: 0; }`),
-so the iframe's `width`/`height` fully control the visible area — no
-extra CSS needed on the embedding page. Note the modal (income scatter)
-uses `position: fixed`, so it overlays within the iframe's own viewport,
-not the parent page's.
+A neighbourhood page has a stable address (`https://underlaid.fr/quartier/<IRIS code>`,
+`/en/neighbourhood/<IRIS code>` in English). Pages adapt to the width
+of the frame (layouts are tested down to 320 px).
 
 ## Roadmap
 
@@ -768,14 +752,22 @@ only, public toilets and drinking fountains; the pre-registered
 public-services hypothesis tested (refuted, and reversed); the census
 moved to 2022 (sensitivity check published).
 
-**In progress** — a second travel-time calculation (pre-registered on
-4 October 2026): the same start and end points for every way of getting
-around (fixes most of the cases where the wheelchair time came out
-shorter than the unconstrained one), a revised wheelchair profile
-(0.8 m/s; segments steeper than 8 % removed using the IGN RGE ALTI 1 m;
-sensitivity 0.5-1.0 m/s and 6 %), and schools (elementary, lower and
-upper secondary). Its results are published as checks; the verdicts
-already published stay the reference.
+**v0.3** (7 October 2026) — the second travel-time calculation
+(pre-registered on 4 and 5 October 2026, published with PR #7): the same
+start and end points for every way of getting around (wheelchair times
+shorter than unconstrained ones: 11 cases out of 62,788), a revised
+wheelchair profile (0.8 m/s; streets steeper than 8 % avoided using the
+IGN RGE ALTI 1 m; sensitivity 0.5-1.0 m/s and 6 %), and public schools
+(elementary, collège, lycée; private schools under contract computed but
+not shown). The three verdicts were checked with it and confirmed; the
+published verdicts stay the reference. Publication thresholds written
+before the results are in `docs/checks/`.
+
+**In progress** — a descriptive decomposition of wheelchair travel times
+(pre-registered on 7 October 2026, no verdict), computed the night of
+7 October: share of journeys made entirely on foot per way of getting
+around, and how much of the wheelchair gap comes from speed and slopes
+versus inaccessible stops.
 
 Next:
 1. **New indicators** (Phase 7): **flood risk** (Seine/Marne PPRI — a
@@ -828,6 +820,8 @@ September 2026, not assumed:
 | Filosofi 2021 200 m population grid | INSEE | Access to care (demand) | Licence Ouverte 2.0 — "Source : Insee" |
 | Public transport timetables (GTFS) | Île-de-France Mobilités | Access to care, inclusive mobility and routes (travel times) | **Licence Mobilités** — "Contient des informations de « Horaires prévus sur les lignes de transport en commun d'Île-de-France (GTFS Datahub) », mises à disposition par Île-de-France Mobilités aux conditions de la « Licence Mobilités »." |
 | BD TOPO (staircases) | IGN | Inclusive mobility (step-free walking) | Licence Ouverte 2.0 |
+| RGE ALTI 1 m (terrain model) | IGN | Slopes of the wheelchair network (streets steeper than 8 % avoided) | Licence Ouverte 2.0 |
+| [Lift status](https://data.iledefrance-mobilites.fr/explore/dataset/etat-des-ascenseurs/) (PRIM API) | Île-de-France Mobilités | Archived hourly since 6 October 2026; not used yet, not redistributed | **Licence Mobilités** |
 | Address search (API Adresse / BAN) | IGN, DINUM | Web map search | Licence Ouverte 2.0 |
 
 Context figures quoted but not redistributed as data (life expectancy —

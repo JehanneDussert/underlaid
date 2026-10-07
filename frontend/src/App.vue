@@ -10,7 +10,7 @@ const { t, locale } = useI18n()
 const REPO_URL = 'https://github.com/JehanneDussert/underlaid'
 const DISCUSSIONS_URL = `${REPO_URL}/discussions`
 const DOI_URL = 'https://doi.org/10.5281/zenodo.23083312'
-const VERSION = '0.2.0'
+const VERSION = '0.3.0'
 const route = useRoute()
 
 // Main navigation of the redesign (docs/design/refonte-d4/): "Votre
@@ -83,7 +83,8 @@ const lastUpdated = ref(null)
 async function loadLastUpdated() {
   try {
     const data = await loadStaticJson('/data/last_updated.json')
-    lastUpdated.value = data.generated_at
+    // Latest published data (travel times included), else the quarterly run.
+    lastUpdated.value = data.published_at || data.generated_at
   } catch {
     lastUpdated.value = null
   }

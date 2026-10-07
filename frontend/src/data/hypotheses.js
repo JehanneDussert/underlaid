@@ -51,5 +51,26 @@ export const HYPOTHESES = [
         { dep: '94', lowest: 25.1, highest: 45.3 },
       ],
     },
+    control2: true,
+  },
+  {
+    // Pre-registered on 3 October 2026 (see the note in the texts), computed
+    // the same evening on the 2022 census and the first travel-time
+    // calculation: scripts/analysis/carfree_means.py, output
+    // data/interim/analysis/carfree_means.txt. Columns: third of neighbourhoods
+    // with the most / the fewest households without a car, within each
+    // département.
+    id: 'carFree',
+    verdict: 'refuted',
+    written: '2026-10-03',
+    table: [
+      { dep: '75', lowest: 0.6, highest: 9.0 },
+      { dep: '92', lowest: 14.6, highest: 65.5 },
+      { dep: '93', lowest: 11.4, highest: 66.0 },
+      { dep: '94', lowest: 17.1, highest: 61.4 },
+    ],
+    // Same test on the second travel-time calculation (carfree_means_v2.txt).
+    control2: true,
+    note: true,
   },
 ]

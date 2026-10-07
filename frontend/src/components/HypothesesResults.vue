@@ -11,7 +11,9 @@ defineProps({
   // Heading level of each hypothesis, to fit the page outline.
   level: { type: Number, default: 3 },
 })
-const { t, locale } = useI18n()
+const { t, te, locale } = useI18n()
+// Column labels of a hypothesis table: its own if given, else residents' resources.
+const col = (h, key) => (te(`hypotheses.${h.id}.${key}`) ? t(`hypotheses.${h.id}.${key}`) : t(`hypotheses.${key}`))
 
 // French writes the first day of a month "1er".
 const date = (iso) => {
@@ -47,8 +49,8 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
           <thead>
             <tr>
               <th scope="col">{{ t('hypotheses.department') }}</th>
-              <th scope="col">{{ t('hypotheses.lowestThird') }}</th>
-              <th scope="col">{{ t('hypotheses.highestThird') }}</th>
+              <th scope="col">{{ col(h, 'lowestThird') }}</th>
+              <th scope="col">{{ col(h, 'highestThird') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -65,10 +67,11 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
           <strong>{{ t('hypotheses.control.label') }} {{ t(h.control2022.confirmed ? 'hypotheses.control.confirmed' : 'hypotheses.control.notConfirmed') }}.</strong>
           {{ controlText(h) }}
         </p>
-        <p v-if="h.id === 'publicServices'" class="hypothesis-control">
+        <p v-if="h.control2" class="hypothesis-control">
           <strong>{{ t('hypotheses.control2.label') }} {{ t('hypotheses.control.confirmed') }}.</strong>
-          {{ t('hypotheses.publicServices.control2') }}
+          {{ t(`hypotheses.${h.id}.control2`) }}
         </p>
+        <p v-if="h.note" class="hypothesis-caveat">{{ t(`hypotheses.${h.id}.note`) }}</p>
         <p class="hypothesis-date">{{ t('hypotheses.written', { date: date(h.written) }) }}</p>
       </li>
     </ul>

@@ -16,44 +16,62 @@
       "nursery_school": 4,
       "police": 14,
       "social_centre": 12,
-      "library": 9,
-      "park": 3
+      "library": 8,
+      "park": 3,
+      "elementary_public": 4,
+      "elementary_private": 10,
+      "college_public": 7,
+      "college_private": 12,
+      "lycee_public": 10,
+      "lycee_private": 13
     },
     "slow": {
-      "emergency": 22,
+      "emergency": 21,
       "gp": 4,
       "pharmacy": 4,
       "town_hall": 15,
       "france_services": 19,
-      "caf": 27,
+      "caf": 28,
       "cpam": 22,
       "employment": 19,
       "post_office": 9,
       "creche": 5,
-      "food_store": 5,
+      "food_store": 4,
       "nursery_school": 5,
       "police": 17,
       "social_centre": 15,
       "library": 11,
-      "park": 4
+      "park": 4,
+      "elementary_public": 6,
+      "elementary_private": 13,
+      "college_public": 10,
+      "college_private": 15,
+      "lycee_public": 13,
+      "lycee_private": 17
     },
     "wheelchair": {
-      "emergency": 21,
-      "gp": 3,
-      "pharmacy": 3,
-      "town_hall": 14,
-      "france_services": 18,
-      "caf": 29,
-      "cpam": 21,
-      "employment": 18,
-      "post_office": 7,
-      "creche": 4,
-      "food_store": 3,
-      "nursery_school": 4,
-      "police": 15,
-      "social_centre": 13,
-      "library": 9,
-      "park": 3
+      "emergency": 27,
+      "gp": 5,
+      "pharmacy": 5,
+      "town_hall": 19,
+      "france_services": 24,
+      "caf": 36,
+      "cpam": 27,
+      "employment": 24,
+      "post_office": 11,
+      "creche": 6,
+      "food_store": 5,
+      "nursery_school": 6,
+      "police": 21,
+      "social_centre": 19,
+      "library": 14,
+      "park": 4,
+      "elementary_public": 7,
+      "elementary_private": 16,
+      "college_public": 12,
+      "college_private": 19,
+      "lycee_public": 16,
+      "lycee_private": 21
     }
   },
   "station_median_by_department": {
@@ -61,62 +79,62 @@
       "75": 3,
       "92": 8,
       "93": 10,
-      "94": 12
+      "94": 11
     },
     "slow": {
-      "75": 5,
-      "92": 11,
-      "93": 14,
-      "94": 16
-    },
-    "wheelchair": {
-      "75": 11,
-      "92": 11,
+      "75": 4,
+      "92": 10,
       "93": 13,
       "94": 15
+    },
+    "wheelchair": {
+      "75": 17,
+      "92": 19,
+      "93": 20,
+      "94": 24
     }
   },
   "night_emergency": {
     "free": {
       "75": {
-        "median": 19,
-        "over30_pct": 13.5,
-        "over45_pct": 1.4,
+        "median": 18,
+        "over30_pct": 13.3,
+        "over45_pct": 1.3,
         "n": 938
       },
       "inner_suburbs": {
         "median": 27,
-        "over30_pct": 40.8,
-        "over45_pct": 13.3,
-        "n": 1750
+        "over30_pct": 40.3,
+        "over45_pct": 13.1,
+        "n": 1752
       }
     },
     "slow": {
       "75": {
         "median": 24,
-        "over30_pct": 30.7,
-        "over45_pct": 6.9,
+        "over30_pct": 30.3,
+        "over45_pct": 6.6,
         "n": 938
       },
       "inner_suburbs": {
         "median": 35,
-        "over30_pct": 61.4,
-        "over45_pct": 29.1,
-        "n": 1750
+        "over30_pct": 59.8,
+        "over45_pct": 28.3,
+        "n": 1752
       }
     },
     "wheelchair": {
       "75": {
-        "median": 19,
-        "over30_pct": 13.8,
-        "over45_pct": 1.5,
+        "median": 29,
+        "over30_pct": 44.7,
+        "over45_pct": 13.9,
         "n": 938
       },
       "inner_suburbs": {
-        "median": 28,
-        "over30_pct": 43.4,
-        "over45_pct": 16.3,
-        "n": 1750
+        "median": 46,
+        "over30_pct": 74.5,
+        "over45_pct": 50.3,
+        "n": 1752
       }
     }
   },
@@ -125,19 +143,19 @@
       "toilets": 3,
       "toilets_pmr": 3,
       "toilets_24h": 6,
-      "drinking_water": 3
+      "drinking_water": 2
     },
     "slow": {
       "toilets": 4,
       "toilets_pmr": 4,
       "toilets_24h": 8,
-      "drinking_water": 4
+      "drinking_water": 3
     },
     "wheelchair": {
-      "toilets": 3,
-      "toilets_pmr": 3,
-      "toilets_24h": 6,
-      "drinking_water": 3
+      "toilets": 5,
+      "toilets_pmr": 5,
+      "toilets_24h": 10,
+      "drinking_water": 4
     }
   }
 }

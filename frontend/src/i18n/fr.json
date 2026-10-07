@@ -455,7 +455,15 @@
         },
         {
           "name": "Point de départ des trajets.",
-          "desc": "Dans 0,8 % des cas, la durée affichée en fauteuil roulant est inférieure de 1 à 8 minutes à la durée sans contrainte. La cause est le point du réseau de rues où le calcul rattache chaque départ et chaque arrivée : dans le réseau complet, c'est parfois un escalier ou un chemin qui impose un détour. Pour la même raison, certaines durées sans contrainte sont surestimées. Ce sera corrigé au prochain calcul, avec les mêmes points de départ et d'arrivée pour tous les modes."
+          "desc": "Départs et arrivées sont rattachés au même point du réseau de rues pour tous les modes. Il reste 11 cas sur 62 788 (0,02 %) où la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, de 1 minute (4 minutes pour un cas) : le calculateur raccorde lui-même chaque point au réseau, différemment selon le réseau. Ces cas sont laissés tels quels. Avant cette correction (calcul du 3 octobre), la part était de 0,8 %."
+        },
+        {
+          "name": "Vitesse et pentes en fauteuil roulant.",
+          "desc": "Le trajet en fauteuil roulant suit la vitesse moyenne mesurée chez 52 utilisateurs de fauteuil manuel dans leur vie quotidienne, 0,8 m/s, environ 2,9 km/h (Tolerico et al., 2007), sur toute la partie à pied du trajet. Il évite les escaliers et les rues de plus de 8 % de pente, seuil toléré par l'arrêté du 15 janvier 2007 sur l'accessibilité de la voirie. La pente est mesurée sur le modèle de terrain au mètre de l'IGN (RGE ALTI), sur des portions d'environ 12 m ; les ponts et les tunnels ne sont pas mesurés. Au total, 3,8 % de la longueur des chemins praticables est écartée. Avec 0,5 ou 1,0 m/s, ou un seuil de pente de 6 %, les quartiers gardent presque le même ordre (corrélation de rang de 0,95 à 0,99). Un fauteuil électrique va en général plus vite ; il n'est pas modélisé."
+        },
+        {
+          "name": "Lieux non atteints en fauteuil roulant.",
+          "desc": "Quand un lieu n'est pas atteint en 90 minutes en fauteuil roulant, la page du quartier l'indique. Deux causes se rencontrent. Dans des communes éloignées du centre (Santeny, Mandres-les-Roses, Périgny, par exemple), le trajet dure déjà 45 à 70 minutes sans contrainte et dépasse 90 minutes à 0,8 m/s. Sur les buttes et les coteaux (Montmartre, Chaville, Montfermeil, Villecresnes), les rues de plus de 8 % de pente isolent une partie des quartiers : sans le retrait des pentes, les mêmes lieux y seraient atteints en moins de 90 minutes, et en 3 à 43 minutes à Montmartre et à Chaville. Les quartiers concernés par cette seconde cause rassemblent environ 29 000 habitants, 0,4 % de la population. Le calcul ne voit ni les trottoirs ni l'aide d'un accompagnant."
         },
         {
           "name": "Accès aux médecins en fauteuil roulant.",
@@ -564,6 +572,7 @@
     "hint": "Choisissez un mode pour voir les durées sur le plan : médianes des quartiers de la métropole, à pied et en transports en commun, mardi 13 octobre 2026 à 10 h.",
     "hintLink": "Que recouvrent ces trois modes ?",
     "phoneHint": "Choisissez un mode pour voir les durées.",
+    "phoneCaption": "Durées médianes des quartiers, à pied et en transports en commun, mardi à 10 h.",
     "allPlaces": "Tous les lieux du quotidien",
     "allPlacesShort": "Tous les lieux",
     "strip": "À Paris, il faut en médiane {wc} à pied pour rejoindre un arrêt accessible du métro, du RER, du train ou du tram, contre {free} sans contrainte.",
@@ -572,7 +581,7 @@
   },
   "plan": {
     "listLabel": "Lieux du quotidien sur le plan",
-    "listLabelMode": "Durée médiane depuis un quartier de la métropole, mode « {mode} »",
+    "listLabelMode": "Durée médiane depuis un quartier de la métropole, à pied et en transports en commun, mode « {mode} »",
     "fromNeighbourhood": "Depuis un quartier",
     "here": "Vous êtes ici",
     "minutes": "{n} min",
@@ -783,6 +792,7 @@
     "nearest": "le plus proche en",
     "range": "{lo} à {hi} min",
     "over90": "plus de 90 min",
+    "wheelchairUnreached": "Selon le calcul, non atteignable en fauteuil roulant en moins de 90 minutes (vitesse de 0,8 m/s, rues de plus de 8 % de pente évitées).",
     "notYet": "pas encore calculé",
     "same": "identique",
     "gap": "{n} min",
@@ -891,7 +901,7 @@
       "title": "{name} : cadre de vie et lieux à portée",
       "description": "{summary}. Durées vers les lieux du quotidien, à pied et en transports en commun, selon le mode de déplacement."
     },
-    "durationsLimit": "Dans 0,8 % des cas, la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, à cause du point du réseau de rues où le calcul rattache chaque départ et chaque arrivée ; certaines durées sans contrainte sont aussi surestimées pour la même raison. Ce sera corrigé au prochain calcul."
+    "durationsLimit": "Dans 0,02 % des cas, la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, d'une minute le plus souvent, à cause de la façon dont le calculateur raccorde les points au réseau de rues."
   },
   "explore": {
     "title": "Explorer la carte",

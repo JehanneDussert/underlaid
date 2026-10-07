@@ -455,7 +455,15 @@
         },
         {
           "name": "Starting point of journeys.",
-          "desc": "In 0.8% of cases, the wheelchair duration shown is 1 to 8 minutes shorter than the duration without constraint. The cause is the point of the street network to which the calculation attaches each start and end: in the full network, it is sometimes a stairway or a path that forces a detour. For the same reason, some durations without constraint are overestimated. This will be fixed in the next calculation, with the same start and end points for every mode."
+          "desc": "Departures and arrivals are attached to the same point of the street network for every way of getting around. 11 cases out of 62,788 (0.02%) remain where the wheelchair duration comes out shorter than without constraint, by 1 minute (4 minutes in one case): the route planner links each point to the network itself, differently on each network. These cases are left as they are. Before this correction (calculation of 3 October), the share was 0.8%."
+        },
+        {
+          "name": "Wheelchair speed and slopes.",
+          "desc": "The wheelchair journey uses the mean speed measured on 52 manual wheelchair users in daily life, 0.8 m/s, about 2.9 km/h (Tolerico et al., 2007), on every part of the journey made on foot. It avoids stairs and streets steeper than 8 %, the tolerance of the French order of 15 January 2007 on accessible public roads. Slope is measured on IGN's 1 m terrain model (RGE ALTI), over stretches of about 12 m; bridges and tunnels are not measured. In total, 3.8 % of the length of walkable paths is left out. With 0.5 or 1.0 m/s, or a 6 % slope threshold, neighbourhoods keep almost the same order (rank correlation 0.95 to 0.99). A powered wheelchair is usually faster; it is not modelled."
+        },
+        {
+          "name": "Places not reached in a wheelchair.",
+          "desc": "When a place is not reached within 90 minutes in a wheelchair, the neighbourhood page says so. Two causes occur. In communes far from the centre (Santeny, Mandres-les-Roses, Périgny, for instance), the journey already takes 45 to 70 minutes without constraint and goes beyond 90 minutes at 0.8 m/s. On hills and slopes (Montmartre, Chaville, Montfermeil, Villecresnes), streets steeper than 8 % cut part of some neighbourhoods off: without removing slopes, the same places would be reached there within 90 minutes, and in 3 to 43 minutes in Montmartre and Chaville. The neighbourhoods concerned by this second cause are home to about 29,000 people, 0.4 % of the population. The calculation sees neither pavements nor help from a companion."
         },
         {
           "name": "Access to GPs in a wheelchair.",
@@ -564,6 +572,7 @@
     "hint": "Choose a mode to see durations on the plan: medians of the metropolis's neighbourhoods, on foot and by public transport, Tuesday 13 October 2026 at 10:00.",
     "hintLink": "What do these three modes cover?",
     "phoneHint": "Choose a mode to see durations.",
+    "phoneCaption": "Median neighbourhood durations, on foot and by public transport, Tuesday at 10:00.",
     "allPlaces": "All everyday places",
     "allPlacesShort": "All places",
     "strip": "In Paris, it takes a median {wc} on foot to reach an accessible metro, RER, train or tram stop, against {free} without constraint.",
@@ -572,7 +581,7 @@
   },
   "plan": {
     "listLabel": "Everyday places on the plan",
-    "listLabelMode": "Median duration from a neighbourhood of the metropolis, mode \"{mode}\"",
+    "listLabelMode": "Median duration from a neighbourhood of the metropolis, on foot and by public transport, mode \"{mode}\"",
     "fromNeighbourhood": "From a neighbourhood",
     "here": "You are here",
     "minutes": "{n} min",
@@ -783,6 +792,7 @@
     "nearest": "nearest in",
     "range": "{lo} to {hi} min",
     "over90": "over 90 min",
+    "wheelchairUnreached": "According to the calculation, not reachable in a wheelchair within 90 minutes (speed of 0.8 m/s, streets steeper than 8 % avoided).",
     "notYet": "not computed yet",
     "same": "same",
     "gap": "{n} min",
@@ -891,7 +901,7 @@
       "title": "{name}: living conditions and places within reach",
       "description": "{summary}. Times to everyday places, on foot and by public transport, depending on how you get around."
     },
-    "durationsLimit": "In 0.8% of cases, the wheelchair duration comes out shorter than the duration without constraint, because of the point of the street network to which the calculation attaches each start and end; some durations without constraint are overestimated for the same reason. This will be corrected in the next calculation."
+    "durationsLimit": "In 0.02% of cases, the wheelchair duration comes out shorter than the duration without constraint, usually by one minute, because of how the route planner links points to the street network."
   },
   "explore": {
     "title": "Explore the map",

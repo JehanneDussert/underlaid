@@ -56,3 +56,72 @@ La publication des nouvelles durées est suspendue. Options :
 - **(c)** Autre choix de la porteuse du projet.
 
 Rien n'est publié. Les fichiers du site régénérés à partir du second calcul ne sont dans aucun commit.
+
+## Décision de la porteuse du projet et suites — 7 octobre 2026
+
+**Décision reçue à 3 h 52** (heure du premier traitement du message) :
+- îlots : option (b), sans nouvelle règle de pente ; d'abord vérifier si des tronçons sur ou près de ponts ont été retirés (erreur d'application, à corriger seulement si c'est le cas) ;
+- **seuil 3b levé pour la cause « vitesse »** : les communes éloignées qui passent au-delà de 90 minutes à cause de la vitesse de 0,8 m/s sont acceptées comme un résultat ;
+- les deux quartiers sans durée : appliquer la règle du 3 octobre.
+
+### Ponts (`scripts/analysis/slope_bridge_check.py`)
+
+- Tronçons retirés portant une balise pont, tunnel ou niveau différent : **0**. L'exclusion pré-enregistrée a été appliquée.
+- Tronçons retirés qui croisent une voie ferrée, un cours d'eau ou une voie rapide sans balise de pont : 13, soit 454 m (aires de service, chemins forestiers, aucun dans un quartier habité).
+- Tronçons retirés près d'un pont : 109 km à moins de 20 m, 73 km entre 20 et 30 m. Ce sont des rampes d'accès, mesurées sur des points situés à plus de 20 m du pont, comme le prévoit la règle du 5 octobre.
+- **Conclusion : pas d'erreur d'application, aucun lot recalculé.** Les retirer serait une nouvelle règle.
+
+### Deux quartiers sans durée
+
+La règle du 3 octobre (carreau qui contient le point représentatif) était déjà dans le script 36, mais le point représentatif de ces deux quartiers tombe dans un carreau sans habitant, absent de la grille. Lecture la plus proche de la règle, appliquée et signalée : **le carreau habité déjà calculé qui recouvre le plus le quartier**. Après cela, plus aucun quartier n'est sans durée (2 752 sur 2 752).
+
+### Îlots et sensibilité sans retrait des pentes (`scripts/analysis/v2_islands_no_slope.py`)
+
+Même profil (0,8 m/s, arrêts accessibles, inconnu = non accessible, mardi 10 h) sur le réseau sans escaliers mais **sans retrait des pentes**, pour les 18 quartiers qui perdent au moins un lieu proche (≤ 45 min sans contrainte) :
+- **Îlots complets** (presque aucun lieu atteint ; tout redevient atteignable sans retrait des pentes) :
+  - Grandes Carrières 9 (1 628 hab.) : CAF de plus de 90 min à 43 min ;
+  - Clignancourt 5 (1 964 hab.) : 42 min ;
+  - Chaville Iris 0101 (2 749 hab.) : 34 min.
+  - Au total 6 341 habitants (2 quartiers, 3 592 habitants, avec « inconnu = accessible »).
+- **Lieux perdus à cause des pentes, ailleurs** (atteints sans retrait des pentes) : Montfermeil Les Arbres (CAF 66 min), Villepinte Nord-Est Mousseaux (CAF 88 min), Marolles-en-Brie Vieux Village (lycée public 89 min), Villecresnes, 4 quartiers (centre social 34 à 54 min).
+- **Cause « vitesse »** (toujours au-delà de 90 min sans retrait des pentes) : Coubron, Montfermeil Les Coudreaux, Mandres-les-Roses, Périgny, Santeny, Sucy-en-Brie Notre-Dame-Bruyères, Marolles-en-Brie La Butte du Berger, Tremblay-en-France Centre Activités, pour certains lieux (CAF surtout).
+- **CAF en fauteuil roulant au-delà de 90 min à cause des pentes** : 15 187 habitants (0,22 % de la population), sous le seuil de 1 %. Avec la levée pour la cause « vitesse », **le seuil 3b ne bloque plus**.
+- Quartiers où au moins un lieu n'est plus atteint à cause des pentes : environ 29 000 habitants (0,4 %).
+
+### Cinq cas vérifiés à l'imagerie (IGN, réseau sans pentes superposé)
+
+1. **Grandes Carrières 9** (flanc ouest de la butte Montmartre, secteur rue Lepic) : quartier entouré de rues retirées qui montent réellement. Les carreaux se rattachent à des fragments de réseau isolés (103, 26, 24 nœuds), alors que le réseau principal compte 15 834 nœuds.
+2. **Clignancourt 5** (flanc sud de la butte, vers le Sacré-Cœur) : même situation, fragments de 103 et 63 nœuds.
+3. **Chaville Iris 0101** (coteau boisé de la vallée) : une grande partie des rues résidentielles descend à plus de 8 %. Le réseau se fragmente en 241 morceaux dans un carré de 2 km ; les rues du centre forment un fragment isolé de 46 nœuds.
+4. **Coubron** (plateau) : le réseau reste relié (composante principale de 2 247 nœuds). L'allongement vient de la vitesse et des détours imposés par les pentes : arrêt accessible le plus proche 68 min au lieu de 27 en 1er calcul ; urgences 81 min, 51 sans retrait des pentes.
+5. **Montfermeil Les Coudreaux** : relié (2 014 nœuds) ; même effet de détour (arrêt accessible 65 min, urgences 73 min, 36 sans retrait des pentes).
+
+**Lecture** : Montmartre et Chaville sont de vrais secteurs en forte pente. Le calcul les isole, faute de chemin à 8 % ou moins vers l'extérieur. Conformément à la décision, les rues qui montent vraiment restent retirées.
+
+### Arrêt accessible le plus proche (îlots)
+
+À vol d'oiseau depuis le centre habité du quartier ; atteignable en fauteuil roulant, d'après le calcul (marche à 0,8 m/s sur le réseau sans pentes, 90 min au plus) :
+
+| Quartier | Arrêt accessible le plus proche | Distance | Atteint par la rue (2e calcul) |
+|---|---|---|---|
+| Grandes Carrières 9 | Angélique Compoint - Porte de Montmartre (tram) | 1,25 km | non (1er calcul : 24 min) |
+| Clignancourt 5 | Gare du Nord | 1,12 km | non (1er calcul : 22 min) |
+| Chaville Iris 0101 | Chaville Rive Droite | 0,40 km | non (1er calcul : 8 min) |
+| Coubron | Hôpital de Montfermeil (tram T4) | 1,50 km | oui, 68 min |
+| Montfermeil Les Coudreaux | Hôpital de Montfermeil (tram T4) | 1,22 km | oui, 65 min |
+| Montfermeil Les Arbres | Arboretum (tram T4) | 1,03 km | oui, 27 min |
+
+### Contrôles refaits après ces corrections
+
+- Seuil 1 : 11 couples sur 62 788 (0,018 %) ; 10 d'une minute, 1 de 4 minutes.
+- Seuil 2 : inchangé, il passe.
+- Seuil 3a : 0 quartier sans durée.
+- Seuil 3b : levé pour la cause « vitesse » ; cause « pentes » à 0,22 % (CAF).
+- Seuil 4 : trois verdicts confirmés.
+- **Plus rien ne bloque.**
+
+### Affichage
+
+- Sur la page du quartier, un lieu atteint sans contrainte mais pas en 90 minutes en fauteuil roulant reçoit la mention : « Selon le calcul, non atteignable en fauteuil roulant en moins de 90 minutes (vitesse de 0,8 m/s, rues de plus de 8 % de pente évitées). »
+- La formulation proposée (« notamment à cause des pentes ») a été adaptée, parce que la cause est parfois la vitesse seule.
+- Deux paragraphes sont ajoutés à la Méthode : « Vitesse et pentes en fauteuil roulant » et « Lieux non atteints en fauteuil roulant ».

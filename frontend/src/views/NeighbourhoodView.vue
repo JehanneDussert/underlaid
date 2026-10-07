@@ -232,6 +232,12 @@ function minutes(place, m) {
 // undefined = not computed yet; null = more than 90 min.
 const computedYet = (place) => minutes(place, 'free') !== undefined
 const fmtMin = (v) => (v === null ? t('nbhd.over90') : t('plan.minutes', { n: v }))
+// Reached without constraint but not in a wheelchair within 90 min, while the
+// wheelchair time is on screen (no mode, wheelchair mode or comparison).
+const wheelchairUnreached = (place) =>
+  (!mode.value || mode.value === 'wheelchair' || compare.value === 'wheelchair') &&
+  minutes(place, 'wheelchair') === null &&
+  typeof minutes(place, 'free') === 'number'
 
 // Part 2: position per need (script 39 "needs"), share of inhabited
 // neighbourhoods closer to these services; Paris-only needs are ranked among
@@ -467,6 +473,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
                         <span v-if="gap(place) !== null" class="gap" :class="{ big: Math.abs(gap(place)) >= 3 }">{{ gap(place) === 0 ? t('nbhd.same') : t('nbhd.gap', { n: (gap(place) > 0 ? '+' : '−') + Math.abs(gap(place)) }) }}</span>
                       </template>
                     </span>
+                    <span v-if="wheelchairUnreached(place)" class="wc-note">{{ t('nbhd.wheelchairUnreached') }}</span>
                   </li>
                 </ul>
               </AccordionItem>
@@ -877,6 +884,7 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   list-style: none;
 }
 .place {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -940,6 +948,11 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+.wc-note {
+  flex-basis: 100%;
+  font-size: 14px;
+  color: var(--text-secondary);
 }
 .place-note {
   flex-direction: column;

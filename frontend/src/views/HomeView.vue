@@ -145,6 +145,7 @@ const strip = computed(() => {
         </div>
         <NetworkPlan :mode="mode" :medians="routes?.day_metropolis_median" :zooming="zooming" />
         <p v-if="!mode" class="phone-plan-hint">{{ t('landing.phoneHint') }}</p>
+        <p v-else class="phone-plan-hint">{{ t('landing.phoneCaption') }}</p>
         <router-link class="all-places" :to="{ name: localizedRouteName('places', locale) }">{{ t('landing.allPlaces') }} <span aria-hidden="true">→</span></router-link>
       </div>
     </section>

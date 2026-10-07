@@ -466,6 +466,10 @@
           "desc": "When a place is not reached within 90 minutes in a wheelchair, the neighbourhood page says so. Two causes occur. In communes far from the centre (Santeny, Mandres-les-Roses, Périgny, for instance), the journey already takes 45 to 70 minutes without constraint and goes beyond 90 minutes at 0.8 m/s. On hills and slopes (Montmartre, Chaville, Montfermeil, Villecresnes), streets steeper than 8 % cut part of some neighbourhoods off: without removing slopes, the same places would be reached there within 90 minutes, and in 3 to 43 minutes in Montmartre and Chaville. The neighbourhoods concerned by this second cause are home to about 29,000 people, 0.4 % of the population. The calculation sees neither pavements nor help from a companion."
         },
         {
+          "name": "Two neighbourhoods without an inhabited cell.",
+          "desc": "A neighbourhood's durations are the population-weighted median of the inhabited 200 m cells whose centre lies in it; a neighbourhood with none takes the cell that contains its representative point. For two neighbourhoods, Nord 1 in Aulnay-sous-Bois and Iris 2 in Épinay-sur-Seine, that point falls in a cell without residents, absent from the grid: they take the inhabited cell, already computed, that overlaps them most. This approximation was decided on 7 October 2026, after seeing the results of the second calculation. Their durations are therefore those of a single cell, not a median over the neighbourhood."
+        },
+        {
           "name": "Access to GPs in a wheelchair.",
           "desc": "For the inclusive-mobility gap (access to GPs in a wheelchair compared with access without constraint), a wheelchair duration shorter than the duration without constraint to the same practice is replaced by the latter. This concerns 10,958 cell × practice pairs out of 1,053,176 (1.04%), by one minute in 73% of cases, because of the point of the network to which the calculation attaches each start and end. Without this rule, the verdicts are the same: access to care supported (it does not depend on these durations), inclusive mobility refuted (gap across the metropolis −21.4 points instead of −21.8)."
         },
@@ -523,6 +527,11 @@
           "when": "Oct. 2026",
           "what": "Wheelchair travel times recalculated",
           "why": "The wheelchair profile now uses the mean speed measured for manual wheelchair users, 0.8 m/s (about 2.9 km/h) instead of 4.5 km/h, and avoids slopes steeper than 8 % as well as stairs. Wheelchair times are therefore longer: for example, the median time to the nearest CAF office goes from 29 to 36 minutes. Departures and arrivals are also attached to the same point for every way of getting around: most cases where the wheelchair time came out shorter than without constraint disappear, and times without constraint change little (unchanged medians, a few tens of seconds on average, mostly shorter). The published verdicts remain the reference and are checked against this new calculation."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Durations for two neighbourhoods without an inhabited cell",
+          "why": "Nord 1 in Aulnay-sous-Bois and Iris 2 in Épinay-sur-Seine had no duration: no inhabited cell has its centre in them, and their representative point falls in a cell without residents. They now take the inhabited cell that overlaps them most. This rule was decided on 7 October 2026, after seeing the results of the second calculation."
         }
       ]
     },

@@ -16,4 +16,5 @@ cd video
 npm install
 npm run studio   # preview
 npm run render   # out/deux-adresses-clichy.mp4, 1080 x 1350, 30 fps, 22 s
+npx remotion render src/index.ts DeuxAdressesStation out/deux-adresses-clichy-stations.mp4 --codec h264 --crf 18   # 26.5 s, with the station scene
 ```

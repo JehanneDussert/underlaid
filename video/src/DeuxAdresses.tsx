@@ -10,11 +10,14 @@ import data from './data/clichy.json'
 
 export const FPS = 30
 export const DURATION = 660
+// Version with the station scene (4.5 s) before the outro.
+export const STATION_SCENE = 135
+export const DURATION_STATION = DURATION + STATION_SCENE
 
 const W = 1080
 const MAP_TOP = 250
 const MAP_H = 440
-const C = { text: '#101010', text2: '#3C3C3C', grey: '#6A6A6A', line: '#D6D6D6', soft: '#ECECEC', pink: '#E4007C', pinkBg: '#FCE4F0' }
+const C = { blue: '#0057B8', text: '#101010', text2: '#3C3C3C', grey: '#6A6A6A', line: '#D6D6D6', soft: '#ECECEC', pink: '#E4007C', pinkBg: '#FCE4F0' }
 const FONT = '"Atkinson Hyperlegible", sans-serif'
 const THEMES = [
   { key: 'thermal', label: 'Chaleur' },
@@ -71,6 +74,31 @@ function Label({ x, y, text, side, o }: { x: number; y: number; text: string; si
   )
 }
 
+// "Depuis les Bateliers : la station la plus proche à 3 min à pied, la station
+// accessible à 30 min en fauteuil roulant." (text of the project lead; the
+// durations come from the published neighbourhood file).
+function StationScene({ t }: { t: number }) {
+  if (t < 0 || t > STATION_SCENE + 10) return null
+  const out = interpolate(t, [STATION_SCENE - 15, STATION_SCENE], [1, 0], clamp)
+  const head = interpolate(t, [0, 15], [0, 1], clamp) * out
+  const one = interpolate(t, [15, 30], [0, 1], clamp) * out
+  const two = interpolate(t, [55, 70], [0, 1], clamp) * out
+  const st = data.b.station
+  const row = (o: number) => ({ opacity: o, transform: `translateY(${(1 - Math.min(1, o / Math.max(out, 1e-6))) * 12}px)`, marginTop: 26 })
+  return (
+    <div style={{ position: 'absolute', left: 60, right: 60, top: 760 }}>
+      <div style={{ fontSize: 40, fontWeight: 700, opacity: head }}>Depuis les {data.b.name} :</div>
+      <div style={{ ...row(one), fontSize: 36, lineHeight: 1.3, color: C.text2 }}>
+        la station la plus proche à <span style={{ fontSize: 64, fontWeight: 700, color: C.text }}>{st.free} min</span> à pied,
+      </div>
+      <div style={{ ...row(two), fontSize: 36, lineHeight: 1.3, color: C.text2 }}>
+        la station accessible à <span style={{ fontSize: 64, fontWeight: 700, color: C.blue }}>{st.wheelchair} min</span>{' '}
+        <span style={{ color: C.blue, fontWeight: 700 }}>en fauteuil roulant</span>.
+      </div>
+    </div>
+  )
+}
+
 function Column({ hood, x, frame }: { hood: Hood; x: number; frame: number }) {
   const appear = interpolate(frame, [170, 200], [0, 1], clamp)
   return (
@@ -103,8 +131,12 @@ function Column({ hood, x, frame }: { hood: Hood; x: number; frame: number }) {
   )
 }
 
-export const DeuxAdresses = () => {
-  const frame = useCurrentFrame()
+export const DeuxAdresses = ({ withStation = false }: { withStation?: boolean }) => {
+  const raw = useCurrentFrame()
+  // After the bars, the station scene (if any) holds the timeline still.
+  const shift = withStation ? STATION_SCENE : 0
+  const frame = raw < 498 ? raw : Math.max(498, raw - shift)
+  const sceneT = withStation ? raw - 498 : -1
   const { fps } = useVideoConfig()
   const zoom = interpolate(frame, [500, 590], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) })
   const vb = viewBox(zoom)
@@ -124,7 +156,7 @@ export const DeuxAdresses = () => {
   const ctrl = [mx + (-dy / len) * bend, my + (dx / len) * bend]
   const curve = `M${pa[0]},${pa[1]} Q${ctrl[0]},${ctrl[1]} ${pb[0]},${pb[1]}`
   const curveLen = len * 1.25
-  const columns = interpolate(frame, [480, 505], [1, 0], clamp)
+  const columns = interpolate(frame, [465, 495], [1, 0], clamp)
   const lineFade = interpolate(frame, [500, 530], [1, 0], clamp)
   const outro = interpolate(frame, [585, 610], [0, 1], clamp)
   const titleIn = interpolate(frame, [0, 22], [0, 1], clamp)
@@ -177,6 +209,8 @@ export const DeuxAdresses = () => {
         <Column hood={data.b} x={570} frame={frame} />
       </div>
 
+      {withStation ? <StationScene t={sceneT} /> : null}
+
       <div style={{ position: 'absolute', left: 60, right: 60, top: 790, textAlign: 'center', opacity: outro, transform: `translateY(${(1 - outro) * 12}px)` }}>
         <div style={{ fontSize: 76, fontWeight: 700 }}>Et le vôtre ?</div>
         <div style={{ fontSize: 46, fontWeight: 700, color: '#0057B8', marginTop: 18 }}>underlaid.fr</div>
@@ -184,7 +218,7 @@ export const DeuxAdresses = () => {
       </div>
 
       <div style={{ position: 'absolute', left: 40, right: 40, bottom: 24, fontSize: 16, color: C.grey, lineHeight: 1.35 }}>
-        Quartiers : découpage Insee, environ 2 000 habitants. Données : Insee, CSTB, L’Institut Paris Region, Airparif et Bruitparif, ADEME, Enedis. Trajet à pied entre les centres habités des deux quartiers : © les contributeurs d’OpenStreetMap. Méthode : underlaid.fr/methode
+        Quartiers : découpage Insee, environ 2 000 habitants. Données : Insee, CSTB, L’Institut Paris Region, Airparif et Bruitparif, ADEME, Enedis. Trajet à pied entre les centres habités des deux quartiers : © les contributeurs d’OpenStreetMap.{withStation ? ' Arrêts et accessibilité : contient des informations d’Île-de-France Mobilités, disponibles sous la Licence Mobilités.' : ''} Méthode : underlaid.fr/methode
       </div>
     </AbsoluteFill>
   )

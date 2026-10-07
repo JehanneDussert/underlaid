@@ -59,6 +59,9 @@ def main():
             "name": r["name"], "commune": r["commune"], "population": r["population"],
             "exposures": {k: {"rank": r["exposures"][k]["rank"], "quarter": r["exposures"][k]["quarter"]} for k in ("thermal", "pollution", "housing")},
             "path": path(g, tf, 1), "centre": [round(v, 1) for v in tf(pt.x, pt.y)],
+            # Walking time to the nearest heavy-network stop (metro, RER, train,
+            # tram) and, in a wheelchair, to the nearest accessible one.
+            "station": {"free": r["station"]["free"], "wheelchair": r["station"]["wheelchair"]},
         }
     cb = clichy.total_bounds
     out = {

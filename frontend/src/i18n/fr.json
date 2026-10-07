@@ -455,7 +455,15 @@
         },
         {
           "name": "Point de départ des trajets.",
-          "desc": "Dans 0,8 % des cas, la durée affichée en fauteuil roulant est inférieure de 1 à 8 minutes à la durée sans contrainte. La cause est le point du réseau de rues où le calcul rattache chaque départ et chaque arrivée : dans le réseau complet, c'est parfois un escalier ou un chemin qui impose un détour. Pour la même raison, certaines durées sans contrainte sont surestimées. Ce sera corrigé au prochain calcul, avec les mêmes points de départ et d'arrivée pour tous les modes."
+          "desc": "Départs et arrivées sont rattachés au même point du réseau de rues pour tous les modes. Il reste 11 cas sur 62 788 (0,02 %) où la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, de 1 minute (4 minutes pour un cas) : le calculateur raccorde lui-même chaque point au réseau, différemment selon le réseau. Ces cas sont laissés tels quels. Avant cette correction (calcul du 3 octobre), la part était de 0,8 %."
+        },
+        {
+          "name": "Vitesse et pentes en fauteuil roulant.",
+          "desc": "Le trajet en fauteuil roulant suit la vitesse moyenne mesurée chez 52 utilisateurs de fauteuil manuel dans leur vie quotidienne, 0,8 m/s, environ 2,9 km/h (Tolerico et al., 2007), sur toute la partie à pied du trajet. Il évite les escaliers et les rues de plus de 8 % de pente, seuil toléré par l'arrêté du 15 janvier 2007 sur l'accessibilité de la voirie. La pente est mesurée sur le modèle de terrain au mètre de l'IGN (RGE ALTI), sur des portions d'environ 12 m ; les ponts et les tunnels ne sont pas mesurés. Au total, 3,8 % de la longueur des chemins praticables est écartée. Avec 0,5 ou 1,0 m/s, ou un seuil de pente de 6 %, les quartiers gardent presque le même ordre (corrélation de rang de 0,95 à 0,99). Un fauteuil électrique va en général plus vite ; il n'est pas modélisé."
+        },
+        {
+          "name": "Lieux non atteints en fauteuil roulant.",
+          "desc": "Quand un lieu n'est pas atteint en 90 minutes en fauteuil roulant, la page du quartier l'indique. Deux causes se rencontrent. Dans des communes éloignées du centre (Santeny, Mandres-les-Roses, Périgny, par exemple), le trajet dure déjà 45 à 70 minutes sans contrainte et dépasse 90 minutes à 0,8 m/s. Sur les buttes et les coteaux (Montmartre, Chaville, Montfermeil, Villecresnes), les rues de plus de 8 % de pente isolent une partie des quartiers : sans le retrait des pentes, les mêmes lieux y seraient atteints en moins de 90 minutes, et en 3 à 43 minutes à Montmartre et à Chaville. Les quartiers concernés par cette seconde cause rassemblent environ 29 000 habitants, 0,4 % de la population. Le calcul ne voit ni les trottoirs ni l'aide d'un accompagnant."
         },
         {
           "name": "Accès aux médecins en fauteuil roulant.",
@@ -510,6 +518,11 @@
           "when": "Oct. 2026",
           "what": "Recensement 2022 adopté",
           "why": "Population, logements surpeuplés et résidences secondaires passent du recensement 2021 au recensement 2022 ; le revenu reste en 2021, dernier millésime publié à l'échelle du quartier. Les chiffres clés du site sont mis à jour. Les verdicts des hypothèses, calculés sur 2021, restent les résultats officiels et sont contrôlés avec 2022. La suroccupation change de définition à l'Insee (taux médian de 13,5 % à 24,6 %, sans évolution réelle)."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Durées en fauteuil roulant recalculées",
+          "why": "Le profil fauteuil roulant suit désormais la vitesse moyenne mesurée chez les utilisateurs de fauteuil manuel, 0,8 m/s (environ 2,9 km/h) au lieu de 4,5 km/h, et évite les pentes de plus de 8 % en plus des escaliers. Les durées en fauteuil roulant s'allongent donc : par exemple, la durée médiane jusqu'à la CAF la plus proche passe de 29 à 36 minutes. Départs et arrivées sont aussi rattachés au même point pour tous les modes : la plupart des cas où la durée en fauteuil roulant ressortait plus courte que sans contrainte disparaissent, et les durées sans contrainte changent peu (médianes inchangées, quelques dizaines de secondes en moyenne, le plus souvent à la baisse). Les verdicts publiés restent la référence et sont contrôlés avec ce nouveau calcul."
         }
       ]
     },
@@ -559,6 +572,7 @@
     "hint": "Choisissez un mode pour voir les durées sur le plan : médianes des quartiers de la métropole, à pied et en transports en commun, mardi 13 octobre 2026 à 10 h.",
     "hintLink": "Que recouvrent ces trois modes ?",
     "phoneHint": "Choisissez un mode pour voir les durées.",
+    "phoneCaption": "Durées médianes des quartiers, à pied et en transports en commun, mardi à 10 h.",
     "allPlaces": "Tous les lieux du quotidien",
     "allPlacesShort": "Tous les lieux",
     "strip": "À Paris, il faut en médiane {wc} à pied pour rejoindre un arrêt accessible du métro, du RER, du train ou du tram, contre {free} sans contrainte.",
@@ -567,7 +581,7 @@
   },
   "plan": {
     "listLabel": "Lieux du quotidien sur le plan",
-    "listLabelMode": "Durée médiane depuis un quartier de la métropole, mode « {mode} »",
+    "listLabelMode": "Durée médiane depuis un quartier de la métropole, à pied et en transports en commun, mode « {mode} »",
     "fromNeighbourhood": "Depuis un quartier",
     "here": "Vous êtes ici",
     "minutes": "{n} min",
@@ -768,7 +782,7 @@
       "title": "Comment sont calculées ces durées ?",
       "free": "Marche à 4,5 km/h, sur tout le réseau de transports en commun.",
       "slow": "Même réseau, mais marche à 3,4 km/h sur toutes les portions à pied : depuis chez vous, jusqu'à l'arrêt, dans les correspondances et jusqu'au lieu d'arrivée. C'est la vitesse de marche habituelle mesurée chez les personnes de 80 ans et plus (Bohannon et Andrews, 2011). Ce profil peut aussi donner une idée du trajet avec une douleur, en fin de grossesse ou avec un jeune enfant qui marche à côté.",
-      "wheelchair": "Seuls les arrêts et stations déclarés accessibles sans marches sont utilisés. Le calcul ne voit ni les trottoirs, ni les pentes, ni les pannes d'ascenseur, ni l'aide parfois nécessaire pour monter dans le train : les durées réelles sont souvent plus longues.",
+      "wheelchair": "Seuls les arrêts et stations déclarés accessibles sans marches sont utilisés. Le trajet évite les escaliers et les pentes de plus de 8 %, à 0,8 m/s (vitesse moyenne mesurée en fauteuil roulant manuel). Le calcul ne voit ni l'état des trottoirs, ni les pannes d'ascenseur, ni l'aide parfois nécessaire pour monter dans le train : les durées réelles sont souvent plus longues.",
       "all": "Toutes les durées : départ un mardi à 10 h (la nuit : à 1 h), horaires réels des transports, valeur médiane sur le créneau.",
       "link": "Méthode détaillée"
     },
@@ -778,6 +792,7 @@
     "nearest": "le plus proche en",
     "range": "{lo} à {hi} min",
     "over90": "plus de 90 min",
+    "wheelchairUnreached": "Selon le calcul, non atteignable en fauteuil roulant en moins de 90 minutes (vitesse de 0,8 m/s, rues de plus de 8 % de pente évitées).",
     "notYet": "pas encore calculé",
     "same": "identique",
     "gap": "{n} min",
@@ -832,6 +847,9 @@
       "food_store": "Supérette ou supermarché",
       "creche": "Crèche (publique ou privée)",
       "nursery_school": "École maternelle publique",
+      "elementary_public": "École élémentaire publique",
+      "college_public": "Collège public",
+      "lycee_public": "Lycée public",
       "post_office": "Bureau de poste",
       "police": "Commissariat",
       "social_centre": "Centre social",
@@ -842,7 +860,7 @@
       "toilets_24h": "Toilettes ouvertes 24 h/24"
     },
     "parisOnly": "La plupart des communes de petite couronne ne publient pas de liste ouverte de leurs toilettes publiques et points d'eau.",
-    "station": "En fauteuil roulant, une grande partie de l'écart se joue à l'entrée du réseau : depuis votre quartier, l'arrêt accessible le plus proche (métro, RER, train ou tram) est à {wc} à pied, contre {free} pour l'arrêt le plus proche. Ces durées ne tiennent pas compte des trottoirs, des pentes ni des pannes d'ascenseur : la réalité est souvent plus longue.",
+    "station": "En fauteuil roulant, une grande partie de l'écart se joue à l'entrée du réseau : depuis votre quartier, l'arrêt accessible le plus proche (métro, RER, train ou tram) est à {wc} à pied, contre {free} pour l'arrêt le plus proche. Ces durées écartent les escaliers et les pentes de plus de 8 %, mais ne tiennent compte ni de l'état des trottoirs ni des pannes d'ascenseur : la réalité est souvent plus longue.",
     "stationLink": "Ce que le calcul ne voit pas",
     "part3": {
       "title": "Les deux à la fois",
@@ -869,20 +887,21 @@
       "care": "Dans {commune}, aucun autre quartier n'a un accès aux soins plus facile. | Dans {commune}, 1 quartier sur {total} a un accès aux soins plus facile. | Dans {commune}, {count} quartiers sur {total} ont un accès aux soins plus facile.",
       "names": "Les mieux placés : {names}."
     },
-    "stationSame": "En fauteuil roulant : l'arrêt le plus proche de votre quartier (métro, RER, train ou tram) est accessible, à {wc} à pied. Ces durées ne tiennent pas compte des trottoirs, des pentes ni des pannes d'ascenseur : la réalité est souvent plus longue.",
+    "stationSame": "En fauteuil roulant : l'arrêt le plus proche de votre quartier (métro, RER, train ou tram) est accessible, à {wc} à pied. Ces durées écartent les escaliers et les pentes de plus de 8 %, mais ne tiennent compte ni de l'état des trottoirs ni des pannes d'ascenseur : la réalité est souvent plus longue.",
     "needRank": {
       "left": "plus près",
       "right": "le quart le plus loin",
       "sentence": "Sur 10 quartiers, aucun n'est plus près de ces services | Sur 10 quartiers, 1 est plus près de ces services | Sur 10 quartiers, {n} sont plus près de ces services",
       "sentenceParis": "Sur 10 quartiers parisiens, aucun n'est plus près de ces services | Sur 10 quartiers parisiens, 1 est plus près de ces services | Sur 10 quartiers parisiens, {n} sont plus près de ces services",
       "careNote": "Position calculée sur les urgences seulement : le médecin et la pharmacie sont à quelques minutes de presque tous les quartiers.",
+      "childrenNote": "L'établissement le plus proche n'est pas forcément celui du secteur.",
       "noMode": "Choisissez un mode de déplacement pour situer votre quartier."
     },
     "seo": {
       "title": "{name} : cadre de vie et lieux à portée",
       "description": "{summary}. Durées vers les lieux du quotidien, à pied et en transports en commun, selon le mode de déplacement."
     },
-    "durationsLimit": "Dans 0,8 % des cas, la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, à cause du point du réseau de rues où le calcul rattache chaque départ et chaque arrivée ; certaines durées sans contrainte sont aussi surestimées pour la même raison. Ce sera corrigé au prochain calcul."
+    "durationsLimit": "Dans 0,02 % des cas, la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, d'une minute le plus souvent, à cause de la façon dont le calculateur raccorde les points au réseau de rues."
   },
   "explore": {
     "title": "Explorer la carte",
@@ -1158,7 +1177,7 @@
     "known": [
       "La carte elle-même ne se parcourt pas quartier par quartier au clavier : la liste des quartiers en est l'alternative.",
       "Les premiers crans des couleurs de la carte sont pâles sur fond blanc (contraste de 1,5:1) ; la valeur est toujours donnée par écrit (légende, fiche, liste).",
-      "Les durées en fauteuil roulant ne tiennent compte ni des trottoirs, ni des pentes, ni des pannes d'ascenseur."
+      "Les durées en fauteuil roulant écartent les escaliers et les pentes de plus de 8 %, mais ne tiennent compte ni de l'état des trottoirs ni des pannes d'ascenseur."
     ],
     "contactTitle": "Signaler un problème",
     "contact": "Si une page ou une information ne vous est pas accessible, écrivez à la porteuse du projet : une réponse ou une version accessible du contenu vous sera proposée.",

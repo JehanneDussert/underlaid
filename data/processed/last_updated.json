@@ -19,6 +19,15 @@
     "pedestrian_paths_iris.geojson": "2026-10-01T12:24:19Z",
     "population_iris.geojson": "2026-10-01T12:24:19Z",
     "qpv_boundaries_mgp.geojson": "2026-10-01T12:24:19Z",
+    "quartiers": "2026-10-07T02:11:00Z",
+    "routes_iris_sun10.json": "2026-10-07T02:11:00Z",
+    "routes_iris_tue01.json": "2026-10-07T02:11:00Z",
+    "routes_iris_tue10.json": "2026-10-07T02:11:00Z",
+    "routes_iris_tue21.json": "2026-10-07T02:11:00Z",
+    "routes_neighbourhood_tue10.json": "2026-10-07T02:11:00Z",
+    "routes_paris_tue10.json": "2026-10-07T02:11:00Z",
+    "routes_stations_iris.json": "2026-10-07T02:11:00Z",
+    "routes_summary.json": "2026-10-07T02:11:00Z",
     "school_ac_context_arrondissement.geojson": "2026-10-01T12:24:19Z",
     "secondary_residences_iris.geojson": "2026-10-01T12:24:19Z",
     "social_index_iris.geojson": "2026-10-01T12:24:19Z",
@@ -26,5 +35,6 @@
     "street_lighting_iris.geojson": "2026-10-01T12:24:19Z",
     "tree_age_context_arrondissement.geojson": "2026-10-01T12:24:19Z",
     "vulnerability_score_iris.geojson": "2026-10-01T12:24:19Z"
-  }
+  },
+  "published_at": "2026-10-07T02:11:00Z"
 }

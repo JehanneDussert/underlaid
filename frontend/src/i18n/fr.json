@@ -480,6 +480,10 @@
         {
           "name": "Toilettes publiques et points d'eau.",
           "desc": "Seule la Ville de Paris publie une liste complète (toilettes et fontaines). En petite couronne, des listes partielles existent mais ne couvrent que quelques communes : Grand Paris Seine Ouest (173 fontaines et 33 toilettes, pour 7 communes), Sceaux (21 fontaines), Montreuil (22 fontaines, liste de 2019) ; la Seine-Saint-Denis publie un extrait d'OpenStreetMap (271 points d'eau), dont la complétude n'est pas connue. Ces lieux ne sont donc affichés que pour les quartiers de Paris."
+        },
+        {
+          "name": "Accessibilité des lieux eux-mêmes.",
+          "desc": "Acceslibre, la base publique qui décrit l'accessibilité de l'entrée des établissements, n'est pas utilisée ici : sa couverture est très inégale. À l'extraction du 6 octobre 2026 (données mises à jour le 5 octobre), elle compte 136 fiches pour 10 000 habitants à Paris, 79 dans les Hauts-de-Seine, 58 en Seine-Saint-Denis et 49 dans le Val-de-Marne. L'absence de fiche signale une information manquante, pas un lieu inaccessible."
         }
       ]
     },
@@ -672,6 +676,8 @@
   },
   "hypotheses": {
     "intro": "Avant de regarder les résultats, les hypothèses à tester ont été écrites et datées, avec la règle qui décide du verdict. Cela évite de chercher, après coup, l'histoire que les chiffres semblent raconter.",
+    "additionalTitle": "Test complémentaire",
+    "additionalIntro": "Ce test suit la même règle de verdict que les hypothèses ci-dessus, mais il ne peut pas être considéré comme pré-enregistré de façon vérifiable.",
     "verdict": {
       "supported": "Soutenue",
       "refuted": "Infirmée",
@@ -703,12 +709,27 @@
       "tableCaption": "Part des quartiers dans le quart le plus éloigné des services publics (à pied et en transports en commun, mardi 10 h), selon les ressources des habitants. Tiers de ressources calculés dans chaque département.",
       "after": "Les quartiers aux ressources les plus élevées sont plus souvent loin des services publics, y compris à densité comparable dans les Hauts-de-Seine et le Val-de-Marne. Les données ne permettent pas d'en établir la cause.",
       "caveat": "Cet indicateur mesure le temps de trajet à pied et en transports en commun. Il ne tient compte ni du besoin de recourir à ces services, ni de l'usage de la voiture ou des démarches en ligne.",
-      "control": "Part dans le quart le plus éloigné, ressources les plus faibles contre les plus élevées : Paris {l75} contre {h75}, Hauts-de-Seine {l92} contre {h92}, Seine-Saint-Denis {l93} contre {h93}, Val-de-Marne {l94} contre {h94} ; même résultat en fauteuil roulant."
+      "control": "Part dans le quart le plus éloigné, ressources les plus faibles contre les plus élevées : Paris {l75} contre {h75}, Hauts-de-Seine {l92} contre {h92}, Seine-Saint-Denis {l93} contre {h93}, Val-de-Marne {l94} contre {h94} ; même résultat en fauteuil roulant.",
+      "control2": "écart entre les ressources les plus faibles et les plus élevées, sans contrainte : Paris −3,8 points, Hauts-de-Seine −22,1, Seine-Saint-Denis −31,7, Val-de-Marne −20,2 ; en fauteuil roulant : −15,6, −27,2, −28,6, −17,8."
+    },
+    "carFree": {
+      "statement": "Les quartiers où la part de ménages sans voiture est la plus forte sont plus souvent loin des services publics (mairie, France Services, CAF, CPAM, France Travail, bureau de poste), à pied et en transports en commun.",
+      "result": "Non, c'est l'inverse : dans les Hauts-de-Seine, la Seine-Saint-Denis et le Val-de-Marne, les quartiers où le plus de ménages n'ont pas de voiture sont nettement moins souvent loin des services publics que ceux où le moins de ménages en sont dépourvus. À Paris, l'écart va dans le même sens, mais il est faible.",
+      "tableCaption": "Part des quartiers dans le quart le plus éloigné des services publics (à pied et en transports en commun, mardi 10 h, sans contrainte), selon la part de ménages sans voiture. Tiers calculés dans chaque département ; recensement 2022, calcul du 3 octobre 2026.",
+      "lowestThird": "Le plus de ménages sans voiture",
+      "highestThird": "Le moins de ménages sans voiture",
+      "after": "À densité comparable, l'écart reste net : −34 points dans les Hauts-de-Seine, −42 en Seine-Saint-Denis, −31 dans le Val-de-Marne (−8 à Paris). Environ 213 000 ménages sans voiture vivent tout de même dans un quartier du quart le plus éloigné, sur 1,5 million dans la métropole.",
+      "caveat": "Limites : la part de ménages sans voiture vient du recensement 2022 (ménages ayant au moins une voiture) ; elle dépend en partie de la densité et du revenu, et le test ne dit rien des raisons de l'écart. L'éloignement est mesuré à pied et en transports en commun, sans tenir compte du besoin réel de ces services ni des démarches en ligne. Contrôle complémentaire : à part de ménages sans voiture comparable, l'écart entre ressources faibles et élevées disparaît presque dans les Hauts-de-Seine (+1 point) et le Val-de-Marne (−2), moins en Seine-Saint-Denis (+9,5) ; ce contrôle peut effacer une partie de l'écart sans rien dire de sa cause.",
+      "control2": "part dans le quart le plus éloigné, tiers le plus sans voiture contre le moins : Paris 0,6 % contre 8,0 %, Hauts-de-Seine 14,1 % contre 64,6 %, Seine-Saint-Denis 13,3 % contre 67,5 %, Val-de-Marne 16,0 % contre 62,5 %.",
+      "note": "Formulé le 3 octobre 2026, avant le calcul, dans des notes de travail non versionnées. La première trace datée dans le dépôt (le script du test, 3 octobre, 22 h 53) est postérieure d'une minute au calcul. Il ne peut donc pas être considéré comme pré-enregistré de façon vérifiable. Le calcul a été fait sur le recensement 2022 et le premier calcul des durées."
     },
     "control": {
       "label": "Contrôle avec le recensement 2022 :",
       "confirmed": "confirmé",
       "notConfirmed": "non confirmé"
+    },
+    "control2": {
+      "label": "Contrôle avec le second calcul des durées :"
     }
   },
   "nbhd": {
@@ -1078,6 +1099,17 @@
     "portee": {
       "intro": "Pour chaque besoin, le site calcule la durée vers le lieu le plus proche, à pied et en transports en commun, au départ des carreaux habités du quartier, un mardi à 10 h. La valeur affichée est la médiane du quartier, pondérée par la population.",
       "info": "Ces durées sont données pour information : elles n'entrent pas dans le cumul. La nuit (départ à 1 h), seules les urgences et les stations sont affichées, toujours à pied et en transports en commun.",
+      "definition": "Une durée de trajet est la plus courte entre la marche seule et un trajet qui combine marche et transports en commun (horaires d'Île-de-France Mobilités, départs entre 10 h et 11 h, durée médiane). Le « réseau lourd » réunit le tram, le métro, le RER et les trains Transilien. En fauteuil roulant, seuls les arrêts et les courses signalés accessibles dans les horaires d'Île-de-France Mobilités (GTFS) sont utilisés ; une variante compte aussi les arrêts et courses dont l'accessibilité n'est pas renseignée, et les conclusions ne sont retenues que si elles tiennent dans les deux.",
+      "secondTitle": "Second calcul des durées (octobre 2026)",
+      "second": "Les durées publiées viennent d'un second calcul, pré-enregistré le 4 octobre 2026, complété le 5 octobre (règles pour les ponts et les erreurs du modèle de terrain, fixées avant tout calcul de trajets). Départs et arrivées sont rattachés au même point du réseau de rues pour toutes les façons de se déplacer. Le fauteuil roulant avance à 0,8 m/s et évite les escaliers et les rues de plus de 8 % de pente, mesurée sur le modèle de terrain au mètre de l'IGN (RGE ALTI). Les ponts et les tunnels ne sont pas mesurés ; les rampes qui y mènent le sont, à partir de points situés à plus de 20 m de l'ouvrage.",
+      "sensitivity": "Sensibilité. À 0,5 m/s, la durée médiane jusqu'à la CAF la plus proche est de 44 minutes ; à 0,8 m/s, 36 minutes ; à 1,0 m/s, 32 minutes (24 minutes sans contrainte). Avec un seuil de pente de 6 % au lieu de 8 %, les médianes changent à peine. Selon le lieu, 1,5 à 8,6 % des quartiers changent de quart (celui des quartiers les plus éloignés) à 0,5 m/s, 2,6 à 7,5 % à 1,0 m/s, et 1,7 à 3,6 % avec le seuil de 6 % pour les services publics et les soins (jusqu'à 8,9 % pour l'école maternelle).",
+      "checks": "Contrôles. Les verdicts publiés qui dépendent des durées (services publics, sans contrainte et en fauteuil roulant) restent les résultats officiels ; refaits avec le second calcul, ils sont confirmés, de même que le test complémentaire sur les ménages sans voiture. La durée en fauteuil roulant ressort plus courte que la durée sans contrainte dans 11 cas sur 62 788 (0,02 %), d'une minute sauf un cas de 4 minutes ; ils sont laissés tels quels.",
+      "thresholds": "Seuils de publication. Avant de voir les résultats, des seuils qui bloquent la publication ont été écrits et enregistrés dans le dépôt (6 octobre 2026, 22 h 17). Deux ont été franchis : deux quartiers sans durée, et plus de 1 % de la population au-delà de 90 minutes de la CAF en fauteuil roulant. Le 7 octobre à 3 h 52, la porteuse du projet a décidé : l'effet de la vitesse dans les communes éloignées est un résultat, accepté ; les quartiers isolés par des rues réellement en pente restent tels quels, sans nouvelle règle de pente ; les deux quartiers sans durée reçoivent le carreau habité qui les recouvre le plus (voir les limites).",
+      "inProgressTitle": "En cours",
+      "inProgress": [
+        "Décomposition des durées en fauteuil roulant : part des trajets faits entièrement à pied, et part de l'écart due à la vitesse et aux pentes ou aux arrêts inaccessibles. Analyse descriptive, sans verdict, pré-enregistrée le 7 octobre 2026.",
+        "Archive de l'état des ascenseurs d'Île-de-France Mobilités, relevé toutes les heures depuis le 6 octobre 2026 ; elle n'est pas encore utilisée dans les durées."
+      ],
       "tableCaption": "Sources et précautions par lieu",
       "colPlace": "Lieu",
       "colSource": "Source",
@@ -1097,6 +1129,21 @@
           "place": "École maternelle publique",
           "source": "BPE de l'Insee",
           "note": "L'école la plus proche n'est pas forcément celle du secteur scolaire."
+        },
+        {
+          "place": "École élémentaire publique",
+          "source": "BPE de l'Insee",
+          "note": "Écoles publiques seulement. Les écoles privées sous contrat sont calculées mais pas affichées : elles ne sont pas accessibles à toutes les familles et feraient paraître mieux desservis les quartiers aisés. L'école la plus proche n'est pas forcément celle du secteur scolaire."
+        },
+        {
+          "place": "Collège public",
+          "source": "BPE de l'Insee",
+          "note": "Même règle : public seulement ; le collège le plus proche n'est pas forcément celui du secteur."
+        },
+        {
+          "place": "Lycée public",
+          "source": "BPE de l'Insee",
+          "note": "Lycées généraux, technologiques et professionnels publics ; le plus proche n'est pas forcément celui de l'affectation."
         },
         {
           "place": "Parc ou jardin",

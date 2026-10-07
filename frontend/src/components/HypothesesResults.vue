@@ -11,7 +11,9 @@ defineProps({
   // Heading level of each hypothesis, to fit the page outline.
   level: { type: Number, default: 3 },
 })
-const { t, locale } = useI18n()
+const { t, te, locale } = useI18n()
+// Column labels of a hypothesis table: its own if given, else residents' resources.
+const col = (h, key) => (te(`hypotheses.${h.id}.${key}`) ? t(`hypotheses.${h.id}.${key}`) : t(`hypotheses.${key}`))
 
 // French writes the first day of a month "1er".
 const date = (iso) => {
@@ -31,43 +33,59 @@ function controlText(h) {
   }
   return t(`hypotheses.${h.id}.control`, args)
 }
+// Pre-registered hypotheses, then the additional test (households without a
+// car): its rule was only in unversioned notes before the calculation, so it
+// cannot be shown as verifiably pre-registered (decision of 7 October 2026).
+const groups = [
+  { id: 'pre', items: HYPOTHESES.filter((h) => !h.additional) },
+  { id: 'additional', title: 'hypotheses.additionalTitle', intro: 'hypotheses.additionalIntro', items: HYPOTHESES.filter((h) => h.additional) },
+].filter((g) => g.items.length)
 const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(v / 100)
 </script>
 
 <template>
   <div class="hypotheses">
     <p class="hypotheses-intro">{{ t('hypotheses.intro') }}</p>
-    <ul class="hypotheses-list" role="list">
-      <li v-for="h in HYPOTHESES" :key="h.id" class="hypothesis" :class="`verdict-${h.verdict}`">
-        <span class="verdict-tag">{{ t(`hypotheses.verdict.${h.verdict}`) }}</span>
-        <component :is="`h${level}`" class="hypothesis-statement">{{ t(`hypotheses.${h.id}.statement`) }}</component>
-        <p class="hypothesis-result">{{ t(`hypotheses.${h.id}.result`) }}</p>
-        <table v-if="h.table" class="hypothesis-table">
-          <caption>{{ t(`hypotheses.${h.id}.tableCaption`) }}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{{ t('hypotheses.department') }}</th>
-              <th scope="col">{{ t('hypotheses.lowestThird') }}</th>
-              <th scope="col">{{ t('hypotheses.highestThird') }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in h.table" :key="row.dep">
-              <th scope="row">{{ t(`hypotheses.dep.${row.dep}`) }}</th>
-              <td>{{ pct(row.lowest) }}</td>
-              <td>{{ pct(row.highest) }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <p v-if="h.table" class="hypothesis-result">{{ t(`hypotheses.${h.id}.after`) }}</p>
-        <p v-if="h.table" class="hypothesis-caveat">{{ t(`hypotheses.${h.id}.caveat`) }}</p>
-        <p v-if="h.control2022" class="hypothesis-control">
-          <strong>{{ t('hypotheses.control.label') }} {{ t(h.control2022.confirmed ? 'hypotheses.control.confirmed' : 'hypotheses.control.notConfirmed') }}.</strong>
-          {{ controlText(h) }}
-        </p>
-        <p class="hypothesis-date">{{ t('hypotheses.written', { date: date(h.written) }) }}</p>
-      </li>
-    </ul>
+    <template v-for="g in groups" :key="g.id">
+      <component :is="`h${level}`" v-if="g.title" class="hypotheses-group-title">{{ t(g.title) }}</component>
+      <p v-if="g.intro" class="hypotheses-intro">{{ t(g.intro) }}</p>
+      <ul class="hypotheses-list" role="list">
+        <li v-for="h in g.items" :key="h.id" class="hypothesis" :class="`verdict-${h.verdict}`">
+          <span class="verdict-tag">{{ t(`hypotheses.verdict.${h.verdict}`) }}</span>
+          <component :is="`h${g.title ? level + 1 : level}`" class="hypothesis-statement">{{ t(`hypotheses.${h.id}.statement`) }}</component>
+          <p class="hypothesis-result">{{ t(`hypotheses.${h.id}.result`) }}</p>
+          <table v-if="h.table" class="hypothesis-table">
+            <caption>{{ t(`hypotheses.${h.id}.tableCaption`) }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ t('hypotheses.department') }}</th>
+                <th scope="col">{{ col(h, 'lowestThird') }}</th>
+                <th scope="col">{{ col(h, 'highestThird') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in h.table" :key="row.dep">
+                <th scope="row">{{ t(`hypotheses.dep.${row.dep}`) }}</th>
+                <td>{{ pct(row.lowest) }}</td>
+                <td>{{ pct(row.highest) }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-if="h.table" class="hypothesis-result">{{ t(`hypotheses.${h.id}.after`) }}</p>
+          <p v-if="h.table" class="hypothesis-caveat">{{ t(`hypotheses.${h.id}.caveat`) }}</p>
+          <p v-if="h.control2022" class="hypothesis-control">
+            <strong>{{ t('hypotheses.control.label') }} {{ t(h.control2022.confirmed ? 'hypotheses.control.confirmed' : 'hypotheses.control.notConfirmed') }}.</strong>
+            {{ controlText(h) }}
+          </p>
+          <p v-if="h.control2" class="hypothesis-control">
+            <strong>{{ t('hypotheses.control2.label') }} {{ t('hypotheses.control.confirmed') }}.</strong>
+            {{ t(`hypotheses.${h.id}.control2`) }}
+          </p>
+          <p v-if="h.note" class="hypothesis-caveat">{{ t(`hypotheses.${h.id}.note`) }}</p>
+          <p v-if="!h.additional" class="hypothesis-date">{{ t('hypotheses.written', { date: date(h.written) }) }}</p>
+        </li>
+      </ul>
+    </template>
   </div>
 </template>
 
@@ -127,6 +145,9 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
   color: var(--text-secondary);
   border-left: 3px solid var(--line-strong);
   padding-left: 12px;
+}
+.hypotheses-group-title {
+  margin: 28px 0 0;
 }
 .hypothesis-control {
   margin: 0;

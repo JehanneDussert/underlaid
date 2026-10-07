@@ -52,7 +52,9 @@ spec = importlib.util.spec_from_file_location("routes_means", Path(__file__).res
 rm = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(rm)
 
-OUT = config.DATA_INTERIM / "analysis" / "carfree_means.txt"
+# ROUTES_VERSION=2: same test on the second travel-time calculation (check),
+# separate output; the 3 October result stays the reference.
+OUT = config.DATA_INTERIM / "analysis" / ("carfree_means_v2.txt" if getattr(rm.agg, "VERSION", "1") == "2" else "carfree_means.txt")
 DEPS = rm.DEPS
 
 

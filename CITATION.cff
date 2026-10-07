@@ -30,7 +30,12 @@ abstract: >-
   pharmacies reachable on foot and by public transport, shared among
   everyone who can reach them (E2SFCA); inclusive mobility (step-free
   travel) is published for information. Built entirely from French public
-  open data; methodology documented in SCORING.md. Code under MIT; the
+  open data; methodology documented in SCORING.md. Since version 0.3.0,
+  travel times without a car (on foot and by public transport) to everyday
+  places are published for information, for three ways of getting around
+  (without constraint, slow walking, wheelchair at 0.8 m/s avoiding stairs
+  and slopes above 8 %), and population and residents' resources use the
+  2022 census. Code under MIT; the
   published data files are under the Open Database License (ODbL) 1.0.
 keywords:
   - environmental justice
@@ -41,6 +46,8 @@ keywords:
   - climate adaptation
   - access to care
   - accessibility
+  - travel time
+  - wheelchair
 license: MIT
-version: 0.2.0
-date-released: "2026-10-02"
+version: 0.3.0
+date-released: "2026-10-07"

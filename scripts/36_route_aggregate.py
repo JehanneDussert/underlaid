@@ -95,7 +95,20 @@ def cells_by_iris() -> pd.DataFrame:
     squares["geometry"] = squares.to_crs("EPSG:3035").buffer(100, cap_style=3).to_crs(cells.crs)
     rep = gpd.GeoDataFrame(missing[["code_iris"]].copy(), geometry=missing.representative_point(), crs=iris.crs)
     extra = gpd.sjoin(rep, squares[["cell_id", "pop", "geometry"]], predicate="within")[["cell_id", "code_iris", "pop"]]
-    return pd.concat([main, extra], ignore_index=True)
+    # Representative point in an uninhabited square (absent from the grid):
+    # the routed cell whose square overlaps the IRIS most (7 October 2026;
+    # Aulnay-sous-Bois Nord 1 and Épinay-sur-Seine Iris 2).
+    still = missing[~missing.code_iris.isin(extra.code_iris)]
+    rows = []
+    if len(still):
+        sq = squares.to_crs("EPSG:2154")
+        for code, geom in zip(still.code_iris, still.to_crs("EPSG:2154").geometry):
+            ov = sq[sq.intersects(geom)].copy()
+            if len(ov):
+                ov["a"] = ov.intersection(geom).area
+                best = ov.sort_values("a").iloc[-1]
+                rows.append({"cell_id": best["cell_id"], "code_iris": code, "pop": best["pop"]})
+    return pd.concat([main, extra, pd.DataFrame(rows, columns=["cell_id", "code_iris", "pop"])], ignore_index=True)
 
 
 def load_task(name: str) -> pd.DataFrame | None:

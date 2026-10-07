@@ -41,6 +41,13 @@ export const NEEDS = [
     places: [
       { id: 'creche', source: 'places' },
       { id: 'nursery_school', source: 'places' },
+      // Public schools (second routing run, pre-registered 4 October 2026).
+      // Private schools under contract are computed but not shown (decision of
+      // 6 October 2026: not open to every family, they would make well-off
+      // neighbourhoods look better served).
+      { id: 'elementary_public', source: 'places' },
+      { id: 'college_public', source: 'places' },
+      { id: 'lycee_public', source: 'places' },
     ],
   },
   { id: 'post', color: '#8C6E00', column: 1, places: [{ id: 'post_office', source: 'times' }] },

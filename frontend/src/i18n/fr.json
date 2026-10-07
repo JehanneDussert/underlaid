@@ -588,7 +588,7 @@
     "phoneCaption": "Durées médianes des quartiers, à pied et en transports en commun, mardi à 10 h.",
     "allPlaces": "Tous les lieux du quotidien",
     "allPlacesShort": "Tous les lieux",
-    "strip": "À Paris, il faut en médiane {wc} à pied pour rejoindre un arrêt accessible du métro, du RER, du train ou du tram, contre {free} sans contrainte.",
+    "strip": "À Paris, il faut en médiane {wc} en fauteuil roulant pour rejoindre un arrêt accessible du métro, du RER, du train ou du tram, contre {free} à pied sans contrainte jusqu'à l'arrêt le plus proche.",
     "stripMinutes": "{n} minutes",
     "planNote": "Plan : illustration"
   },
@@ -890,7 +890,7 @@
       "toilets_24h": "Toilettes ouvertes 24 h/24"
     },
     "parisOnly": "La plupart des communes de petite couronne ne publient pas de liste ouverte de leurs toilettes publiques et points d'eau.",
-    "station": "En fauteuil roulant, une grande partie de l'écart se joue à l'entrée du réseau : depuis votre quartier, l'arrêt accessible le plus proche (métro, RER, train ou tram) est à {wc} à pied, contre {free} pour l'arrêt le plus proche. Ces durées écartent les escaliers et les pentes de plus de 8 %, mais ne tiennent compte ni de l'état des trottoirs ni des pannes d'ascenseur : la réalité est souvent plus longue.",
+    "station": "En fauteuil roulant, une grande partie de l'écart se joue à l'entrée du réseau : depuis votre quartier, l'arrêt accessible le plus proche (métro, RER, train ou tram) est à {wc} en fauteuil roulant, contre {free} à pied sans contrainte pour l'arrêt le plus proche. Ces durées écartent les escaliers et les pentes de plus de 8 %, mais ne tiennent compte ni de l'état des trottoirs ni des pannes d'ascenseur : la réalité est souvent plus longue.",
     "stationLink": "Ce que le calcul ne voit pas",
     "part3": {
       "title": "Les deux à la fois",
@@ -917,7 +917,7 @@
       "care": "Dans {commune}, aucun autre quartier n'a un accès aux soins plus facile. | Dans {commune}, 1 quartier sur {total} a un accès aux soins plus facile. | Dans {commune}, {count} quartiers sur {total} ont un accès aux soins plus facile.",
       "names": "Les mieux placés : {names}."
     },
-    "stationSame": "En fauteuil roulant : l'arrêt le plus proche de votre quartier (métro, RER, train ou tram) est accessible, à {wc} à pied. Ces durées écartent les escaliers et les pentes de plus de 8 %, mais ne tiennent compte ni de l'état des trottoirs ni des pannes d'ascenseur : la réalité est souvent plus longue.",
+    "stationSame": "En fauteuil roulant : l'arrêt le plus proche de votre quartier (métro, RER, train ou tram) est accessible, à {wc} en fauteuil roulant. Ces durées écartent les escaliers et les pentes de plus de 8 %, mais ne tiennent compte ni de l'état des trottoirs ni des pannes d'ascenseur : la réalité est souvent plus longue.",
     "needRank": {
       "left": "plus près",
       "right": "le quart le plus loin",

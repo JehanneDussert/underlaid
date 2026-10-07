@@ -588,7 +588,7 @@
     "phoneCaption": "Median neighbourhood durations, on foot and by public transport, Tuesday at 10:00.",
     "allPlaces": "All everyday places",
     "allPlacesShort": "All places",
-    "strip": "In Paris, it takes a median {wc} on foot to reach an accessible metro, RER, train or tram stop, against {free} without constraint.",
+    "strip": "In Paris, it takes a median {wc} in a wheelchair to reach an accessible metro, RER, train or tram stop, against {free} on foot without constraint to the nearest stop.",
     "stripMinutes": "{n} minutes",
     "planNote": "Plan: illustration"
   },
@@ -890,7 +890,7 @@
       "toilets_24h": "Toilets open 24 hours"
     },
     "parisOnly": "Most inner-suburb communes do not publish an open list of their public toilets and water points.",
-    "station": "In a wheelchair, much of the difference is at the entrance to the network: from your neighbourhood, the nearest accessible stop (metro, RER, train or tram) is {wc} away on foot, against {free} for the nearest stop. These durations avoid stairs and slopes steeper than 8 %, but take no account of pavement condition or broken lifts: reality is often longer.",
+    "station": "In a wheelchair, much of the difference is at the entrance to the network: from your neighbourhood, the nearest accessible stop (metro, RER, train or tram) is {wc} away in a wheelchair, against {free} on foot without constraint for the nearest stop. These durations avoid stairs and slopes steeper than 8 %, but take no account of pavement condition or broken lifts: reality is often longer.",
     "stationLink": "What the calculation does not see",
     "part3": {
       "title": "Both at once",
@@ -917,7 +917,7 @@
       "care": "In {commune}, no other neighbourhood has easier access to care. | In {commune}, 1 neighbourhood out of {total} has easier access to care. | In {commune}, {count} neighbourhoods out of {total} have easier access to care.",
       "names": "Best placed: {names}."
     },
-    "stationSame": "In a wheelchair: the nearest stop to your neighbourhood (metro, RER, train or tram) is accessible, {wc} away on foot. These durations avoid stairs and slopes steeper than 8 %, but take no account of pavement condition or broken lifts: reality is often longer.",
+    "stationSame": "In a wheelchair: the nearest stop to your neighbourhood (metro, RER, train or tram) is accessible, {wc} away in a wheelchair. These durations avoid stairs and slopes steeper than 8 %, but take no account of pavement condition or broken lifts: reality is often longer.",
     "needRank": {
       "left": "closer",
       "right": "the farthest quarter",

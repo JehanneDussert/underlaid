@@ -75,6 +75,8 @@ PILOT = os.environ.get("ROUTES_PILOT")
 # on 4 October 2026). R5 then links each point itself and counts the link.
 SNAP = VERSION != "2"
 SUFFIX = ("_pilot2" if VERSION == "2" else "_pilot") if PILOT else ("_v2" if VERSION == "2" else "")
+if VERSION == "2" and os.environ.get("ROUTES_DECOMP") == "1":
+    SUFFIX = "_v2_decomp"  # decomposition (2026-10-07): separate outputs and progress
 OUT_DIR = WORK_DIR / ({"neighbourhood": "routes_ttm_neighbourhood", "paris": "routes_ttm_paris"}.get(ROUTES_SET, "routes_ttm") + SUFFIX)
 PROGRESS = WORK_DIR / {"neighbourhood": "routes_neighbourhood_progress.txt", "paris": "routes_paris_progress.txt"}.get(ROUTES_SET, "routes_progress.txt").replace(".txt", f"{SUFFIX}.txt")
 SNAPPED = ACCESS_DIR / "snapped_points.csv"
@@ -123,6 +125,14 @@ if VERSION == "2":
         "sens_slope6": ("acc_unknown_no_slope6", WHEELCHAIR_KMH, {"1"}),
     })
 SENSITIVITY = {"sens_speed05", "sens_speed10", "sens_slope6"}
+# ROUTES_DECOMP=1: descriptive decomposition of wheelchair times
+# (pre-registered on 2026-10-07, docs/checks/2026-10-07-wheelchair-time-
+# decomposition-preregistration.md): walking only to every place for three
+# profiles, and the wheelchair street network with every stop and trip.
+DECOMP = os.environ.get("ROUTES_DECOMP") == "1"
+if VERSION == "2" and DECOMP:
+    NETWORKS["slope8_allstops"] = (WORK_DIR / "idf_no_stairs_slope8.osm.pbf", config.DATA_RAW / "gtfs" / "IDFM-gtfs.zip")
+    PROFILES["wc_allstops"] = ("slope8_allstops", WHEELCHAIR_KMH, None)
 
 
 @dataclass
@@ -138,6 +148,9 @@ if NEIGHBOURHOOD or PARIS:
 else:
     TASKS = [Task(f"{p}_{s}", p, True, d) for p in PROFILES for s, d in SLOTS.items() if p not in SENSITIVITY or s == "tue10"]
     TASKS += [Task(f"{p}_stations_walk", p, False, SLOTS["tue10"]) for p in PROFILES]
+if DECOMP:
+    TASKS = [Task(f"{p}_places_walk", p, False, SLOTS["tue10"]) for p in ("standard", "slow", "step_free_no")]
+    TASKS += [Task("wc_allstops_tue10", "wc_allstops", True, SLOTS["tue10"])]
 # ROUTES_PROFILES=standard,slow: only these profiles (lets the profiles that
 # do not depend on a network still being prepared start first).
 if os.environ.get("ROUTES_PROFILES"):
@@ -176,7 +189,7 @@ def snapped(points: gpd.GeoDataFrame, point_set: str) -> gpd.GeoDataFrame:
 
 
 def destinations(task: Task, dest: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-    if task.transit:
+    if task.transit or task.name.endswith("_places_walk"):
         d = dest[dest["type"] != "station"]
     else:
         keep = PROFILES[task.profile][2]

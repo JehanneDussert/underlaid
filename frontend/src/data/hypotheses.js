@@ -1,4 +1,4 @@
-// Pre-registered hypotheses and their verdicts, as published on the method
+// Pre-registered hypotheses (and one additional test) and their verdicts, as published on the method
 // page (part "Hypothèses et résultats"). Each hypothesis was written and
 // dated before its crossing with residents' means was computed; the
 // verdicts are applied exactly as the rules fixed in advance say
@@ -72,5 +72,8 @@ export const HYPOTHESES = [
     // Same test on the second travel-time calculation (carfree_means_v2.txt).
     control2: true,
     note: true,
+    // Shown apart, as an additional test: its rule was formulated before the
+    // calculation but only in unversioned notes (decision of 7 October 2026).
+    additional: true,
   },
 ]

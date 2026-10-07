@@ -68,8 +68,8 @@ axis and doesn't count here):
   metro area's lowest third of means; in Paris, 4.5% (Hauts-de-Seine
   1.9%, Val-de-Marne 24.5%).
 
-**Four pre-registered tests** (hypotheses written and dated before any
-crossing with residents' means or with car ownership; see
+**Three pre-registered tests, plus one additional test** (hypotheses
+written and dated before any crossing with residents' means; see
 [SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered)).
 The verdicts were computed with the 2021 census and remain the official
 results; each was redone with the 2022 census and **confirmed**. Figures
@@ -93,11 +93,11 @@ below are the 2022 ones.
   and by public transport only: it doesn't account for the need to use
   these services, car use or online procedures, and the data don't
   establish why.
-- **Households without a car — refuted, and reversed** (rule written on
-  3 October 2026, before the site moved to the 2022 census; computed the
-  same evening on the 2022 census; the rule was then in unversioned
-  working notes, and its first record in the repository is one minute
-  later than the calculation). With thirds computed within each
+- **Additional test, not verifiably pre-registered — households without
+  a car: refuted, and reversed.** Formulated on 3 October 2026 before the
+  calculation, but only in unversioned working notes; its first dated
+  record in the repository is one minute later than the calculation
+  (2022 census). With thirds computed within each
   département, the neighbourhoods with the *most* households without a
   car are clearly *less* often in the quarter farthest from public
   services: Hauts-de-Seine 14.6% against 65.5%, Seine-Saint-Denis 11.4%

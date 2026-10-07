@@ -25,7 +25,7 @@ export const TEXTS: Record<'fr' | 'en', Texts> = {
   fr: {
     locale: 'fr-FR',
     act1Title: 'Inégalités environnementales',
-    act1Text: 'À quelques rues d’écart, la chaleur, l’air, le bruit et la qualité des logements ne sont pas les mêmes.',
+    act1Text: 'À quelques rues d’écart, la chaleur, l’air, le bruit et la performance énergétique des logements ne sont pas les mêmes.',
     themes: { thermal: 'Chaleur', pollution: 'Air et bruit', housing: 'Logements énergivores' },
     barsLegend: 'Sur 10 quartiers, combien sont moins exposés',
     outOf10: (n) => `${n} sur 10`,
@@ -43,7 +43,7 @@ export const TEXTS: Record<'fr' | 'en', Texts> = {
   en: {
     locale: 'en-GB',
     act1Title: 'Environmental inequalities',
-    act1Text: 'A few streets apart, heat, air, noise and housing quality are not the same.',
+    act1Text: 'A few streets apart, heat, air, noise and the energy performance of housing are not the same.',
     themes: { thermal: 'Heat', pollution: 'Air and noise', housing: 'Energy-inefficient housing' },
     barsLegend: 'Out of 10 neighbourhoods, how many are less exposed',
     outOf10: (n) => `${n} out of 10`,

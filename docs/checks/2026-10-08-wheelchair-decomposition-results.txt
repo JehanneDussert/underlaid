@@ -1,0 +1,64 @@
+Wheelchair travel times — descriptive decomposition (pre-registered 2026-10-07 07:28)
+========================================================================================
+
+##### key places (Tuesday 10:00)
+
+1. Share of cell x place pairs entirely on foot (population-weighted, pairs reached by the combined time)
+   sans contrainte: on foot 56.0 %, with public transport 44.0 % | by département 75 56 %, 92 56 %, 93 57 %, 94 54 %
+      by place: caf 11 %, cpam 30 %, emergency 29 %, employment 39 %, france_services 44 %, gp 99 %, pharmacy 99 %, post_office 92 %, town_hall 60 %
+   marche lente: on foot 48.1 %, with public transport 51.9 % | by département 75 50 %, 92 48 %, 93 49 %, 94 45 %
+      by place: caf 8 %, cpam 20 %, emergency 20 %, employment 28 %, france_services 34 %, gp 98 %, pharmacy 98 %, post_office 82 %, town_hall 45 %
+   fauteuil roulant: on foot 49.1 %, with public transport 50.9 % | by département 75 55 %, 92 43 %, 93 54 %, 94 42 %
+      by place: caf 10 %, cpam 23 %, emergency 22 %, employment 31 %, france_services 36 %, gp 97 %, pharmacy 97 %, post_office 81 %, town_hall 46 %
+
+2. Wheelchair minus without constraint: speed and slopes vs inaccessible stops (minutes, population-weighted)
+   pairs reached in all three runs: 121,735; not reached in at least one: 1,992 (without constraint 0, wheelchair 1,992, wheelchair with every stop 399)
+   all places: total mean 6.9 (median 5); speed and slopes 4.9 (median 4); inaccessible stops 2.0 (median 0); pairs with no stop effect 68 %
+   caf                    total  11.7 | speed and slopes   6.4 | inaccessible stops   5.3 | share of the total from stops   45 %
+   cpam                   total   8.8 | speed and slopes   5.8 | inaccessible stops   3.0 | share of the total from stops   34 %
+   emergency              total   9.0 | speed and slopes   6.0 | inaccessible stops   2.9 | share of the total from stops   33 %
+   employment             total   8.1 | speed and slopes   5.7 | inaccessible stops   2.4 | share of the total from stops   30 %
+   france_services        total   8.1 | speed and slopes   5.8 | inaccessible stops   2.4 | share of the total from stops   29 %
+   gp                     total   2.6 | speed and slopes   2.5 | inaccessible stops   0.1 | share of the total from stops    3 %
+   pharmacy               total   2.7 | speed and slopes   2.6 | inaccessible stops   0.1 | share of the total from stops    3 %
+   post_office            total   4.8 | speed and slopes   4.3 | inaccessible stops   0.5 | share of the total from stops   10 %
+   town_hall              total   6.7 | speed and slopes   5.0 | inaccessible stops   1.7 | share of the total from stops   25 %
+   dep 75                 total   6.3 | speed and slopes   3.7 | inaccessible stops   2.6 | share of the total from stops   41 %
+   dep 92                 total   6.8 | speed and slopes   5.5 | inaccessible stops   1.3 | share of the total from stops   19 %
+   dep 93                 total   8.1 | speed and slopes   5.3 | inaccessible stops   2.8 | share of the total from stops   34 %
+   dep 94                 total   6.7 | speed and slopes   5.4 | inaccessible stops   1.2 | share of the total from stops   19 %
+
+   Complement, walking alone: wheelchair (0.8 m/s, slope network) - without constraint (4.5 km/h): mean 10.5 min, ratio of means 1.65 (pairs reached on foot in both: 112,869)
+
+##### neighbourhood places (Tuesday 10:00)
+
+1. Share of cell x place pairs entirely on foot (population-weighted, pairs reached by the combined time)
+   sans contrainte: on foot 80.7 %, with public transport 19.3 % | by département 75 85 %, 92 81 %, 93 79 %, 94 75 %
+      by place: college_private 60 %, college_public 94 %, creche 99 %, elementary_private 70 %, elementary_public 99 %, food_store 99 %, library 85 %, lycee_private 51 %, lycee_public 76 %, nursery_school 100 %, park 100 %, police 53 %, social_centre 63 %
+   marche lente: on foot 73.2 %, with public transport 26.8 % | by département 75 79 %, 92 73 %, 93 71 %, 94 67 %
+      by place: college_private 48 %, college_public 86 %, creche 97 %, elementary_private 59 %, elementary_public 98 %, food_store 97 %, library 73 %, lycee_private 41 %, lycee_public 62 %, nursery_school 99 %, park 99 %, police 40 %, social_centre 52 %
+   fauteuil roulant: on foot 72.8 %, with public transport 27.2 % | by département 75 83 %, 92 67 %, 93 73 %, 94 64 %
+      by place: college_private 49 %, college_public 83 %, creche 96 %, elementary_private 59 %, elementary_public 97 %, food_store 96 %, library 72 %, lycee_private 42 %, lycee_public 63 %, nursery_school 98 %, park 98 %, police 41 %, social_centre 53 %
+
+2. Wheelchair minus without constraint: speed and slopes vs inaccessible stops (minutes, population-weighted)
+   pairs reached in all three runs: 176,726; not reached in at least one: 1,997 (without constraint 0, wheelchair 1,997, wheelchair with every stop 442)
+   all places: total mean 5.1 (median 4); speed and slopes 4.3 (median 4); inaccessible stops 0.8 (median 0); pairs with no stop effect 84 %
+   college_private        total   7.4 | speed and slopes   5.6 | inaccessible stops   1.7 | share of the total from stops   24 %
+   college_public         total   4.9 | speed and slopes   4.6 | inaccessible stops   0.4 | share of the total from stops    8 %
+   creche                 total   3.0 | speed and slopes   2.9 | inaccessible stops   0.1 | share of the total from stops    4 %
+   elementary_private     total   6.6 | speed and slopes   5.3 | inaccessible stops   1.3 | share of the total from stops   20 %
+   elementary_public      total   3.2 | speed and slopes   3.2 | inaccessible stops   0.1 | share of the total from stops    2 %
+   food_store             total   2.9 | speed and slopes   2.8 | inaccessible stops   0.1 | share of the total from stops    4 %
+   library                total   5.5 | speed and slopes   4.8 | inaccessible stops   0.7 | share of the total from stops   13 %
+   lycee_private          total   7.5 | speed and slopes   5.6 | inaccessible stops   1.9 | share of the total from stops   25 %
+   lycee_public           total   6.1 | speed and slopes   5.0 | inaccessible stops   1.1 | share of the total from stops   18 %
+   nursery_school         total   3.0 | speed and slopes   3.0 | inaccessible stops   0.1 | share of the total from stops    2 %
+   park                   total   2.1 | speed and slopes   2.1 | inaccessible stops   0.0 | share of the total from stops    1 %
+   police                 total   7.6 | speed and slopes   5.7 | inaccessible stops   1.9 | share of the total from stops   25 %
+   social_centre          total   6.9 | speed and slopes   5.4 | inaccessible stops   1.6 | share of the total from stops   23 %
+   dep 75                 total   3.8 | speed and slopes   3.1 | inaccessible stops   0.7 | share of the total from stops   19 %
+   dep 92                 total   5.5 | speed and slopes   4.9 | inaccessible stops   0.7 | share of the total from stops   12 %
+   dep 93                 total   5.8 | speed and slopes   4.5 | inaccessible stops   1.2 | share of the total from stops   21 %
+   dep 94                 total   5.8 | speed and slopes   5.0 | inaccessible stops   0.8 | share of the total from stops   14 %
+
+   Complement, walking alone: wheelchair (0.8 m/s, slope network) - without constraint (4.5 km/h): mean 6.9 min, ratio of means 1.70 (pairs reached on foot in both: 172,882)

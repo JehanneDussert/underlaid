@@ -219,6 +219,13 @@ const distribution = computed(() => {
           <p>{{ t('methodD4.portee.sensitivity') }}</p>
           <p>{{ t('methodD4.portee.checks') }}</p>
           <p>{{ t('methodD4.portee.thresholds') }}</p>
+          <h3>{{ t('methodD4.portee.decompositionTitle') }}</h3>
+          <p>{{ t('methodD4.portee.decomposition') }}</p>
+          <p class="small">
+            {{ t('methodD4.portee.decompositionMethod') }}
+            <a :href="`${REPO_URL}/blob/master/scripts/analysis/wheelchair_decomposition.py`" rel="noopener">{{ t('methodD4.portee.decompositionScript') }}</a> ·
+            <a :href="`${REPO_URL}/blob/master/docs/checks/2026-10-08-wheelchair-decomposition-results.txt`" rel="noopener">{{ t('methodD4.portee.decompositionResults') }}</a>
+          </p>
           <h3>{{ t('methodD4.portee.inProgressTitle') }}</h3>
           <ul>
             <li v-for="item in tm('methodD4.portee.inProgress').map(rt)" :key="item">{{ item }}</li>

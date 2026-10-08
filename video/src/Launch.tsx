@@ -81,7 +81,10 @@ function Pastille({ x, y, s = 1, o = 1 }: { x: number; y: number; s?: number; o?
   )
 }
 
-function Bars({ frame, t }: { frame: number; t: typeof TEXTS.fr }) {
+// `tight`: smaller gaps between rows, for languages whose theme labels wrap
+// on three lines (English); the French layout is unchanged.
+function Bars({ frame, t, tight = false }: { frame: number; t: typeof TEXTS.fr; tight?: boolean }) {
+  const gap = tight ? 12 : 22
   const appear = interpolate(frame, [ACT2, ACT2 + 20], [1, 0], clamp)
   const LABEL_W = 330
   const CELL_W = (W - 2 * SIDE - LABEL_W) / 2
@@ -103,7 +106,7 @@ function Bars({ frame, t }: { frame: number; t: typeof TEXTS.fr }) {
   return (
     <div style={{ position: 'absolute', left: SIDE, right: SIDE, top: 660, opacity: appear }}>
       <div style={{ fontSize: 48, color: C.text2, lineHeight: 1.15, opacity: interpolate(frame, [30, 45], [0, 1], clamp) }}>{t.barsLegend}</div>
-      <div style={{ display: 'flex', marginTop: 22, marginLeft: LABEL_W }}>
+      <div style={{ display: 'flex', marginTop: gap, marginLeft: LABEL_W }}>
         {[data.a, data.b].map((h) => (
           <div key={h.code} style={{ width: CELL_W, fontSize: 48, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden' }}>{h.name}</div>
         ))}
@@ -111,7 +114,7 @@ function Bars({ frame, t }: { frame: number; t: typeof TEXTS.fr }) {
       {THEMES.map((k, i) => {
         const start = 60 + i * 60
         return (
-          <div key={k} style={{ display: 'flex', alignItems: 'flex-end', marginTop: 22, opacity: interpolate(frame, [start - 10, start], [0, 1], clamp) }}>
+          <div key={k} style={{ display: 'flex', alignItems: 'flex-end', marginTop: gap, opacity: interpolate(frame, [start - 10, start], [0, 1], clamp) }}>
             <div style={{ width: LABEL_W, fontSize: 48, fontWeight: 700, lineHeight: 1.05, paddingRight: 16, boxSizing: 'border-box' }}>{t.themes[k]}</div>
             {cell(data.a, k, start)}
             {cell(data.b, k, start)}
@@ -209,7 +212,7 @@ export const Launch = ({ lang = 'fr' }: { lang?: 'fr' | 'en' }) => {
       {head(t.act2Title, t.act2Text(X, Y), card2)}
       {head(t.act3Title, null, card3)}
 
-      <Bars frame={frame} t={t} />
+      <Bars frame={frame} t={t} tight={lang === 'en'} />
 
       {/* Act 2: counters, in the order of arrival. */}
       <div style={{ position: 'absolute', left: SIDE, right: SIDE, top: 1010, opacity: act2Show }}>

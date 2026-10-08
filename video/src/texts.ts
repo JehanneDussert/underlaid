@@ -1,7 +1,7 @@
 // All on-screen texts of the launch video. A new language only needs a new
 // entry here (and a composition in Root.tsx); numbers and names come from
 // src/data/pair.json. French: validated by the project lead on 2026-10-07.
-// English: draft translation, to be reviewed before any render.
+// English: validated by the project lead on 2026-10-08 (with her corrections).
 
 export type Texts = {
   locale: string
@@ -43,9 +43,9 @@ export const TEXTS: Record<'fr' | 'en', Texts> = {
   en: {
     locale: 'en-GB',
     act1Title: 'Environmental inequalities',
-    act1Text: 'A few streets apart, heat, air, noise and the energy performance of housing are not the same.',
+    act1Text: 'A few streets apart, heat, air quality, noise and the energy performance of homes can differ sharply.',
     themes: { thermal: 'Heat', pollution: 'Air and noise', housing: 'Energy-inefficient housing' },
-    barsLegend: 'Out of 10 neighbourhoods, how many are less exposed',
+    barsLegend: 'How many neighbourhoods out of 10 are less exposed',
     outOf10: (n) => `${n} out of 10`,
     act2Title: 'Inequalities of access',
     act2Text: (x, y) => `To reach the nearest station: ${x} minutes without constraint, ${y} minutes in a wheelchair.`,
@@ -53,9 +53,9 @@ export const TEXTS: Record<'fr' | 'en', Texts> = {
     wheelchair: 'in a wheelchair',
     minutes: (n) => `${n} min`,
     act3Title: 'Underlaid',
-    act3Text: 'The public data of the 2,752 neighbourhoods of Paris and its inner suburbs, brought together on one map.',
+    act3Text: 'Public data on the 2,752 neighbourhoods of Paris and its inner suburbs, brought together on one map.',
     act3Cta: 'Enter your address: underlaid.fr/en',
     sources:
-      'INSEE areas of about 2,000 residents. Data: INSEE, CSTB, L’Institut Paris Region, Airparif and Bruitparif, ADEME, Enedis. Walking routes: © OpenStreetMap contributors. Stations: contains information from Île-de-France Mobilités, available under the Licence Mobilités.',
+      'Neighbourhoods: INSEE IRIS areas of about 2,000 residents. Data: INSEE, CSTB, L’Institut Paris Region, Airparif and Bruitparif, ADEME, Enedis. Walking routes: © OpenStreetMap contributors. Stations: contains information from Île-de-France Mobilités, available under the Licence Mobilités.',
   },
 }

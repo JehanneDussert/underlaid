@@ -1,5 +1,8 @@
 # Dependency updates, grouped once a week, never merged automatically
 # (each pull request goes through the required checks and a review).
+# Minor and patch updates only (decision of 8 October 2026): a major
+# version can break the site (e.g. @unhead/vue 3 with vite-ssg, PR #6) and
+# is handled by hand, one at a time, with the full checks.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -10,6 +13,10 @@ updates:
     groups:
       frontend:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 2
   - package-ecosystem: pip
     directory: /
@@ -19,6 +26,10 @@ updates:
     groups:
       python:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 2
   - package-ecosystem: github-actions
     directory: /
@@ -28,3 +39,7 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

@@ -169,10 +169,16 @@ const listLabel = computed(() => (props.mode ? t('plan.listLabelMode', { mode: t
 }
 .zooming {
   transform: scale(3);
+  transition: transform 600ms ease-in;
+}
+/* Leaving the page: only the drawing fades; the labels (text) disappear at
+   once, never through a fade (text contrast while it fades). */
+.zooming .plan-svg {
   opacity: 0;
-  transition:
-    transform 600ms ease-in,
-    opacity 600ms ease-in;
+  transition: opacity 600ms ease-in;
+}
+.zooming .plan-labels {
+  visibility: hidden;
 }
 .plan-svg {
   position: absolute;

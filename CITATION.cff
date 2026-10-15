@@ -17,6 +17,9 @@ identifiers:
   - type: doi
     value: 10.5281/zenodo.23101510
     description: DOI of version 0.2.0
+  - type: doi
+    value: 10.5281/zenodo.23401610
+    description: DOI of version 0.3.0
 repository-code: "https://github.com/JehanneDussert/underlaid"
 url: "https://underlaid.fr"
 abstract: >-
@@ -50,4 +53,4 @@ keywords:
   - wheelchair
 license: MIT
 version: 0.3.0
-date-released: "2026-10-07"
+date-released: "2026-10-15"

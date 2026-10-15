@@ -1,18 +1,7 @@
 # Underlaid
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23083312.svg)](https://doi.org/10.5281/zenodo.23083312)
-
-**Une même ville, des conditions de vie inégales.** Underlaid réunit,
-pour les 2 752 quartiers de Paris et de la petite couronne (découpage
-Insee d'environ 2 000 habitants), ce que les données publiques
-présentent d'ordinaire séparément : le **cadre de vie** (chaleur, air et
-bruit, logements énergivores, accès aux soins) ; les **lieux à portée**
-(services publics, soins, commerces, crèches et écoles, stations), à
-pied et en transports en commun, selon trois façons de se déplacer :
-sans contrainte, en marchant lentement, en fauteuil roulant ; et les
-**ressources des habitants** (revenu, logements surpeuplés, résidences
-secondaires), sur un axe séparé, jamais ajouté au cadre de vie. Tout
-vient de données publiques ouvertes ; chaque formule est documentée.
+[![Reuse on data.gouv.fr](https://img.shields.io/badge/data.gouv.fr-reuse-blue)](https://www.data.gouv.fr/reuses/underlaid-cadre-de-vie-et-acces-aux-lieux-du-quotidien-quartier-par-quartier)
 
 **One city, unequal living conditions.** For the 2,752 neighbourhoods of
 Paris and its inner suburbs (INSEE areas of about 2,000 residents),
@@ -32,7 +21,7 @@ entirely from public open data; every formula documented.
 [Method](https://underlaid.fr/en/method) ·
 [Most exposed neighbourhoods](https://underlaid.fr/en/most-exposed-neighbourhoods) ·
 [Press](https://underlaid.fr/en/press) ·
-[Version française](https://underlaid.fr)
+[Site in French](https://underlaid.fr)
 
 **What it measures / doesn't**
 - ✅ **Exposure**: a count (0-4) of categories in their metro-wide worst quartile — never a smoothed average.
@@ -841,6 +830,9 @@ Institut Paris Region / APUR / ORS Île-de-France; heatwave excess
 mortality — Santé publique France; air-conditioned schools — mairie and
 press communications, see `scripts/16_school_ac_context.py`) are cited
 with their source where they appear on the site.
+
+The project is listed as a reuse of its sources on data.gouv.fr: [Underlaid on
+data.gouv.fr](https://www.data.gouv.fr/reuses/underlaid-cadre-de-vie-et-acces-aux-lieux-du-quotidien-quartier-par-quartier).
 
 To cite the project, see [`CITATION.cff`](CITATION.cff) (GitHub shows a
 "Cite this repository" button), and include the date of the data

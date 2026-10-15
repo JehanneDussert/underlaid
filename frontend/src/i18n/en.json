@@ -213,6 +213,7 @@
         }
       },
       "zenodo": "Download the data (Zenodo)",
+      "datagouv": "Reuse page on data.gouv.fr",
       "github": "Source code (GitHub)",
       "sources": "Licence of each source"
     },

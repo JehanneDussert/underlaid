@@ -221,6 +221,8 @@ function minutes(place, m) {
   if (!r) return undefined
   if (place.source === 'times') return r.times ? r.times[m]?.[place.id] : undefined
   if (place.source === 'night') return r.night_emergency ? r.night_emergency[m] : undefined
+  if (place.source === 'evening') return r.evening_emergency ? r.evening_emergency[m] : undefined
+  if (place.source === 'sunday') return r.sunday_emergency ? r.sunday_emergency[m] : undefined
   if (place.source === 'places') return r.places ? r.places[m]?.[place.id] : undefined
   if (place.source === 'paris') {
     if (!r.paris_places) return undefined

@@ -869,6 +869,8 @@
       "pharmacy": "Pharmacy",
       "emergency": "Emergency department",
       "emergencyNight": "Emergency department at night (1:00, on foot and by public transport)",
+      "emergencyEvening": "Emergency department in the evening (Tuesday 21:00, on foot and by public transport)",
+      "emergencySunday": "Emergency department on Sunday (10:00, on foot and by public transport)",
       "town_hall": "Town hall",
       "france_services": "France Services",
       "caf": "CAF (family benefits)",
@@ -1105,6 +1107,47 @@
       "sensitivity": "Sensitivity. At 0.5 m/s, the median time to the nearest CAF office is 44 minutes; at 0.8 m/s, 36 minutes; at 1.0 m/s, 32 minutes (24 minutes without constraint). With a 6 % slope threshold instead of 8 %, the medians barely change. Depending on the place, 1.5 to 8.6 % of neighbourhoods change quarter (that of the farthest neighbourhoods) at 0.5 m/s, 2.6 to 7.5 % at 1.0 m/s, and 1.7 to 3.6 % with the 6 % threshold for public services and care (up to 8.9 % for nursery school).",
       "checks": "Checks. The published verdicts that depend on travel times (public services, without constraint and in a wheelchair) remain the official results; redone with the second calculation, they are confirmed, as is the additional test on households without a car. The wheelchair time comes out shorter than without constraint in 11 cases out of 62,788 (0.02 %), by one minute except one case of 4 minutes; they are left as they are.",
       "thresholds": "Publication thresholds. Before seeing the results, thresholds that block publication were written and recorded in the repository (6 October 2026, 22:17). Two were crossed: two neighbourhoods without a travel time, and more than 1 % of the population beyond 90 minutes from the CAF office in a wheelchair. On 7 October at 03:52, the project lead decided: the effect of speed in distant communes is a result, accepted; neighbourhoods cut off by genuinely steep streets stay as they are, with no new slope rule; the two neighbourhoods without a time take the inhabited cell that overlaps them most (see the limits).",
+      "slotsTitle": "Emergency departments by time of departure",
+      "slots": "For emergency departments only, travel times are also computed in the evening (Tuesday at 21:00), at night (Tuesday at 1:00) and on Sunday (at 10:00), with the same rules as in the daytime. At night, the wheelchair time to the nearest emergency department exceeds 45 minutes for more than one neighbourhood in three; in the evening and on Sunday, times change little from Tuesday at 10:00.",
+      "slotsCaption": "Time to the nearest emergency department, on foot and by public transport: median of inhabited neighbourhoods, and share of neighbourhoods (then of their residents) beyond 45 minutes.",
+      "slotsCols": [
+        "Departure",
+        "Without constraint",
+        "Wheelchair",
+        "Beyond 45 min in a wheelchair (neighbourhoods)",
+        "Beyond 45 min in a wheelchair (residents)"
+      ],
+      "slotsRows": [
+        [
+          "Tuesday 10:00",
+          "18 min",
+          "27 min",
+          "6.4%",
+          "6.7%"
+        ],
+        [
+          "Tuesday 21:00",
+          "19 min",
+          "27 min",
+          "7.5%",
+          "7.8%"
+        ],
+        [
+          "Sunday 10:00",
+          "19 min",
+          "28 min",
+          "8.2%",
+          "8.7%"
+        ],
+        [
+          "Night (1:00)",
+          "23 min",
+          "38 min",
+          "37.6%",
+          "39.0%"
+        ]
+      ],
+      "slotsNote": "The \"neighbourhoods\" share counts the 2,690 inhabited neighbourhoods, one each; the \"residents\" share weights each neighbourhood by its population. Without constraint, the share beyond 45 minutes is 0.4% in the daytime and 9.0% at night. At night, the calculation uses the Île-de-France Mobilités timetables for departures between 1:00 and 2:00: Noctilien night buses, the last metro trips and a few other lines. For the wheelchair, only trips marked accessible are kept; yet accessibility is not given for about half of the Noctilien trips at that hour. This assumption is fragile: counting those trips as accessible, the share of neighbourhoods beyond 45 minutes goes from 37.6% to 35.2%. The calculation takes no account of emergency department opening arrangements, nor of taxis or adapted transport.",
       "decompositionTitle": "Decomposition of wheelchair travel times",
       "decomposition": "Descriptive analysis, pre-registered on 7 October 2026, no verdict. To key places (public services, care), the journey is made entirely on foot in 56% of cases without constraint, 48% walking slowly and 49% in a wheelchair; to everyday places, in 81%, 73% and 73% of cases. Compared with the journey without constraint, the wheelchair adds on average 6.9 minutes to key places, of which 4.9 come from speed and slopes and 2.0 from inaccessible stops, and 5.1 minutes to everyday places (4.3 and 0.8). Most of the extra time comes from speed and slopes: to key places, inaccessible stops add nothing in 68% of journeys. They weigh most for the CAF office (45% of the gap) and in Paris (41% of the gap to key places, against 34% in Seine-Saint-Denis and 19% in Hauts-de-Seine and Val-de-Marne).",
       "decompositionMethod": "Population-weighted means, computed on the inhabited 200 m cells, simulated departure on a Tuesday at 10:00. The share due to stops is the gap between the wheelchair profile and the same profile (same speed, same streets) in which every stop and every vehicle would be accessible; the rest is the share due to speed and slopes.",

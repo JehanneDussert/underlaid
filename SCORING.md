@@ -889,8 +889,8 @@ to both pages. The stock is rebuilt after every score or travel-time
 update.
 
 **Second travel-time calculation (in progress, pre-registered on
-4 October 2026, `docs/preregistrations/2026-10-04-profil-fauteuil-roulant.md`
-in the history).** Three changes, all fixed before any result:
+4 October 2026: [`docs/preregistrations/2026-10-04-profil-fauteuil-roulant.md`](docs/preregistrations/2026-10-04-profil-fauteuil-roulant.md),
+first committed in `7dfe2ff` on 4 October 2026 at 20:58 Paris time).** Three changes, all fixed before any result:
 (1) **common start and end points**: some wheelchair (step-free) times
 were shorter than the unconstrained ones, because R5 attached each point
 to the nearest element of each network separately (in the full network,

@@ -16,6 +16,11 @@ explicit (the archive runs on a personal computer, so it has holes when the
 computer is off or Docker is stopped; a failed request is a hole too).
 A gap is recorded when two successful checks are more than 90 minutes
 apart: from the last success to the next one.
+Empty responses (the API answers with no lift at all, seen on 8 October
+2026 at 04:15 UTC) are not checks: they are listed in
+data/raw/elevators/empty_responses.csv, logged with the error "empty
+response", and neither saved nor counted as a success (same rule as the
+GitHub Actions archive, decision of 8 October 2026).
 Runs as a long-lived container:
   docker run -d --name underlaid-elevators --restart unless-stopped --env-file .env \
     -v <repo>/data:/app/data -v <repo>/scripts:/app/scripts -w /app underlaid-access python scripts/archive_elevators.py
@@ -55,7 +60,7 @@ def main():
     lines = log.read_text(encoding="utf-8").strip().splitlines()[1:]
     for line in reversed(lines):
         cols = line.split(",")
-        if last_ok is None and cols[1] not in ("", "-"):
+        if last_ok is None and cols[1] not in ("", "-", "0"):
             last_ok = dt.datetime.strptime(cols[0], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
         if last is None and len(cols) > 4 and cols[4] == "1":
             last = cols[3]
@@ -65,6 +70,18 @@ def main():
         now = dt.datetime.now(dt.timezone.utc)
         try:
             records = fetch()
+            if not records:
+                empty = OUT / "empty_responses.csv"
+                new = not empty.exists()
+                with empty.open("a", encoding="utf-8") as f:
+                    if new:
+                        f.write("checked_utc,note\n")
+                    f.write(f"{now:%Y-%m-%dT%H:%M:%SZ},empty response from the API (no lift); not a check\n")
+                with log.open("a", encoding="utf-8") as f:
+                    f.write(f"{now:%Y-%m-%dT%H:%M:%SZ},0,0,-,0,empty response\n")
+                print(f"{now:%Y-%m-%d %H:%M} UTC: empty response, not counted", flush=True)
+                time.sleep(EVERY_S)
+                continue
             body = json.dumps(sorted(records, key=lambda r: str(r.get("liftid"))), ensure_ascii=False, sort_keys=True)
             digest = hashlib.sha256(body.encode()).hexdigest()
             available = sum(1 for r in records if r.get("liftstatus") == "available")

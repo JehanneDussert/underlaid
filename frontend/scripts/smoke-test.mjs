@@ -274,7 +274,7 @@ try {
   }
   await page.goto(base + '/a-propos', { waitUntil: 'networkidle' })
   await page.locator('[role=tab]', { hasText: 'BibTeX' }).click()
-  check('about: BibTeX citation with the version DOI', /@software[\s\S]*10\.5281\/zenodo\.23101510/.test(await page.locator('.citation').innerText()))
+  check('about: BibTeX citation with the version DOI', /@software[\s\S]*10\.5281\/zenodo\.23401610/.test(await page.locator('.citation').innerText()))
   check('about: no e-mail address written in the page', !(await page.content()).includes('research.jehannedussert@'))
 
   // Links from before the redesign: #data-licences now lives on the

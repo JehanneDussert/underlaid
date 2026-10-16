@@ -59,7 +59,7 @@ axis and doesn't count here):
 
 **Four tests against residents' means** (rules fixed in advance, first
 in unversioned working notes; see
-[SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered)).
+[SCORING.md](SCORING.md#working-hypothesis-and-its-tests)).
 None is fully verifiably pre-registered:
 
 | Test | First dated record of the rule in the repository | First result | Status |
@@ -527,7 +527,7 @@ neighbourhood on a cloud of all neighbourhoods: number of exposures in
 the most affected quarter against residents' resources. It is
 descriptive, never presented as a tested result; the tested hypotheses
 (with their verdicts and pre-registration status) are on the Method page and in
-[SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered).
+[SCORING.md](SCORING.md#working-hypothesis-and-its-tests).
 What the cloud shows is that exposure does not follow income neatly:
 every level of exposure spans almost the whole range of resources, and
 the link is weak (slightly positive only because of dense, older central

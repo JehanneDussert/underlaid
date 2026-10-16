@@ -388,5 +388,7 @@ the first dated record of the result, but the time of the first
 calculation cannot be proved. None of them can be called verifiably
 pre-registered, and the site now says so in a table. Since 7 October,
 every hypothesis and threshold is committed before any calculation that
-depends on it (`docs/preregistrations/`, `docs/checks/`), and the result
-file is committed too, so that both times can be checked.
+depends on it (`docs/preregistrations/`, `docs/checks/`); committing the
+result file as well, as for the wheelchair decomposition
+(`docs/checks/2026-10-08-wheelchair-decomposition-results.txt`), lets
+both times be checked.

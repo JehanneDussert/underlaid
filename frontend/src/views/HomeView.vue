@@ -64,6 +64,9 @@ function onPhoneModesKeydown(event) {
 // An address leads to its neighbourhood's page (/quartier/<code>), with
 // the chosen mode; the typed address travels in the history state only,
 // never in the URL.
+// Four inhabited neighbourhoods, one per département, drawn at random at
+// build time (vite.config.js).
+const EXAMPLES = __HOME_EXAMPLES__
 const leaving = ref(false)
 const outside = ref('')
 const zooming = ref(false)
@@ -109,6 +112,16 @@ const strip = computed(() => {
         <div class="hero-form">
           <AddressSearch id="home-address" :busy="leaving" :label="t('landing.addressLabel')" hide-label :placeholder="t('landing.addressPlaceholder')" @select="goToAddress" />
           <p v-if="outside" class="outside" role="alert">{{ outside }}</p>
+
+          <div class="hero-alt">
+            <router-link class="map-button" :to="{ name: localizedRouteName('map', locale) }">{{ t('landing.chooseOnMap') }} <span aria-hidden="true">→</span></router-link>
+            <p v-if="EXAMPLES.length" class="examples">
+              {{ t('landing.examples') }}
+              <template v-for="(e, i) in EXAMPLES" :key="e.code">
+                <router-link :to="{ name: localizedRouteName('neighbourhood', locale), params: { code: e.code }, query: mode ? { mode } : {} }">{{ t('landing.example', { name: e.name, commune: e.commune }) }}</router-link><template v-if="i < EXAMPLES.length - 1">{{ t('landing.examplesSeparator') }}</template>
+              </template>
+            </p>
+          </div>
 
           <div class="modes-desktop">
             <ModeToggle v-model="mode" :label="t('landing.modesLabel')" />
@@ -216,9 +229,42 @@ const strip = computed(() => {
 .hero-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   max-width: 540px;
   animation: rise 700ms 300ms ease-out both;
+}
+.hero-alt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: -10px;
+}
+.map-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 2px solid var(--control-border);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+}
+.map-button:hover {
+  border-color: var(--text-primary);
+}
+.examples {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.examples a {
+  color: var(--text-primary);
 }
 .outside {
   margin: -8px 0 0;

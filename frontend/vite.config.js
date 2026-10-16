@@ -50,19 +50,34 @@ function neighbourhoodCodes() {
     const dir = fileURLToPath(new URL('./public/data/quartiers/', import.meta.url))
     const all = []
     const inhabited = []
+    const examples = []
     for (const f of readdirSync(dir)) {
       if (!/^\d+\.json$/.test(f)) continue
       for (const r of JSON.parse(readFileSync(`${dir}${f}`, 'utf-8')).iris) {
         all.push(r.code)
-        if (r.inhabited) inhabited.push(r.code)
+        if (r.inhabited) {
+          inhabited.push(r.code)
+          examples.push({ code: r.code, name: r.name, commune: r.commune.replace(/ Arrondissement$/, '') })
+        }
       }
     }
-    return { all, inhabited }
+    return { all, inhabited, examples }
   } catch {
-    return { all: [], inhabited: [] }
+    return { all: [], inhabited: [], examples: [] }
   }
 }
 const NEIGHBOURHOODS = neighbourhoodCodes()
+
+// Home page examples (decision of 16 October 2026): one inhabited
+// neighbourhood per département, drawn at random once per build, so the same
+// four appear in the prerendered page and in the browser, and change with
+// each deployment. No editorial choice.
+function homeExamples() {
+  return ['75', '92', '93', '94'].flatMap((dep) => {
+    const pool = NEIGHBOURHOODS.examples.filter((e) => e.code.startsWith(dep))
+    return pool.length ? [pool[Math.floor(Math.random() * pool.length)]] : []
+  })
+}
 
 function dataDate() {
   try {
@@ -156,5 +171,6 @@ export default defineConfig({
     __DATA_DATE__: JSON.stringify(dataDate()),
     __SITE_URL__: JSON.stringify(SITE_URL),
     __NOINDEX__: JSON.stringify(NOINDEX),
+    __HOME_EXAMPLES__: JSON.stringify(homeExamples()),
   },
 })

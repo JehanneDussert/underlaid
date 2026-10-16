@@ -82,13 +82,12 @@ function toggle() {
   padding: 0 4px 24px 34px;
   animation: accordion-open 200ms ease-out;
 }
+/* Movement only, never opacity (text contrast while it fades). */
 @keyframes accordion-open {
   from {
-    opacity: 0;
     transform: translateY(-4px);
   }
   to {
-    opacity: 1;
     transform: none;
   }
 }

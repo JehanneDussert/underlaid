@@ -303,13 +303,13 @@ const strip = computed(() => {
   white-space: nowrap;
 }
 
+/* Movement only, never opacity: text that fades in has too little
+   contrast while it fades (WCAG 1.4.3). */
 @keyframes rise {
   from {
-    opacity: 0;
     transform: translateY(12px);
   }
   to {
-    opacity: 1;
     transform: none;
   }
 }

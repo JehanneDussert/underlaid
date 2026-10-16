@@ -219,6 +219,23 @@ const distribution = computed(() => {
           <p>{{ t('methodD4.portee.sensitivity') }}</p>
           <p>{{ t('methodD4.portee.checks') }}</p>
           <p>{{ t('methodD4.portee.thresholds') }}</p>
+          <h3>{{ t('methodD4.portee.slotsTitle') }}</h3>
+          <p>{{ t('methodD4.portee.slots') }}</p>
+          <div class="table-wrap" tabindex="0" role="region" :aria-label="t('site.tableRegion')">
+            <table class="places">
+              <caption>{{ t('methodD4.portee.slotsCaption') }}</caption>
+              <thead>
+                <tr><th v-for="c in tm('methodD4.portee.slotsCols').map(rt)" :key="c" scope="col">{{ c }}</th></tr>
+              </thead>
+              <tbody>
+                <tr v-for="r in tm('methodD4.portee.slotsRows')" :key="rt(r[0])">
+                  <th scope="row">{{ rt(r[0]) }}</th>
+                  <td v-for="(v, i) in r.slice(1)" :key="i">{{ rt(v) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small">{{ t('methodD4.portee.slotsNote') }}</p>
           <h3>{{ t('methodD4.portee.decompositionTitle') }}</h3>
           <p>{{ t('methodD4.portee.decomposition') }}</p>
           <p class="small">

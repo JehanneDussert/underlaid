@@ -911,6 +911,8 @@
       "pharmacy": "Pharmacie",
       "emergency": "Urgences",
       "emergencyNight": "Urgences, la nuit (1 h, à pied et en transports en commun)",
+      "emergencyEvening": "Urgences, le soir (mardi 21 h, à pied et en transports en commun)",
+      "emergencySunday": "Urgences, le dimanche (10 h, à pied et en transports en commun)",
       "town_hall": "Mairie",
       "france_services": "France Services",
       "caf": "CAF",
@@ -1147,6 +1149,47 @@
       "sensitivity": "Sensibilité. À 0,5 m/s, la durée médiane jusqu'à la CAF la plus proche est de 44 minutes ; à 0,8 m/s, 36 minutes ; à 1,0 m/s, 32 minutes (24 minutes sans contrainte). Avec un seuil de pente de 6 % au lieu de 8 %, les médianes changent à peine. Selon le lieu, 1,5 à 8,6 % des quartiers changent de quart (celui des quartiers les plus éloignés) à 0,5 m/s, 2,6 à 7,5 % à 1,0 m/s, et 1,7 à 3,6 % avec le seuil de 6 % pour les services publics et les soins (jusqu'à 8,9 % pour l'école maternelle).",
       "checks": "Contrôles. Les verdicts publiés qui dépendent des durées (services publics, sans contrainte et en fauteuil roulant) restent les résultats officiels ; refaits avec le second calcul, ils sont confirmés, de même que le test complémentaire sur les ménages sans voiture. La durée en fauteuil roulant ressort plus courte que la durée sans contrainte dans 11 cas sur 62 788 (0,02 %), d'une minute sauf un cas de 4 minutes ; ils sont laissés tels quels.",
       "thresholds": "Seuils de publication. Avant de voir les résultats, des seuils qui bloquent la publication ont été écrits et enregistrés dans le dépôt (6 octobre 2026, 22 h 17). Deux ont été franchis : deux quartiers sans durée, et plus de 1 % de la population au-delà de 90 minutes de la CAF en fauteuil roulant. Le 7 octobre à 3 h 52, la porteuse du projet a décidé : l'effet de la vitesse dans les communes éloignées est un résultat, accepté ; les quartiers isolés par des rues réellement en pente restent tels quels, sans nouvelle règle de pente ; les deux quartiers sans durée reçoivent le carreau habité qui les recouvre le plus (voir les limites).",
+      "slotsTitle": "Urgences selon l'heure de départ",
+      "slots": "Pour les urgences seulement, les durées sont aussi calculées le soir (mardi à 21 h), la nuit (mardi à 1 h) et le dimanche (à 10 h), avec les mêmes règles qu'en journée. La nuit, la durée en fauteuil roulant jusqu'aux urgences les plus proches dépasse 45 minutes pour plus d'un quartier sur trois ; le soir et le dimanche, les durées changent peu par rapport au mardi à 10 h.",
+      "slotsCaption": "Durée vers les urgences les plus proches, à pied et en transports en commun : médiane des quartiers habités, et part des quartiers (puis de leurs habitants) à plus de 45 minutes.",
+      "slotsCols": [
+        "Départ",
+        "Sans contrainte",
+        "Fauteuil roulant",
+        "Plus de 45 min en fauteuil roulant (quartiers)",
+        "Plus de 45 min en fauteuil roulant (habitants)"
+      ],
+      "slotsRows": [
+        [
+          "Mardi 10 h",
+          "18 min",
+          "27 min",
+          "6,4 %",
+          "6,7 %"
+        ],
+        [
+          "Mardi 21 h",
+          "19 min",
+          "27 min",
+          "7,5 %",
+          "7,8 %"
+        ],
+        [
+          "Dimanche 10 h",
+          "19 min",
+          "28 min",
+          "8,2 %",
+          "8,7 %"
+        ],
+        [
+          "Nuit (1 h)",
+          "23 min",
+          "38 min",
+          "37,6 %",
+          "39,0 %"
+        ]
+      ],
+      "slotsNote": "La part « quartiers » compte les 2 690 quartiers habités, chacun pour un ; la part « habitants » pondère chaque quartier par sa population. Sans contrainte, la part au-delà de 45 minutes est de 0,4 % le jour et de 9,0 % la nuit. La nuit, le calcul utilise les horaires d'Île-de-France Mobilités pour des départs entre 1 h et 2 h : les bus de nuit Noctilien, les dernières courses du métro et quelques autres lignes. Pour le fauteuil roulant, seules les courses signalées accessibles sont gardées ; or l'accessibilité n'est pas renseignée pour environ la moitié des courses Noctilien de cette heure-là. C'est une hypothèse fragile : en comptant ces courses comme accessibles, la part des quartiers à plus de 45 minutes passe de 37,6 % à 35,2 %. Le calcul ne tient compte ni des horaires d'accueil des urgences, ni des taxis ou véhicules adaptés.",
       "decompositionTitle": "Décomposition des durées en fauteuil roulant",
       "decomposition": "Analyse descriptive, pré-enregistrée le 7 octobre 2026, sans verdict. Vers les lieux clés (services publics, soins), le trajet se fait entièrement à pied dans 56 % des cas sans contrainte, 48 % en marche lente et 49 % en fauteuil roulant ; vers les lieux du quotidien, dans 81 %, 73 % et 73 % des cas. Par rapport au trajet sans contrainte, le fauteuil roulant ajoute en moyenne 6,9 minutes vers les lieux clés, dont 4,9 dues à la vitesse et aux pentes et 2,0 aux arrêts inaccessibles, et 5,1 minutes vers les lieux du quotidien (4,3 et 0,8). L'essentiel du temps en plus vient de la vitesse et des pentes : vers les lieux clés, les arrêts inaccessibles n'ajoutent rien dans 68 % des trajets. Ils pèsent surtout pour la CAF (45 % de l'écart) et à Paris (41 % de l'écart vers les lieux clés, contre 34 % en Seine-Saint-Denis et 19 % dans les Hauts-de-Seine et le Val-de-Marne).",
       "decompositionMethod": "Moyennes pondérées par la population, calculées sur les carreaux habités de 200 m, départ simulé un mardi à 10 h. La part due aux arrêts est l'écart entre le profil fauteuil roulant et le même profil (même vitesse, mêmes rues) où tous les arrêts et tous les véhicules seraient accessibles ; le reste est la part due à la vitesse et aux pentes.",

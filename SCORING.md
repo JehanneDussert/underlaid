@@ -1459,19 +1459,6 @@ to what's available for humans exists at this grain.
 - **400m cool-spot buffer is centroid-based**, not a true walking
   distance — a straight-line buffer from the IRIS centroid, which will
   under/over-count for oddly-shaped or elongated IRIS.
-- **PMR accessibility (`pct_pmr_accessible`, script 12) is crowdsourced
-  and sparsely documented**: only ~19% of Acceslibre entries nationally
-  have their wheelchair-accessible-entrance field filled in at all; the
-  percentage is computed only over documented entries, not all ERPs, and
-  1,064 of 2,752 IRIS (39%) have no documented entry at all — a
-  notably higher share than Paris intra-muros alone had (115/992,
-  11.6%), since crowdsourced coverage thins out further from the
-  center.
-- **Footway density (`footway_density_m_per_km2`, script 15) comes from
-  OpenStreetMap** (`highway=footway` ways via Overpass), not an official
-  accessibility audit — it measures how much dedicated pedestrian
-  infrastructure is *mapped*, not its physical condition (width, curb
-  cuts, obstacles). Full 2,752/2,752 IRIS coverage, no missing data.
 - **The artificialized-surface classification is a close proxy for
   France's official artificialisation definition, not a certified
   reproduction of it** — see "Artificialization / sealed surface"
@@ -1719,7 +1706,7 @@ raw indicators, the way every one of them has been so far, each time.
 `.github/workflows/update-pipeline.yml` re-runs the full pipeline
 quarterly (see README's "Keeping the data current" for the schedule and
 mechanics) and re-derives this same table from scratch each time, since
-upstream sources move: a new BPE/DPE/Acceslibre edition, an INSEE
+upstream sources move: a new BPE/DPE edition, an INSEE
 Filosofi refresh, etc. `scripts/23_diff_report.py` compares the fresh
 distribution against whatever is currently published (entries/exits on
 score >= 3, and the shift in each category's share) before anything

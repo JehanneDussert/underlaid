@@ -245,7 +245,7 @@ access sat at 29.6% in the worst quartile with 3 of 4 indicators vs
 now checks that grouping for every scored sub-score (max/min ratio
 < 1.5).
 
-**A pre-registered rule can't test a place it never sees.** Before
+**A rule fixed in advance can't test a place it never sees.** Before
 crossing the rebuilt access measure with residents' means, the criteria
 were written down in advance: a department counts as "clearly
 unfavourable" to its lowest-means neighbourhoods if the lowest third of
@@ -326,10 +326,10 @@ dependency, so nothing complains at import time. scipy was missing from
 have failed on that script. It is now
 declared, with a comment saying why.
 
-**Apply the lesson in the next pre-registration, not just in this
+**Apply the lesson in the next test, not just in this
 file.** After Seine-Saint-Denis couldn't be assessed in the access test
-(see above), the public-services test of the routes was pre-registered
-with thirds of means computed **within each département**. Every
+(see above), the rule of the public-services test of the routes used
+thirds of means computed **within each département**. Every
 département could then be judged on its own terms, Seine-Saint-Denis
 included — and the result, refuted and reversed (neighbourhoods with the
 most means are more often far from public services, on foot and by
@@ -377,3 +377,18 @@ neighbourhood pages were prerendered, but the browser threw the content
 away and drew it again once its data had loaded (layout shift 0.38). The
 page now hands its data to the browser with the HTML (vite-ssg initial
 state), without outlines or the scatter's 2,700 points.
+
+**A rule counts as pre-registered only once it is in the repository
+before the result.** The hypotheses and verdict rules of the first tests
+were written before the calculations, but in unversioned working notes.
+Checked against the repository on 16 October 2026: for access to care
+and inclusive mobility, the rule entered the repository at 11:58 on
+2 October, after the first result (9:31); for public services, before
+the first dated record of the result, but the time of the first
+calculation cannot be proved. None of them can be called verifiably
+pre-registered, and the site now says so in a table. Since 7 October,
+every hypothesis and threshold is committed before any calculation that
+depends on it (`docs/preregistrations/`, `docs/checks/`); committing the
+result file as well, as for the wheelchair decomposition
+(`docs/checks/2026-10-08-wheelchair-decomposition-results.txt`), lets
+both times be checked.

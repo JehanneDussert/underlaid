@@ -12,6 +12,7 @@
 //      access to care (descriptive), with the tested hypothesis as stated
 //      in the method.
 // Data: one file per commune (scripts/39_neighbourhood_files.py).
+import { useHead } from '@unhead/vue'
 import { computed, inject, nextTick, onMounted, onServerPrefetch, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -175,6 +176,11 @@ useSeoMeta({
     const text = t('nbhd.seo.description', { summary: title.value.replace(/\.$/, '') })
     return { en: text, fr: text }
   },
+})
+// Neighbourhoods with fewer than 50 residents: page kept, not indexed,
+// consistent with their absence from the sitemap (vite.config.js).
+useHead({
+  meta: computed(() => (record.value && !record.value.inhabited ? [{ name: 'robots', content: 'noindex, follow' }] : [])),
 })
 const pills = computed(() => [...worst.value, ...(careWorst.value ? ['access_care'] : [])])
 

@@ -35,7 +35,7 @@ def test_legacy_metadata_dates_every_layer_from_generated_at(tmp_path):
     path = tmp_path / "last_updated.json"
     path.write_text(json.dumps({"generated_at": "2026-07-26T20:15:50Z"}), encoding="utf-8")
     dates = policy.previous_layer_dates(path)
-    assert dates["social_index_iris.geojson"] == "2026-07-26T20:15:50Z"
+    assert dates["income_iris.geojson"] == "2026-07-26T20:15:50Z"
 
 
 def test_two_quarter_cap():

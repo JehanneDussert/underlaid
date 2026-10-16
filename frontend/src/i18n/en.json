@@ -1,5 +1,5 @@
 {
-  "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors",
+  "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · Ville de Paris · © OpenStreetMap contributors",
   "footerLastUpdated": "Data last updated: {date}",
   "ranking": {
     "title": "The neighbourhoods where exposures stack up",
@@ -147,7 +147,7 @@
     "caveat4": "The score is an estimate that shifts with each methodological correction, not a fixed ranking — access to services left the count at launch (score out of 3), then came back in a rebuilt form, access to care (score out of 4, version 0.2, October 2026).",
     "distributionTitle": "Current distribution — 2,752 neighborhoods (Paris + inner suburbs)",
     "sourceLine": "Full methodology and caveats: see SCORING.md in the project documentation.",
-    "dataSources": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif (\"Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr\") · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités · IGN BD TOPO · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors. Licence Ouverte 2.0, ODbL and Licence Mobilités — published data under ODbL, code under MIT. Full list: methodology page, \"Data sources & licenses\".",
+    "dataSources": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif (\"Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr\") · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités · IGN BD TOPO · Ville de Paris · © OpenStreetMap contributors. Licence Ouverte 2.0, ODbL and Licence Mobilités — published data under ODbL, code under MIT. Full list: methodology page, \"Data sources & licenses\".",
     "printButton": "Print / Save as PDF",
     "meansTitle": "Means to cope — a separate axis",
     "meansBody": "The exposure score doesn't say who can cope. A second, separate measure does: median income, overcrowded homes and secondary residences (INSEE: income 2021, 2022 census), ranked and split into thirds of the metro area. It is never added to the score; on the map, a filter crosses the two. Highly exposed areas with the most means are mostly in Paris (heat, old housing); those with the least are mostly in Seine-Saint-Denis and Val-de-Marne (heat, air and noise). In Seine-Saint-Denis, 62% of highly exposed neighborhoods (at least 2 of the 3 exposures) are in the lowest third of means; in Paris, 4.5%. It measures means, not what households do with them (e.g. air conditioning).",

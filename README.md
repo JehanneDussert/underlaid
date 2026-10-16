@@ -173,14 +173,10 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
 | `04_cool_spots_green_areas.py` | `cool_spots_green_iris.geojson` | data.iledefrance.fr — open/publicly-accessible green & wooded space, region-wide — re-sourced from `opendata.paris.fr` in Phase 5 |
 | `05_air_noise.py` | `air_noise_iris.geojson` | bruitparif.fr — Airparif/Bruitparif air-noise co-exposure map |
 | `06_bpe.py` | `bpe_iris.geojson` | INSEE — Base Permanente des Équipements (BPE), health/education/transport domains |
-| `07_equipment_access_200m.py` | `equipment_access_iris.geojson` | data.gouv.fr — access time to equipment, 200m grid (unscored context since the v0 launch, like scripts 09, 12, 15) |
 | `08_income_filosofi.py` | `income_iris.geojson` | INSEE Filosofi — median disposable income, 2021 |
-| `09_social_index_schools.py` | `social_index_iris.geojson` | data.education.gouv.fr — social position index (IPS), primary/middle schools |
 | `10_energy_performance.py` | `energy_performance_iris.geojson` | data.ademe.fr — DPE, share of F/G-rated housing |
-| `12_accessibility_erp.py` | `accessibility_iris.geojson` | Acceslibre (data.gouv.fr) — PMR accessibility of ERPs |
 | `13_street_lighting.py` | `street_lighting_iris.geojson` | opendata.paris.fr — street lighting density (Paris only — no MGP-wide equivalent) |
 | `14_qpv_boundaries.py` | `qpv_boundaries_mgp.geojson` | data.iledefrance.fr — QPV priority-neighborhood boundaries, MGP-wide (validation layer, not scored) |
-| `15_pedestrian_paths.py` | `pedestrian_paths_iris.geojson` | OpenStreetMap (Overpass API) — footway density. Unscored and no longer shown on the map: OSM sidewalk mapping is too uneven across departments (audit in `scripts/analysis/osm_sidewalk_completeness.py`, [docs/LESSONS.md](docs/LESSONS.md)) |
 | `16_school_ac_context.py` | `school_ac_context_arrondissement.geojson` | press/mairie communications, 2026 heatwave — air-conditioned schools (context only, Paris arrondissement grain only, not scored) |
 | `17_enedis_thermosensitivity.py` | `enedis_thermosensitivity_iris.geojson` | opendata.enedis.fr — residential electrical thermosensitivity (winter heating load), second housing sub-score indicator alongside DPE |
 | `18_tree_age_context.py` | `tree_age_context_arrondissement.geojson` | opendata.paris.fr — average street-tree trunk circumference (age proxy, no planting-date field exists) and young-tree share, Paris arrondissement grain only, context only, not scored |
@@ -234,26 +230,11 @@ along with the score.
   too large to comfortably hold whole-France in memory). This URL will
   need updating (`BPE25.zip` → `BPE26.zip`, new page id) whenever INSEE
   ships a new edition.
-- **`07_equipment_access_200m.py`**: turned out simpler at MGP scale than
-  expected — `depcom` is a normal 5-digit INSEE commune code even for
-  Paris's legacy single-commune code, so a plain
-  `depcom.str[:2].isin(MGP_DEP_CODES)` filter covers every department
-  uniformly (the earlier Paris-only version special-cased `75056`
-  explicitly; that's gone now, not needed).
 - **`08_income_filosofi.py`**: INSEE encodes statistically masked values
   (small-population IRIS) as the string `"ns"` and uses a comma decimal
   separator; the script converts both before computing anything. 223 of
   2,752 MGP IRIS end up masked (`median_income` is null there) — this is
   expected, not a bug.
-- **`09_social_index_schools.py`**: the middle-school (collèges) dataset
-  ships its own geolocation; the primary-school (écoles) dataset does
-  not, and is geolocated by joining on `uai` against the
-  `fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre`
-  directory dataset. Only IRIS that actually contain a school get a
-  value (1,211/2,752 for primary, 548/2,752 for middle schools) — most
-  IRIS are residential zones with no school in them, which is expected;
-  step 2 will need a nearest-school (rather than within-IRIS) approach
-  if finer coverage is wanted.
 - **`21_population_iris.py`**: same INSEE-scrape pattern as script 08
   (find the current download link on the INSEE statistics page rather
   than hardcoding a versioned URL). 2022 census since October 3, 2026
@@ -281,13 +262,6 @@ along with the score.
   its own query API and cursor-based pagination. The full MGP has
   ~2.1M DPE records since July 2021, so this script takes longer to run
   than it did at Paris-only scale (~800k records).
-- **`12_accessibility_erp.py`**: uses Acceslibre's bulk CSV export
-  (~524MB, all of France, no API key needed) rather than the live API
-  (which requires one). The `entree_pmr` accessibility field is
-  crowdsourced and sparsely filled in (~19% nationally) — watch for the
-  `pmr_documented` vs. `pmr_accessible` distinction, and note that pandas
-  parses that column's "True"/"False" text as actual Python booleans
-  (not strings), which the join logic compares against accordingly.
 - **`14_qpv_boundaries.py`**: QPV is a validation-only layer by design —
   it's never joined to `code_iris` or fed into the score,
   only meant to be visually compared against the cumulative score map to
@@ -306,14 +280,6 @@ along with the score.
   cumulative score. Re-running this script doesn't refresh anything —
   there's nothing to download; update `SCHOOL_AC_DATA` by hand if better
   figures surface.
-- **`15_pedestrian_paths.py`**: the "official" source
-  (transport.data.gouv.fr's OSM-derived pedestrian-path dataset) only
-  ships NeTEx, a transit-accessibility XML format with no simple GeoJSON
-  export — queries the same underlying OpenStreetMap data directly via
-  the Overpass API instead. Public Overpass instances reject requests
-  without a real `User-Agent` header (a 406 from the reverse proxy, not
-  from Overpass itself) — if this script starts failing, check that
-  first.
 - **`17_enedis_thermosensitivity.py`**: Enedis' open data portal migrated
   from `data.enedis.fr` (now just serves the JS app, not the API) to
   `opendata.enedis.fr`, which runs the same "data-fair" platform as
@@ -645,8 +611,8 @@ page.
 schedule (`0 3 1 1,4,7,10 *` — 03:00 UTC on the 1st of January, April,
 July and October) and on manual `workflow_dispatch`. Quarterly because
 most sources here (INSEE, IGN/IDF, Airparif/Bruitparif, Enedis, RNA...)
-don't change more often than that; DPE and Acceslibre do update more
-frequently upstream and could get their own faster schedule later if
+don't change more often than that; DPE does update more
+frequently upstream and could get its own faster schedule later if
 that turns out to matter — not built now since a full run only takes a
 few minutes, so splitting it adds workflow complexity for a benefit
 nothing has needed yet.
@@ -812,20 +778,18 @@ September 2026, not assumed:
 | Source | Publisher | Used for | License |
 |---|---|---|---|
 | IRIS contours 2024 (data.iledefrance.fr) | IGN & INSEE | Neighborhood boundaries | Licence Ouverte 2.0 |
-| BPE 2025, Filosofi 2021, Recensement 2022 (population, housing), access-time 200m grid | INSEE | Services, cool facilities, route destinations, income, population, secondary residences, overcrowding, access time | Licence Ouverte 2.0 — "Source : Insee" |
+| BPE 2025, Filosofi 2021, Recensement 2022 (population, housing) | INSEE | Services, cool facilities, route destinations, income, population, secondary residences, overcrowding | Licence Ouverte 2.0 — "Source : Insee" |
 | [France Services sites](https://www.data.gouv.fr/datasets/liste-des-structures-labellisees-france-services) (licence checked on the publisher's data.gouv.fr page, 3 October 2026) | ANCT | Route destinations | Licence Ouverte 2.0 |
 | [Directory of public administration](https://www.data.gouv.fr/datasets/service-public-gouv-fr-annuaire-de-ladministration-base-de-donnees-locales), CAF and CPAM offices (licence checked on the publisher's data.gouv.fr page, 3 October 2026) | DILA, published under Premier ministre (service-public.gouv.fr) | Route destinations | Licence Ouverte (version 1.0) |
 | Urban heat island indicators (Sat4BDNB, data.gouv.fr) | CSTB | Thermal | Licence Ouverte 2.0 |
 | Open green & wooded spaces; MOS land use 2021 (data.iledefrance.fr) | L'Institut Paris Region | Thermal | Licence Ouverte 2.0 |
 | Air-noise co-exposure map 2024 | Airparif & Bruitparif | Pollution | Published as open data with no formal license named; the publisher requires this citation: *"Source des données : Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr"* |
-| IPS social position index, school directory (data.education.gouv.fr) | DEPP — Ministère de l'Éducation nationale | Context, not scored (school social position index) | Licence Ouverte 2.0 |
 | DPE energy performance certificates (data.ademe.fr) | ADEME | Housing | Licence Ouverte 2.0 |
 | Electricity consumption by IRIS (opendata.enedis.fr) | Enedis | Housing (thermosensitivity) | Licence Ouverte 2.0 |
-| Acceslibre (data.gouv.fr) | Acceslibre | Context, not scored (PMR accessibility) | Licence Ouverte 2.0 |
 | QPV boundaries (data.iledefrance.fr) | ANCT | Validation layer, not scored | Licence Ouverte |
 | RNA associations directory (data.iledefrance.fr) | Ministère de l'Intérieur | Context, not scored | Licence Ouverte 2.0 |
 | Street trees, public lighting (opendata.paris.fr) | Ville de Paris | Context, not scored | **ODbL** |
-| Footways (Overpass API); street network (Geofabrik Île-de-France extract) | © OpenStreetMap contributors | Footways: context, not scored; street network: travel times for access to care | **ODbL** |
+| Street network (Geofabrik Île-de-France extract) | © OpenStreetMap contributors | Travel times (access to care, everyday places) | **ODbL** |
 | RPPS directory of health professionals (Annuaire Santé) | Agence du Numérique en Santé (ANS) | Access to care (GPs) | Licence Ouverte 2.0 |
 | FINESS (pharmacies) | Ministère de la Santé | Access to care (pharmacies) | Licence Ouverte 2.0 |
 | APL age weights and distance decay | DREES | Access to care (method parameters) | Licence Ouverte 2.0 |

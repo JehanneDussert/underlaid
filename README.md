@@ -57,12 +57,23 @@ axis and doesn't count here):
   metro area's lowest third of means; in Paris, 4.5% (Hauts-de-Seine
   1.9%, Val-de-Marne 24.5%).
 
-**Three pre-registered tests, plus one additional test** (hypotheses
-written and dated before any crossing with residents' means; see
+**Four tests against residents' means** (rules fixed in advance, first
+in unversioned working notes; see
 [SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered)).
-The verdicts were computed with the 2021 census and remain the official
-results; each was redone with the 2022 census and **confirmed**. Figures
-below are the 2022 ones.
+None is fully verifiably pre-registered:
+
+| Test | First dated record of the rule in the repository | First result | Status |
+|---|---|---|---|
+| Access to care | 2 October 2026, 11:58 (commits `0414353`, `772b475`) | 2 October 2026, 9:31 (result file, not versioned) | Not verifiably pre-registered: the rule entered the repository after the result |
+| Inclusive mobility (wheelchair) | Same | Same | Same |
+| Public services | 3 October 2026, 13:00 (commit `bed14ba`, `scripts/analysis/routes_means.py`) | Time not verifiable; first dated record: 3 October 2026, 18:57 (commit `8f1d2c6`) | Rule recorded before the first record of the result; the time of the first calculation cannot be verified |
+| Households without a car (additional test) | 3 October 2026, 22:53 (commit `08f623d`) | 3 October 2026, 22:52 (result file, not versioned) | Not verifiably pre-registered |
+
+Paris time. Each rule was first written in unversioned working notes before the test; only a rule recorded in the repository before the result counts as verifiably pre-registered (correction of 16 October 2026). The verdicts remain those of the rules, applied as written.
+
+The first three verdicts were computed with the 2021 census and remain
+the official results; each was redone with the 2022 census and
+**confirmed**. Figures below are the 2022 ones.
 - **Access to care — supported.** Within Hauts-de-Seine and within
   Val-de-Marne, neighborhoods with the fewest means are more often among
   those with the weakest access to care (Hauts-de-Seine 39.3% against
@@ -515,7 +526,7 @@ Part 3 of each neighbourhood page ("Les deux à la fois") places the
 neighbourhood on a cloud of all neighbourhoods: number of exposures in
 the most affected quarter against residents' resources. It is
 descriptive, never presented as a tested result; the tested hypotheses
-(pre-registered, with their verdicts) are on the Method page and in
+(with their verdicts and pre-registration status) are on the Method page and in
 [SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered).
 What the cloud shows is that exposure does not follow income neatly:
 every level of exposure spans almost the whole range of resources, and
@@ -741,7 +752,7 @@ data updates behind a publication guard-rail.
 
 **v0.2** — access to care back in the score (now on 4), rebuilt without
 a car and weighted by how many people share each GP and pharmacy
-(E2SFCA); inclusive mobility shown for information; the pre-registered
+(E2SFCA); inclusive mobility shown for information; the working
 hypothesis tested and its verdicts published (SCORING.md).
 
 **Redesign and travel times** (October 2026) — the redesigned site at
@@ -749,8 +760,8 @@ https://underlaid.fr ("Votre quartier", "Explorer la carte"); precomputed
 travel times from each neighbourhood to emergency departments, GP,
 pharmacy, public services, everyday places (crèches, food stores,
 nursery schools, police, social centres, libraries, parks) and, in Paris
-only, public toilets and drinking fountains; the pre-registered
-public-services hypothesis tested (refuted, and reversed); the census
+only, public toilets and drinking fountains; the public-services
+hypothesis tested (refuted, and reversed); the census
 moved to 2022 (sensitivity check published).
 
 **v0.3** (7 October 2026) — the second travel-time calculation

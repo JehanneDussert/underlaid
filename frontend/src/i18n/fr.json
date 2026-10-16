@@ -537,6 +537,11 @@
           "when": "Oct. 2026",
           "what": "Durées pour deux quartiers sans carreau habité",
           "why": "Nord 1 à Aulnay-sous-Bois et Iris 2 à Épinay-sur-Seine n'avaient pas de durée : aucun carreau habité n'a son centre dans ces quartiers, et leur point représentatif tombe dans un carreau sans habitant. Ils prennent désormais le carreau habité qui les recouvre le plus. Cette règle a été décidée le 7 octobre 2026, après avoir vu les résultats du second calcul."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Statut de pré-enregistrement des tests (16 octobre 2026)",
+          "why": "La Méthode, le README et les notes de version présentaient trois tests comme « pré-enregistrés ». Pour l'accès aux soins et la mobilité inclusive, la règle n'est entrée dans le dépôt qu'après le premier résultat (2 octobre, 11 h 58 contre 9 h 31) ; pour les services publics, la règle est entrée avant la première trace du résultat, mais l'heure du premier calcul ne peut pas être vérifiée. Un tableau donne désormais, pour chaque test, ces dates et son statut. Les verdicts ne changent pas. Dans la même correction, la phrase sur le second calcul est précisée : les règles du 5 octobre ont été fixées avant le calcul du réseau en pente et des trajets en fauteuil roulant, la première phase du calcul (sans contrainte, marche lente) ayant démarré 21 minutes plus tôt."
         }
       ]
     },
@@ -676,15 +681,15 @@
     }
   },
   "hypotheses": {
-    "intro": "Avant de regarder les résultats, les hypothèses à tester ont été écrites et datées, avec la règle qui décide du verdict. Cela évite de chercher, après coup, l'histoire que les chiffres semblent raconter.",
+    "intro": "Chaque hypothèse a été formulée avec la règle qui décide du verdict avant d'être testée, mais d'abord dans des notes de travail non versionnées. Seule une règle enregistrée dans le dépôt public avant le résultat peut être considérée comme pré-enregistrée de façon vérifiable. Le tableau ci-dessous donne, pour chaque test, la première trace datée de la règle et celle du résultat : aucun des quatre tests ne remplit entièrement cette condition. Les verdicts restent ceux de la règle, appliquée telle quelle.",
     "additionalTitle": "Test complémentaire",
-    "additionalIntro": "Ce test suit la même règle de verdict que les hypothèses ci-dessus, mais il ne peut pas être considéré comme pré-enregistré de façon vérifiable.",
+    "additionalIntro": "Ce test suit la même règle de verdict que les hypothèses ci-dessus ; il a été ajouté après elles (voir le tableau).",
     "verdict": {
       "supported": "Soutenue",
       "refuted": "Infirmée",
       "reversed": "Infirmée, et inversée"
     },
-    "written": "Hypothèse écrite le {date}",
+    "written": "Hypothèse formulée le {date}, dans des notes de travail non versionnées",
     "department": "Département",
     "lowestThird": "Ressources les plus faibles",
     "highestThird": "Ressources les plus élevées",
@@ -731,6 +736,42 @@
     },
     "control2": {
       "label": "Contrôle avec le second calcul des durées :"
+    },
+    "status": {
+      "caption": "Statut de pré-enregistrement de chaque test (heures de Paris).",
+      "cols": [
+        "Test",
+        "Règle dans le dépôt (première trace datée)",
+        "Premier résultat",
+        "Statut"
+      ],
+      "rows": [
+        [
+          "Accès aux soins",
+          "2 octobre 2026, 11 h 58 (commits 0414353 et 772b475)",
+          "2 octobre 2026, 9 h 31 (fichier de résultat, non versionné)",
+          "Non pré-enregistré de façon vérifiable : la règle est entrée dans le dépôt après le résultat"
+        ],
+        [
+          "Mobilité inclusive (fauteuil roulant)",
+          "2 octobre 2026, 11 h 58 (commits 0414353 et 772b475)",
+          "2 octobre 2026, 9 h 31 (fichier de résultat, non versionné)",
+          "Non pré-enregistré de façon vérifiable : la règle est entrée dans le dépôt après le résultat"
+        ],
+        [
+          "Services publics",
+          "3 octobre 2026, 13 h 00 (commit bed14ba)",
+          "Heure non vérifiable ; première trace datée : 3 octobre 2026, 18 h 57 (commit 8f1d2c6)",
+          "Règle enregistrée avant la première trace du résultat ; l'heure du premier calcul ne peut pas être vérifiée"
+        ],
+        [
+          "Ménages sans voiture (test complémentaire)",
+          "3 octobre 2026, 22 h 53 (commit 08f623d)",
+          "3 octobre 2026, 22 h 52 (fichier de résultat, non versionné)",
+          "Non pré-enregistré de façon vérifiable"
+        ]
+      ],
+      "note": "Les commits se consultent dans le dépôt public (github.com/JehanneDussert/underlaid). L'heure d'un fichier de résultat est celle de la machine de travail : un tiers ne peut pas la vérifier."
     }
   },
   "nbhd": {
@@ -1102,7 +1143,7 @@
       "info": "Ces durées sont données pour information : elles n'entrent pas dans le cumul. La nuit (départ à 1 h), seules les urgences et les stations sont affichées, toujours à pied et en transports en commun.",
       "definition": "Une durée de trajet est la plus courte entre la marche seule et un trajet qui combine marche et transports en commun (horaires d'Île-de-France Mobilités, départs entre 10 h et 11 h, durée médiane). Le « réseau lourd » réunit le tram, le métro, le RER et les trains Transilien. En fauteuil roulant, seuls les arrêts et les courses signalés accessibles dans les horaires d'Île-de-France Mobilités (GTFS) sont utilisés ; une variante compte aussi les arrêts et courses dont l'accessibilité n'est pas renseignée, et les conclusions ne sont retenues que si elles tiennent dans les deux.",
       "secondTitle": "Second calcul des durées (octobre 2026)",
-      "second": "Les durées publiées viennent d'un second calcul, pré-enregistré le 4 octobre 2026, complété le 5 octobre (règles pour les ponts et les erreurs du modèle de terrain, fixées avant tout calcul de trajets). Départs et arrivées sont rattachés au même point du réseau de rues pour toutes les façons de se déplacer. Le fauteuil roulant avance à 0,8 m/s et évite les escaliers et les rues de plus de 8 % de pente, mesurée sur le modèle de terrain au mètre de l'IGN (RGE ALTI). Les ponts et les tunnels ne sont pas mesurés ; les rampes qui y mènent le sont, à partir de points situés à plus de 20 m de l'ouvrage.",
+      "second": "Les durées publiées viennent d'un second calcul, pré-enregistré le 4 octobre 2026, complété le 5 octobre à 9 h 43 (règles pour les ponts et les erreurs du modèle de terrain, fixées avant le calcul du réseau en pente et des trajets en fauteuil roulant). Départs et arrivées sont rattachés au même point du réseau de rues pour toutes les façons de se déplacer. Le fauteuil roulant avance à 0,8 m/s et évite les escaliers et les rues de plus de 8 % de pente, mesurée sur le modèle de terrain au mètre de l'IGN (RGE ALTI). Les ponts et les tunnels ne sont pas mesurés ; les rampes qui y mènent le sont, à partir de points situés à plus de 20 m de l'ouvrage.",
       "sensitivity": "Sensibilité. À 0,5 m/s, la durée médiane jusqu'à la CAF la plus proche est de 44 minutes ; à 0,8 m/s, 36 minutes ; à 1,0 m/s, 32 minutes (24 minutes sans contrainte). Avec un seuil de pente de 6 % au lieu de 8 %, les médianes changent à peine. Selon le lieu, 1,5 à 8,6 % des quartiers changent de quart (celui des quartiers les plus éloignés) à 0,5 m/s, 2,6 à 7,5 % à 1,0 m/s, et 1,7 à 3,6 % avec le seuil de 6 % pour les services publics et les soins (jusqu'à 8,9 % pour l'école maternelle).",
       "checks": "Contrôles. Les verdicts publiés qui dépendent des durées (services publics, sans contrainte et en fauteuil roulant) restent les résultats officiels ; refaits avec le second calcul, ils sont confirmés, de même que le test complémentaire sur les ménages sans voiture. La durée en fauteuil roulant ressort plus courte que la durée sans contrainte dans 11 cas sur 62 788 (0,02 %), d'une minute sauf un cas de 4 minutes ; ils sont laissés tels quels.",
       "thresholds": "Seuils de publication. Avant de voir les résultats, des seuils qui bloquent la publication ont été écrits et enregistrés dans le dépôt (6 octobre 2026, 22 h 17). Deux ont été franchis : deux quartiers sans durée, et plus de 1 % de la population au-delà de 90 minutes de la CAF en fauteuil roulant. Le 7 octobre à 3 h 52, la porteuse du projet a décidé : l'effet de la vitesse dans les communes éloignées est un résultat, accepté ; les quartiers isolés par des rues réellement en pente restent tels quels, sans nouvelle règle de pente ; les deux quartiers sans durée reçoivent le carreau habité qui les recouvre le plus (voir les limites).",

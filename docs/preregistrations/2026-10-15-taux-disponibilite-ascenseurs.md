@@ -1,6 +1,6 @@
 # Pré-enregistrement — taux de disponibilité des ascenseurs (analyse descriptive)
 
-**Brouillon du 15 octobre 2026, à relire par la porteuse du projet.** Il ne vaut pré-enregistrement qu'une fois sa version finale commitée, avant le début de la période d'étude (2 novembre 2026) et avant tout calcul de taux. Analyse **descriptive, sans hypothèse ni verdict**. Aucun croisement avec les ressources des habitants : s'il est envisagé, il sera pré-enregistré à part.
+Rédigé le 15 octobre 2026, complété le 18 octobre (deux archives horaires), **validé par la porteuse du projet le 18 octobre 2026**, enregistré dans le dépôt avant le début de la période d'étude (2 novembre 2026) et avant tout calcul de taux (la date qui fait foi est celle du commit de fusion de la PR #24 ; copie horodatée déposée ensuite hors du dépôt). Analyse **descriptive, sans hypothèse ni verdict**. Aucun croisement avec les ressources des habitants : s'il est envisagé, il sera pré-enregistré à part.
 
 Source : Île-de-France Mobilités, « État des ascenseurs » (API PRIM), Licence Mobilités. Mention obligatoire sur tout résultat : « Contient des informations de État des ascenseurs, disponible sous la Licence Mobilités ».
 

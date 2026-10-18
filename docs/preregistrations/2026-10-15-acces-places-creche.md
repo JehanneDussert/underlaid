@@ -1,6 +1,6 @@
 # Pré-enregistrement — accès aux places en crèche, pondéré par le nombre de places (E2SFCA)
 
-**Brouillon du 15 octobre 2026, à relire par la porteuse du projet.** Il ne vaut pré-enregistrement qu'une fois sa version finale commitée, avant tout calcul de temps de trajet depuis les crèches, de l'indicateur et de tout croisement avec les ressources. Les choix marqués **[à valider]** sont des propositions.
+Rédigé le 15 octobre 2026, **validé par la porteuse du projet le 18 octobre 2026**, enregistré dans le dépôt avant tout calcul de temps de trajet depuis les crèches, de l'indicateur et de tout croisement avec les ressources (la date qui fait foi est celle du commit de fusion de la PR #24).
 
 L'indicateur reste une **information**, hors du score de cumul (décision du 3 octobre 2026). Le croisement avec les ressources (partie 6) est le seul test, avec une règle de verdict fixée ici.
 
@@ -26,14 +26,14 @@ L'indicateur reste une **information**, hors du score de cumul (décision du 3 o
 ## 3. Temps de trajet
 
 - Mêmes réseaux que l'accès aux soins (OSM Île-de-France du 30 septembre 2026, GTFS IDFM du 1er octobre 2026), mêmes règles R5, temps médian sur une fenêtre de 60 minutes, calculés de chaque crèche vers les carreaux.
-- **Départ : mardi 13 octobre 2026, de 8 h à 9 h [à valider]** (heure du trajet vers la crèche). Sensibilité : de 10 h à 11 h.
+- **Départ : mardi 13 octobre 2026, de 8 h à 9 h** (heure du trajet vers la crèche). Sensibilité : de 10 h à 11 h.
 - **Profil principal : sans contrainte** (4,5 km/h, réseau complet).
-- **Profil descriptif « poussette » [à valider]** : réseau sans escaliers, arrêts et courses signalés accessibles (inconnu = non accessible ; variante inconnu = accessible), 4,5 km/h, sans retrait des pentes. Il n'entre pas dans le test.
+- **Profil descriptif « poussette »** : réseau sans escaliers, arrêts et courses signalés accessibles (inconnu = non accessible ; variante inconnu = accessible), 4,5 km/h, sans retrait des pentes. Il n'entre pas dans le test.
 - Temps maximal calculé : 25 minutes.
 
 ## 4. Décroissance et indicateur
 
-- **Décroissance [à valider]** : celle de l'APL de la DREES, déjà utilisée pour les médecins : moins de 10 min : 1 ; 10 à 15 : 2/3 ; 15 à 20 : 1/3 ; au-delà : 0. Sensibilité : bornes décalées de −5 et +5 minutes.
+- **Décroissance** : celle de l'APL de la DREES, déjà utilisée pour les médecins : moins de 10 min : 1 ; 10 à 15 : 2/3 ; 15 à 20 : 1/3 ; au-delà : 0. Sensibilité : bornes décalées de −5 et +5 minutes.
 - Indicateur du carreau = places accessibles pour 100 enfants de 0 à 3 ans (E2SFCA, Luo et Qi 2009). Valeur du quartier = moyenne des carreaux pondérée par le nombre d'enfants de 0 à 3 ans.
 - Quartiers concernés : quartiers habités (au moins 50 habitants) ; un quartier sans enfant de 0 à 3 ans dans la grille n'a pas de valeur.
 

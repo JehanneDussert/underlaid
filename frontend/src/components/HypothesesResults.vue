@@ -1,7 +1,8 @@
 <script setup>
 // "Hypothèses et résultats" (method page, docs/design/refonte-d4/,
-// MethodeD4 part 7): each pre-registered hypothesis with its verdict in
-// words, what the result shows, and the date it was written. Texts
+// MethodeD4 part 7): each tested hypothesis with its verdict in words,
+// what the result shows, and the date it was formulated; a table gives the
+// pre-registration status of each test (correction of 16 October 2026). Texts
 // validated by the project owner on 3 October 2026; no explanation of a
 // result is presented as established.
 import { useI18n } from 'vue-i18n'
@@ -11,7 +12,7 @@ defineProps({
   // Heading level of each hypothesis, to fit the page outline.
   level: { type: Number, default: 3 },
 })
-const { t, te, locale } = useI18n()
+const { t, te, tm, rt, locale } = useI18n()
 // Column labels of a hypothesis table: its own if given, else residents' resources.
 const col = (h, key) => (te(`hypotheses.${h.id}.${key}`) ? t(`hypotheses.${h.id}.${key}`) : t(`hypotheses.${key}`))
 
@@ -33,9 +34,9 @@ function controlText(h) {
   }
   return t(`hypotheses.${h.id}.control`, args)
 }
-// Pre-registered hypotheses, then the additional test (households without a
-// car): its rule was only in unversioned notes before the calculation, so it
-// cannot be shown as verifiably pre-registered (decision of 7 October 2026).
+// The three hypotheses, then the additional test (households without a car),
+// added after them (decision of 7 October 2026). None of the four is
+// verifiably pre-registered (status table, correction of 16 October 2026).
 const groups = [
   { id: 'pre', items: HYPOTHESES.filter((h) => !h.additional) },
   { id: 'additional', title: 'hypotheses.additionalTitle', intro: 'hypotheses.additionalIntro', items: HYPOTHESES.filter((h) => h.additional) },
@@ -46,6 +47,21 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
 <template>
   <div class="hypotheses">
     <p class="hypotheses-intro">{{ t('hypotheses.intro') }}</p>
+    <div class="table-wrap status-wrap" tabindex="0" role="region" :aria-label="t('hypotheses.status.caption')">
+      <table class="hypothesis-table status-table">
+        <caption>{{ t('hypotheses.status.caption') }}</caption>
+        <thead>
+          <tr><th v-for="c in tm('hypotheses.status.cols').map(rt)" :key="c" scope="col">{{ c }}</th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="r in tm('hypotheses.status.rows')" :key="rt(r[0])">
+            <th scope="row">{{ rt(r[0]) }}</th>
+            <td v-for="(v, i) in r.slice(1)" :key="i">{{ rt(v) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hypothesis-caveat status-note">{{ t('hypotheses.status.note') }}</p>
     <template v-for="g in groups" :key="g.id">
       <component :is="`h${level}`" v-if="g.title" class="hypotheses-group-title">{{ t(g.title) }}</component>
       <p v-if="g.intro" class="hypotheses-intro">{{ t(g.intro) }}</p>
@@ -90,6 +106,22 @@ const pct = (v) => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-G
 </template>
 
 <style scoped>
+.status-wrap {
+  overflow-x: auto;
+  margin: 0 0 8px;
+}
+.hypothesis-table.status-table {
+  min-width: 640px;
+  max-width: none;
+  font-size: 14px;
+}
+.status-table th,
+.status-table td {
+  vertical-align: top;
+}
+.status-note {
+  margin: 0 0 28px;
+}
 .hypotheses-intro {
   margin: 0 0 24px;
   font-size: 17px;

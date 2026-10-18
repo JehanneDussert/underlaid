@@ -19,6 +19,11 @@ export const NEEDS = [
       // proche" (display rule of 3 October 2026: only emergency departments
       // and stations at night).
       { id: 'emergencyNight', source: 'night', night: true },
+      // Evening (Tuesday 21:00) and Sunday (10:00), emergency departments only
+      // (decision of 8 October 2026); like the night row, not counted in
+      // "le plus proche" nor in the need position.
+      { id: 'emergencyEvening', source: 'evening', night: true },
+      { id: 'emergencySunday', source: 'sunday', night: true },
     ],
   },
   {

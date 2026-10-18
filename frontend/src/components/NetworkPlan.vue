@@ -10,9 +10,10 @@
 // (phone: tighter crop, three places). The information is a real list
 // (ul > li) that a screen reader reads; the drawing itself is aria-hidden.
 //
-// Animations (CSS only, transform / opacity / stroke-dashoffset): lines
-// drawn in 2 s, 200 ms apart; stations pop (0 -> 1.15 -> 1) in 400 ms;
-// labels fade in 500 ms; durations cross-fade in about 250 ms; "you are
+// Animations (CSS only, transform / opacity / stroke-dashoffset; text is
+// never faded): lines drawn in 2 s, 200 ms apart; stations pop
+// (0 -> 1.15 -> 1) in 400 ms; labels grow in 400 ms; durations slide in
+// about 250 ms; "you are
 // here" pulses three times then stops (WCAG 2.2.2); on leaving, the
 // drawing zooms towards "you are here" in 600 ms. None with reduced
 // motion (style.css).
@@ -168,10 +169,16 @@ const listLabel = computed(() => (props.mode ? t('plan.listLabelMode', { mode: t
 }
 .zooming {
   transform: scale(3);
+  transition: transform 600ms ease-in;
+}
+/* Leaving the page: only the drawing fades; the labels (text) disappear at
+   once, never through a fade (text contrast while it fades). */
+.zooming .plan-svg {
   opacity: 0;
-  transition:
-    transform 600ms ease-in,
-    opacity 600ms ease-in;
+  transition: opacity 600ms ease-in;
+}
+.zooming .plan-labels {
+  visibility: hidden;
 }
 .plan-svg {
   position: absolute;
@@ -210,7 +217,7 @@ const listLabel = computed(() => (props.mode ? t('plan.listLabelMode', { mode: t
   padding: 6px 12px 6px 10px;
   font-size: 15px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-  animation: plan-fade 500ms ease-out both;
+  animation: plan-label-in 400ms ease-out both;
 }
 .side-t {
   transform: translate(-50%, calc(-100% - 20px));
@@ -242,13 +249,14 @@ const listLabel = computed(() => (props.mode ? t('plan.listLabelMode', { mode: t
 .plan-phone {
   display: none;
 }
+/* Movement only, never opacity (text contrast while it fades). */
 .plan-time-enter-active,
 .plan-time-leave-active {
-  transition: opacity 125ms ease;
+  transition: transform 125ms ease;
 }
 .plan-time-enter-from,
 .plan-time-leave-to {
-  opacity: 0;
+  transform: translateY(4px);
 }
 
 @keyframes plan-draw {
@@ -280,12 +288,15 @@ const listLabel = computed(() => (props.mode ? t('plan.listLabelMode', { mode: t
     opacity: 0;
   }
 }
-@keyframes plan-fade {
+/* Labels grow in (the `scale` property, so the positioning `transform`
+   of .side-* is kept) instead of fading: text that fades in has too
+   little contrast while it fades (WCAG 1.4.3). */
+@keyframes plan-label-in {
   from {
-    opacity: 0;
+    scale: 0;
   }
   to {
-    opacity: 1;
+    scale: 1;
   }
 }
 

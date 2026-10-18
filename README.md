@@ -1,18 +1,7 @@
 # Underlaid
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23083312.svg)](https://doi.org/10.5281/zenodo.23083312)
-
-**Une même ville, des conditions de vie inégales.** Underlaid réunit,
-pour les 2 752 quartiers de Paris et de la petite couronne (découpage
-Insee d'environ 2 000 habitants), ce que les données publiques
-présentent d'ordinaire séparément : le **cadre de vie** (chaleur, air et
-bruit, logements énergivores, accès aux soins) ; les **lieux à portée**
-(services publics, soins, commerces, crèches et écoles, stations), à
-pied et en transports en commun, selon trois façons de se déplacer :
-sans contrainte, en marchant lentement, en fauteuil roulant ; et les
-**ressources des habitants** (revenu, logements surpeuplés, résidences
-secondaires), sur un axe séparé, jamais ajouté au cadre de vie. Tout
-vient de données publiques ouvertes ; chaque formule est documentée.
+[![Reuse on data.gouv.fr](https://img.shields.io/badge/data.gouv.fr-reuse-blue)](https://www.data.gouv.fr/reuses/underlaid-cadre-de-vie-et-acces-aux-lieux-du-quotidien-quartier-par-quartier)
 
 **One city, unequal living conditions.** For the 2,752 neighbourhoods of
 Paris and its inner suburbs (INSEE areas of about 2,000 residents),
@@ -32,7 +21,7 @@ entirely from public open data; every formula documented.
 [Method](https://underlaid.fr/en/method) ·
 [Most exposed neighbourhoods](https://underlaid.fr/en/most-exposed-neighbourhoods) ·
 [Press](https://underlaid.fr/en/press) ·
-[Version française](https://underlaid.fr)
+[Site in French](https://underlaid.fr)
 
 **What it measures / doesn't**
 - ✅ **Exposure**: a count (0-4) of categories in their metro-wide worst quartile — never a smoothed average.
@@ -68,12 +57,23 @@ axis and doesn't count here):
   metro area's lowest third of means; in Paris, 4.5% (Hauts-de-Seine
   1.9%, Val-de-Marne 24.5%).
 
-**Three pre-registered tests, plus one additional test** (hypotheses
-written and dated before any crossing with residents' means; see
-[SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered)).
-The verdicts were computed with the 2021 census and remain the official
-results; each was redone with the 2022 census and **confirmed**. Figures
-below are the 2022 ones.
+**Four tests against residents' means** (rules fixed in advance, first
+in unversioned working notes; see
+[SCORING.md](SCORING.md#working-hypothesis-and-its-tests)).
+None is fully verifiably pre-registered:
+
+| Test | First dated record of the rule in the repository | First result | Status |
+|---|---|---|---|
+| Access to care | 2 October 2026, 11:58 (commits `0414353`, `772b475`) | 2 October 2026, 9:31 (result file, not versioned) | Not verifiably pre-registered: the rule entered the repository after the result |
+| Inclusive mobility (wheelchair) | Same | Same | Same |
+| Public services | 3 October 2026, 13:00 (commit `bed14ba`, `scripts/analysis/routes_means.py`) | Time not verifiable; first dated record: 3 October 2026, 18:57 (commit `8f1d2c6`) | Rule recorded before the first record of the result; the time of the first calculation cannot be verified |
+| Households without a car (additional test) | 3 October 2026, 22:53 (commit `08f623d`) | 3 October 2026, 22:52 (result file, not versioned) | Not verifiably pre-registered |
+
+Paris time. Each rule was first written in unversioned working notes before the test; only a rule recorded in the repository before the result counts as verifiably pre-registered (correction of 16 October 2026). The verdicts remain those of the rules, applied as written.
+
+The first three verdicts were computed with the 2021 census and remain
+the official results; each was redone with the 2022 census and
+**confirmed**. Figures below are the 2022 ones.
 - **Access to care — supported.** Within Hauts-de-Seine and within
   Val-de-Marne, neighborhoods with the fewest means are more often among
   those with the weakest access to care (Hauts-de-Seine 39.3% against
@@ -173,14 +173,10 @@ zones across Paris + Hauts-de-Seine + Seine-Saint-Denis + Val-de-Marne).
 | `04_cool_spots_green_areas.py` | `cool_spots_green_iris.geojson` | data.iledefrance.fr — open/publicly-accessible green & wooded space, region-wide — re-sourced from `opendata.paris.fr` in Phase 5 |
 | `05_air_noise.py` | `air_noise_iris.geojson` | bruitparif.fr — Airparif/Bruitparif air-noise co-exposure map |
 | `06_bpe.py` | `bpe_iris.geojson` | INSEE — Base Permanente des Équipements (BPE), health/education/transport domains |
-| `07_equipment_access_200m.py` | `equipment_access_iris.geojson` | data.gouv.fr — access time to equipment, 200m grid (unscored context since the v0 launch, like scripts 09, 12, 15) |
 | `08_income_filosofi.py` | `income_iris.geojson` | INSEE Filosofi — median disposable income, 2021 |
-| `09_social_index_schools.py` | `social_index_iris.geojson` | data.education.gouv.fr — social position index (IPS), primary/middle schools |
 | `10_energy_performance.py` | `energy_performance_iris.geojson` | data.ademe.fr — DPE, share of F/G-rated housing |
-| `12_accessibility_erp.py` | `accessibility_iris.geojson` | Acceslibre (data.gouv.fr) — PMR accessibility of ERPs |
 | `13_street_lighting.py` | `street_lighting_iris.geojson` | opendata.paris.fr — street lighting density (Paris only — no MGP-wide equivalent) |
 | `14_qpv_boundaries.py` | `qpv_boundaries_mgp.geojson` | data.iledefrance.fr — QPV priority-neighborhood boundaries, MGP-wide (validation layer, not scored) |
-| `15_pedestrian_paths.py` | `pedestrian_paths_iris.geojson` | OpenStreetMap (Overpass API) — footway density. Unscored and no longer shown on the map: OSM sidewalk mapping is too uneven across departments (audit in `scripts/analysis/osm_sidewalk_completeness.py`, [docs/LESSONS.md](docs/LESSONS.md)) |
 | `16_school_ac_context.py` | `school_ac_context_arrondissement.geojson` | press/mairie communications, 2026 heatwave — air-conditioned schools (context only, Paris arrondissement grain only, not scored) |
 | `17_enedis_thermosensitivity.py` | `enedis_thermosensitivity_iris.geojson` | opendata.enedis.fr — residential electrical thermosensitivity (winter heating load), second housing sub-score indicator alongside DPE |
 | `18_tree_age_context.py` | `tree_age_context_arrondissement.geojson` | opendata.paris.fr — average street-tree trunk circumference (age proxy, no planting-date field exists) and young-tree share, Paris arrondissement grain only, context only, not scored |
@@ -234,26 +230,11 @@ along with the score.
   too large to comfortably hold whole-France in memory). This URL will
   need updating (`BPE25.zip` → `BPE26.zip`, new page id) whenever INSEE
   ships a new edition.
-- **`07_equipment_access_200m.py`**: turned out simpler at MGP scale than
-  expected — `depcom` is a normal 5-digit INSEE commune code even for
-  Paris's legacy single-commune code, so a plain
-  `depcom.str[:2].isin(MGP_DEP_CODES)` filter covers every department
-  uniformly (the earlier Paris-only version special-cased `75056`
-  explicitly; that's gone now, not needed).
 - **`08_income_filosofi.py`**: INSEE encodes statistically masked values
   (small-population IRIS) as the string `"ns"` and uses a comma decimal
   separator; the script converts both before computing anything. 223 of
   2,752 MGP IRIS end up masked (`median_income` is null there) — this is
   expected, not a bug.
-- **`09_social_index_schools.py`**: the middle-school (collèges) dataset
-  ships its own geolocation; the primary-school (écoles) dataset does
-  not, and is geolocated by joining on `uai` against the
-  `fr-en-adresse-et-geolocalisation-etablissements-premier-et-second-degre`
-  directory dataset. Only IRIS that actually contain a school get a
-  value (1,211/2,752 for primary, 548/2,752 for middle schools) — most
-  IRIS are residential zones with no school in them, which is expected;
-  step 2 will need a nearest-school (rather than within-IRIS) approach
-  if finer coverage is wanted.
 - **`21_population_iris.py`**: same INSEE-scrape pattern as script 08
   (find the current download link on the INSEE statistics page rather
   than hardcoding a versioned URL). 2022 census since October 3, 2026
@@ -281,13 +262,6 @@ along with the score.
   its own query API and cursor-based pagination. The full MGP has
   ~2.1M DPE records since July 2021, so this script takes longer to run
   than it did at Paris-only scale (~800k records).
-- **`12_accessibility_erp.py`**: uses Acceslibre's bulk CSV export
-  (~524MB, all of France, no API key needed) rather than the live API
-  (which requires one). The `entree_pmr` accessibility field is
-  crowdsourced and sparsely filled in (~19% nationally) — watch for the
-  `pmr_documented` vs. `pmr_accessible` distinction, and note that pandas
-  parses that column's "True"/"False" text as actual Python booleans
-  (not strings), which the join logic compares against accordingly.
 - **`14_qpv_boundaries.py`**: QPV is a validation-only layer by design —
   it's never joined to `code_iris` or fed into the score,
   only meant to be visually compared against the cumulative score map to
@@ -306,14 +280,6 @@ along with the score.
   cumulative score. Re-running this script doesn't refresh anything —
   there's nothing to download; update `SCHOOL_AC_DATA` by hand if better
   figures surface.
-- **`15_pedestrian_paths.py`**: the "official" source
-  (transport.data.gouv.fr's OSM-derived pedestrian-path dataset) only
-  ships NeTEx, a transit-accessibility XML format with no simple GeoJSON
-  export — queries the same underlying OpenStreetMap data directly via
-  the Overpass API instead. Public Overpass instances reject requests
-  without a real `User-Agent` header (a 406 from the reverse proxy, not
-  from Overpass itself) — if this script starts failing, check that
-  first.
 - **`17_enedis_thermosensitivity.py`**: Enedis' open data portal migrated
   from `data.enedis.fr` (now just serves the JS app, not the API) to
   `opendata.enedis.fr`, which runs the same "data-fair" platform as
@@ -526,8 +492,8 @@ Part 3 of each neighbourhood page ("Les deux à la fois") places the
 neighbourhood on a cloud of all neighbourhoods: number of exposures in
 the most affected quarter against residents' resources. It is
 descriptive, never presented as a tested result; the tested hypotheses
-(pre-registered, with their verdicts) are on the Method page and in
-[SCORING.md](SCORING.md#working-hypothesis-and-its-test-pre-registered).
+(with their verdicts and pre-registration status) are on the Method page and in
+[SCORING.md](SCORING.md#working-hypothesis-and-its-tests).
 What the cloud shows is that exposure does not follow income neatly:
 every level of exposure spans almost the whole range of resources, and
 the link is weak (slightly positive only because of dense, older central
@@ -645,8 +611,8 @@ page.
 schedule (`0 3 1 1,4,7,10 *` — 03:00 UTC on the 1st of January, April,
 July and October) and on manual `workflow_dispatch`. Quarterly because
 most sources here (INSEE, IGN/IDF, Airparif/Bruitparif, Enedis, RNA...)
-don't change more often than that; DPE and Acceslibre do update more
-frequently upstream and could get their own faster schedule later if
+don't change more often than that; DPE does update more
+frequently upstream and could get its own faster schedule later if
 that turns out to matter — not built now since a full run only takes a
 few minutes, so splitting it adds workflow complexity for a benefit
 nothing has needed yet.
@@ -752,7 +718,7 @@ data updates behind a publication guard-rail.
 
 **v0.2** — access to care back in the score (now on 4), rebuilt without
 a car and weighted by how many people share each GP and pharmacy
-(E2SFCA); inclusive mobility shown for information; the pre-registered
+(E2SFCA); inclusive mobility shown for information; the working
 hypothesis tested and its verdicts published (SCORING.md).
 
 **Redesign and travel times** (October 2026) — the redesigned site at
@@ -760,8 +726,8 @@ https://underlaid.fr ("Votre quartier", "Explorer la carte"); precomputed
 travel times from each neighbourhood to emergency departments, GP,
 pharmacy, public services, everyday places (crèches, food stores,
 nursery schools, police, social centres, libraries, parks) and, in Paris
-only, public toilets and drinking fountains; the pre-registered
-public-services hypothesis tested (refuted, and reversed); the census
+only, public toilets and drinking fountains; the public-services
+hypothesis tested (refuted, and reversed); the census
 moved to 2022 (sensitivity check published).
 
 **v0.3** (7 October 2026) — the second travel-time calculation
@@ -812,20 +778,18 @@ September 2026, not assumed:
 | Source | Publisher | Used for | License |
 |---|---|---|---|
 | IRIS contours 2024 (data.iledefrance.fr) | IGN & INSEE | Neighborhood boundaries | Licence Ouverte 2.0 |
-| BPE 2025, Filosofi 2021, Recensement 2022 (population, housing), access-time 200m grid | INSEE | Services, cool facilities, route destinations, income, population, secondary residences, overcrowding, access time | Licence Ouverte 2.0 — "Source : Insee" |
+| BPE 2025, Filosofi 2021, Recensement 2022 (population, housing) | INSEE | Services, cool facilities, route destinations, income, population, secondary residences, overcrowding | Licence Ouverte 2.0 — "Source : Insee" |
 | [France Services sites](https://www.data.gouv.fr/datasets/liste-des-structures-labellisees-france-services) (licence checked on the publisher's data.gouv.fr page, 3 October 2026) | ANCT | Route destinations | Licence Ouverte 2.0 |
 | [Directory of public administration](https://www.data.gouv.fr/datasets/service-public-gouv-fr-annuaire-de-ladministration-base-de-donnees-locales), CAF and CPAM offices (licence checked on the publisher's data.gouv.fr page, 3 October 2026) | DILA, published under Premier ministre (service-public.gouv.fr) | Route destinations | Licence Ouverte (version 1.0) |
 | Urban heat island indicators (Sat4BDNB, data.gouv.fr) | CSTB | Thermal | Licence Ouverte 2.0 |
 | Open green & wooded spaces; MOS land use 2021 (data.iledefrance.fr) | L'Institut Paris Region | Thermal | Licence Ouverte 2.0 |
 | Air-noise co-exposure map 2024 | Airparif & Bruitparif | Pollution | Published as open data with no formal license named; the publisher requires this citation: *"Source des données : Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr"* |
-| IPS social position index, school directory (data.education.gouv.fr) | DEPP — Ministère de l'Éducation nationale | Context, not scored (school social position index) | Licence Ouverte 2.0 |
 | DPE energy performance certificates (data.ademe.fr) | ADEME | Housing | Licence Ouverte 2.0 |
 | Electricity consumption by IRIS (opendata.enedis.fr) | Enedis | Housing (thermosensitivity) | Licence Ouverte 2.0 |
-| Acceslibre (data.gouv.fr) | Acceslibre | Context, not scored (PMR accessibility) | Licence Ouverte 2.0 |
 | QPV boundaries (data.iledefrance.fr) | ANCT | Validation layer, not scored | Licence Ouverte |
 | RNA associations directory (data.iledefrance.fr) | Ministère de l'Intérieur | Context, not scored | Licence Ouverte 2.0 |
 | Street trees, public lighting (opendata.paris.fr) | Ville de Paris | Context, not scored | **ODbL** |
-| Footways (Overpass API); street network (Geofabrik Île-de-France extract) | © OpenStreetMap contributors | Footways: context, not scored; street network: travel times for access to care | **ODbL** |
+| Street network (Geofabrik Île-de-France extract) | © OpenStreetMap contributors | Travel times (access to care, everyday places) | **ODbL** |
 | RPPS directory of health professionals (Annuaire Santé) | Agence du Numérique en Santé (ANS) | Access to care (GPs) | Licence Ouverte 2.0 |
 | FINESS (pharmacies) | Ministère de la Santé | Access to care (pharmacies) | Licence Ouverte 2.0 |
 | APL age weights and distance decay | DREES | Access to care (method parameters) | Licence Ouverte 2.0 |
@@ -841,6 +805,9 @@ Institut Paris Region / APUR / ORS Île-de-France; heatwave excess
 mortality — Santé publique France; air-conditioned schools — mairie and
 press communications, see `scripts/16_school_ac_context.py`) are cited
 with their source where they appear on the site.
+
+The project is listed as a reuse of its sources on data.gouv.fr: [Underlaid on
+data.gouv.fr](https://www.data.gouv.fr/reuses/underlaid-cadre-de-vie-et-acces-aux-lieux-du-quotidien-quartier-par-quartier).
 
 To cite the project, see [`CITATION.cff`](CITATION.cff) (GitHub shows a
 "Cite this repository" button), and include the date of the data

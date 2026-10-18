@@ -164,6 +164,10 @@ def main():
     capacity = {r["code_iris"]: r for r in load("adaptive_capacity_iris.json")["iris"]}
     day = routes_by_iris(load("routes_iris_tue10.json"))
     night = routes_by_iris(load("routes_iris_tue01.json"), ["emergency"])
+    # Evening and Sunday, emergency departments only (display rule of
+    # 3 October 2026; decision of 8 October 2026 to show them).
+    evening = routes_by_iris(load("routes_iris_tue21.json"), ["emergency"])
+    sunday = routes_by_iris(load("routes_iris_sun10.json"), ["emergency"])
     stations_data = load("routes_stations_iris.json")
     places = routes_by_iris(load("routes_neighbourhood_tue10.json"))
     # Public toilets and drinking fountains, Paris only (script 41).
@@ -215,6 +219,10 @@ def main():
             rec["times"] = day[code]
         if code in night:
             rec["night_emergency"] = {m: v["emergency"] for m, v in night[code].items()}
+        if code in evening:
+            rec["evening_emergency"] = {m: v["emergency"] for m, v in evening[code].items()}
+        if code in sunday:
+            rec["sunday_emergency"] = {m: v["emergency"] for m, v in sunday[code].items()}
         if stations_data and code in stations_data["iris"]:
             row = stations_data["iris"][code]
             rec["station"] = {m: row[stations_data["profiles"].index(prof)] for m, prof in MODES.items()}

@@ -68,34 +68,14 @@ BPE_RAW_ZIP = DATA_RAW / "bpe" / "BPE25.zip"
 # BPE domain codes: C=education, D=health, E=transport/mobility
 BPE_DOMAINS_OF_INTEREST = ("C", "D", "E")
 
-EQUIPMENT_ACCESS_DATASET_SLUG = (
-    "donnees-sur-la-localisation-et-lacces-de-la-population-aux-equipements"
-)
-IDF_REGION_CODE = "11"  # INSEE region code for Ile-de-France
-
 # INSEE only exposes the current Filosofi edition through a statistics page
 # whose direct file URL changes every year; the script scrapes it instead
 # of hardcoding a link that will go stale.
 INCOME_FILOSOFI_PAGE = "https://www.insee.fr/fr/statistiques/8229323"
 
-EDUCATION_OPENDATASOFT_BASE = "https://data.education.gouv.fr"
-SOCIAL_INDEX_SCHOOLS_DATASET_ID = "fr-en-ips-ecoles-ap2022"
-SOCIAL_INDEX_MIDDLE_SCHOOLS_DATASET_ID = "fr-en-ips-colleges-ap2023"
-
 ADEME_OPENDATASOFT_BASE = "https://data.ademe.fr"
 ENERGY_PERFORMANCE_DATASET_ID = "dpe03existant"
 ENERGY_PERFORMANCE_POOR_CLASSES = ("F", "G")
-
-# Bulk export, no API key needed (the live Acceslibre API requires one;
-# this static CSV mirror doesn't). ~524MB for all of France, filtered to
-# MGP_DEP_CODES while reading in chunks.
-# Resolved at run time like ICU above (the dated July URL returned 404 by
-# October). "acceslibre.csv" exactly — not "acceslibre-with-web-url.csv",
-# the 2.6x larger variant with extra URL columns.
-ACCESSIBILITY_DATASET_SLUG = (
-    "accessibilite-des-etablissements-recevant-du-public-erp-pour-les-personnes-en-situation-de-handicap"
-)
-ACCESSIBILITY_RESOURCE_TITLE = r"acceslibre\.csv"
 
 STREET_LIGHTING_DATASET_ID = "eclairage-public"  # opendata.paris.fr
 

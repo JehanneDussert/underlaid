@@ -1,5 +1,5 @@
 {
-  "footer": "Données : INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © les contributeurs d'OpenStreetMap",
+  "footer": "Données : INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · Ville de Paris · © les contributeurs d'OpenStreetMap",
   "footerLastUpdated": "Dernière mise à jour des données : {date}",
   "ranking": {
     "title": "Les quartiers où les expositions se cumulent",
@@ -147,7 +147,7 @@
     "caveat4": "Le score est une estimation qui évolue à chaque correction méthodologique, pas un classement figé — l'accès aux services est sorti du compte au lancement (score sur 3), puis y est revenu sous une forme reconstruite, l'accès aux soins (score sur 4, version 0.2 d'octobre 2026).",
     "distributionTitle": "Distribution actuelle — 2 752 quartiers (Paris + petite couronne)",
     "sourceLine": "Méthodologie complète et limites : voir SCORING.md dans la documentation du projet.",
-    "dataSources": "Données : INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif (« Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr ») · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités · IGN BD TOPO · DEPP · Acceslibre · Ville de Paris · © les contributeurs d'OpenStreetMap. Licence Ouverte 2.0, ODbL et Licence Mobilités — données publiées sous ODbL, code sous MIT. Liste complète : page méthodologie, « Sources de données et licences ».",
+    "dataSources": "Données : INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif (« Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr ») · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités · IGN BD TOPO · Ville de Paris · © les contributeurs d'OpenStreetMap. Licence Ouverte 2.0, ODbL et Licence Mobilités — données publiées sous ODbL, code sous MIT. Liste complète : page méthodologie, « Sources de données et licences ».",
     "printButton": "Imprimer / Enregistrer en PDF",
     "meansTitle": "Moyens pour faire face — un axe séparé",
     "meansBody": "Le score d'exposition ne dit pas qui peut y faire face. Une seconde mesure, séparée, le fait : revenu médian, logements suroccupés et résidences secondaires (Insee : revenu 2021, recensement 2022), classés et répartis en tiers de la métropole. Elle n'est jamais ajoutée au score ; sur la carte, un filtre croise les deux. Les zones très exposées aux moyens les plus élevés sont surtout à Paris (chaleur, logement ancien) ; celles aux moyens les plus faibles surtout en Seine-Saint-Denis et dans le Val-de-Marne (chaleur, air et bruit). En Seine-Saint-Denis, 62 % des quartiers très exposés (au moins 2 des 3 expositions) sont dans le tiers de moyens le plus bas ; à Paris, 4,5 %. Elle mesure des moyens, pas ce que les ménages en font (par exemple la climatisation).",
@@ -213,6 +213,7 @@
         }
       },
       "zenodo": "Télécharger les données (Zenodo)",
+      "datagouv": "Fiche de réutilisation sur data.gouv.fr",
       "github": "Code source (GitHub)",
       "sources": "Licences de chaque source"
     },
@@ -261,7 +262,7 @@
     "homeLabel": "underlaid, accueil",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
-    "otherLanguage": "English version",
+    "otherLanguage": "EN, English version",
     "footerOpenData": "Données publiques ouvertes.",
     "footerSources": "Sources et méthode",
     "footerReuse": "Citer et réutiliser",
@@ -536,6 +537,11 @@
           "when": "Oct. 2026",
           "what": "Durées pour deux quartiers sans carreau habité",
           "why": "Nord 1 à Aulnay-sous-Bois et Iris 2 à Épinay-sur-Seine n'avaient pas de durée : aucun carreau habité n'a son centre dans ces quartiers, et leur point représentatif tombe dans un carreau sans habitant. Ils prennent désormais le carreau habité qui les recouvre le plus. Cette règle a été décidée le 7 octobre 2026, après avoir vu les résultats du second calcul."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Statut de pré-enregistrement des tests (16 octobre 2026)",
+          "why": "La Méthode, le README et les notes de version présentaient trois tests comme « pré-enregistrés ». Pour l'accès aux soins et la mobilité inclusive, la règle n'est entrée dans le dépôt qu'après le premier résultat (2 octobre, 11 h 58 contre 9 h 31) ; pour les services publics, la règle est entrée avant la première trace du résultat, mais l'heure du premier calcul ne peut pas être vérifiée. Un tableau donne désormais, pour chaque test, ces dates et son statut. Les verdicts ne changent pas. Dans la même correction, la phrase sur le second calcul est précisée : les règles du 5 octobre ont été fixées avant le calcul du réseau en pente et des trajets en fauteuil roulant, la première phase du calcul (sans contrainte, marche lente) ayant démarré 21 minutes plus tôt."
         }
       ]
     },
@@ -675,15 +681,15 @@
     }
   },
   "hypotheses": {
-    "intro": "Avant de regarder les résultats, les hypothèses à tester ont été écrites et datées, avec la règle qui décide du verdict. Cela évite de chercher, après coup, l'histoire que les chiffres semblent raconter.",
+    "intro": "Chaque hypothèse a été formulée avec la règle qui décide du verdict avant d'être testée, mais d'abord dans des notes de travail non versionnées. Seule une règle enregistrée dans le dépôt public avant le résultat peut être considérée comme pré-enregistrée de façon vérifiable. Le tableau ci-dessous donne, pour chaque test, la première trace datée de la règle et celle du résultat : aucun des quatre tests ne remplit entièrement cette condition. Les verdicts restent ceux de la règle, appliquée telle quelle.",
     "additionalTitle": "Test complémentaire",
-    "additionalIntro": "Ce test suit la même règle de verdict que les hypothèses ci-dessus, mais il ne peut pas être considéré comme pré-enregistré de façon vérifiable.",
+    "additionalIntro": "Ce test suit la même règle de verdict que les hypothèses ci-dessus ; il a été ajouté après elles (voir le tableau).",
     "verdict": {
       "supported": "Soutenue",
       "refuted": "Infirmée",
       "reversed": "Infirmée, et inversée"
     },
-    "written": "Hypothèse écrite le {date}",
+    "written": "Hypothèse formulée le {date}, dans des notes de travail non versionnées",
     "department": "Département",
     "lowestThird": "Ressources les plus faibles",
     "highestThird": "Ressources les plus élevées",
@@ -730,6 +736,42 @@
     },
     "control2": {
       "label": "Contrôle avec le second calcul des durées :"
+    },
+    "status": {
+      "caption": "Statut de pré-enregistrement de chaque test (heures de Paris).",
+      "cols": [
+        "Test",
+        "Règle dans le dépôt (première trace datée)",
+        "Premier résultat",
+        "Statut"
+      ],
+      "rows": [
+        [
+          "Accès aux soins",
+          "2 octobre 2026, 11 h 58 (commits 0414353 et 772b475)",
+          "2 octobre 2026, 9 h 31 (fichier de résultat, non versionné)",
+          "Non pré-enregistré de façon vérifiable : la règle est entrée dans le dépôt après le résultat"
+        ],
+        [
+          "Mobilité inclusive (fauteuil roulant)",
+          "2 octobre 2026, 11 h 58 (commits 0414353 et 772b475)",
+          "2 octobre 2026, 9 h 31 (fichier de résultat, non versionné)",
+          "Non pré-enregistré de façon vérifiable : la règle est entrée dans le dépôt après le résultat"
+        ],
+        [
+          "Services publics",
+          "3 octobre 2026, 13 h 00 (commit bed14ba)",
+          "Heure non vérifiable ; première trace datée : 3 octobre 2026, 18 h 57 (commit 8f1d2c6)",
+          "Règle enregistrée avant la première trace du résultat ; l'heure du premier calcul ne peut pas être vérifiée"
+        ],
+        [
+          "Ménages sans voiture (test complémentaire)",
+          "3 octobre 2026, 22 h 53 (commit 08f623d)",
+          "3 octobre 2026, 22 h 52 (fichier de résultat, non versionné)",
+          "Non pré-enregistré de façon vérifiable"
+        ]
+      ],
+      "note": "Les commits se consultent dans le dépôt public (github.com/JehanneDussert/underlaid). L'heure d'un fichier de résultat est celle de la machine de travail : un tiers ne peut pas la vérifier."
     }
   },
   "nbhd": {
@@ -869,6 +911,8 @@
       "pharmacy": "Pharmacie",
       "emergency": "Urgences",
       "emergencyNight": "Urgences, la nuit (1 h, à pied et en transports en commun)",
+      "emergencyEvening": "Urgences, le soir (mardi 21 h, à pied et en transports en commun)",
+      "emergencySunday": "Urgences, le dimanche (10 h, à pied et en transports en commun)",
       "town_hall": "Mairie",
       "france_services": "France Services",
       "caf": "CAF",
@@ -1101,10 +1145,51 @@
       "info": "Ces durées sont données pour information : elles n'entrent pas dans le cumul. La nuit (départ à 1 h), seules les urgences et les stations sont affichées, toujours à pied et en transports en commun.",
       "definition": "Une durée de trajet est la plus courte entre la marche seule et un trajet qui combine marche et transports en commun (horaires d'Île-de-France Mobilités, départs entre 10 h et 11 h, durée médiane). Le « réseau lourd » réunit le tram, le métro, le RER et les trains Transilien. En fauteuil roulant, seuls les arrêts et les courses signalés accessibles dans les horaires d'Île-de-France Mobilités (GTFS) sont utilisés ; une variante compte aussi les arrêts et courses dont l'accessibilité n'est pas renseignée, et les conclusions ne sont retenues que si elles tiennent dans les deux.",
       "secondTitle": "Second calcul des durées (octobre 2026)",
-      "second": "Les durées publiées viennent d'un second calcul, pré-enregistré le 4 octobre 2026, complété le 5 octobre (règles pour les ponts et les erreurs du modèle de terrain, fixées avant tout calcul de trajets). Départs et arrivées sont rattachés au même point du réseau de rues pour toutes les façons de se déplacer. Le fauteuil roulant avance à 0,8 m/s et évite les escaliers et les rues de plus de 8 % de pente, mesurée sur le modèle de terrain au mètre de l'IGN (RGE ALTI). Les ponts et les tunnels ne sont pas mesurés ; les rampes qui y mènent le sont, à partir de points situés à plus de 20 m de l'ouvrage.",
+      "second": "Les durées publiées viennent d'un second calcul, pré-enregistré le 4 octobre 2026, complété le 5 octobre à 9 h 43 (règles pour les ponts et les erreurs du modèle de terrain, fixées avant le calcul du réseau en pente et des trajets en fauteuil roulant). Départs et arrivées sont rattachés au même point du réseau de rues pour toutes les façons de se déplacer. Le fauteuil roulant avance à 0,8 m/s et évite les escaliers et les rues de plus de 8 % de pente, mesurée sur le modèle de terrain au mètre de l'IGN (RGE ALTI). Les ponts et les tunnels ne sont pas mesurés ; les rampes qui y mènent le sont, à partir de points situés à plus de 20 m de l'ouvrage.",
       "sensitivity": "Sensibilité. À 0,5 m/s, la durée médiane jusqu'à la CAF la plus proche est de 44 minutes ; à 0,8 m/s, 36 minutes ; à 1,0 m/s, 32 minutes (24 minutes sans contrainte). Avec un seuil de pente de 6 % au lieu de 8 %, les médianes changent à peine. Selon le lieu, 1,5 à 8,6 % des quartiers changent de quart (celui des quartiers les plus éloignés) à 0,5 m/s, 2,6 à 7,5 % à 1,0 m/s, et 1,7 à 3,6 % avec le seuil de 6 % pour les services publics et les soins (jusqu'à 8,9 % pour l'école maternelle).",
       "checks": "Contrôles. Les verdicts publiés qui dépendent des durées (services publics, sans contrainte et en fauteuil roulant) restent les résultats officiels ; refaits avec le second calcul, ils sont confirmés, de même que le test complémentaire sur les ménages sans voiture. La durée en fauteuil roulant ressort plus courte que la durée sans contrainte dans 11 cas sur 62 788 (0,02 %), d'une minute sauf un cas de 4 minutes ; ils sont laissés tels quels.",
       "thresholds": "Seuils de publication. Avant de voir les résultats, des seuils qui bloquent la publication ont été écrits et enregistrés dans le dépôt (6 octobre 2026, 22 h 17). Deux ont été franchis : deux quartiers sans durée, et plus de 1 % de la population au-delà de 90 minutes de la CAF en fauteuil roulant. Le 7 octobre à 3 h 52, la porteuse du projet a décidé : l'effet de la vitesse dans les communes éloignées est un résultat, accepté ; les quartiers isolés par des rues réellement en pente restent tels quels, sans nouvelle règle de pente ; les deux quartiers sans durée reçoivent le carreau habité qui les recouvre le plus (voir les limites).",
+      "slotsTitle": "Urgences selon l'heure de départ",
+      "slots": "Pour les urgences seulement, les durées sont aussi calculées le soir (mardi à 21 h), la nuit (mardi à 1 h) et le dimanche (à 10 h), avec les mêmes règles qu'en journée. La nuit, la durée en fauteuil roulant jusqu'aux urgences les plus proches dépasse 45 minutes pour plus d'un quartier sur trois ; le soir et le dimanche, les durées changent peu par rapport au mardi à 10 h.",
+      "slotsCaption": "Durée vers les urgences les plus proches, à pied et en transports en commun : médiane des quartiers habités, et part des quartiers (puis de leurs habitants) à plus de 45 minutes.",
+      "slotsCols": [
+        "Départ",
+        "Sans contrainte",
+        "Fauteuil roulant",
+        "Plus de 45 min en fauteuil roulant (quartiers)",
+        "Plus de 45 min en fauteuil roulant (habitants)"
+      ],
+      "slotsRows": [
+        [
+          "Mardi 10 h",
+          "18 min",
+          "27 min",
+          "6,4 %",
+          "6,7 %"
+        ],
+        [
+          "Mardi 21 h",
+          "19 min",
+          "27 min",
+          "7,5 %",
+          "7,8 %"
+        ],
+        [
+          "Dimanche 10 h",
+          "19 min",
+          "28 min",
+          "8,2 %",
+          "8,7 %"
+        ],
+        [
+          "Nuit (1 h)",
+          "23 min",
+          "38 min",
+          "37,6 %",
+          "39,0 %"
+        ]
+      ],
+      "slotsNote": "La part « quartiers » compte les 2 690 quartiers habités, chacun pour un ; la part « habitants » pondère chaque quartier par sa population. Sans contrainte, la part au-delà de 45 minutes est de 0,4 % le jour et de 9,0 % la nuit. La nuit, le calcul utilise les horaires d'Île-de-France Mobilités pour des départs entre 1 h et 2 h : les bus de nuit Noctilien, les dernières courses du métro et quelques autres lignes. Pour le fauteuil roulant, seules les courses signalées accessibles sont gardées ; or l'accessibilité n'est pas renseignée pour environ la moitié des courses Noctilien de cette heure-là. C'est une hypothèse fragile : en comptant ces courses comme accessibles, la part des quartiers à plus de 45 minutes passe de 37,6 % à 35,2 %. Le calcul ne tient compte ni des horaires d'accueil des urgences, ni des taxis ou véhicules adaptés.",
       "decompositionTitle": "Décomposition des durées en fauteuil roulant",
       "decomposition": "Analyse descriptive, pré-enregistrée le 7 octobre 2026, sans verdict. Vers les lieux clés (services publics, soins), le trajet se fait entièrement à pied dans 56 % des cas sans contrainte, 48 % en marche lente et 49 % en fauteuil roulant ; vers les lieux du quotidien, dans 81 %, 73 % et 73 % des cas. Par rapport au trajet sans contrainte, le fauteuil roulant ajoute en moyenne 6,9 minutes vers les lieux clés, dont 4,9 dues à la vitesse et aux pentes et 2,0 aux arrêts inaccessibles, et 5,1 minutes vers les lieux du quotidien (4,3 et 0,8). L'essentiel du temps en plus vient de la vitesse et des pentes : vers les lieux clés, les arrêts inaccessibles n'ajoutent rien dans 68 % des trajets. Ils pèsent surtout pour la CAF (45 % de l'écart) et à Paris (41 % de l'écart vers les lieux clés, contre 34 % en Seine-Saint-Denis et 19 % dans les Hauts-de-Seine et le Val-de-Marne).",
       "decompositionMethod": "Moyennes pondérées par la population, calculées sur les carreaux habités de 200 m, départ simulé un mardi à 10 h. La part due aux arrêts est l'écart entre le profil fauteuil roulant et le même profil (même vitesse, mêmes rues) où tous les arrêts et tous les véhicules seraient accessibles ; le reste est la part due à la vitesse et aux pentes.",

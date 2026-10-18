@@ -1,8 +1,8 @@
 name: Update pipeline data
 
 # Quarterly by default: most sources (INSEE, IGN/IDF, Airparif/Bruitparif,
-# Enedis, RNA...) don't change more often than that. DPE and Acceslibre
-# are updated more frequently upstream and could be re-run on their own,
+# Enedis, RNA...) don't change more often than that. DPE is updated
+# more frequently upstream and could be re-run on its own,
 # faster schedule if that ever turns out to matter in practice — not done
 # here because a full run only takes a few minutes, so splitting it adds
 # workflow complexity (a second schedule, a partial-rerun path) for a

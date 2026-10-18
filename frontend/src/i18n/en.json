@@ -1,5 +1,5 @@
 {
-  "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors",
+  "footer": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités (Licence Mobilités) · Ville de Paris · © OpenStreetMap contributors",
   "footerLastUpdated": "Data last updated: {date}",
   "ranking": {
     "title": "The neighbourhoods where exposures stack up",
@@ -147,7 +147,7 @@
     "caveat4": "The score is an estimate that shifts with each methodological correction, not a fixed ranking — access to services left the count at launch (score out of 3), then came back in a rebuilt form, access to care (score out of 4, version 0.2, October 2026).",
     "distributionTitle": "Current distribution — 2,752 neighborhoods (Paris + inner suburbs)",
     "sourceLine": "Full methodology and caveats: see SCORING.md in the project documentation.",
-    "dataSources": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif (\"Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr\") · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités · IGN BD TOPO · DEPP · Acceslibre · Ville de Paris · © OpenStreetMap contributors. Licence Ouverte 2.0, ODbL and Licence Mobilités — published data under ODbL, code under MIT. Full list: methodology page, \"Data sources & licenses\".",
+    "dataSources": "Data: INSEE · IGN · CSTB · L'Institut Paris Region · Airparif/Bruitparif (\"Cartographie air-bruit établie par Airparif et Bruitparif – http://carto.airparif.bruitparif.fr\") · ADEME · Enedis · ANS (RPPS) · FINESS · DREES · Île-de-France Mobilités · IGN BD TOPO · Ville de Paris · © OpenStreetMap contributors. Licence Ouverte 2.0, ODbL and Licence Mobilités — published data under ODbL, code under MIT. Full list: methodology page, \"Data sources & licenses\".",
     "printButton": "Print / Save as PDF",
     "meansTitle": "Means to cope — a separate axis",
     "meansBody": "The exposure score doesn't say who can cope. A second, separate measure does: median income, overcrowded homes and secondary residences (INSEE: income 2021, 2022 census), ranked and split into thirds of the metro area. It is never added to the score; on the map, a filter crosses the two. Highly exposed areas with the most means are mostly in Paris (heat, old housing); those with the least are mostly in Seine-Saint-Denis and Val-de-Marne (heat, air and noise). In Seine-Saint-Denis, 62% of highly exposed neighborhoods (at least 2 of the 3 exposures) are in the lowest third of means; in Paris, 4.5%. It measures means, not what households do with them (e.g. air conditioning).",
@@ -213,6 +213,7 @@
         }
       },
       "zenodo": "Download the data (Zenodo)",
+      "datagouv": "Reuse page on data.gouv.fr",
       "github": "Source code (GitHub)",
       "sources": "Licence of each source"
     },
@@ -261,7 +262,7 @@
     "homeLabel": "underlaid, home",
     "openMenu": "Open the menu",
     "closeMenu": "Close the menu",
-    "otherLanguage": "Version française",
+    "otherLanguage": "FR, version française",
     "footerOpenData": "Open public data.",
     "footerSources": "Sources and method",
     "footerReuse": "Cite and reuse",
@@ -536,6 +537,11 @@
           "when": "Oct. 2026",
           "what": "Durations for two neighbourhoods without an inhabited cell",
           "why": "Nord 1 in Aulnay-sous-Bois and Iris 2 in Épinay-sur-Seine had no duration: no inhabited cell has its centre in them, and their representative point falls in a cell without residents. They now take the inhabited cell that overlaps them most. This rule was decided on 7 October 2026, after seeing the results of the second calculation."
+        },
+        {
+          "when": "Oct. 2026",
+          "what": "Pre-registration status of the tests (16 October 2026)",
+          "why": "The Method page, the README and the release notes described three tests as \"pre-registered\". For access to care and inclusive mobility, the rule entered the repository only after the first result (2 October, 11:58 against 9:31); for public services, the rule entered before the first record of the result, but the time of the first calculation cannot be verified. A table now gives these dates and the status of each test. The verdicts do not change. In the same correction, the sentence on the second calculation is made precise: the rules of 5 October were set before the calculation of the slope network and of the wheelchair routes, the first phase of the calculation (without constraint, slow walking) having started 21 minutes earlier."
         }
       ]
     },
@@ -675,15 +681,15 @@
     }
   },
   "hypotheses": {
-    "intro": "Before looking at the results, the hypotheses to test were written down and dated, with the rule that decides the verdict. This avoids looking, after the fact, for the story the figures seem to tell.",
+    "intro": "Each hypothesis was formulated with the rule that decides its verdict before it was tested, but first in unversioned working notes. Only a rule recorded in the public repository before the result can be considered verifiably pre-registered. The table below gives, for each test, the first dated record of the rule and of the result: none of the four tests fully meets this condition. The verdicts remain those of the rule, applied as written.",
     "additionalTitle": "Additional test",
-    "additionalIntro": "This test follows the same verdict rule as the hypotheses above, but it cannot be considered verifiably pre-registered.",
+    "additionalIntro": "This test follows the same verdict rule as the hypotheses above; it was added after them (see the table).",
     "verdict": {
       "supported": "Supported",
       "refuted": "Refuted",
       "reversed": "Refuted, and reversed"
     },
-    "written": "Hypothesis written on {date}",
+    "written": "Hypothesis formulated on {date}, in unversioned working notes",
     "department": "Département",
     "lowestThird": "Fewest means",
     "highestThird": "Most means",
@@ -730,6 +736,42 @@
     },
     "control2": {
       "label": "Check with the second travel-time calculation:"
+    },
+    "status": {
+      "caption": "Pre-registration status of each test (Paris time).",
+      "cols": [
+        "Test",
+        "Rule in the repository (first dated record)",
+        "First result",
+        "Status"
+      ],
+      "rows": [
+        [
+          "Access to care",
+          "2 October 2026, 11:58 (commits 0414353 and 772b475)",
+          "2 October 2026, 9:31 (result file, not versioned)",
+          "Not verifiably pre-registered: the rule entered the repository after the result"
+        ],
+        [
+          "Inclusive mobility (wheelchair)",
+          "2 October 2026, 11:58 (commits 0414353 and 772b475)",
+          "2 October 2026, 9:31 (result file, not versioned)",
+          "Not verifiably pre-registered: the rule entered the repository after the result"
+        ],
+        [
+          "Public services",
+          "3 October 2026, 13:00 (commit bed14ba)",
+          "Time not verifiable; first dated record: 3 October 2026, 18:57 (commit 8f1d2c6)",
+          "Rule recorded before the first record of the result; the time of the first calculation cannot be verified"
+        ],
+        [
+          "Households without a car (additional test)",
+          "3 October 2026, 22:53 (commit 08f623d)",
+          "3 October 2026, 22:52 (result file, not versioned)",
+          "Not verifiably pre-registered"
+        ]
+      ],
+      "note": "The commits can be read in the public repository (github.com/JehanneDussert/underlaid). The time of a result file is that of the working machine: a third party cannot check it."
     }
   },
   "nbhd": {
@@ -869,6 +911,8 @@
       "pharmacy": "Pharmacy",
       "emergency": "Emergency department",
       "emergencyNight": "Emergency department at night (1:00, on foot and by public transport)",
+      "emergencyEvening": "Emergency department in the evening (Tuesday 21:00, on foot and by public transport)",
+      "emergencySunday": "Emergency department on Sunday (10:00, on foot and by public transport)",
       "town_hall": "Town hall",
       "france_services": "France Services",
       "caf": "CAF (family benefits)",
@@ -1101,10 +1145,51 @@
       "info": "These durations are for information: they are not part of the combined score. At night (departure at 1:00), only emergency departments and stations are shown, always on foot and by public transport.",
       "definition": "A travel time is the shorter of walking alone and a journey combining walking and public transport (Île-de-France Mobilités timetables, departures between 10:00 and 11:00, median duration). The \"heavy network\" is tram, metro, RER and Transilien trains. In a wheelchair, only stops and trips marked accessible in the Île-de-France Mobilités timetables (GTFS) are used; a variant also counts stops and trips whose accessibility is not given, and conclusions are kept only if they hold in both.",
       "secondTitle": "Second travel-time calculation (October 2026)",
-      "second": "The published times come from a second calculation, pre-registered on 4 October 2026 and completed on 5 October (rules for bridges and terrain-model errors, set before any routing). Departures and arrivals are attached to the same point of the street network for every way of getting around. The wheelchair moves at 0.8 m/s and avoids stairs and streets steeper than 8 %, measured on IGN's 1 m terrain model (RGE ALTI). Bridges and tunnels are not measured; the ramps leading to them are, from points more than 20 m away from the structure.",
+      "second": "The published times come from a second calculation, pre-registered on 4 October 2026 and completed on 5 October at 9:43 (rules for bridges and terrain-model errors, set before the calculation of the slope network and of the wheelchair routes). Departures and arrivals are attached to the same point of the street network for every way of getting around. The wheelchair moves at 0.8 m/s and avoids stairs and streets steeper than 8 %, measured on IGN's 1 m terrain model (RGE ALTI). Bridges and tunnels are not measured; the ramps leading to them are, from points more than 20 m away from the structure.",
       "sensitivity": "Sensitivity. At 0.5 m/s, the median time to the nearest CAF office is 44 minutes; at 0.8 m/s, 36 minutes; at 1.0 m/s, 32 minutes (24 minutes without constraint). With a 6 % slope threshold instead of 8 %, the medians barely change. Depending on the place, 1.5 to 8.6 % of neighbourhoods change quarter (that of the farthest neighbourhoods) at 0.5 m/s, 2.6 to 7.5 % at 1.0 m/s, and 1.7 to 3.6 % with the 6 % threshold for public services and care (up to 8.9 % for nursery school).",
       "checks": "Checks. The published verdicts that depend on travel times (public services, without constraint and in a wheelchair) remain the official results; redone with the second calculation, they are confirmed, as is the additional test on households without a car. The wheelchair time comes out shorter than without constraint in 11 cases out of 62,788 (0.02 %), by one minute except one case of 4 minutes; they are left as they are.",
       "thresholds": "Publication thresholds. Before seeing the results, thresholds that block publication were written and recorded in the repository (6 October 2026, 22:17). Two were crossed: two neighbourhoods without a travel time, and more than 1 % of the population beyond 90 minutes from the CAF office in a wheelchair. On 7 October at 03:52, the project lead decided: the effect of speed in distant communes is a result, accepted; neighbourhoods cut off by genuinely steep streets stay as they are, with no new slope rule; the two neighbourhoods without a time take the inhabited cell that overlaps them most (see the limits).",
+      "slotsTitle": "Emergency departments by time of departure",
+      "slots": "For emergency departments only, travel times are also computed in the evening (Tuesday at 21:00), at night (Tuesday at 1:00) and on Sunday (at 10:00), with the same rules as in the daytime. At night, the wheelchair time to the nearest emergency department exceeds 45 minutes for more than one neighbourhood in three; in the evening and on Sunday, times change little from Tuesday at 10:00.",
+      "slotsCaption": "Time to the nearest emergency department, on foot and by public transport: median of inhabited neighbourhoods, and share of neighbourhoods (then of their residents) beyond 45 minutes.",
+      "slotsCols": [
+        "Departure",
+        "Without constraint",
+        "Wheelchair",
+        "Beyond 45 min in a wheelchair (neighbourhoods)",
+        "Beyond 45 min in a wheelchair (residents)"
+      ],
+      "slotsRows": [
+        [
+          "Tuesday 10:00",
+          "18 min",
+          "27 min",
+          "6.4%",
+          "6.7%"
+        ],
+        [
+          "Tuesday 21:00",
+          "19 min",
+          "27 min",
+          "7.5%",
+          "7.8%"
+        ],
+        [
+          "Sunday 10:00",
+          "19 min",
+          "28 min",
+          "8.2%",
+          "8.7%"
+        ],
+        [
+          "Night (1:00)",
+          "23 min",
+          "38 min",
+          "37.6%",
+          "39.0%"
+        ]
+      ],
+      "slotsNote": "The \"neighbourhoods\" share counts the 2,690 inhabited neighbourhoods, one each; the \"residents\" share weights each neighbourhood by its population. Without constraint, the share beyond 45 minutes is 0.4% in the daytime and 9.0% at night. At night, the calculation uses the Île-de-France Mobilités timetables for departures between 1:00 and 2:00: Noctilien night buses, the last metro trips and a few other lines. For the wheelchair, only trips marked accessible are kept; yet accessibility is not given for about half of the Noctilien trips at that hour. This assumption is fragile: counting those trips as accessible, the share of neighbourhoods beyond 45 minutes goes from 37.6% to 35.2%. The calculation takes no account of emergency department opening arrangements, nor of taxis or adapted transport.",
       "decompositionTitle": "Decomposition of wheelchair travel times",
       "decomposition": "Descriptive analysis, pre-registered on 7 October 2026, no verdict. To key places (public services, care), the journey is made entirely on foot in 56% of cases without constraint, 48% walking slowly and 49% in a wheelchair; to everyday places, in 81%, 73% and 73% of cases. Compared with the journey without constraint, the wheelchair adds on average 6.9 minutes to key places, of which 4.9 come from speed and slopes and 2.0 from inaccessible stops, and 5.1 minutes to everyday places (4.3 and 0.8). Most of the extra time comes from speed and slopes: to key places, inaccessible stops add nothing in 68% of journeys. They weigh most for the CAF office (45% of the gap) and in Paris (41% of the gap to key places, against 34% in Seine-Saint-Denis and 19% in Hauts-de-Seine and Val-de-Marne).",
       "decompositionMethod": "Population-weighted means, computed on the inhabited 200 m cells, simulated departure on a Tuesday at 10:00. The share due to stops is the gap between the wheelchair profile and the same profile (same speed, same streets) in which every stop and every vehicle would be accessible; the rest is the share due to speed and slopes.",

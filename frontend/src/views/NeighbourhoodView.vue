@@ -12,6 +12,7 @@
 //      access to care (descriptive), with the tested hypothesis as stated
 //      in the method.
 // Data: one file per commune (scripts/39_neighbourhood_files.py).
+import { useHead } from '@unhead/vue'
 import { computed, inject, nextTick, onMounted, onServerPrefetch, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -176,6 +177,11 @@ useSeoMeta({
     return { en: text, fr: text }
   },
 })
+// Neighbourhoods with fewer than 50 residents: page kept, not indexed,
+// consistent with their absence from the sitemap (vite.config.js).
+useHead({
+  meta: computed(() => (record.value && !record.value.inhabited ? [{ name: 'robots', content: 'noindex, follow' }] : [])),
+})
 const pills = computed(() => [...worst.value, ...(careWorst.value ? ['access_care'] : [])])
 
 // --- Part 1 and the care card ---------------------------------------------
@@ -221,6 +227,8 @@ function minutes(place, m) {
   if (!r) return undefined
   if (place.source === 'times') return r.times ? r.times[m]?.[place.id] : undefined
   if (place.source === 'night') return r.night_emergency ? r.night_emergency[m] : undefined
+  if (place.source === 'evening') return r.evening_emergency ? r.evening_emergency[m] : undefined
+  if (place.source === 'sunday') return r.sunday_emergency ? r.sunday_emergency[m] : undefined
   if (place.source === 'places') return r.places ? r.places[m]?.[place.id] : undefined
   if (place.source === 'paris') {
     if (!r.paris_places) return undefined

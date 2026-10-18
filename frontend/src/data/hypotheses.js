@@ -1,11 +1,12 @@
-// Pre-registered hypotheses (and one additional test) and their verdicts, as published on the method
-// page (part "Hypothèses et résultats"). Each hypothesis was written and
-// dated before its crossing with residents' means was computed; the
-// verdicts are applied exactly as the rules fixed in advance say
+// Tested hypotheses (and one additional test) and their verdicts, as published on the method
+// page (part "Hypothèses et résultats"). Each hypothesis was formulated in
+// unversioned working notes before its crossing with residents' means was
+// computed; none is verifiably pre-registered (status table, correction of
+// 16 October 2026). The verdicts are applied exactly as the rules say
 // (CLAUDE.md, "Hypothèse de travail", and SCORING.md). The figures of the
 // third one are frozen results of scripts/analysis/routes_means.py (run of
 // 3 October 2026, output data/interim/analysis/routes_means.txt): a
-// pre-registered test is not recomputed each quarter.
+// tested hypothesis is not recomputed each quarter.
 //
 // `control2022`: the same test redone with the 2022 census (rule of
 // 3 October 2026, fixed before the results: the 2021 verdicts remain the
@@ -54,7 +55,7 @@ export const HYPOTHESES = [
     control2: true,
   },
   {
-    // Pre-registered on 3 October 2026 (see the note in the texts), computed
+    // Formulated on 3 October 2026 (see the note in the texts), computed
     // the same evening on the 2022 census and the first travel-time
     // calculation: scripts/analysis/carfree_means.py, output
     // data/interim/analysis/carfree_means.txt. Columns: third of neighbourhoods

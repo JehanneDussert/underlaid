@@ -25,8 +25,9 @@ const PERSONAL_SITE = 'https://jehannedussert.com'
 const GITHUB_PROFILE = 'https://github.com/JehanneDussert'
 const LINKEDIN_URL = 'https://www.linkedin.com/in/jehanne-dussert'
 const VERSION = '0.3.0'
-const VERSION_DOI = '10.5281/zenodo.23101510'
+const VERSION_DOI = '10.5281/zenodo.23401610'
 const CONCEPT_DOI_URL = 'https://doi.org/10.5281/zenodo.23083312'
+const DATAGOUV_REUSE_URL = 'https://www.data.gouv.fr/reuses/underlaid-cadre-de-vie-et-acces-aux-lieux-du-quotidien-quartier-par-quartier'
 const TITLE = 'Underlaid: cumulative environmental exposure in Paris and its inner suburbs'
 const PARTS = ['projet', 'citer', 'reutiliser', 'collaborer', 'presse', 'confidentialite']
 
@@ -162,6 +163,7 @@ function writeTo(e) {
           </div>
           <div class="links">
             <a class="pill-link" :href="CONCEPT_DOI_URL" rel="noopener">{{ t('about.reuse.zenodo') }}</a>
+            <a class="pill-link" :href="DATAGOUV_REUSE_URL" rel="noopener">{{ t('about.reuse.datagouv') }}</a>
             <a class="pill-link" :href="REPO_URL" rel="noopener">{{ t('about.reuse.github') }}</a>
             <router-link class="pill-link" :to="{ name: localizedRouteName('methodology-details', locale), hash: '#data-licences' }">{{ t('about.reuse.sources') }}</router-link>
           </div>

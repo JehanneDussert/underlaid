@@ -31,7 +31,7 @@ not a definition: the access sub-score is a different measure.
 **Census 2022 note (3 October 2026)**: population, overcrowding and
 secondary residences now come from the 2022 census; income stays
 Filosofi 2021, the latest vintage published at IRIS level. Decided
-before seeing any result, whatever the result. The pre-registered
+before seeing any result, whatever the result. The published
 verdicts, computed with 2021, remain the official results; each was
 redone with 2022 and confirmed. See "Census 2022: reference and
 sensitivity check" below. Unless stated otherwise, figures in this file
@@ -453,12 +453,16 @@ Sub-score rules, the same as the others: both indicators required (2 of
 can't be routed (e.g. the La Défense deck) get `insufficient_data`.
 Completeness: 2,746 of 2,752 IRIS; 25/25/25/25 among inhabited IRIS.
 
-### Working hypothesis and its test (pre-registered)
+### Working hypothesis and its tests
 
-Hypothesis, written on 2026-10-01 before any result: residents of the
-neighbourhoods with the fewest means are structurally disadvantaged in
-access to services and inclusive mobility. Test fixed on 2026-10-02,
-before computing the sub-scores and before any crossing with means, for
+Hypothesis, formulated on 2026-10-01 in unversioned working notes:
+residents of the neighbourhoods with the fewest means are structurally
+disadvantaged in access to services and inclusive mobility. Test written
+on 2026-10-02 in the same notes, before computing the sub-scores; it
+entered the repository on 2026-10-02 at 11:58 (commits `0414353`,
+`772b475`), after the first result (9:31), so it is **not verifiably
+pre-registered** (correction of 16 October 2026; status of every test in
+the table on the Method page, "Hypothèses et résultats"). The rule, for
 each measure S and each département d (inhabited IRIS; means thirds of
 the whole metropolis):
 
@@ -608,9 +612,11 @@ pharmacies all count the same.
 Scripts 33-39. Travel times from each neighbourhood to the **nearest**
 destination of each type, on foot and by public transport, for several
 ways of travelling and times of day. Everything in this section was
-pre-registered on 2026-10-02, before any of these times was computed
-(destinations, inclusion rules, profiles, time slots, aggregation,
-controls and the test below). **None of it enters the score.**
+written on 2026-10-02 in unversioned working notes, before any of these
+times was computed (destinations, inclusion rules, profiles, time slots,
+aggregation, controls and the test below); the rule of the test entered
+the repository on 2026-10-03 at 13:00 (commit `bed14ba`), before the
+first dated record of its result (18:57, commit `8f1d2c6`). **None of it enters the score.**
 
 ### Destinations and inclusion rules (script 33)
 
@@ -729,7 +735,7 @@ The accessibility of the destination building itself is unknown.
   reach the type, it is "more than 90 min". Imposed detour = step-free
   time − standard time, per cell, then the same median.
 
-### Controls (pre-registered, before any crossing)
+### Controls (fixed in advance, before any crossing)
 
 `scripts/analysis/routes_controls.py` (output
 `data/interim/analysis/routes_controls.txt`), Tuesday 10:00, 2,688
@@ -787,9 +793,12 @@ whose opening hours aren't in the data. Every night-time duration says
 "on foot and by public transport". Evening, night and Sunday are shown
 for emergency departments and stations only.
 
-### Public services and residents' means (pre-registered test)
+### Public services and residents' means (test)
 
-Hypothesis (2026-10-02, before any time was computed): neighbourhoods
+Hypothesis (formulated on 2026-10-02 in unversioned working notes, before
+any time was computed; rule in the repository on 2026-10-03 at 13:00,
+before the first dated record of the result; the time of the first
+calculation cannot be verified): neighbourhoods
 whose residents have the fewest means are more often far from public
 services. Indicator: mean percentile rank of the times to the town hall,
 France Services, CAF, CPAM, France Travail and post office, Tuesday
@@ -841,7 +850,7 @@ against 6.2%, Hauts-de-Seine 26.7% against 48.2%, Seine-Saint-Denis
 ### Everyday places and per-commune files (scripts 37, 39)
 
 Script 37 prepares seven everyday places for the "Votre quartier" page,
-pre-registered and validated on 2026-10-03, all for information: crèches
+decided and validated on 2026-10-03, all for information: crèches
 (BPE `D502`, establishments receiving a CAF service grant — mostly
 crèches charging the CAF income-based rate; micro-crèches with free
 pricing are largely absent; the BPE lags about two years), food stores
@@ -854,7 +863,7 @@ public (`A140`), social centres (`D506`), local-authority libraries
 every 100 m along each outline since entrances are unknown). Markets were
 dropped: OpenStreetMap is the only source and it isn't mapped evenly
 across départements. Same method as the routes, Tuesday 10:00, the four
-profiles; no crossing with means is pre-registered for them.
+profiles; no crossing with means is planned for them.
 
 Script 39 writes one small file per commune (per arrondissement in
 Paris) with everything the page shows about each neighbourhood —
@@ -889,8 +898,8 @@ to both pages. The stock is rebuilt after every score or travel-time
 update.
 
 **Second travel-time calculation (in progress, pre-registered on
-4 October 2026, `docs/preregistrations/2026-10-04-profil-fauteuil-roulant.md`
-in the history).** Three changes, all fixed before any result:
+4 October 2026: [`docs/preregistrations/2026-10-04-profil-fauteuil-roulant.md`](docs/preregistrations/2026-10-04-profil-fauteuil-roulant.md),
+first committed in `7dfe2ff` on 4 October 2026 at 20:58 Paris time).** Three changes, all fixed before any result:
 (1) **common start and end points**: some wheelchair (step-free) times
 were shorter than the unconstrained ones, because R5 attached each point
 to the nearest element of each network separately (in the full network,
@@ -1459,19 +1468,6 @@ to what's available for humans exists at this grain.
 - **400m cool-spot buffer is centroid-based**, not a true walking
   distance — a straight-line buffer from the IRIS centroid, which will
   under/over-count for oddly-shaped or elongated IRIS.
-- **PMR accessibility (`pct_pmr_accessible`, script 12) is crowdsourced
-  and sparsely documented**: only ~19% of Acceslibre entries nationally
-  have their wheelchair-accessible-entrance field filled in at all; the
-  percentage is computed only over documented entries, not all ERPs, and
-  1,064 of 2,752 IRIS (39%) have no documented entry at all — a
-  notably higher share than Paris intra-muros alone had (115/992,
-  11.6%), since crowdsourced coverage thins out further from the
-  center.
-- **Footway density (`footway_density_m_per_km2`, script 15) comes from
-  OpenStreetMap** (`highway=footway` ways via Overpass), not an official
-  accessibility audit — it measures how much dedicated pedestrian
-  infrastructure is *mapped*, not its physical condition (width, curb
-  cuts, obstacles). Full 2,752/2,752 IRIS coverage, no missing data.
 - **The artificialized-surface classification is a close proxy for
   France's official artificialisation definition, not a certified
   reproduction of it** — see "Artificialization / sealed surface"
@@ -1606,7 +1602,7 @@ result).** The 2022 census becomes the reference for population
 the commune only, with a changed method). The 200 m population grid used
 for access to care and the routes is also Filosofi 2021 (no later grid).
 The differences with 2021 are published as a sensitivity check; the
-verdicts of the pre-registered tests, computed with 2021, remain the
+verdicts of the tests, computed with 2021, remain the
 official results.
 
 **Step 1 — differences with 2021, no crossing with means**
@@ -1719,7 +1715,7 @@ raw indicators, the way every one of them has been so far, each time.
 `.github/workflows/update-pipeline.yml` re-runs the full pipeline
 quarterly (see README's "Keeping the data current" for the schedule and
 mechanics) and re-derives this same table from scratch each time, since
-upstream sources move: a new BPE/DPE/Acceslibre edition, an INSEE
+upstream sources move: a new BPE/DPE edition, an INSEE
 Filosofi refresh, etc. `scripts/23_diff_report.py` compares the fresh
 distribution against whatever is currently published (entries/exits on
 score >= 3, and the shift in each category's share) before anything

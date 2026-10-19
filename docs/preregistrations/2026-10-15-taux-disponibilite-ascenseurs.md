@@ -16,12 +16,12 @@ Source : Île-de-France Mobilités, « État des ascenseurs » (API PRIM), Licen
 Avant l'écriture de ce brouillon, les données suivantes ont été examinées. Aucun taux par ascenseur, par station, par mode ni par département n'a été calculé.
 
 - **Archive locale** (relevé horaire, `data/raw/elevators/`) :
-  - du 6 octobre à 6 h 28 au 8 octobre 2026 à 19 h 09 UTC, du 15 octobre à 16 h 59 UTC au 17 octobre à 21 h 00 UTC, puis à partir du 18 octobre (deux trous, tous deux dus à un arrêt du PC : note `docs/checks/2026-10-15-lift-archive-gaps.md`) ;
+  - du 6 octobre à 6 h 28 au 8 octobre 2026 à 19 h 09 UTC, du 15 octobre à 16 h 59 UTC au 17 octobre à 21 h 00 UTC, puis à partir du 19 octobre à 6 h 58 UTC (deux trous : arrêts du PC, puis, au redémarrage du 18 octobre, l'interception des connexions chiffrées par l'antivirus du PC ; note `docs/checks/2026-10-15-lift-archive-gaps.md`) ;
   - comptes de statuts pour l'ensemble du réseau à chaque relevé : 990 ascenseurs ; en journée, 874 à 892 signalés disponibles, 56 à 68 indisponibles, 44 à 48 inconnus ;
   - la nuit, entre environ 1 h et 6 h (heure de Paris), environ 270 ascenseurs de plus passent ensemble « indisponible » : c'est la fermeture du réseau ;
   - sur la plus longue période sans trou (du 6 octobre à 6 h 28 au 8 octobre à 3 h 15 UTC) : 124 débuts de panne en journée, et 46 % des pannes terminées dans la période ne durent qu'un relevé (environ une heure). Note `docs/checks/2026-10-15-lift-archive-gaps.md` et script `scripts/analysis/lift_archive_sampling.py` (PR #22) ;
   - relevé du 15 octobre à 17 h 59 UTC : 310 stations ; modes `RapidTransit` 483 ascenseurs, `LocalTrain` 251, `Metro` 152, `Tramway` 104 ; statuts 887 disponibles, 56 indisponibles, 47 inconnus.
-- **Archive GitHub** (dépôt privé `underlaid-ascenseurs`) : rythme des relevés (32 relevés pour environ 175 programmés du 8 au 15 octobre ; 5 relevés pendant le trou local du 17 au 18 octobre), en-têtes et premières lignes de `changes.csv` et de `state.json`.
+- **Archive GitHub** (dépôt privé `underlaid-ascenseurs`) : rythme des relevés (32 relevés pour environ 175 programmés du 8 au 15 octobre ; 13 relevés pendant le trou local du 17 au 19 octobre), en-têtes et premières lignes de `changes.csv` et de `state.json`.
 - Un enregistrement complet du flux (champs : `liftid`, `zdcid`, `zdcname`, `liftmode`, `liftsituation`, `liftstatus`, `liftstateupdate`, `liftreason`, `severity`, coordonnées).
 
 ## Données et période

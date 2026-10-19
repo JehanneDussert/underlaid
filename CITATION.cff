@@ -20,6 +20,9 @@ identifiers:
   - type: doi
     value: 10.5281/zenodo.23401610
     description: DOI of version 0.3.0
+  - type: doi
+    value: 10.5281/zenodo.23456433
+    description: DOI of version 0.4.0
 repository-code: "https://github.com/JehanneDussert/underlaid"
 url: "https://underlaid.fr"
 abstract: >-

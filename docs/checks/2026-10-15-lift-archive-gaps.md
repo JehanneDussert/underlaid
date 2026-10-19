@@ -29,7 +29,7 @@ Ajouté le 19 octobre 2026.
 - Du 8 octobre à 8 h 12 UTC au 15 octobre à 15 h 02 UTC (174,9 heures), GitHub a exécuté **32 relevés pour environ 175 programmés**, soit **environ 1 relevé horaire sur 5**. L'écart entre deux relevés va de 3,1 à 10,6 heures (médiane 5,3 heures). Les 31 intervalles sont tous inscrits dans le `gaps.csv` de ce dépôt. Les exécutions programmées de GitHub Actions ne sont pas garanties : GitHub en saute une partie.
 - Effet mesuré sur l'archive locale (script `scripts/analysis/lift_archive_sampling.py`, voir les règles dans le script) :
   - pris en compte : relevés de journée seulement (4 h à 22 h UTC), car vers 23 h-4 h UTC environ 270 ascenseurs sont signalés indisponibles ensemble pendant la fermeture du réseau ; et seulement la plus longue période sans trou de plus de 90 minutes (du 6 octobre à 6 h 28 au 8 octobre à 3 h 15 UTC, 36 relevés de journée, 124 débuts de panne) ;
-  - **46 % des pannes de journée qui se terminent dans la période ne durent qu'un relevé (environ une heure)** ;
+  - **46 % des pannes de journée qui se terminent dans la période ne durent qu'un relevé, soit au plus une heure** (correction du 19 octobre 2026 : la source étant publiée toutes les 15 minutes, une partie de ces pannes durent sans doute moins d'une heure) ;
   - part des débuts de panne encore vus avec un relevé toutes les *k* heures (minimum / moyenne / maximum selon l'heure de départ) : *k* = 5 : 43 / 49 / 54 % ; *k* = 6 : 34 / 44 / 48 %.
   - Avec l'écart médian de l'archive GitHub (5,3 heures), **une archive de ce rythme ne capte qu'environ 35 à 55 % des pannes de journée** (environ 45 à 50 % en moyenne).
 - Lecture : cette période ne couvre que deux jours, avec deux nuits ; les chiffres donnent un ordre de grandeur, pas une estimation précise.
@@ -41,4 +41,5 @@ Ajouté le 19 octobre 2026.
 - L'archive GitHub seule ne suffit pas pour un taux de disponibilité : elle sous-estime le nombre de pannes, surtout les pannes courtes. Elle sert de secours quand l'archive locale s'arrête.
 - Les périodes sans relevé (archive locale et GitHub) seront exclues ou traitées par une règle écrite à l'avance, et non comblées.
 - La fermeture nocturne du réseau sera séparée des pannes avant tout calcul.
+- **Fréquence de la source** (vérifiée le 19 octobre 2026) : la documentation d'Île-de-France Mobilités (septembre 2026) indique un flux alimenté en continu par la RATP et Gare & Connexions et publié toutes les 15 minutes, alors que la fiche du jeu indique encore « 3 fois par jour ». En conséquence, l'archive locale relève le flux toutes les 15 minutes depuis le 19 octobre 2026 (amendement du pré-enregistrement).
 - Le flux change à presque chaque relevé horaire (contenu différent 18 fois le 6 octobre et 24 fois le 7 octobre) : il n'est pas mis à jour seulement trois fois par jour, contrairement à ce que laisse penser la description des tournées des agents.

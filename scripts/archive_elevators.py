@@ -2,14 +2,16 @@
 roadmap: availability rate per station after the launch).
 
 The feed (990 lifts of the rail stations of Île-de-France, Licence
-Mobilités: reuse and archiving allowed with the source cited) is published
-three times a day by IDFM from the RATP and SNCF station staff rounds. This
-script asks every hour and keeps a snapshot only when the content changed,
-so that each publication is caught once. The token (PRIM_DATASET_TOKEN)
+Mobilités: reuse and archiving allowed with the source cited) is fed
+continuously by the RATP and Gare & Connexions (SNCF) and published every
+15 minutes (IDFM documentation, September 2026; the dataset page still says
+three times a day). This script asks every 15 minutes, on the quarter hour
+(decision of 19 October 2026; every hour before), and keeps a snapshot only
+when the content changed. The token (PRIM_DATASET_TOKEN)
 comes from the environment (.env at the repository root, never versioned).
 
 Output: data/raw/elevators/YYYY-MM-DD/HHMM.json.gz (raw records), plus
-data/raw/elevators/log.csv (every hourly attempt: time, number of lifts,
+data/raw/elevators/log.csv (every attempt: time, number of lifts,
 number available, hash, saved or not, error if any) and
 data/raw/elevators/gaps.csv: every period without a successful check, made
 explicit (the archive runs on a personal computer, so it has holes when the
@@ -37,7 +39,7 @@ import requests
 
 URL = "https://data.iledefrance-mobilites.fr/api/explore/v2.1/catalog/datasets/etat-des-ascenseurs/exports/json"
 OUT = Path("/app/data/raw/elevators") if Path("/app/data").exists() else Path(__file__).resolve().parents[1] / "data" / "raw" / "elevators"
-EVERY_S = 3600
+EVERY_S = 900  # every 15 minutes, on the quarter hour (UTC)
 GAP_S = 90 * 60
 
 
@@ -80,7 +82,7 @@ def main():
                 with log.open("a", encoding="utf-8") as f:
                     f.write(f"{now:%Y-%m-%dT%H:%M:%SZ},0,0,-,0,empty response\n")
                 print(f"{now:%Y-%m-%d %H:%M} UTC: empty response, not counted", flush=True)
-                time.sleep(EVERY_S)
+                time.sleep(EVERY_S - time.time() % EVERY_S)
                 continue
             body = json.dumps(sorted(records, key=lambda r: str(r.get("liftid"))), ensure_ascii=False, sort_keys=True)
             digest = hashlib.sha256(body.encode()).hexdigest()
@@ -99,11 +101,11 @@ def main():
                     f.write(f"{last_ok:%Y-%m-%dT%H:%M:%SZ},{now:%Y-%m-%dT%H:%M:%SZ},{(now - last_ok).total_seconds() / 3600:.1f}\n")
             last_ok = now
             print(f"{now:%Y-%m-%d %H:%M} UTC: {len(records)} lifts, {available} available, {'saved' if saved else 'unchanged'}", flush=True)
-        except Exception as e:  # keep going: a failed hour is retried the next hour
+        except Exception as e:  # keep going: a failed check is retried at the next quarter hour
             with log.open("a", encoding="utf-8") as f:
                 f.write(f"{now:%Y-%m-%dT%H:%M:%SZ},-,-,-,0,{str(e)[:120].replace(',', ';')}\n")
             print(f"{now:%Y-%m-%d %H:%M} UTC: error {e}", flush=True)
-        time.sleep(EVERY_S)
+        time.sleep(EVERY_S - time.time() % EVERY_S)
 
 
 if __name__ == "__main__":

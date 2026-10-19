@@ -82,7 +82,7 @@ def main():
                 with log.open("a", encoding="utf-8") as f:
                     f.write(f"{now:%Y-%m-%dT%H:%M:%SZ},0,0,-,0,empty response\n")
                 print(f"{now:%Y-%m-%d %H:%M} UTC: empty response, not counted", flush=True)
-                time.sleep(EVERY_S - time.time() % EVERY_S)
+                time.sleep(EVERY_S - time.time() % EVERY_S + 2)  # 2 s after the quarter hour, never just before it
                 continue
             body = json.dumps(sorted(records, key=lambda r: str(r.get("liftid"))), ensure_ascii=False, sort_keys=True)
             digest = hashlib.sha256(body.encode()).hexdigest()
@@ -105,7 +105,7 @@ def main():
             with log.open("a", encoding="utf-8") as f:
                 f.write(f"{now:%Y-%m-%dT%H:%M:%SZ},-,-,-,0,{str(e)[:120].replace(',', ';')}\n")
             print(f"{now:%Y-%m-%d %H:%M} UTC: error {e}", flush=True)
-        time.sleep(EVERY_S - time.time() % EVERY_S)
+        time.sleep(EVERY_S - time.time() % EVERY_S + 2)  # 2 s after the quarter hour, never just before it
 
 
 if __name__ == "__main__":

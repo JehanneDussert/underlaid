@@ -1,6 +1,6 @@
 # Pré-enregistrement — durée vers les urgences selon l'heure de départ
 
-Rédigé le 22 octobre 2026, **proposé à la porteuse du projet, non encore validé**. Il est enregistré dans le dépôt avant tout calcul des nouveaux créneaux ; la date qui fait foi est celle du commit de fusion de sa PR. Aucun calcul ne sera lancé avant cette fusion.
+Rédigé le 22 octobre 2026, **proposé à la porteuse du projet** ; sensibilité de nuit « inconnu = oui », contrôle du créneau de 10 h et mention publique validés le 23 octobre 2026, relecture complète avant fusion. Il est enregistré dans le dépôt avant tout calcul des nouveaux créneaux ; la date qui fait foi est celle du commit de fusion de sa PR. Aucun calcul ne sera lancé avant cette fusion.
 
 L'indicateur est une **information**, comme toutes les durées des itinéraires : pas de sous-score, pas de verdict, **aucun croisement avec les ressources** (un tel croisement serait pré-enregistré à part).
 
@@ -25,7 +25,7 @@ Les mêmes que pour la durée vers les urgences déjà publiée : services d'urg
 
 - **Sans contrainte** : réseau OSM complet, GTFS complet, 4,5 km/h.
 - **Fauteuil roulant, inconnu = non** (profil principal) : réseau sans marches ni pentes de plus de 8 %, points d'arrêt et courses signalés accessibles (inconnu = non accessible), 0,8 m/s, comme le second calcul.
-- **Fauteuil roulant, inconnu = oui** (sensibilité) : seulement aux créneaux de 0 h, 2 h et 4 h. La nuit, une grande part des courses de Noctilien a une accessibilité inconnue : par exemple, 191 courses sur 372 entre 1 h et 2 h (constat fait pour le tableau de la branche `emergency-time-slots`). Le choix « inconnu = non » y pèse donc plus qu'en journée.
+- **Fauteuil roulant, inconnu = oui** (sensibilité, validée le 23 octobre 2026) : seulement aux créneaux de 0 h, 2 h et 4 h. La nuit, une grande part des courses de Noctilien a une accessibilité inconnue : par exemple, 191 courses sur 372 entre 1 h et 2 h (constat fait pour le tableau de la branche `emergency-time-slots`). Le choix « inconnu = non » y pèse donc plus qu'en journée.
 - Marche lente : non calculée pour la courbe.
 
 ## 4. Origines et agrégation
@@ -43,7 +43,7 @@ Les mêmes que dans le second calcul : les 13 752 carreaux habités de la Métro
 
 - **Page « Votre quartier »** : la courbe du quartier, un point toutes les 2 heures, pour les deux profils. Le texte ne nomme jamais un quartier plus éloigné.
 - **Méthode** : un tableau par créneau, avec la médiane des quartiers et la part de la population au-delà de 45 minutes et de 90 minutes, pour la Métropole et par département ; la sensibilité « inconnu = oui » pour la nuit.
-- **Mentions obligatoires** : « à pied et en transports en commun » sur toute durée de nuit. Le profil fauteuil roulant reste une limite basse : ni ascenseurs en panne, ni état des trottoirs, ni accessibilité du bâtiment d'arrivée. Un service d'urgences peut aussi être joint en appelant le 15 ou le 112 : la courbe ne mesure que le déplacement par ses propres moyens.
+- **Mentions obligatoires** : « à pied et en transports en commun » sur toute durée de nuit. Le profil fauteuil roulant reste une limite basse : ni ascenseurs en panne, ni état des trottoirs, ni accessibilité du bâtiment d'arrivée. Mention placée avec la courbe (texte de la porteuse du projet, 23 octobre 2026) : « En cas d'urgence, appelez le 15 (SAMU) ou le 112, ou envoyez un SMS au 114 si vous êtes sourd ou malentendant. Cette courbe mesure uniquement le temps nécessaire pour se rendre aux urgences par ses propres moyens, en transports en commun. »
 - **Taille** : environ 66 000 durées (2 752 quartiers × 12 créneaux × 2 profils), moins de 1 Mo au total.
 
 ## 7. Coût

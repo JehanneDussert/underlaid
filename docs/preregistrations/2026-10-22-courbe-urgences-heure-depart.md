@@ -6,7 +6,7 @@ L'indicateur est une **information**, comme toutes les durées des itinéraires 
 
 ## Ce qui est déjà connu à l'écriture (transparence)
 
-- **Durées vers les urgences déjà calculées** (second calcul, 7 octobre 2026), pour les profils sans contrainte, marche lente et fauteuil roulant (inconnu = non et inconnu = oui) : mardi 13 octobre 2026 à 10 h, 21 h et 1 h, et dimanche 11 octobre 2026 à 10 h. Les médianes par quartier et les parts de population au-delà de 45 minutes ont été vues, notamment pour le tableau « Urgences selon l'heure de départ » préparé sur la branche `emergency-time-slots` (non fusionnée).
+- **Durées vers les urgences déjà calculées** (second calcul, 7 octobre 2026), pour les profils sans contrainte, marche lente et fauteuil roulant (inconnu = non et inconnu = oui) : mardi 13 octobre 2026 à 10 h, 21 h et 1 h, et dimanche 11 octobre 2026 à 10 h. Les médianes par quartier et les parts de population au-delà de 45 minutes ont été vues, notamment pour le tableau « Urgences selon l'heure de départ » de la Méthode (PR #23, fusionnée).
 - **Mesure du coût, 19 et 20 octobre 2026** (200 carreaux tirés au hasard, graine 20261019, 90 services d'urgences générales) : temps de calcul par carreau, et nombre de carreaux qui atteignent des urgences en 90 minutes. Sans contrainte : 0,94 s à 10 h (200 carreaux sur 200), 0,55 s à 2 h (197 sur 200). Fauteuil roulant, inconnu = non : 0,48 s à 10 h (194 sur 200), 0,34 s à 2 h (165 sur 200). Ces chiffres ont servi seulement à estimer le coût ; ils ne sont pas un résultat.
 - Rien d'autre n'a été calculé pour les créneaux de 0 h, 2 h, 4 h, 6 h, 8 h, 12 h, 14 h, 16 h, 18 h, 20 h et 22 h.
 
@@ -25,7 +25,7 @@ Les mêmes que pour la durée vers les urgences déjà publiée : services d'urg
 
 - **Sans contrainte** : réseau OSM complet, GTFS complet, 4,5 km/h.
 - **Fauteuil roulant, inconnu = non** (profil principal) : réseau sans marches ni pentes de plus de 8 %, points d'arrêt et courses signalés accessibles (inconnu = non accessible), 0,8 m/s, comme le second calcul.
-- **Fauteuil roulant, inconnu = oui** (sensibilité, validée le 23 octobre 2026) : seulement aux créneaux de 0 h, 2 h et 4 h. La nuit, une grande part des courses de Noctilien a une accessibilité inconnue : par exemple, 191 courses sur 372 entre 1 h et 2 h (constat fait pour le tableau de la branche `emergency-time-slots`). Le choix « inconnu = non » y pèse donc plus qu'en journée.
+- **Fauteuil roulant, inconnu = oui** (sensibilité, validée le 23 octobre 2026) : seulement aux créneaux de 0 h, 2 h et 4 h. La nuit, une grande part des courses de Noctilien a une accessibilité inconnue : par exemple, 191 courses sur 372 entre 1 h et 2 h (constat fait pour ce tableau, PR #23). Le choix « inconnu = non » y pèse donc plus qu'en journée.
 - Marche lente : non calculée pour la courbe.
 
 ## 4. Origines et agrégation

@@ -35,6 +35,8 @@ jobs:
         env:
           SMOKE_BASE_URL: https://underlaid.fr
           SMOKE_SOFTWARE_GL: "1"
+          # The address search must work: a silent geocoder is a failure here.
+          SMOKE_ADDRESS_REQUIRED: "1"
       - name: Open or update an issue on failure
         if: steps.smoke.outcome == 'failure'
         env:

@@ -7,7 +7,10 @@
 //
 // Exits non-zero on any FAIL or browser console error. Checks that depend
 // on the external address API (BAN) are reported as SKIP — visibly, never
-// as a silent pass — if that API doesn't answer.
+// as a silent pass — if that API doesn't answer, unless
+// SMOKE_ADDRESS_REQUIRED=1 (the daily check of the live site): then a
+// silent address search is a FAIL. On 24 October 2026 the search stopped
+// working on the live site (old geocoder too slow) without any test failing.
 //
 // Rendering: Chromium is launched with its default flags, so it uses the
 // GPU when there is one (share card in ~0.3 s). On a machine without a GPU
@@ -66,6 +69,15 @@ const results = []
 const errors = []
 const record = (status, name, detail = '') => results.push({ status, name, detail })
 const check = (name, condition, detail = '') => record(condition ? 'PASS' : 'FAIL', name, detail)
+const ADDRESS_REQUIRED = process.env.SMOKE_ADDRESS_REQUIRED === '1'
+const addressUnavailable = (name) => record(ADDRESS_REQUIRED ? 'FAIL' : 'SKIP', name, 'address API (BAN) did not answer within 10 s')
+// Real addresses, one per department, and the commune their neighbourhood
+// page must belong to (first 5 digits of the neighbourhood code).
+const ADDRESSES = [
+  ['12 rue de Rivoli Paris', '75104'],
+  ['57 rue de Paris Boulogne-Billancourt', '92012'],
+  ['2 place Victor Hugo Saint-Denis', '93066'],
+]
 
 let server = null
 let base = process.env.SMOKE_BASE_URL
@@ -130,7 +142,7 @@ try {
   await page.locator('#home-address').fill('1 rue Marie Louise Drancy')
   const homeOption = await page.locator('#home-address-list [role="option"]').first().waitFor({ timeout: 10_000 }).then(() => true, () => false)
   if (!homeOption) {
-    record('SKIP', 'home address field', 'address API (BAN) did not answer within 10 s')
+    addressUnavailable('home address field')
   } else {
     await page.locator('#home-address').press('ArrowDown')
     const activeId = await page.locator('#home-address').getAttribute('aria-activedescendant')
@@ -206,7 +218,7 @@ try {
   const suggestion = page.locator('#explore-address-list [role="option"]', { hasText: '93700 Drancy' }).first()
   const banAnswered = await suggestion.waitFor({ timeout: 10_000 }).then(() => true, () => false)
   if (!banAnswered) {
-    record('SKIP', 'explore: address -> card', 'address API (BAN) did not answer within 10 s')
+    addressUnavailable('explore: address -> card')
   } else {
     await suggestion.click()
     const opened = await page.waitForSelector('.card .card-title', { timeout: 10_000 }).then(() => true, () => false)
@@ -296,6 +308,25 @@ try {
     await phone.goto(base + path, { waitUntil: 'networkidle' })
     const overflow = await phone.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
     check(`phone ${path}: no horizontal scroll`, overflow <= 0, overflow > 0 ? `${overflow}px` : '')
+  }
+
+  // Address search, desktop and phone: typing a real address (typed key by
+  // key, as a person would) shows suggestions, and the first one leads to a
+  // neighbourhood page of the right commune.
+  for (const [label, p] of [['desktop', page], ['phone', phone]]) {
+    for (const [address, commune] of ADDRESSES) {
+      await p.goto(base + '/', { waitUntil: 'networkidle' })
+      await p.locator('#home-address').pressSequentially(address, { delay: 20 })
+      const shown = await p.locator('#home-address-list [role="option"]').first().waitFor({ timeout: 10_000 }).then(() => true, () => false)
+      if (!shown) {
+        addressUnavailable(`${label} address search: ${address}`)
+        continue
+      }
+      await p.locator('#home-address-list [role="option"]').first().click()
+      const reached = await p.waitForURL(/\/quartier\/\d{9}/, { timeout: 15_000 }).then(() => true, () => false)
+      const code = reached ? new URL(p.url()).pathname.split('/').pop() : ''
+      check(`${label} address search: ${address} -> neighbourhood of ${commune}`, code.startsWith(commune), code || p.url())
+    }
   }
 } finally {
   await browser.close()

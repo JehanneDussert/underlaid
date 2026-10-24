@@ -17,6 +17,7 @@ Les mêmes que pour la durée vers les urgences déjà publiée : services d'urg
 ## 2. Créneaux
 
 - **Jour** : mardi 13 octobre 2026 (même jour et même GTFS IDFM du 1er octobre 2026 que le second calcul).
+- **Vérification du jour (24 octobre 2026, avant tout calcul)** : dans le GTFS utilisé, le mardi 13 octobre est un jour de semaine complet. Il a le même nombre de courses que le mardi 6 octobre pour le métro (11 886), le tram (6 340) et Noctilien (1 604) ; pour les RER et les trains, 5 286 courses contre 5 248, avec des écarts de moins de 1 % par ligne pour les RER. Aucune ligne n'est sans course ce jour-là, et aucune ne dessert moins d'arrêts que le 6 ou le 15 octobre (métro 803 points d'arrêt, tram 579, Noctilien 3 655, RER et trains 574). Le jour est hors vacances scolaires (zone C, vacances de la Toussaint à partir du 17 octobre) et n'est pas férié. Les mardis 20 et 27 octobre, pendant les vacances, ont moins de courses (métro 11 620 et 11 236). Les grèves et perturbations réelles ne figurent pas dans les horaires prévus et ne changent pas le calcul. Scripts : `scripts/analysis/gtfs_typical_tuesday.py` et `gtfs_stops_served.py`.
 - **Heures de départ** : toutes les 2 heures, de 0 h à 22 h (12 créneaux). Le créneau de 0 h est celui de la nuit du lundi au mardi.
 - **Fenêtre de départ** : 60 minutes après l'heure de départ ; durée retenue = temps médian de R5 sur la fenêtre, comme pour les autres créneaux.
 - Les créneaux déjà calculés à 21 h et à 1 h, et le dimanche, restent publiés tels quels ; ils ne sont pas recalculés.
@@ -41,9 +42,9 @@ Les mêmes que dans le second calcul : les 13 752 carreaux habités de la Métro
 
 ## 6. Ce qui est publié
 
-- **Page « Votre quartier »** : la courbe du quartier, un point toutes les 2 heures, pour les deux profils. Le texte ne nomme jamais un quartier plus éloigné.
+- **Page « Votre quartier »** : la courbe du quartier, un point toutes les 2 heures, pour les deux profils. Le texte ne nomme jamais un quartier plus éloigné. La courbe est présentée comme celle **d'un mardi type** (départs le mardi 13 octobre 2026) ; le **dimanche à 10 h reste la référence pour le week-end** et reste affiché à part, tel qu'il est publié (précision du 24 octobre 2026, avant tout calcul).
 - **Méthode** : un tableau par créneau, avec la médiane des quartiers et la part de la population au-delà de 45 minutes et de 90 minutes, pour la Métropole et par département ; la sensibilité « inconnu = oui » pour la nuit.
-- **Mentions obligatoires** : « à pied et en transports en commun » sur toute durée de nuit. Le profil fauteuil roulant reste une limite basse : ni ascenseurs en panne, ni état des trottoirs, ni accessibilité du bâtiment d'arrivée. Mention placée avec la courbe (texte de la porteuse du projet, 23 octobre 2026) : « En cas d'urgence, appelez le 15 (SAMU) ou le 112, ou envoyez un SMS au 114 si vous êtes sourd ou malentendant. Cette courbe mesure uniquement le temps nécessaire pour se rendre aux urgences par ses propres moyens, en transports en commun. »
+- **Mentions obligatoires** : « à pied et en transports en commun » sur toute durée de nuit. Le profil fauteuil roulant reste une limite basse : ni ascenseurs en panne, ni état des trottoirs, ni accessibilité du bâtiment d'arrivée. Mention placée avec la courbe (version du 24 octobre 2026, avant tout calcul, qui remplace celle du 23 octobre : le 114 est ouvert aussi aux personnes sourdaveugles et aphasiques et à toute personne qui ne peut pas parler, et la courbe compte aussi les trajets à pied) : « En cas d'urgence, appelez le 15 (SAMU) ou le 112. Si vous ne pouvez pas parler ou entendre, envoyez un SMS au 114. Cette courbe mesure uniquement le temps nécessaire pour se rendre aux urgences par ses propres moyens, à pied et en transports en commun. » Le mot « 114 » renvoie vers https://www.info.urgence114.fr/.
 - **Taille** : environ 66 000 durées (2 752 quartiers × 12 créneaux × 2 profils), moins de 1 Mo au total.
 
 ## 7. Coût

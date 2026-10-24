@@ -1,6 +1,8 @@
 <script setup>
-// Address field with suggestions from the national address base (BAN,
-// api-adresse.data.gouv.fr). WAI-ARIA combobox pattern: arrow keys move
+// Address field with suggestions from the national address base (BAN),
+// through the IGN Géoplateforme geocoder (data.geopf.fr/geocodage), which
+// replaces api-adresse.data.gouv.fr (24 October 2026: the old address
+// answered in more than 20 s, past the 8 s timeout, so no suggestion came). WAI-ARIA combobox pattern: arrow keys move
 // through the suggestions, Enter picks, Escape closes; the number of
 // suggestions is announced. Emits `select` with { label, lon, lat }.
 // Only addresses of Paris and the inner suburbs (departments 75, 92, 93,
@@ -27,7 +29,7 @@ const props = defineProps({
 const emit = defineEmits(['select'])
 const { t } = useI18n()
 
-const GEOCODE_URL = 'https://api-adresse.data.gouv.fr/search/'
+const GEOCODE_URL = 'https://data.geopf.fr/geocodage/search'
 const MGP_CENTER = [2.35, 48.86]
 const DEPARTMENTS = ['75', '92', '93', '94']
 const inZone = (feature) => DEPARTMENTS.includes(String(feature.properties?.citycode ?? '').slice(0, 2))

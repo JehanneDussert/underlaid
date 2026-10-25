@@ -64,7 +64,13 @@ WORK_DIR = config.DATA_INTERIM / "access"
 # ROUTES_SET=paris: public toilets and drinking fountains, Paris only
 # (script 41; decision of 2026-10-03), Paris cells as origins, Tuesday
 # 10:00, four profiles.
+# ROUTES_SET=curve: emergency departments by departure time, every 2 hours
+# on Tuesday 13 October 2026, without constraint and wheelchair (unknown
+# accessibility counted as accessible at 0:00, 2:00 and 4:00 as a
+# sensitivity); pre-registered in
+# docs/preregistrations/2026-10-22-courbe-urgences-heure-depart.md.
 ROUTES_SET = os.environ.get("ROUTES_SET", "routes")
+CURVE = ROUTES_SET == "curve"
 NEIGHBOURHOOD = ROUTES_SET == "neighbourhood"
 PARIS = ROUTES_SET == "paris"
 VERSION = os.environ.get("ROUTES_VERSION", "1")
@@ -77,8 +83,8 @@ SNAP = VERSION != "2"
 SUFFIX = ("_pilot2" if VERSION == "2" else "_pilot") if PILOT else ("_v2" if VERSION == "2" else "")
 if VERSION == "2" and os.environ.get("ROUTES_DECOMP") == "1":
     SUFFIX = "_v2_decomp"  # decomposition (2026-10-07): separate outputs and progress
-OUT_DIR = WORK_DIR / ({"neighbourhood": "routes_ttm_neighbourhood", "paris": "routes_ttm_paris"}.get(ROUTES_SET, "routes_ttm") + SUFFIX)
-PROGRESS = WORK_DIR / {"neighbourhood": "routes_neighbourhood_progress.txt", "paris": "routes_paris_progress.txt"}.get(ROUTES_SET, "routes_progress.txt").replace(".txt", f"{SUFFIX}.txt")
+OUT_DIR = WORK_DIR / ({"neighbourhood": "routes_ttm_neighbourhood", "paris": "routes_ttm_paris", "curve": "routes_ttm_curve"}.get(ROUTES_SET, "routes_ttm") + SUFFIX)
+PROGRESS = WORK_DIR / {"neighbourhood": "routes_neighbourhood_progress.txt", "paris": "routes_paris_progress.txt", "curve": "routes_curve_progress.txt"}.get(ROUTES_SET, "routes_progress.txt").replace(".txt", f"{SUFFIX}.txt")
 SNAPPED = ACCESS_DIR / "snapped_points.csv"
 DEST_FILE = {"neighbourhood": "neighbourhood_destinations_idf.geojson", "paris": "paris_amenities_idf.geojson"}.get(ROUTES_SET, "route_destinations_idf.geojson")
 CHUNK = 150 if NEIGHBOURHOOD else 300
@@ -143,7 +149,11 @@ class Task:
     departure: dt.datetime
 
 
-if NEIGHBOURHOOD or PARIS:
+CURVE_HOURS = range(0, 24, 2)
+if CURVE:
+    TASKS = [Task(f"{p}_tue{h:02d}", p, True, dt.datetime(2026, 10, 13, h, 0)) for p in ("standard", "step_free_no") for h in CURVE_HOURS]
+    TASKS += [Task(f"step_free_yes_tue{h:02d}", "step_free_yes", True, dt.datetime(2026, 10, 13, h, 0)) for h in (0, 2, 4)]
+elif NEIGHBOURHOOD or PARIS:
     TASKS = [Task(f"{p}_tue10", p, True, SLOTS["tue10"]) for p in PROFILES]
 else:
     TASKS = [Task(f"{p}_{s}", p, True, d) for p in PROFILES for s, d in SLOTS.items() if p not in SENSITIVITY or s == "tue10"]
@@ -189,7 +199,9 @@ def snapped(points: gpd.GeoDataFrame, point_set: str) -> gpd.GeoDataFrame:
 
 
 def destinations(task: Task, dest: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-    if task.transit or task.name.endswith("_places_walk"):
+    if CURVE:
+        d = dest[dest["type"] == "emergency"]
+    elif task.transit or task.name.endswith("_places_walk"):
         d = dest[dest["type"] != "station"]
     else:
         keep = PROFILES[task.profile][2]

@@ -19,6 +19,7 @@ import { useRoute, useRouter } from 'vue-router'
 import AccordionItem from '../components/AccordionItem.vue'
 import AddressSearch from '../components/AddressSearch.vue'
 import LoadingDots from '../components/LoadingDots.vue'
+import EmergencyCurve from '../components/EmergencyCurve.vue'
 import ModeToggle from '../components/ModeToggle.vue'
 import NeighbourhoodScatter from '../components/NeighbourhoodScatter.vue'
 import RankBar from '../components/RankBar.vue'
@@ -293,6 +294,8 @@ const columns = computed(() => [0, 1].map((c) => NEEDS.filter((n) => n.column ==
 
 // Wheelchair: the nearest accessible stop against the nearest stop.
 const station = computed(() => record.value?.station ?? null)
+// Emergency departments by departure time (typical Tuesday, every 2 hours).
+const curve = computed(() => record.value?.emergency_curve ?? null)
 
 // --- Part 3 ----------------------------------------------------------------
 const highlyExposed = computed(() => worst.value.length >= 2)
@@ -487,6 +490,12 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
               </AccordionItem>
             </div>
           </div>
+
+          <section v-if="curve" class="curve-block" aria-labelledby="curve-title">
+            <h3 id="curve-title">{{ t('nbhd.curve.title') }}</h3>
+            <p class="curve-intro">{{ t('nbhd.curve.intro') }}</p>
+            <EmergencyCurve :curve="curve" :sunday="record.sunday_emergency ?? null" />
+          </section>
 
           <aside v-if="station" class="station-note">
             <span class="dot dot-wheelchair" aria-hidden="true"></span>
@@ -978,6 +987,24 @@ const part3Key = computed(() => (highlyExposed.value ? (careWorst.value ? 'both'
   line-height: 1.5;
   color: var(--text-secondary);
   max-width: 900px;
+}
+.curve-block {
+  margin-top: 28px;
+  padding: 20px;
+  border: 1px solid var(--border, #d6d6d6);
+  border-radius: 16px;
+}
+.curve-block h3 {
+  margin: 0 0 6px;
+}
+.curve-intro {
+  margin: 0 0 8px;
+  color: #3c3c3c;
+}
+@media (max-width: 600px) {
+  .curve-block {
+    padding: 14px;
+  }
 }
 .station-note {
   display: flex;

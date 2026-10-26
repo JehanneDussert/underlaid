@@ -32,6 +32,14 @@ address) and everything the page shows about each of them:
   in Paris (ranked among Paris), park alone elsewhere (ranked among the
   metropolis); `needs_paris` lists the needs ranked among Paris.
 
+- emergency departments by departure time (pre-registered on 22 October
+  2026, docs/preregistrations/2026-10-22-courbe-urgences-heure-depart.md):
+  a typical Tuesday, every 2 hours from 0:00 to 22:00, without constraint
+  ("free") and wheelchair (unknown accessibility = not accessible), plus the
+  wheelchair times with unknown = accessible at 0:00, 2:00 and 4:00 (night
+  range); null = more than 90 min. From routes_emergency_curve.json
+  (scripts/analysis/curve_controls.py, after the controls of 26 October 2026).
+
 Plus index.json: for part 3 of the page ("Les deux à la fois"), each
 inhabited neighbourhood's number of exposures in the worst quarter (0-3)
 and its access-to-care rank, and the count of neighbourhoods both highly
@@ -168,6 +176,11 @@ def main():
     # 3 October 2026; decision of 8 October 2026 to show them).
     evening = routes_by_iris(load("routes_iris_tue21.json"), ["emergency"])
     sunday = routes_by_iris(load("routes_iris_sun10.json"), ["emergency"])
+    curve_data = load("routes_emergency_curve.json")
+    curve = {}
+    if curve_data:
+        for code, row in curve_data["iris"].items():
+            curve[code] = {"free": row[0:12], "wheelchair": row[12:24], "wheelchair_unknown_yes": row[24:27]}
     stations_data = load("routes_stations_iris.json")
     places = routes_by_iris(load("routes_neighbourhood_tue10.json"))
     # Public toilets and drinking fountains, Paris only (script 41).
@@ -223,6 +236,8 @@ def main():
             rec["evening_emergency"] = {m: v["emergency"] for m, v in evening[code].items()}
         if code in sunday:
             rec["sunday_emergency"] = {m: v["emergency"] for m, v in sunday[code].items()}
+        if code in curve:
+            rec["emergency_curve"] = curve[code]
         if stations_data and code in stations_data["iris"]:
             row = stations_data["iris"][code]
             rec["station"] = {m: row[stations_data["profiles"].index(prof)] for m, prof in MODES.items()}

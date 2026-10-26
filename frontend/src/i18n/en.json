@@ -975,7 +975,25 @@
       "title": "{name}: living conditions and places within reach",
       "description": "{summary}. Times to everyday places, on foot and by public transport, depending on how you get around."
     },
-    "durationsLimit": "In 0.02% of cases, the wheelchair duration comes out shorter than the duration without constraint, usually by one minute, because of how the route planner links points to the street network."
+    "durationsLimit": "In 0.02% of cases, the wheelchair duration comes out shorter than the duration without constraint, usually by one minute, because of how the route planner links points to the street network.",
+    "curve": {
+      "title": "Emergency departments by departure time",
+      "intro": "Time to the nearest emergency department, on foot and by public transport, on a typical Tuesday (departures on Tuesday 13 October 2026), every 2 hours.",
+      "hour": "{h}:00",
+      "rangeKey": "Wheelchair, at night: range depending on the assumption",
+      "range": "{a} to {b} min",
+      "rangeOver": "{a} min to more than 90 min",
+      "caption": "Times in minutes: median of the neighbourhood's inhabited grid cells, weighted by population. A hollow point at the top of the chart means more than 90 minutes.",
+      "sunday": "On Sunday at 10:00, the weekend reference: {free} without constraint, {wc} in a wheelchair.",
+      "night": "At night (0:00, 2:00 and 4:00), the wheelchair time is given under two assumptions: stops and trips whose accessibility is not recorded are counted as not accessible (the line) or as accessible (the other end of the range).",
+      "tableToggle": "Show the values",
+      "tableCaption": "Time to the nearest emergency department by departure time, typical Tuesday",
+      "departure": "Departure",
+      "alt": "Chart of the time to the nearest emergency department by departure time. At 10:00: {freeDay} without constraint, {wcDay} in a wheelchair. At 2:00: {freeNight} without constraint, {wcNight} in a wheelchair. All values are in the table below.",
+      "call1": "In an emergency, call 15 (SAMU, medical emergencies) or 112. If you cannot speak or hear, send a text message to ",
+      "call2": ". This chart only measures the time needed to get to an emergency department by your own means, on foot and by public transport.",
+      "limit": "In a wheelchair, the time is a lower bound: the calculation takes into account neither broken lifts, nor the state of pavements, nor the accessibility of the destination building. Slow walking is not calculated for this chart."
+    }
   },
   "explore": {
     "title": "Explore the map",
@@ -1266,7 +1284,19 @@
         }
       ],
       "exclusions": "The places set aside by these rules are listed one by one, with their reason:",
-      "exclusionsLink": "list of excluded places"
+      "exclusionsLink": "list of excluded places",
+      "curveTitle": "Emergency departments by departure time, over a day",
+      "curve": "For emergency departments, a curve completes the slots above: departures every 2 hours, from 0:00 to 22:00, on a typical Tuesday (Tuesday 13 October 2026, a full weekday in the Île-de-France Mobilités timetables, outside school holidays), without constraint and in a wheelchair, with the same rules as during the day. Sunday 10:00 remains the weekend reference. At night (0:00, 2:00 and 4:00), the wheelchair time is calculated under two assumptions: stops and trips whose accessibility is not recorded are counted as not accessible, then as accessible; the table gives the range. This calculation was pre-registered on 22 October 2026; the 10:00 slot gives back exactly the times already published.",
+      "curveCaption": "Time to the nearest emergency department, on foot and by public transport, typical Tuesday: median of the {n} inhabited neighbourhoods, and number of neighbourhoods at more than 90 minutes.",
+      "curveCols": [
+        "Departure",
+        "Median, without constraint",
+        "Median, wheelchair",
+        "Neighbourhoods at more than 90 min, without constraint",
+        "Neighbourhoods at more than 90 min, wheelchair"
+      ],
+      "curveRange": "{a} to {b}",
+      "curveNote": "Night range: from the assumption 'unknown accessibility = accessible' to 'unknown accessibility = not accessible'. In 0.05% of grid cell × hour pairs, the wheelchair time comes out shorter than the time without constraint. The calculation takes into account neither the opening of emergency departments nor taxis or adapted vehicles."
     },
     "ressources": {
       "p1": "Median income, overcrowded homes and the share of second homes describe the means residents have to cope. They are shown separately, for information, and are not part of the combined score: a well-off neighbourhood can be highly exposed to heat. Neighbourhoods are split into three thirds, from lowest to highest.",

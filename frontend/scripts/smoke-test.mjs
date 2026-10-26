@@ -171,6 +171,13 @@ try {
   await page.waitForURL(/compare=wheelchair/)
   const gaps = await page.locator('.place .gap').count()
   check('neighbourhood page: one mode, then a comparison with gaps', oneTime === 0 && gaps >= 5, `${oneTime} / ${gaps} gaps`)
+  // Emergency departments by departure time (typical Tuesday): the chart,
+  // its table of 12 departure times, the Sunday reference and the 114 link.
+  const curveRows = await page.locator('.curve-block tbody tr').count()
+  const curveLines = await page.locator('.curve-block svg path.line').count()
+  const has114 = (await page.locator('.curve-block a[href="https://www.info.urgence114.fr/"]').count()) === 1
+  const sundayRef = (await page.locator('.curve-block .sunday').count()) === 1
+  check('neighbourhood page: emergency curve (2 lines, 12 departure times, Sunday reference, 114 link)', curveRows === 12 && curveLines === 2 && has114 && sundayRef, `${curveLines} lines, ${curveRows} rows`)
   const unknown = await page.goto(base + '/quartier/000000000', { waitUntil: 'networkidle' })
   await page.waitForTimeout(500)
   check('neighbourhood page: unknown code says so', unknown.status() === 200 && (await page.locator('.flag').count()) >= 1)

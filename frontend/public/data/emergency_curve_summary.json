@@ -1,0 +1,96 @@
+{
+ "day": "2026-10-13",
+ "neighbourhoods": 2690,
+ "rows": [
+  {
+   "hour": 0,
+   "median_free": 23,
+   "median_wheelchair": 35,
+   "over90_free": 4,
+   "over90_wheelchair": 80,
+   "median_wheelchair_unknown_yes": 34,
+   "over90_wheelchair_unknown_yes": 71
+  },
+  {
+   "hour": 2,
+   "median_free": 23,
+   "median_wheelchair": 38,
+   "over90_free": 3,
+   "over90_wheelchair": 167,
+   "median_wheelchair_unknown_yes": 37,
+   "over90_wheelchair_unknown_yes": 134
+  },
+  {
+   "hour": 4,
+   "median_free": 23,
+   "median_wheelchair": 37,
+   "over90_free": 1,
+   "over90_wheelchair": 16,
+   "median_wheelchair_unknown_yes": 36,
+   "over90_wheelchair_unknown_yes": 8
+  },
+  {
+   "hour": 6,
+   "median_free": 18,
+   "median_wheelchair": 26,
+   "over90_free": 1,
+   "over90_wheelchair": 8
+  },
+  {
+   "hour": 8,
+   "median_free": 18,
+   "median_wheelchair": 27,
+   "over90_free": 1,
+   "over90_wheelchair": 8
+  },
+  {
+   "hour": 10,
+   "median_free": 18,
+   "median_wheelchair": 27,
+   "over90_free": 1,
+   "over90_wheelchair": 8
+  },
+  {
+   "hour": 12,
+   "median_free": 18,
+   "median_wheelchair": 27,
+   "over90_free": 1,
+   "over90_wheelchair": 8
+  },
+  {
+   "hour": 14,
+   "median_free": 18,
+   "median_wheelchair": 27,
+   "over90_free": 1,
+   "over90_wheelchair": 8
+  },
+  {
+   "hour": 16,
+   "median_free": 18,
+   "median_wheelchair": 27,
+   "over90_free": 1,
+   "over90_wheelchair": 8
+  },
+  {
+   "hour": 18,
+   "median_free": 18,
+   "median_wheelchair": 27,
+   "over90_free": 1,
+   "over90_wheelchair": 8
+  },
+  {
+   "hour": 20,
+   "median_free": 18,
+   "median_wheelchair": 27,
+   "over90_free": 1,
+   "over90_wheelchair": 8
+  },
+  {
+   "hour": 22,
+   "median_free": 19,
+   "median_wheelchair": 28,
+   "over90_free": 3,
+   "over90_wheelchair": 12
+  }
+ ]
+}

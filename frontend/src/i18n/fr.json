@@ -975,7 +975,25 @@
       "title": "{name} : cadre de vie et lieux à portée",
       "description": "{summary}. Durées vers les lieux du quotidien, à pied et en transports en commun, selon le mode de déplacement."
     },
-    "durationsLimit": "Dans 0,02 % des cas, la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, d'une minute le plus souvent, à cause de la façon dont le calculateur raccorde les points au réseau de rues."
+    "durationsLimit": "Dans 0,02 % des cas, la durée en fauteuil roulant ressort plus courte que la durée sans contrainte, d'une minute le plus souvent, à cause de la façon dont le calculateur raccorde les points au réseau de rues.",
+    "curve": {
+      "title": "Urgences selon l'heure de départ",
+      "intro": "Durée jusqu'aux urgences les plus proches, à pied et en transports en commun, pour un mardi type (départs le mardi 13 octobre 2026), toutes les 2 heures.",
+      "hour": "{h} h",
+      "rangeKey": "Fauteuil roulant, la nuit : fourchette selon l'hypothèse",
+      "range": "{a} à {b} min",
+      "rangeOver": "{a} min à plus de 90 min",
+      "caption": "Durées en minutes : médiane des carreaux habités du quartier, pondérée par la population. Un point vide, en haut du graphique, signale plus de 90 minutes.",
+      "sunday": "Le dimanche à 10 h, référence du week-end : {free} sans contrainte, {wc} en fauteuil roulant.",
+      "night": "La nuit (0 h, 2 h et 4 h), la durée en fauteuil roulant est donnée sous deux hypothèses : les arrêts et les courses dont l'accessibilité n'est pas renseignée sont comptés comme non accessibles (la courbe) ou comme accessibles (l'autre extrémité de la fourchette).",
+      "tableToggle": "Voir les valeurs",
+      "tableCaption": "Durée jusqu'aux urgences les plus proches selon l'heure de départ, mardi type",
+      "departure": "Départ",
+      "alt": "Courbe des durées jusqu'aux urgences les plus proches selon l'heure de départ. À 10 h : {freeDay} sans contrainte, {wcDay} en fauteuil roulant. À 2 h : {freeNight} sans contrainte, {wcNight} en fauteuil roulant. Toutes les valeurs sont dans le tableau qui suit.",
+      "call1": "En cas d'urgence, appelez le 15 (SAMU) ou le 112. Si vous ne pouvez pas parler ou entendre, envoyez un SMS au ",
+      "call2": ". Cette courbe mesure uniquement le temps nécessaire pour se rendre aux urgences par ses propres moyens, à pied et en transports en commun.",
+      "limit": "En fauteuil roulant, la durée est une limite basse : le calcul ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni de l'accessibilité du bâtiment d'arrivée. La marche lente n'est pas calculée pour cette courbe."
+    }
   },
   "explore": {
     "title": "Explorer la carte",
@@ -1266,7 +1284,19 @@
         }
       ],
       "exclusions": "Les lieux écartés par ces règles sont listés un par un, avec leur motif :",
-      "exclusionsLink": "liste des lieux exclus"
+      "exclusionsLink": "liste des lieux exclus",
+      "curveTitle": "Urgences selon l'heure de départ, sur une journée",
+      "curve": "Pour les urgences, une courbe complète les créneaux ci-dessus : départs toutes les 2 heures, de 0 h à 22 h, un mardi type (mardi 13 octobre 2026, jour de semaine complet dans les horaires d'Île-de-France Mobilités, hors vacances scolaires), sans contrainte et en fauteuil roulant, avec les mêmes règles qu'en journée. Le dimanche à 10 h reste la référence du week-end. La nuit (0 h, 2 h et 4 h), la durée en fauteuil roulant est calculée sous deux hypothèses : les arrêts et les courses dont l'accessibilité n'est pas renseignée sont comptés comme non accessibles, puis comme accessibles ; le tableau donne la fourchette. Ce calcul a été pré-enregistré le 22 octobre 2026 ; le créneau de 10 h redonne exactement les durées déjà publiées.",
+      "curveCaption": "Durée vers les urgences les plus proches, à pied et en transports en commun, mardi type : médiane des {n} quartiers habités, et nombre de quartiers à plus de 90 minutes.",
+      "curveCols": [
+        "Départ",
+        "Médiane, sans contrainte",
+        "Médiane, fauteuil roulant",
+        "Quartiers à plus de 90 min, sans contrainte",
+        "Quartiers à plus de 90 min, fauteuil roulant"
+      ],
+      "curveRange": "{a} à {b}",
+      "curveNote": "Fourchette de nuit : de l'hypothèse « accessibilité inconnue = accessible » à l'hypothèse « accessibilité inconnue = non accessible ». Dans 0,05 % des couples carreau × heure, la durée en fauteuil roulant ressort plus courte que la durée sans contrainte. Le calcul ne tient compte ni des horaires d'accueil des urgences, ni des taxis ou véhicules adaptés."
     },
     "ressources": {
       "p1": "Le revenu médian, la suroccupation des logements et la part de résidences secondaires décrivent les moyens dont disposent les habitants pour faire face. Ils sont affichés à part, pour information, et n'entrent pas dans le cumul : un quartier aisé peut être très exposé à la chaleur. Les quartiers sont répartis en trois tiers, du plus faible au plus élevé.",

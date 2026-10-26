@@ -83,8 +83,11 @@ const SCORING_URL = `${REPO_URL}/blob/master/SCORING.md`
 const DOI_URL = 'https://doi.org/10.5281/zenodo.23083312'
 
 const figures = ref(null)
+// Emergency curve table (script 46): medians and neighbourhoods beyond 90 min.
+const curveSummary = ref(null)
 async function loadFigures() {
   figures.value = await loadStaticJson('/data/key_figures.json')
+  curveSummary.value = await loadStaticJson('/data/emergency_curve_summary.json')
 }
 onServerPrefetch(loadFigures)
 onMounted(() => {
@@ -92,6 +95,15 @@ onMounted(() => {
 })
 
 const nf = computed(() => new Intl.NumberFormat(locale.value === 'fr' ? 'fr-FR' : 'en-GB'))
+// Night: the wheelchair value under both assumptions on unknown
+// accessibility, as a range (smaller first).
+const curveMedian = (a, b) => {
+  const f = (v) => (v === null ? t('nbhd.over90') : t('plan.minutes', { n: v }))
+  if (b === undefined || a === b) return f(a)
+  const [lo, hi] = [a, b].sort((x, y) => (x === null ? 1 : y === null ? -1 : x - y))
+  return hi === null ? t('nbhd.curve.rangeOver', { a: lo }) : t('nbhd.curve.range', { a: lo, b: hi })
+}
+const curveCount = (a, b) => (b === undefined || a === b ? nf.value.format(a) : t('methodD4.portee.curveRange', { a: nf.value.format(Math.min(a, b)), b: nf.value.format(Math.max(a, b)) }))
 const list = (key) => tm(key).map((item) => Object.fromEntries(Object.entries(item).map(([k, v]) => [k, typeof v === 'boolean' ? v : rt(v)])))
 const sources = computed(() => list('method.sources.rows'))
 const criteria = computed(() => list('method.calc.criteria'))
@@ -236,6 +248,26 @@ const distribution = computed(() => {
             </table>
           </div>
           <p class="small">{{ t('methodD4.portee.slotsNote') }}</p>
+          <h3>{{ t('methodD4.portee.curveTitle') }}</h3>
+          <p>{{ t('methodD4.portee.curve') }}</p>
+          <div v-if="curveSummary" class="table-wrap" tabindex="0" role="region" :aria-label="t('site.tableRegion')">
+            <table class="places">
+              <caption>{{ t('methodD4.portee.curveCaption', { n: nf.format(curveSummary.neighbourhoods) }) }}</caption>
+              <thead>
+                <tr><th v-for="c in tm('methodD4.portee.curveCols').map(rt)" :key="c" scope="col">{{ c }}</th></tr>
+              </thead>
+              <tbody>
+                <tr v-for="r in curveSummary.rows" :key="r.hour">
+                  <th scope="row">{{ t('nbhd.curve.hour', { h: r.hour }) }}</th>
+                  <td>{{ curveMedian(r.median_free) }}</td>
+                  <td>{{ curveMedian(r.median_wheelchair, r.median_wheelchair_unknown_yes) }}</td>
+                  <td>{{ nf.format(r.over90_free) }}</td>
+                  <td>{{ curveCount(r.over90_wheelchair, r.over90_wheelchair_unknown_yes) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small">{{ t('methodD4.portee.curveNote') }}</p>
           <h3>{{ t('methodD4.portee.decompositionTitle') }}</h3>
           <p>{{ t('methodD4.portee.decomposition') }}</p>
           <p class="small">

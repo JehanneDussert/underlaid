@@ -19,6 +19,7 @@ const props = defineProps({
   sunday: { type: Object, default: null },
 })
 const { t } = useI18n()
+const CONTROLS_URL = 'https://github.com/JehanneDussert/underlaid/blob/master/docs/checks/2026-10-26-emergency-curve-controls.md'
 
 const HOURS = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 const NIGHT = [0, 2, 4]
@@ -139,7 +140,9 @@ const summary = computed(() =>
         <!-- night range (wheelchair, two hypotheses) -->
         <g class="ranges">
           <line v-for="r in ranges.filter((r) => r.show)" :key="r.h" :x1="x(r.h)" :x2="x(r.h)" :y1="y(r.a)" :y2="y(r.b)" />
-          <circle v-for="r in ranges.filter((r) => r.show)" :key="`b${r.h}`" :cx="x(r.h)" :cy="y(r.b)" r="4" class="range-end" />
+          <!-- other end of the range: a short cap, so that it is not mistaken
+               for the hollow point that means "more than 90 min" -->
+          <line v-for="r in ranges.filter((r) => r.show)" :key="`b${r.h}`" :x1="x(r.h) - 7" :x2="x(r.h) + 7" :y1="y(r.b)" :y2="y(r.b)" class="range-end" />
         </g>
         <path class="line free" :d="path(curve.free)" />
         <path class="line wheelchair" :d="path(curve.wheelchair)" />
@@ -164,6 +167,10 @@ const summary = computed(() =>
       {{ t('nbhd.curve.sunday', { free: fmt(sunday.free), wc: fmt(sunday.wheelchair) }) }}
     </p>
     <p class="note">{{ t('nbhd.curve.night') }}</p>
+    <p class="note">
+      {{ t('nbhd.curve.windows') }}
+      <a :href="CONTROLS_URL" rel="noopener">{{ t('nbhd.curve.windowsLink') }}</a>
+    </p>
 
     <details class="values">
       <summary>{{ t('nbhd.curve.tableToggle') }}</summary>
@@ -296,10 +303,11 @@ svg {
   stroke-width: 6;
   stroke-linecap: round;
 }
-.range-end {
-  fill: #fff;
+.ranges .range-end {
   stroke: var(--mode-wheelchair);
-  stroke-width: 2;
+  stroke-opacity: 1;
+  stroke-width: 2.5;
+  stroke-linecap: round;
 }
 .hover line {
   stroke: #6a6a6a;

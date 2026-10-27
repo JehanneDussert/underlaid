@@ -267,7 +267,10 @@ const distribution = computed(() => {
               </tbody>
             </table>
           </div>
-          <p class="small">{{ t('methodD4.portee.curveNote') }}</p>
+          <p class="small">
+            {{ t('methodD4.portee.curveNote') }}
+            <a :href="`${REPO_URL}/blob/master/docs/checks/2026-10-26-emergency-curve-controls.md`" rel="noopener">{{ t('nbhd.curve.windowsLink') }}</a>
+          </p>
           <h3>{{ t('methodD4.portee.decompositionTitle') }}</h3>
           <p>{{ t('methodD4.portee.decomposition') }}</p>
           <p class="small">

@@ -985,14 +985,16 @@
       "rangeOver": "{a} min à plus de 90 min",
       "caption": "Durées en minutes : médiane des carreaux habités du quartier, pondérée par la population. Un point vide, en haut du graphique, signale plus de 90 minutes.",
       "sunday": "Le dimanche à 10 h, référence du week-end : {free} sans contrainte, {wc} en fauteuil roulant.",
-      "night": "La nuit (0 h, 2 h et 4 h), la durée en fauteuil roulant est donnée sous deux hypothèses : les arrêts et les courses dont l'accessibilité n'est pas renseignée sont comptés comme non accessibles (la courbe) ou comme accessibles (l'autre extrémité de la fourchette).",
+      "night": "La nuit (0 h, 2 h et 4 h), un trait vertical bleu clair peut apparaître sur la courbe du fauteuil roulant. Il montre la fourchette entre deux hypothèses sur les arrêts et les courses dont l'accessibilité n'est pas renseignée : comptés comme non accessibles (le point sur la courbe) ou comme accessibles (le petit trait horizontal à l'autre bout). Sans trait vertical, les deux hypothèses donnent la même durée.",
       "tableToggle": "Voir les valeurs",
       "tableCaption": "Durée jusqu'aux urgences les plus proches selon l'heure de départ, mardi type",
       "departure": "Départ",
       "alt": "Courbe des durées jusqu'aux urgences les plus proches selon l'heure de départ. À 10 h : {freeDay} sans contrainte, {wcDay} en fauteuil roulant. À 2 h : {freeNight} sans contrainte, {wcNight} en fauteuil roulant. Toutes les valeurs sont dans le tableau qui suit.",
       "call1": "En cas d'urgence, appelez le 15 (SAMU) ou le 112. Si vous ne pouvez pas parler ou entendre, envoyez un SMS au ",
       "call2": ". Cette courbe mesure uniquement le temps nécessaire pour se rendre aux urgences par ses propres moyens, à pied et en transports en commun.",
-      "limit": "En fauteuil roulant, la durée est une limite basse : le calcul ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni de l'accessibilité du bâtiment d'arrivée. La marche lente n'est pas calculée pour cette courbe."
+      "limit": "En fauteuil roulant, la durée est une limite basse : le calcul ne tient compte ni des ascenseurs en panne, ni de l'état des trottoirs, ni de l'accessibilité du bâtiment d'arrivée. La marche lente n'est pas calculée pour cette courbe.",
+      "windows": "Chaque heure est calculée sur sa propre fenêtre d'une heure de départs (par exemple de 20 h à 21 h) : d'une heure à l'autre, de petits écarts, souvent d'une minute, sont donc possibles.",
+      "windowsLink": "Rapport des contrôles"
     }
   },
   "explore": {
@@ -1286,7 +1288,7 @@
       "exclusions": "Les lieux écartés par ces règles sont listés un par un, avec leur motif :",
       "exclusionsLink": "liste des lieux exclus",
       "curveTitle": "Urgences selon l'heure de départ, sur une journée",
-      "curve": "Pour les urgences, une courbe complète les créneaux ci-dessus : départs toutes les 2 heures, de 0 h à 22 h, un mardi type (mardi 13 octobre 2026, jour de semaine complet dans les horaires d'Île-de-France Mobilités, hors vacances scolaires), sans contrainte et en fauteuil roulant, avec les mêmes règles qu'en journée. Le dimanche à 10 h reste la référence du week-end. La nuit (0 h, 2 h et 4 h), la durée en fauteuil roulant est calculée sous deux hypothèses : les arrêts et les courses dont l'accessibilité n'est pas renseignée sont comptés comme non accessibles, puis comme accessibles ; le tableau donne la fourchette. Ce calcul a été pré-enregistré le 22 octobre 2026 ; le créneau de 10 h redonne exactement les durées déjà publiées.",
+      "curve": "Pour les urgences, une courbe complète les créneaux ci-dessus : départs toutes les 2 heures, de 0 h à 22 h, un mardi type (mardi 13 octobre 2026, jour de semaine complet dans les horaires d'Île-de-France Mobilités, hors vacances scolaires), sans contrainte et en fauteuil roulant, avec les mêmes règles qu'en journée. Les durées reposent sur le service prévu, tel que le décrivent les horaires publiés par Île-de-France Mobilités le 1er octobre 2026 : les grèves, travaux et perturbations réelles n'y figurent pas. Chaque heure est calculée sur sa propre fenêtre d'une heure de départs (par exemple de 20 h à 21 h) : d'une heure à l'autre, de petits écarts, souvent d'une minute, sont donc possibles, y compris avec les créneaux déjà publiés du soir (21 h) et de la nuit (1 h). Le dimanche à 10 h reste la référence du week-end. La nuit (0 h, 2 h et 4 h), la durée en fauteuil roulant est calculée sous deux hypothèses : les arrêts et les courses dont l'accessibilité n'est pas renseignée sont comptés comme non accessibles, puis comme accessibles ; le tableau donne la fourchette. Ce calcul a été pré-enregistré le 22 octobre 2026 ; le créneau de 10 h redonne exactement les durées déjà publiées.",
       "curveCaption": "Durée vers les urgences les plus proches, à pied et en transports en commun, mardi type : médiane des {n} quartiers habités, et nombre de quartiers à plus de 90 minutes.",
       "curveCols": [
         "Départ",
